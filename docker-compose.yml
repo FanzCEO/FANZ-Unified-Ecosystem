@@ -694,10 +694,10 @@ services:
 # - JWT_SECRET=your_super_secure_jwt_secret
 # - GRAFANA_PASSWORD=your_grafana_admin_password
 # - OPENAI_API_KEY=your_openai_api_key
-# - CDN_URL=https://cdn.fanz.com
+# - CDN_URL=https://cdn.myfanz.network
 # - BLOCKCHAIN_ENDPOINT=https://your-blockchain-endpoint
 # - PAYMENT_PROCESSOR_URL=https://your-payment-processor
-# - CORS_ORIGINS=https://fanz.com,https://www.fanz.com
+# - CORS_ORIGINS=https://myfanz.network,https://www.myfanz.network
 #
 # Deployment Commands:
 # - Production: docker-compose up -d
