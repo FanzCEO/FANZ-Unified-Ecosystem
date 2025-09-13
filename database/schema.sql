@@ -692,7 +692,7 @@ RETURNS void AS $$
 BEGIN
   -- Insert sample users
   INSERT INTO users (username, email, password_hash, role, display_name, bio) VALUES
-  ('fanz_creator', 'creator@fanz.com', '$2a$12$sample_hash', 'creator', 'FANZ Creator', 'Official FANZ creator account'),
+  ('fanz_creator', 'creator@myfanz.network', '$2a$12$sample_hash', 'creator', 'FANZ Creator', 'Official FANZ creator account'),
   ('test_fan', 'fan@test.com', '$2a$12$sample_hash', 'fan', 'Test Fan', 'Just a fan exploring the platform'),
   ('affiliate_pro', 'affiliate@example.com', '$2a$12$sample_hash', 'affiliate', 'Pro Affiliate', 'Top affiliate marketer');
   
