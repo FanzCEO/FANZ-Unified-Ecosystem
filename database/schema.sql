@@ -715,5 +715,144 @@ $$ LANGUAGE plpgsql;
 -- ✅ Real-time notifications and engagement tracking
 -- ✅ Performance-optimized with proper indexing
 -- ✅ Automated statistics maintenance with triggers
+-- 🛡️ MILITARY-GRADE SECURITY TABLES
+-- Security event logging and audit trail
+
+CREATE TABLE security_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  event_type VARCHAR(100) NOT NULL,
+  severity VARCHAR(20) DEFAULT 'LOW', -- 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  ip_address INET,
+  user_agent TEXT,
+  endpoint VARCHAR(255),
+  method VARCHAR(10),
+  status_code INTEGER,
+  request_data JSONB DEFAULT '{}'::jsonb,
+  response_data JSONB DEFAULT '{}'::jsonb,
+  control_center VARCHAR(50) DEFAULT 'fanzdash',
+  ecosystem VARCHAR(50) DEFAULT 'fanz-unified',
+  metadata JSONB DEFAULT '{}'::jsonb,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Security alerts for high-priority events
+CREATE TABLE security_alerts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  security_event_id UUID REFERENCES security_events(id),
+  alert_type VARCHAR(100) NOT NULL,
+  severity VARCHAR(20) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  requires_action BOOLEAN DEFAULT false,
+  resolved BOOLEAN DEFAULT false,
+  resolved_by UUID REFERENCES users(id),
+  resolved_at TIMESTAMP,
+  auto_response_triggered BOOLEAN DEFAULT false,
+  response_actions JSONB DEFAULT '[]'::jsonb,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- IP blocking and rate limiting
+CREATE TABLE blocked_ips (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  ip_address INET NOT NULL UNIQUE,
+  reason VARCHAR(255),
+  blocked_by UUID REFERENCES users(id),
+  auto_blocked BOOLEAN DEFAULT false,
+  expires_at TIMESTAMP,
+  is_permanent BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- User security profiles
+CREATE TABLE user_security_profiles (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+  failed_login_attempts INTEGER DEFAULT 0,
+  last_failed_login TIMESTAMP,
+  account_locked BOOLEAN DEFAULT false,
+  locked_until TIMESTAMP,
+  mfa_enabled BOOLEAN DEFAULT false,
+  mfa_secret VARCHAR(255),
+  backup_codes JSONB DEFAULT '[]'::jsonb,
+  security_questions JSONB DEFAULT '[]'::jsonb,
+  last_password_change TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  password_history JSONB DEFAULT '[]'::jsonb,
+  security_score INTEGER DEFAULT 50, -- 0-100 scale
+  risk_level VARCHAR(20) DEFAULT 'LOW', -- 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'
+  last_security_scan TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Security compliance audit log
+CREATE TABLE compliance_audit (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  audit_type VARCHAR(100) NOT NULL, -- 'GDPR', 'SOC2', 'HIPAA', etc.
+  table_name VARCHAR(100),
+  record_id UUID,
+  operation VARCHAR(20), -- 'CREATE', 'READ', 'UPDATE', 'DELETE'
+  old_values JSONB,
+  new_values JSONB,
+  user_id UUID REFERENCES users(id),
+  ip_address INET,
+  user_agent TEXT,
+  compliance_notes TEXT,
+  retention_policy VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Security indexes for performance
+CREATE INDEX idx_security_events_severity ON security_events(severity);
+CREATE INDEX idx_security_events_type ON security_events(event_type);
+CREATE INDEX idx_security_events_timestamp ON security_events(created_at);
+CREATE INDEX idx_security_events_user_id ON security_events(user_id);
+CREATE INDEX idx_security_events_ip ON security_events(ip_address);
+
+CREATE INDEX idx_security_alerts_severity ON security_alerts(severity);
+CREATE INDEX idx_security_alerts_resolved ON security_alerts(resolved);
+CREATE INDEX idx_security_alerts_timestamp ON security_alerts(created_at);
+
+CREATE INDEX idx_blocked_ips_ip ON blocked_ips(ip_address);
+CREATE INDEX idx_blocked_ips_expires ON blocked_ips(expires_at);
+
+CREATE INDEX idx_compliance_audit_type ON compliance_audit(audit_type);
+CREATE INDEX idx_compliance_audit_table ON compliance_audit(table_name);
+CREATE INDEX idx_compliance_audit_timestamp ON compliance_audit(created_at);
+
+-- Security triggers for automatic profile creation
+CREATE OR REPLACE FUNCTION create_user_security_profile()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO user_security_profiles (user_id)
+  VALUES (NEW.id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_create_user_security_profile
+  AFTER INSERT ON users
+  FOR EACH ROW EXECUTE FUNCTION create_user_security_profile();
+
+-- Security event cleanup function (for GDPR compliance)
+CREATE OR REPLACE FUNCTION cleanup_old_security_events()
+RETURNS void AS $$
+BEGIN
+  -- Remove security events older than retention policy (30 days default)
+  DELETE FROM security_events 
+  WHERE created_at < NOW() - INTERVAL '30 days'
+  AND severity NOT IN ('HIGH', 'CRITICAL');
+  
+  -- Keep HIGH and CRITICAL events for 1 year
+  DELETE FROM security_events 
+  WHERE created_at < NOW() - INTERVAL '1 year'
+  AND severity IN ('HIGH', 'CRITICAL');
+  
+  RAISE NOTICE 'Security event cleanup completed';
+END;
+$$ LANGUAGE plpgsql;
 
 -- To initialize with sample data, run: SELECT create_sample_data();
+-- Domain: myfanz.network
+-- Security: Military-Grade Protection Active

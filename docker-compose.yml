@@ -9,6 +9,15 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/16
+  
+  fanz_security:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/16
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "false"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
 
 # 📦 Volumes
 volumes:
@@ -19,6 +28,13 @@ volumes:
   media_storage:
     driver: local
   logs:
+    driver: local
+  # Security Volumes
+  vault_data:
+    driver: local
+  fail2ban_data:
+    driver: local
+  openvas_data:
     driver: local
 
 # 🔧 Services
@@ -330,30 +346,55 @@ services:
   # 📊 MANAGEMENT & TOOLS
   # ============================================
   
-  # FanzDash Analytics
+  # FanzDash Security Control Center
   fanz_dash:
     build:
       context: ./FanzDash
       dockerfile: Dockerfile
-    container_name: fanz_dash
+    container_name: fanz_dash_security_center
     restart: unless-stopped
     environment:
       - NODE_ENV=production
       - PORT=3007
+      - SECURITY_PORT=3007
       - DATABASE_URL=postgresql://fanz_user:${POSTGRES_PASSWORD:-fanz_secure_password}@postgres:5432/fanz_unified
       - REDIS_URL=redis://:${REDIS_PASSWORD:-fanz_redis_password}@redis:6379
       - API_GATEWAY_URL=http://api_gateway:8080
+      - JWT_SECRET=${JWT_SECRET:-fanz_super_secure_jwt_secret}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-FanzMilitaryGrade2024!}
+      - SECURITY_TOKEN=${SECURITY_TOKEN:-FanzSecurityControl2024!}
+      - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN:-fanz_vault_root_2024}
+      # Security Service URLs
+      - FANZ_SOCIAL_URL=http://fanz_social:3002
+      - FANZTUBE_URL=http://fanz_tube:3003
+      - FANZCOMMERCE_URL=http://fanz_commerce:3004
+      - FANZSPICYAI_URL=http://fanz_ai:3005
+      - FANZMEDIA_URL=http://fanz_media:3006
+      - FANZLANDING_URL=http://fanz_landing:3008
+      - FANZFILIATE_URL=http://fanz_affiliate:3009
+      - FANZHUB_URL=http://fanz_hub:3010
+      - STARZCARDS_URL=http://starz_cards:3011
+      - CLUBCENTRAL_URL=http://club_central:3012
+      - MIGRATION_HQ_URL=http://migration_hq:3013
+      - FANZOS_URL=http://fanz_os:3014
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    ports:
+      - "3007:3007"  # Security Control Center
+      - "3008:3008"  # WebSocket Security Monitoring
     volumes:
       - logs:/app/logs
+      - ./security:/app/security:ro
     networks:
       - fanz_ecosystem
+      - fanz_security
+    cap_add:
+      - NET_ADMIN
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3007/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:3007/api/security/dashboard"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -684,6 +725,92 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  # ============================================
+  # 🛡️ MILITARY-GRADE SECURITY SERVICES
+  # ============================================
+  
+  # HashiCorp Vault - Secrets Management
+  vault:
+    image: vault:latest
+    container_name: fanz_vault
+    restart: unless-stopped
+    cap_add:
+      - IPC_LOCK
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=${VAULT_ROOT_TOKEN:-fanz_vault_root_2024}
+      - VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200
+      - VAULT_API_ADDR=http://0.0.0.0:8200
+    ports:
+      - "8200:8200"
+    volumes:
+      - vault_data:/vault/data
+    command: vault server -dev -dev-root-token-id=${VAULT_ROOT_TOKEN:-fanz_vault_root_2024}
+    networks:
+      - fanz_security
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Web Application Firewall
+  waf:
+    image: owasp/modsecurity-crs:apache
+    container_name: fanz_waf
+    restart: unless-stopped
+    environment:
+      - PARANOIA=2
+      - ANOMALY_INBOUND=5
+      - ANOMALY_OUTBOUND=4
+      - BACKEND=http://nginx:80
+      - ERRORLOG=/var/log/apache2/error.log
+      - ACCESSLOG=/var/log/apache2/access.log
+      - MODSEC_AUDIT_LOG_FORMAT=JSON
+    ports:
+      - "8443:80"
+    volumes:
+      - ./logs/waf:/var/log/apache2
+    networks:
+      - fanz_security
+      - fanz_ecosystem
+    depends_on:
+      - nginx
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Vulnerability Scanner - OpenVAS
+  openvas:
+    image: mikesplain/openvas
+    container_name: fanz_openvas
+    restart: unless-stopped
+    ports:
+      - "9390:9390"
+    environment:
+      - OV_PASSWORD=${OPENVAS_PASSWORD:-FanzOpenVAS_2024!}
+    volumes:
+      - openvas_data:/var/lib/openvas
+    networks:
+      - fanz_security
+
+  # Security Event Collection
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    container_name: fanz_fail2ban
+    restart: unless-stopped
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./logs:/var/log/fanz:ro
+      - fail2ban_data:/data
+    environment:
+      - TZ=UTC
+      - F2B_LOG_LEVEL=INFO
 
 # 🎯 Configuration Notes:
 # 
