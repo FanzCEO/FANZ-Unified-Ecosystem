@@ -18,6 +18,10 @@ import {
   createStandardLimiterIP,
   applyMultipleRateLimiters
 } from './middleware/rateLimit';
+import { 
+  metricsEndpoint, 
+  rateLimitHealthCheck 
+} from './monitoring/rateLimitMetrics';
 
 // 🔐 FANZ Unified Authentication Service
 // Single Sign-On (SSO) across all 13 consolidated platforms
@@ -111,6 +115,12 @@ app.get('/health', (req, res) => {
     ecosystem: 'fanz-unified'
   });
 });
+
+// 📈 Metrics Endpoint
+app.get('/metrics', metricsEndpoint);
+
+// 🚦 Rate Limit Health Check
+app.get('/health/rate-limit', rateLimitHealthCheck);
 
 // 🔐 User Registration
 app.post('/api/auth/register', 

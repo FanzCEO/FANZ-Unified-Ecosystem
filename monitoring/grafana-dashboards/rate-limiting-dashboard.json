@@ -1,0 +1,322 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "FANZ Auth Service - Rate Limiting Monitoring",
+    "tags": ["fanz", "auth", "rate-limiting", "security"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Rate Limit Violations - Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(rate_limit_exceeded_sensitive + rate_limit_exceeded_token + rate_limit_exceeded_standard)",
+            "legendFormat": "Total Violations"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 50},
+                {"color": "red", "value": 200}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Rate Limit Violations by Category",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "rate_limit_exceeded_sensitive",
+            "legendFormat": "Sensitive"
+          },
+          {
+            "expr": "rate_limit_exceeded_token", 
+            "legendFormat": "Token"
+          },
+          {
+            "expr": "rate_limit_exceeded_standard",
+            "legendFormat": "Standard"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Rate Limit Health Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate_limit_health_status",
+            "legendFormat": "Status"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {"options": {"0": {"text": "Healthy", "color": "green"}}},
+              {"options": {"1": {"text": "Warning", "color": "yellow"}}},
+              {"options": {"2": {"text": "Critical", "color": "red"}}}
+            ]
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Bypass Events",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate_limit_bypassed",
+            "legendFormat": "Total Bypassed"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "value"},
+            "thresholds": {
+              "steps": [
+                {"color": "blue", "value": 0}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Rate Limit Violations Over Time",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(rate_limit_exceeded_sensitive[5m])",
+            "legendFormat": "Sensitive Violations/sec"
+          },
+          {
+            "expr": "rate(rate_limit_exceeded_token[5m])",
+            "legendFormat": "Token Violations/sec"
+          },
+          {
+            "expr": "rate(rate_limit_exceeded_standard[5m])",
+            "legendFormat": "Standard Violations/sec"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "fillOpacity": 10
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Remaining Rate Limit Tokens",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate_limit_remaining_sensitive",
+            "legendFormat": "Sensitive Remaining"
+          },
+          {
+            "expr": "rate_limit_remaining_token",
+            "legendFormat": "Token Remaining"
+          },
+          {
+            "expr": "rate_limit_remaining_standard",
+            "legendFormat": "Standard Remaining"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "fillOpacity": 20
+            },
+            "min": 0
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 7,
+        "title": "Top Rate Limited Endpoints",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "topk(10, sum by (endpoint) (rate_limit_exceeded_endpoint))",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "displayMode": "table",
+              "filterable": true
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {"id": "byName", "options": "Value"},
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Violations"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 16}
+      },
+      {
+        "id": 8,
+        "title": "Bypass Reasons Breakdown",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum by (reason) (rate_limit_bypass_reason)",
+            "legendFormat": "{{reason}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 16}
+      },
+      {
+        "id": 9,
+        "title": "Authentication Success Rate",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "rate_limit_success_sensitive / (rate_limit_success_sensitive + rate_limit_exceeded_sensitive) * 100",
+            "legendFormat": "Success Rate %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 80},
+                {"color": "green", "value": 95}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 16}
+      },
+      {
+        "id": 10,
+        "title": "Rate Limiting Response Time Impact",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{handler=\"rate-limited\"}[5m])) by (le))",
+            "legendFormat": "95th Percentile Response Time"
+          },
+          {
+            "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{handler=\"rate-limited\"}[5m])) by (le))",
+            "legendFormat": "50th Percentile Response Time"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "custom": {
+              "drawStyle": "line",
+              "lineWidth": 2
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+      },
+      {
+        "id": 11,
+        "title": "Rate Limit Configuration Status",
+        "type": "logs",
+        "targets": [
+          {
+            "expr": "{job=\"auth-service\"} |= \"RATE_LIMIT\" | json",
+            "legendFormat": "Rate Limit Logs"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "annotations": {
+      "list": [
+        {
+          "name": "Rate Limit Config Changes",
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": false,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "query": "tags: 'rate-limit-config'",
+          "type": "tags"
+        }
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "service",
+          "type": "query",
+          "query": "label_values(rate_limit_exceeded_sensitive, service)",
+          "current": {
+            "selected": false,
+            "text": "auth-service",
+            "value": "auth-service"
+          },
+          "options": [],
+          "refresh": 1,
+          "includeAll": false,
+          "multi": false
+        },
+        {
+          "name": "category",
+          "type": "custom",
+          "query": "sensitive,token,standard",
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "options": [
+            {"text": "All", "value": "$__all", "selected": true},
+            {"text": "Sensitive", "value": "sensitive", "selected": false},
+            {"text": "Token", "value": "token", "selected": false},
+            {"text": "Standard", "value": "standard", "selected": false}
+          ],
+          "includeAll": true,
+          "multi": true
+        }
+      ]
+    }
+  },
+  "overwrite": false
+}
