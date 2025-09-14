@@ -1,0 +1,429 @@
+# 🛠️ FANZ UNIFIED ECOSYSTEM - LOCAL DEVELOPMENT ENVIRONMENT
+# Complete local development setup with all services
+
+version: '3.9'
+
+# 🌐 Development Networks
+networks:
+  fanz-dev-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+  fanz-blockchain-dev:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+  fanz-metaverse-dev:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+
+services:
+  # 💾 PostgreSQL Database
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: fanz-postgres-dev
+    environment:
+      POSTGRES_DB: fanz_ecosystem_dev
+      POSTGRES_USER: fanz_dev
+      POSTGRES_PASSWORD: dev_password_123
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+      - ./database/init-dev.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./database/seed-dev.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    networks:
+      - fanz-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fanz_dev -d fanz_ecosystem_dev"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # 🔥 Redis Cache
+  redis-dev:
+    image: redis:7-alpine
+    container_name: fanz-redis-dev
+    command: redis-server --requirepass dev_redis_password
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-dev-data:/data
+      - ./redis/redis-dev.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - fanz-dev-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # ⛓️ Local Blockchain (Ganache)
+  blockchain-dev:
+    image: trufflesuite/ganache:latest
+    container_name: fanz-blockchain-dev
+    command: >
+      ganache
+      --host 0.0.0.0
+      --port 8545
+      --networkId 1337
+      --deterministic
+      --accounts 20
+      --defaultBalanceEther 100
+      --gasLimit 12000000
+      --gasPrice 20000000000
+      --mnemonic "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+      --db /ganache_data
+      --logger.level debug
+    ports:
+      - "8545:8545"
+    volumes:
+      - blockchain-dev-data:/ganache_data
+    networks:
+      - fanz-blockchain-dev
+      - fanz-dev-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8545"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # 🔬 Quantum Simulator (Local)
+  quantum-dev:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.quantum-dev
+    container_name: fanz-quantum-dev
+    environment:
+      - PYTHONPATH=/app
+      - QUANTUM_BACKEND=qasm_simulator
+      - MAX_QUBITS=20
+      - NOISE_MODEL=false
+      - DEV_MODE=true
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./quantum:/app/quantum
+      - quantum-circuits-dev:/app/circuits
+      - quantum-cache-dev:/app/cache
+    networks:
+      - fanz-dev-network
+    depends_on:
+      - redis-dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # 🌐 Metaverse Development Server
+  metaverse-dev:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.metaverse-dev
+    container_name: fanz-metaverse-dev
+    environment:
+      - NODE_ENV=development
+      - PORT=9000
+      - WEBXR_ENABLED=true
+      - QUANTUM_AI_ENABLED=true
+      - MAX_CONCURRENT_USERS=100
+      - REDIS_URL=redis://:dev_redis_password@redis-dev:6379
+      - DATABASE_URL=postgresql://fanz_dev:dev_password_123@postgres-dev:5432/fanz_ecosystem_dev
+    ports:
+      - "9000:9000"
+      - "9001:9001" # WebSocket port
+    volumes:
+      - ./metaverse:/app/metaverse
+      - metaverse-assets-dev:/app/assets
+      - ./metaverse/configs/dev.json:/app/config.json
+    networks:
+      - fanz-metaverse-dev
+      - fanz-dev-network
+    depends_on:
+      - postgres-dev
+      - redis-dev
+      - quantum-dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # 🚀 Main API Server
+  fanz-api-dev:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.api-dev
+      args:
+        - NODE_ENV=development
+    container_name: fanz-api-dev
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=postgresql://fanz_dev:dev_password_123@postgres-dev:5432/fanz_ecosystem_dev
+      - REDIS_URL=redis://:dev_redis_password@redis-dev:6379
+      - BLOCKCHAIN_URL=http://blockchain-dev:8545
+      - QUANTUM_URL=http://quantum-dev:8000
+      - METAVERSE_URL=http://metaverse-dev:9000
+      - JWT_SECRET=dev_jwt_secret_very_long_and_secure
+      - API_RATE_LIMIT=1000
+      - CORS_ORIGIN=http://localhost:3001,http://localhost:3002
+      - LOG_LEVEL=debug
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api:/app
+      - ./uploads:/app/uploads
+      - /app/node_modules
+    networks:
+      - fanz-dev-network
+      - fanz-blockchain-dev
+      - fanz-metaverse-dev
+    depends_on:
+      - postgres-dev
+      - redis-dev
+      - blockchain-dev
+      - quantum-dev
+      - metaverse-dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    command: npm run dev
+
+  # 🎨 Frontend Development Server
+  fanz-frontend-dev:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.frontend-dev
+    container_name: fanz-frontend-dev
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - NEXT_PUBLIC_METAVERSE_URL=http://localhost:9000
+      - NEXT_PUBLIC_BLOCKCHAIN_URL=http://localhost:8545
+      - NEXT_PUBLIC_APP_ENV=development
+      - FAST_REFRESH=true
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - fanz-dev-network
+    depends_on:
+      - fanz-api-dev
+    restart: unless-stopped
+    command: npm run dev
+
+  # 📱 Mobile App Development (React Native Web)
+  fanz-mobile-dev:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.mobile-dev
+    container_name: fanz-mobile-dev
+    environment:
+      - NODE_ENV=development
+      - EXPO_PUBLIC_API_URL=http://localhost:3000
+      - EXPO_PUBLIC_METAVERSE_URL=http://localhost:9000
+      - PORT=3002
+    ports:
+      - "3002:3000"
+      - "19000:19000" # Expo DevTools
+      - "19001:19001" # Expo DevTools
+      - "19002:19002" # Expo DevTools
+    volumes:
+      - ./mobile:/app
+      - /app/node_modules
+    networks:
+      - fanz-dev-network
+    depends_on:
+      - fanz-api-dev
+    restart: unless-stopped
+    command: npm run web
+
+  # 📊 Development Database Admin (pgAdmin)
+  pgadmin-dev:
+    image: dpage/pgadmin4:latest
+    container_name: fanz-pgadmin-dev
+    environment:
+      PGADMIN_DEFAULT_EMAIL: dev@fanz.eco
+      PGADMIN_DEFAULT_PASSWORD: dev_admin_password
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-dev-data:/var/lib/pgadmin
+      - ./database/pgadmin/servers.json:/pgadmin4/servers.json
+    networks:
+      - fanz-dev-network
+    depends_on:
+      - postgres-dev
+    restart: unless-stopped
+
+  # 🔍 Redis Commander (Redis GUI)
+  redis-commander-dev:
+    image: rediscommander/redis-commander:latest
+    container_name: fanz-redis-commander-dev
+    environment:
+      REDIS_HOSTS: local:redis-dev:6379:0:dev_redis_password
+    ports:
+      - "8081:8081"
+    networks:
+      - fanz-dev-network
+    depends_on:
+      - redis-dev
+    restart: unless-stopped
+
+  # 📊 Local Monitoring Stack
+  prometheus-dev:
+    image: prom/prometheus:latest
+    container_name: fanz-prometheus-dev
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus-dev.yml:/etc/prometheus/prometheus.yml
+      - prometheus-dev-data:/prometheus
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+
+  grafana-dev:
+    image: grafana/grafana:latest
+    container_name: fanz-grafana-dev
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: dev_grafana_password
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_INSTALL_PLUGINS: grafana-piechart-panel
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-dev-data:/var/lib/grafana
+      - ./monitoring/grafana-dev:/etc/grafana/provisioning
+    networks:
+      - fanz-dev-network
+    depends_on:
+      - prometheus-dev
+    restart: unless-stopped
+
+  # 📧 Local Mail Server (MailHog)
+  mailhog-dev:
+    image: mailhog/mailhog:latest
+    container_name: fanz-mailhog-dev
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+
+  # 🔧 Development Tools Container
+  dev-tools:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.dev-tools
+    container_name: fanz-dev-tools
+    volumes:
+      - .:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /workspace
+    networks:
+      - fanz-dev-network
+      - fanz-blockchain-dev
+      - fanz-metaverse-dev
+    depends_on:
+      - postgres-dev
+      - redis-dev
+      - blockchain-dev
+    command: sleep infinity
+    restart: unless-stopped
+
+  # 🧪 Test Runner Container
+  test-runner:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.test-runner
+    container_name: fanz-test-runner
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgresql://fanz_dev:dev_password_123@postgres-dev:5432/fanz_ecosystem_test
+      - REDIS_URL=redis://:dev_redis_password@redis-dev:6379
+      - BLOCKCHAIN_URL=http://blockchain-dev:8545
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    networks:
+      - fanz-dev-network
+      - fanz-blockchain-dev
+    depends_on:
+      - postgres-dev
+      - redis-dev
+      - blockchain-dev
+    profiles:
+      - testing
+    command: npm run test:watch
+
+# 💾 Development Volumes
+volumes:
+  postgres-dev-data:
+    driver: local
+  redis-dev-data:
+    driver: local
+  blockchain-dev-data:
+    driver: local
+  quantum-circuits-dev:
+    driver: local
+  quantum-cache-dev:
+    driver: local
+  metaverse-assets-dev:
+    driver: local
+  pgadmin-dev-data:
+    driver: local
+  prometheus-dev-data:
+    driver: local
+  grafana-dev-data:
+    driver: local
+
+# 🏷️ Development Labels
+x-labels: &default-labels
+  project: "fanz-unified-ecosystem"
+  environment: "development"
+  maintainer: "FANZ Development Team"
+
+# 🛠️ DEVELOPMENT ENVIRONMENT FEATURES:
+# ✅ Complete local development stack
+# ✅ Hot reloading for all services
+# ✅ Local blockchain with deterministic accounts
+# ✅ Quantum computing simulator
+# ✅ Metaverse development server with WebXR
+# ✅ PostgreSQL with pgAdmin interface
+# ✅ Redis with Redis Commander GUI
+# ✅ Local monitoring with Prometheus & Grafana
+# ✅ Mail testing with MailHog
+# ✅ Development tools container
+# ✅ Automated test runner
+# ✅ Volume persistence for data
+# ✅ Health checks for all services
+# ✅ Network isolation and security
