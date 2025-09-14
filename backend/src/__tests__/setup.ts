@@ -23,9 +23,12 @@ export const mockRedis = {
   get: jest.fn(),
   set: jest.fn(),
   del: jest.fn(),
-  ping: jest.fn().mockResolvedValue('PONG'),
+  ping: jest.fn(),
   quit: jest.fn()
 };
+
+// Setup Redis ping mock
+(mockRedis.ping as any).mockResolvedValue('PONG');
 
 // Mock logger
 export const mockLogger = {
