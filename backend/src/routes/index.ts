@@ -2,6 +2,7 @@ import { Application } from 'express';
 import { Logger } from '../utils/logger';
 import authRoutes from './auth.routes';
 import userRoutes from './user.routes';
+import contentRoutes from './content.routes';
 import { optionalAuth } from '../middleware/auth';
 
 const logger = new Logger('Routes');
@@ -35,6 +36,9 @@ export const setupRoutes = (app: Application) => {
   // User management routes
   app.use(`${apiV1}/users`, userRoutes);
   
+  // Content management routes
+  app.use(`${apiV1}/content`, contentRoutes);
+  
   // Health status endpoint with more details
   app.get(`${apiV1}/status`, (req, res) => {
     res.json({
@@ -53,6 +57,7 @@ export const setupRoutes = (app: Application) => {
       endpoints: {
         auth: `${apiV1}/auth`,
         users: `${apiV1}/users`,
+        content: `${apiV1}/content`,
         test: `${apiV1}/test`,
         health: '/health',
         metrics: '/metrics'
@@ -77,6 +82,7 @@ export const setupRoutes = (app: Application) => {
     routes: [
       `${apiV1}/auth/*`,
       `${apiV1}/users/*`,
+      `${apiV1}/content/*`,
       `${apiV1}/test`,
       `${apiV1}/status`
     ]
