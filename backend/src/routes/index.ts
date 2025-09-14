@@ -3,6 +3,7 @@ import { Logger } from '../utils/logger';
 import authRoutes from './auth.routes';
 import userRoutes from './user.routes';
 import contentRoutes from './content.routes';
+import paymentRoutes from './payment.routes';
 import { optionalAuth } from '../middleware/auth';
 
 const logger = new Logger('Routes');
@@ -39,6 +40,9 @@ export const setupRoutes = (app: Application) => {
   // Content management routes
   app.use(`${apiV1}/content`, contentRoutes);
   
+  // Payment and financial management routes
+  app.use(`${apiV1}/payment`, paymentRoutes);
+  
   // Health status endpoint with more details
   app.get(`${apiV1}/status`, (req, res) => {
     res.json({
@@ -50,14 +54,17 @@ export const setupRoutes = (app: Application) => {
       uptime: process.uptime(),
       features: {
         authentication: true,
+        payments: true,
         websockets: process.env.ENABLE_WEBSOCKETS === 'true',
         blockchain: process.env.ENABLE_BLOCKCHAIN === 'true',
-        aiFeatures: process.env.ENABLE_AI_FEATURES === 'true'
+        aiFeatures: process.env.ENABLE_AI_FEATURES === 'true',
+        financialReports: true
       },
       endpoints: {
         auth: `${apiV1}/auth`,
         users: `${apiV1}/users`,
         content: `${apiV1}/content`,
+        payment: `${apiV1}/payment`,
         test: `${apiV1}/test`,
         health: '/health',
         metrics: '/metrics'
@@ -83,6 +90,7 @@ export const setupRoutes = (app: Application) => {
       `${apiV1}/auth/*`,
       `${apiV1}/users/*`,
       `${apiV1}/content/*`,
+      `${apiV1}/payment/*`,
       `${apiV1}/test`,
       `${apiV1}/status`
     ]
