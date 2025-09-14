@@ -11,6 +11,7 @@ import {
   extractLoggingMetadata,
   maskForLogging 
 } from './keyGenerators';
+import { rateLimitMetrics } from '../monitoring/rateLimitMetrics';
 
 // 🚦 Centralized Rate Limiter Factory for FANZ Auth Service
 // Provides Redis-backed, configurable rate limiting with bypass logic
@@ -57,40 +58,69 @@ const shouldBypassRateLimit = (req: Request): boolean => {
     return false;
   }
   
+  let bypassReason: string | undefined;
+  
   // Check for API key bypass
   const apiKey = req.headers['x-api-key'] as string;
   if (apiKey && rateLimitConfig.bypass.apiKeyAllowlist.includes(apiKey)) {
-    return true;
+    bypassReason = 'api-key';
   }
   
   // Check JWT-based bypass
-  try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-    
-    if (token) {
-      const decoded = jwt.decode(token) as any;
+  if (!bypassReason) {
+    try {
+      const authHeader = req.headers.authorization;
+      const token = authHeader && authHeader.split(' ')[1];
       
-      // Check for trusted audience
-      if (decoded?.aud && rateLimitConfig.bypass.trustedAudiences.includes(decoded.aud)) {
-        return true;
+      if (token) {
+        const decoded = jwt.decode(token) as any;
+        
+        // Check for trusted audience
+        if (decoded?.aud && rateLimitConfig.bypass.trustedAudiences.includes(decoded.aud)) {
+          bypassReason = `jwt-audience-${decoded.aud}`;
+        }
+        
+        // Check for service claim
+        if (!bypassReason && decoded?.svc && decoded.svc === rateLimitConfig.bypass.serviceClaimValue) {
+          bypassReason = `jwt-service-${decoded.svc}`;
+        }
+        
+        // Check for internal service issuer
+        if (!bypassReason && decoded?.iss && rateLimitConfig.bypass.trustedAudiences.includes(decoded.iss)) {
+          bypassReason = `jwt-issuer-${decoded.iss}`;
+        }
       }
-      
-      // Check for service claim
-      if (decoded?.svc && decoded.svc === rateLimitConfig.bypass.serviceClaimValue) {
-        return true;
-      }
-      
-      // Check for internal service issuer
-      if (decoded?.iss && rateLimitConfig.bypass.trustedAudiences.includes(decoded.iss)) {
-        return true;
-      }
+    } catch (error) {
+      // Token parsing failed, continue with normal rate limiting
     }
-  } catch (error) {
-    // Token parsing failed, continue with normal rate limiting
+  }
+  
+  if (bypassReason) {
+    // Record bypass event
+    const decoded = extractBypassUserId(req);
+    rateLimitMetrics.recordRateLimitBypass(
+      req.path,
+      req.ip || 'unknown',
+      bypassReason,
+      decoded?.userId
+    );
+    return true;
   }
   
   return false;
+};
+
+const extractBypassUserId = (req: Request): { userId?: string } | null => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token) {
+      return jwt.decode(token) as any;
+    }
+  } catch (error) {
+    // Ignore
+  }
+  return null;
 };
 
 /**
@@ -101,6 +131,19 @@ const createRateLimitHandler = (category: string, name: string) => {
     const metadata = extractLoggingMetadata(req);
     const resetTime = new Date(Date.now() + (req.rateLimit?.resetTime || 0));
     const retryAfterMs = resetTime.getTime() - Date.now();
+    
+    // Record metrics
+    rateLimitMetrics.recordRateLimitExceeded({
+      timestamp: new Date().toISOString(),
+      category: category as 'sensitive' | 'token' | 'standard',
+      endpoint: name,
+      ip: req.ip || 'unknown',
+      userId: metadata.userId,
+      limit: req.rateLimit?.limit || 0,
+      remaining: req.rateLimit?.remaining || 0,
+      resetTime: resetTime.toISOString(),
+      userAgent: metadata.userAgent
+    });
     
     // Log rate limit exceeded event
     if (rateLimitConfig.logging.enabled) {
