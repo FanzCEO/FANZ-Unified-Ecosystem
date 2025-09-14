@@ -5,6 +5,20 @@ import { Pool } from 'pg';
 import redis from 'redis';
 import { z } from 'zod';
 
+// Rate limiting imports
+import { rateLimitConfig } from './config/rateLimitConfig';
+import {
+  initializeRateLimitStore,
+  createSensitiveLimiterIP,
+  createSensitiveLimiterAccount,
+  createSensitiveLimiterIPLong,
+  createTokenLimiterIP,
+  createTokenLimiterUser,
+  createTokenLimiterUserLong,
+  createStandardLimiterIP,
+  applyMultipleRateLimiters
+} from './middleware/rateLimit';
+
 // 🔐 FANZ Unified Authentication Service
 // Single Sign-On (SSO) across all 13 consolidated platforms
 
@@ -82,6 +96,9 @@ interface UserSession {
 }
 
 // 🔧 Middleware
+// Trust proxy for accurate IP addresses behind gateway/load balancer
+app.set('trust proxy', true);
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -96,7 +113,13 @@ app.get('/health', (req, res) => {
 });
 
 // 🔐 User Registration
-app.post('/api/auth/register', async (req, res) => {
+app.post('/api/auth/register', 
+  applyMultipleRateLimiters([
+    createSensitiveLimiterIP('register'),
+    createSensitiveLimiterAccount('register'),
+    createSensitiveLimiterIPLong('register')
+  ]),
+  async (req, res) => {
   try {
     const validatedData = registerSchema.parse(req.body);
     const { username, email, password, role, platform } = validatedData;
@@ -220,7 +243,13 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // 🔑 User Login
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', 
+  applyMultipleRateLimiters([
+    createSensitiveLimiterIP('login'),
+    createSensitiveLimiterAccount('login'),
+    createSensitiveLimiterIPLong('login')
+  ]),
+  async (req, res) => {
   try {
     const validatedData = loginSchema.parse(req.body);
     const { email, password, platform } = validatedData;
@@ -346,7 +375,13 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // 🔄 Token Refresh
-app.post('/api/auth/refresh', async (req, res) => {
+app.post('/api/auth/refresh', 
+  applyMultipleRateLimiters([
+    createTokenLimiterIP('refresh'),
+    createTokenLimiterUser('refresh'),
+    createTokenLimiterUserLong('refresh')
+  ]),
+  async (req, res) => {
   try {
     const { refreshToken } = req.body;
 
@@ -412,8 +447,10 @@ app.post('/api/auth/refresh', async (req, res) => {
   }
 });
 
-// 🚪 Logout
-app.post('/api/auth/logout', async (req, res) => {
+// 💪 Logout
+app.post('/api/auth/logout', 
+  createStandardLimiterIP('logout'),
+  async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
@@ -443,7 +480,9 @@ app.post('/api/auth/logout', async (req, res) => {
 });
 
 // 🎫 Platform Access Management
-app.post('/api/auth/platform-access', async (req, res) => {
+app.post('/api/auth/platform-access', 
+  createStandardLimiterIP('platform-access'),
+  async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
@@ -522,7 +561,9 @@ app.post('/api/auth/platform-access', async (req, res) => {
 });
 
 // 👤 User Profile
-app.get('/api/user/profile', async (req, res) => {
+app.get('/api/user/profile', 
+  createStandardLimiterIP('profile'),
+  async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
@@ -569,7 +610,13 @@ app.get('/api/user/profile', async (req, res) => {
 });
 
 // 🔒 Token Validation Endpoint (for other services)
-app.post('/api/auth/validate', async (req, res) => {
+app.post('/api/auth/validate', 
+  applyMultipleRateLimiters([
+    createTokenLimiterIP('validate'),
+    createTokenLimiterUser('validate'),
+    createTokenLimiterUserLong('validate')
+  ]),
+  async (req, res) => {
   try {
     const { token } = req.body;
 
@@ -612,7 +659,7 @@ app.post('/api/auth/validate', async (req, res) => {
   }
 });
 
-// 🚀 Initialize Services
+// 💥 Initialize Services
 const startAuthService = async () => {
   try {
     // Test database connection
@@ -621,7 +668,11 @@ const startAuthService = async () => {
 
     // Connect to Redis
     await redisClient.connect();
-    console.log('📦 Redis connected successfully');
+    console.log('💶 Redis connected successfully');
+    
+    // Initialize rate limiting with Redis store
+    initializeRateLimitStore(redisClient);
+    console.log('🚦 Rate limiting initialized');
 
     // Start server
     app.listen(AUTH_CONFIG.port, () => {
