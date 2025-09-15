@@ -889,9 +889,9 @@ export class PaymentSecurityService extends EventEmitter {
       timezone: metadata.timezone || 'unknown',
       language: metadata.language || 'en',
       plugins: metadata.plugins || [],
-      trustedDevice: Math.random() > 0.3, // Mock trust calculation
+      trustedDevice: crypto.randomInt(0, 100) > 30, // Mock trust calculation
       firstSeen: new Date(),
-      riskScore: Math.floor(Math.random() * 30) // Mock risk score 0-30
+      riskScore: crypto.randomInt(0, 30) // Mock risk score 0-30
     };
   }
 
@@ -907,7 +907,7 @@ export class PaymentSecurityService extends EventEmitter {
     }
 
     // Mock velocity check - in production would check actual transaction history
-    const mockCount = Math.floor(Math.random() * 15);
+    const mockCount = crypto.randomInt(0, 15);
     const mockAmount = amount ? amount * mockCount : 0;
 
     return {
@@ -927,16 +927,16 @@ export class PaymentSecurityService extends EventEmitter {
       city: 'San Francisco',
       latitude: 37.7749,
       longitude: -122.4194,
-      vpnDetected: Math.random() > 0.9,
-      proxyDetected: Math.random() > 0.95,
-      riskScore: Math.floor(Math.random() * 20)
+      vpnDetected: crypto.randomInt(0, 100) > 90,
+      proxyDetected: crypto.randomInt(0, 100) > 95,
+      riskScore: crypto.randomInt(0, 20)
     };
   }
 
   private async analyzeBehavior(userId: string, amount: number, merchantCategory: string): Promise<{ score: number; signal: FraudSignal }> {
     // Mock behavioral analysis
-    const unusualAmount = Math.random() > 0.8;
-    const unusualMerchant = Math.random() > 0.9;
+    const unusualAmount = crypto.randomInt(0, 100) > 80;
+    const unusualMerchant = crypto.randomInt(0, 100) > 90;
 
     if (unusualAmount && unusualMerchant) {
       return {
@@ -1006,7 +1006,7 @@ export class PaymentSecurityService extends EventEmitter {
 
   private async performSanctionsCheck(firstName: string, lastName: string, dateOfBirth: Date): Promise<SanctionsCheck> {
     // Mock sanctions check
-    const hasMatch = Math.random() > 0.98; // 2% chance of match for testing
+    const hasMatch = crypto.randomInt(0, 100) > 98; // 2% chance of match for testing
 
     return {
       performed: true,
@@ -1024,7 +1024,7 @@ export class PaymentSecurityService extends EventEmitter {
 
   private async performPEPCheck(firstName: string, lastName: string): Promise<PEPCheck> {
     // Mock PEP check
-    const hasMatch = Math.random() > 0.99; // 1% chance of match for testing
+    const hasMatch = crypto.randomInt(0, 100) > 99; // 1% chance of match for testing
 
     return {
       performed: true,
@@ -1060,13 +1060,13 @@ export class PaymentSecurityService extends EventEmitter {
 
   private async getUserDailyVolume(userId: string): Promise<number> {
     // Mock daily volume calculation
-    return Math.floor(Math.random() * 100000);
+    return crypto.randomInt(0, 100000);
   }
 
   private async getUserRiskProfile(userId: string): Promise<{ score: number; factors: string[] }> {
     // Mock risk profile
     return {
-      score: Math.floor(Math.random() * 100),
+      score: crypto.randomInt(0, 100),
       factors: ['high_volume_user', 'multiple_payment_methods', 'frequent_international']
     };
   }

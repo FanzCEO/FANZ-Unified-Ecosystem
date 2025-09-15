@@ -1467,15 +1467,15 @@ export class BlockchainCreatorTokenFoundation extends EventEmitter {
 
   private async calculateRarity(attributes: NFTAttribute[], collection: NFTCollection): Promise<RarityRank> {
     // Mock rarity calculation
-    const rarityScore = Math.random() * 1000;
-    const rank = Math.floor(Math.random() * collection.totalSupply) + 1;
+    const rarityScore = crypto.randomInt(0, 1000);
+    const rank = crypto.randomInt(1, collection.totalSupply + 1);
     const percentile = (rank / collection.totalSupply) * 100;
 
     const traits: TraitRarity[] = attributes.map(attr => ({
       trait_type: attr.trait_type,
       value: attr.value,
-      count: Math.floor(Math.random() * 100) + 1,
-      rarity: Math.random() * 100
+      count: crypto.randomInt(1, 101),
+      rarity: crypto.randomInt(0, 100)
     }));
 
     return {
@@ -1499,7 +1499,7 @@ export class BlockchainCreatorTokenFoundation extends EventEmitter {
     for (let i = 29; i >= 0; i--) {
       history.push({
         timestamp: new Date(now.getTime() - i * 24 * 60 * 60 * 1000),
-        price: Math.random() * 100 + 50
+        price: crypto.randomInt(50, 150)
       });
     }
     return history;
@@ -1511,7 +1511,7 @@ export class BlockchainCreatorTokenFoundation extends EventEmitter {
     for (let i = 29; i >= 0; i--) {
       history.push({
         timestamp: new Date(now.getTime() - i * 24 * 60 * 60 * 1000),
-        volume: Math.random() * 10000 + 1000
+        volume: crypto.randomInt(1000, 11000)
       });
     }
     return history;
@@ -1519,7 +1519,7 @@ export class BlockchainCreatorTokenFoundation extends EventEmitter {
 
   private generateMockHolderAnalytics(token: CreatorToken): any {
     return {
-      totalHolders: Math.floor(Math.random() * 10000) + 1000,
+      totalHolders: crypto.randomInt(1000, 11000),
       topHolders: [
         { address: '0x123...abc', balance: BigInt(1000000), percentage: 10.5 },
         { address: '0x456...def', balance: BigInt(800000), percentage: 8.2 },
@@ -1574,7 +1574,7 @@ export class BlockchainCreatorTokenFoundation extends EventEmitter {
 
   private generateMockOwnerAnalytics(collectionId: string): any {
     return {
-      uniqueOwners: Math.floor(Math.random() * 1000) + 500,
+      uniqueOwners: crypto.randomInt(500, 1500),
       whaleHoldings: [
         { owner: '0x123...abc', tokensOwned: 50, percentage: 5.0 },
         { owner: '0x456...def', tokensOwned: 30, percentage: 3.0 }
