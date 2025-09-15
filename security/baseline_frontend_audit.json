@@ -1,0 +1,117 @@
+npm warn config production Use `--omit=dev` instead.
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@metamask/sdk": {
+      "name": "@metamask/sdk",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@metamask/sdk-communication-layer",
+        {
+          "source": 1107594,
+          "name": "@metamask/sdk",
+          "dependency": "@metamask/sdk",
+          "title": "MetaMask SDK indirectly exposed via malicious debug@4.4.2 dependency",
+          "url": "https://github.com/advisories/GHSA-qj3p-xc97-xw74",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-506"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.16.0 <=0.33.0"
+        }
+      ],
+      "effects": [
+        "@wagmi/connectors"
+      ],
+      "range": "0.16.0 - 0.33.0",
+      "nodes": [
+        "node_modules/@wagmi/connectors/node_modules/@metamask/sdk"
+      ],
+      "fixAvailable": true
+    },
+    "@metamask/sdk-communication-layer": {
+      "name": "@metamask/sdk-communication-layer",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1107592,
+          "name": "@metamask/sdk-communication-layer",
+          "dependency": "@metamask/sdk-communication-layer",
+          "title": "MetaMask SDK indirectly exposed via malicious debug@4.4.2 dependency",
+          "url": "https://github.com/advisories/GHSA-qj3p-xc97-xw74",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-506"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.16.0 <=0.33.0"
+        }
+      ],
+      "effects": [
+        "@metamask/sdk"
+      ],
+      "range": "0.16.0 - 0.33.0",
+      "nodes": [
+        "node_modules/@wagmi/connectors/node_modules/@metamask/sdk-communication-layer"
+      ],
+      "fixAvailable": true
+    },
+    "@wagmi/connectors": {
+      "name": "@wagmi/connectors",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@metamask/sdk"
+      ],
+      "effects": [
+        "wagmi"
+      ],
+      "range": "<=0.0.0-wc-links-20240926225814 || 4.1.27 - 4.3.10 || >=5.0.1",
+      "nodes": [
+        "node_modules/@wagmi/connectors"
+      ],
+      "fixAvailable": true
+    },
+    "wagmi": {
+      "name": "wagmi",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@wagmi/connectors"
+      ],
+      "effects": [],
+      "range": "<=0.0.0-wc-links-20240926225814 || 2.5.21 - 2.7.1 || 2.8.1 - 2.8.8 || >=2.9.1",
+      "nodes": [
+        "node_modules/wagmi"
+      ],
+      "fixAvailable": true
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0,
+      "total": 4
+    },
+    "dependencies": {
+      "prod": 664,
+      "dev": 913,
+      "optional": 31,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 1578
+    }
+  }
+}

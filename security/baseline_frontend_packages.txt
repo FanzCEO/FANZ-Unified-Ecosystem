@@ -1,0 +1,7 @@
+fanz-frontend@1.0.0 /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/frontend
+├─┬ @rainbow-me/rainbowkit@2.2.8
+│ └── wagmi@2.16.9 deduped
+├── react-mentions@3.0.2
+└─┬ wagmi@2.16.9
+  └── @wagmi/connectors@5.9.9
+

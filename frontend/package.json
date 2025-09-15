@@ -144,5 +144,13 @@
     "adult-entertainment"
   ],
   "author": "FANZ Development Team",
-  "license": "PROPRIETARY"
+  "license": "PROPRIETARY",
+  "overrides": {
+    "react-mentions": {
+      "react": "$react"
+    },
+    "@metamask/sdk": "^0.33.1",
+    "@metamask/sdk-communication-layer": "^0.33.1",
+    "debug": "^4.4.3"
+  }
 }
