@@ -280,12 +280,61 @@ npm run security:compliance
 
 ---
 
+## 🚨 **Vulnerability Response SLAs**
+
+### **Severity Classification**
+| Severity | Description | Response Time | Fix Time | Examples |
+|----------|-------------|---------------|----------|----------|
+| **Critical** | Immediate threat to platform or data | 2 hours | 24 hours | RCE, SQLi, Auth bypass |
+| **High** | Significant security risk | 8 hours | 72 hours | XSS, CSRF, Information disclosure |
+| **Medium** | Moderate security concern | 2 business days | 14 days | Configuration issues, weak crypto |
+| **Low** | Minor security improvement | 5 business days | 30 days | Information leakage, best practices |
+
+### **Response Process**
+1. **Detection**: Automated scanning + security research + responsible disclosure
+2. **Triage**: Security team assessment within SLA response time
+3. **Remediation**: Development team fixes within SLA fix time  
+4. **Verification**: Security team validates fix
+5. **Disclosure**: Coordinated public disclosure after 90 days or fix deployment
+
+## 🛡️ **Responsible Disclosure Program**
+
+### **Security Contact**
+- **Email**: security@fanz.com
+- **GPG Key**: [Available at keybase.io/fanzsecurity](https://keybase.io/fanzsecurity)
+- **Bug Bounty**: HackerOne program (fanz.com/security/bounty)
+
+### **Scope**
+**In Scope:**
+- All *.fanz.com domains and subdomains
+- Mobile applications (iOS/Android)
+- API endpoints and webhooks
+- Infrastructure and cloud services
+- Source code repositories (with authorization)
+
+**Out of Scope:**
+- Social engineering attacks
+- Physical security testing
+- Third-party services (report directly to vendor)
+- DoS/DDoS attacks
+- Spam or content violations
+
+### **Rewards**
+| Severity | Reward Range |
+|----------|---------------|
+| **Critical** | $5,000 - $25,000 |
+| **High** | $1,000 - $5,000 |
+| **Medium** | $250 - $1,000 |
+| **Low** | $50 - $250 |
+
+*Rewards are at FANZ's discretion based on impact, quality of report, and cooperation.*
+
 ## 📞 Security Incident Response
 
 ### **Emergency Contacts**
-- **Security Team**: security@myfanz.network
-- **Emergency Line**: +1-XXX-XXX-XXXX
-- **Incident Report**: incidents@myfanz.network
+- **Security Team**: security@fanz.com
+- **Emergency Line**: +1-XXX-XXX-XXXX  
+- **Incident Report**: incidents@fanz.com
 
 ### **Response Procedures**
 1. **Detection**: Automated threat identification
