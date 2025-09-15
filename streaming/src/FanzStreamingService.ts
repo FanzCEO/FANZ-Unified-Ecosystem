@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { createHash } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 
 // 🎥 FANZ Real-time Streaming Service
 // Enterprise-grade live streaming infrastructure for creators
@@ -320,7 +320,7 @@ export class FanzStreamingService extends EventEmitter {
       }
     }
 
-    const viewerId = userId || `anon_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const viewerId = userId || `anon_${Date.now()}_${randomBytes(6).toString('hex')}`;
     
     const viewer: Viewer = {
       id: viewerId,
