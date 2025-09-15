@@ -71,8 +71,11 @@
     "twilio": "^4.19.3",
     "nodemailer": "^6.9.7",
     "openai": "^4.20.1",
-    "stripe": "^14.7.0",
     "node-cron": "^3.0.3",
+    "square": "^30.0.0",
+    "braintree": "^3.16.0",
+    "@adyen/api-library": "^16.1.0",
+    "coinbase-commerce-node": "^1.0.4",
     "@sentry/node": "^7.84.0"
   },
   "devDependencies": {
