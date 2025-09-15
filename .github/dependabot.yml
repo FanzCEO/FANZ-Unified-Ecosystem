@@ -1,0 +1,255 @@
+# 🤖 FANZ Unified Ecosystem - Dependabot Configuration
+# Automated dependency updates with security prioritization
+
+version: 2
+
+updates:
+  # Frontend React/TypeScript Dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "daily"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@platform-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(frontend)"
+      include: "scope"
+    groups:
+      react:
+        patterns:
+          - "react*"
+          - "@types/react*"
+      typescript:
+        patterns:
+          - "typescript"
+          - "@types/*"
+      testing:
+        patterns:
+          - "jest*"
+          - "@testing-library/*"
+          - "vitest*"
+      security:
+        patterns:
+          - "*"
+        update-types:
+          - "security"
+    ignore:
+      # Ignore major version updates for stable dependencies
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+
+  # Backend Node.js/Express Dependencies  
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "daily"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@backend-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(backend)"
+      include: "scope"
+    groups:
+      express:
+        patterns:
+          - "express*"
+          - "@types/express*"
+      database:
+        patterns:
+          - "prisma*"
+          - "postgresql*"
+          - "redis*"
+      security:
+        patterns:
+          - "helmet*"
+          - "cors*"
+          - "bcrypt*"
+          - "jsonwebtoken*"
+      testing:
+        patterns:
+          - "jest*"
+          - "supertest*"
+          - "@types/jest*"
+
+  # Authentication Service Dependencies
+  - package-ecosystem: "npm"
+    directory: "/auth-service"
+    schedule:
+      interval: "daily" 
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@secops-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(auth)"
+      include: "scope"
+
+  # Mobile React Native Dependencies
+  - package-ecosystem: "npm"
+    directory: "/mobile"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@mobile-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(mobile)"
+      include: "scope"
+
+  # Blockchain/Web3 Dependencies
+  - package-ecosystem: "npm"
+    directory: "/blockchain"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@blockchain-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(blockchain)"
+      include: "scope"
+
+  # Root Package Dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(root)"
+      include: "scope"
+
+  # Docker Dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "thursday"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 3
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@devops-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(docker)"
+      include: "scope"
+
+  # GitHub Actions Dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 3
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@devops-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(actions)"
+      include: "scope"
+
+  # Terraform Infrastructure Dependencies
+  - package-ecosystem: "terraform"
+    directory: "/infrastructure"
+    schedule:
+      interval: "monthly"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 3
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@devops-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(terraform)"
+      include: "scope"
+
+  # Go Module Dependencies (if any Go services)
+  - package-ecosystem: "gomod"
+    directory: "/services/go"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 3
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@backend-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(go)"
+      include: "scope"
+
+  # Python Dependencies (if any Python services)
+  - package-ecosystem: "pip"
+    directory: "/services/python"
+    schedule:
+      interval: "weekly" 
+      day: "sunday"
+      time: "04:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 3
+    target-branch: "develop"
+    reviewers:
+      - "@FanzCEO"
+      - "@ai-team"
+    assignees:
+      - "@FanzCEO"
+    commit-message:
+      prefix: "deps(python)"
+      include: "scope"
