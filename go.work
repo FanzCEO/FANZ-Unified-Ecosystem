@@ -1,0 +1,46 @@
+go 1.21
+
+// 🚀 FANZ Unified Ecosystem - Go Workspace
+// Manages all Go-based microservices and components
+
+use (
+	// 🎯 FanzOS Core Microservices (Go-based - High Performance)
+	./microservices/api-gateway
+	./microservices/user-service
+	./microservices/content-service
+	./microservices/payment-service
+	./microservices/fanzfluence-service
+	./microservices/fanzversity-service
+	./microservices/fanzmetaverse-service
+	./microservices/gamification-service
+	./microservices/merchandise-service
+	./microservices/monitoring-service
+	./microservices/security-service
+	./microservices/storage-service
+	./microservices/explore-service
+
+	// 💰 FanzFinance OS Services (Go components)
+	./fanzfinance-os/core-ledger-service
+	./fanzfinance-os/transaction-processing-engine
+
+	// 🔧 Specialized Systems (Go components)
+	./specialized-systems/mediacore
+	./specialized-systems/chatsphere
+
+	// 🛡️ Security Services
+	./security/fanzshield-go
+
+	// 🤖 AI Services (Go components)
+	./ai/recommendation-engine
+	./ai/content-analysis
+
+	// ⚙️ Infrastructure Tools
+	./tools/migration-tool
+	./tools/load-tester
+	./tools/cluster-manager
+
+	// 🧪 Testing Tools
+	./tests/integration-tests
+	./tests/load-tests
+	./tests/benchmark-suite
+)

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "build/**",
+        "lib/**",
+        "*.tgz"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "inputs": ["$TURBO_DEFAULT$", "src/**/*.tsx", "src/**/*.ts", "__tests__/**/*.ts", "__tests__/**/*.tsx"],
+      "outputs": ["coverage/**"]
+    },
+    "test:unit": {
+      "dependsOn": ["build"],
+      "inputs": ["$TURBO_DEFAULT$", "src/**/*.tsx", "src/**/*.ts", "__tests__/**/*.ts", "__tests__/**/*.tsx"],
+      "outputs": ["coverage/**"]
+    },
+    "test:integration": {
+      "dependsOn": ["build"],
+      "inputs": ["$TURBO_DEFAULT$", "src/**/*.tsx", "src/**/*.ts", "__tests__/**/*.ts", "__tests__/**/*.tsx"],
+      "outputs": ["coverage/**"]
+    },
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".eslintrc*", "eslint.config.*"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".eslintrc*", "eslint.config.*"]
+    },
+    "format": {
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$", ".prettierrc*", "prettier.config.*"]
+    },
+    "format:check": {
+      "inputs": ["$TURBO_DEFAULT$", ".prettierrc*", "prettier.config.*"]
+    },
+    "type-check": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "tsconfig*.json", "src/**/*.ts", "src/**/*.tsx"],
+      "outputs": ["*.tsbuildinfo"]
+    },
+    "clean": {
+      "cache": false
+    },
+    "docker:build": {
+      "dependsOn": ["build"],
+      "inputs": ["$TURBO_DEFAULT$", "Dockerfile*", ".dockerignore"],
+      "outputs": []
+    },
+    "deploy": {
+      "dependsOn": ["build", "test", "lint"],
+      "cache": false
+    }
+  },
+  "globalDependencies": ["**/.env*"],
+  "globalEnv": [
+    "NODE_ENV",
+    "DATABASE_URL",
+    "REDIS_URL", 
+    "JWT_SECRET",
+    "OPENAI_API_KEY",
+    "CDN_URL",
+    "API_GATEWAY_URL"
+  ],
+  "pipeline": {
+    "//#build": {
+      "dependsOn": ["^build"]
+    },
+    "//#dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "//#test": {
+      "dependsOn": ["build"]
+    },
+    "//#lint": {
+      "dependsOn": ["^build"]
+    }
+  }
+}
