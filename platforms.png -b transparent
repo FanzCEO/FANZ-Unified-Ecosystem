@@ -1,0 +1,35 @@
+[1mdiff --git a/backend/scripts/quick-setup.sh b/backend/scripts/quick-setup.sh[m
+[1mindex 459d51f..e2e895c 100755[m
+[1m--- a/backend/scripts/quick-setup.sh[m
+[1m+++ b/backend/scripts/quick-setup.sh[m
+[36m@@ -176,6 +176,30 @@[m [mBRAINTREE_PRIVATE_KEY=your-private-key[m
+ COINBASE_COMMERCE_API_KEY=your-coinbase-api-key[m
+ COINBASE_WEBHOOK_SECRET=your-webhook-secret[m
+ [m
+[32m+[m[32m# Adult-Friendly Payment Processors[m
+[32m+[m
+[32m+[m[32m# CCBill (Primary adult payment processor)[m
+[32m+[m[32mCCBILL_CLIENT_ACCNUM=your-ccbill-client-account[m
+[32m+[m[32mCCBILL_CLIENT_SUBACC=your-ccbill-subaccount[m
+[32m+[m[32mCCBILL_FLEX_ID=your-ccbill-flex-id[m
+[32m+[m[32mCCBILL_SALT=your-ccbill-salt[m
+[32m+[m[32mCCBILL_API_USERNAME=your-ccbill-api-username[m
+[32m+[m[32mCCBILL_API_PASSWORD=your-ccbill-api-password[m
+[32m+[m[32mCCBILL_ENVIRONMENT=sandbox[m
+[32m+[m
+[32m+[m[32m# Paxum (Creator payouts)[m
+[32m+[m[32mPAXUM_API_KEY=your-paxum-api-key[m
+[32m+[m[32mPAXUM_API_SECRET=your-paxum-api-secret[m
+[32m+[m[32mPAXUM_COMPANY_ID=your-paxum-company-id[m
+[32m+[m[32mPAXUM_ENVIRONMENT=sandbox[m
+[32m+[m
+[32m+[m[32m# Segpay (Alternative adult processor)[m
+[32m+[m[32mSEGPAY_PACKAGE_ID=your-segpay-package-id[m
+[32m+[m[32mSEGPAY_BILLERID=your-segpay-biller-id[m
+[32m+[m[32mSEGPAY_USERNAME=your-segpay-username[m
+[32m+[m[32mSEGPAY_PASSWORD=your-segpay-password[m
+[32m+[m[32mSEGPAY_ENVIRONMENT=sandbox[m
+[32m+[m
+ # Monitoring and Health Checks[m
+ PROMETHEUS_ENABLED=true[m
+ METRICS_PORT=$PROMETHEUS_PORT[m
