@@ -8,7 +8,7 @@ import {
   PayoutResponse,
   WebhookEvent
 } from './interfaces/IPaymentProcessor';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID, randomInt } from 'crypto';
 
 export class MockProcessor implements IPaymentProcessor {
   private transactions: Map<string, any> = new Map();
@@ -32,8 +32,8 @@ export class MockProcessor implements IPaymentProcessor {
     // Simulate processing delay
     await this.simulateDelay();
 
-    const processorTransactionId = `mock_txn_${uuidv4()}`;
-    const shouldFail = Math.random() * 100 < this.failureRate;
+    const processorTransactionId = `mock_txn_${randomUUID()}`;
+    const shouldFail = randomInt(0, 100) < this.failureRate;
 
     // Simulate different failure scenarios
     if (shouldFail) {
@@ -44,7 +44,7 @@ export class MockProcessor implements IPaymentProcessor {
         { code: 'PROCESSING_ERROR', message: 'Processing error occurred' }
       ];
       
-      const failure = failures[Math.floor(Math.random() * failures.length)];
+      const failure = failures[randomInt(0, failures.length)];
       
       return {
         success: false,
@@ -78,7 +78,7 @@ export class MockProcessor implements IPaymentProcessor {
 
     return {
       success: true,
-      transactionId: request.idempotencyKey || uuidv4(),
+      transactionId: request.idempotencyKey || randomUUID(),
       processorTransactionId,
       status: 'completed',
       amount: request.amount,
@@ -108,10 +108,10 @@ export class MockProcessor implements IPaymentProcessor {
     }
 
     const refundAmount = request.amount || transaction.amount;
-    const processorRefundId = `mock_refund_${uuidv4()}`;
+    const processorRefundId = `mock_refund_${randomUUID()}`;
 
     // Simulate occasional refund failures
-    const shouldFail = Math.random() * 100 < (this.failureRate / 2);
+    const shouldFail = randomInt(0, 100) < (this.failureRate / 2);
     
     if (shouldFail) {
       return {
@@ -146,8 +146,8 @@ export class MockProcessor implements IPaymentProcessor {
   async processPayout(request: PayoutRequest): Promise<PayoutResponse> {
     await this.simulateDelay();
 
-    const processorPayoutId = `mock_payout_${uuidv4()}`;
-    const shouldFail = Math.random() * 100 < (this.failureRate / 3);
+    const processorPayoutId = `mock_payout_${randomUUID()}`;
+    const shouldFail = randomInt(0, 100) < (this.failureRate / 3);
 
     if (shouldFail) {
       return {
@@ -163,11 +163,11 @@ export class MockProcessor implements IPaymentProcessor {
     
     // Estimate arrival time (1-3 business days for bank transfers)
     const estimatedArrival = new Date();
-    estimatedArrival.setDate(estimatedArrival.getDate() + Math.floor(Math.random() * 3) + 1);
+    estimatedArrival.setDate(estimatedArrival.getDate() + randomInt(1, 4));
 
     return {
       success: true,
-      payoutId: uuidv4(),
+      payoutId: randomUUID(),
       processorPayoutId,
       status: 'processing',
       amount: request.amount,
@@ -220,7 +220,7 @@ export class MockProcessor implements IPaymentProcessor {
     try {
       const data = JSON.parse(payload);
       return {
-        id: data.id || uuidv4(),
+        id: data.id || randomUUID(),
         type: data.type || 'payment.completed',
         data: data.data || {},
         timestamp: new Date(data.timestamp || Date.now())
@@ -317,7 +317,7 @@ export class MockProcessor implements IPaymentProcessor {
   // Simulate webhook events for testing
   simulateWebhookEvent(type: string, transactionId: string, data?: Record<string, any>): WebhookEvent {
     return {
-      id: `mock_event_${uuidv4()}`,
+      id: `mock_event_${randomUUID()}`,
       type,
       data: {
         transactionId,

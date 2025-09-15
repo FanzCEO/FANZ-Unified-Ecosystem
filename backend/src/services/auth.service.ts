@@ -392,12 +392,14 @@ export class AuthService {
 
   // Generate unique session ID
   private generateSessionId(): string {
-    return `sess_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+    const { randomUUID } = require('crypto');
+    return `sess_${Date.now()}_${randomUUID().replace(/-/g, '').substring(0, 13)}`;
   }
 
   // Generate unique token family
   private generateTokenFamily(): string {
-    return `fam_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+    const { randomUUID } = require('crypto');
+    return `fam_${Date.now()}_${randomUUID().replace(/-/g, '').substring(0, 13)}`;
   }
 
   // Hash token for storage (security)

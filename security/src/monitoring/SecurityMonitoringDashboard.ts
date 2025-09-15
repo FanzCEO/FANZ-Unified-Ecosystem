@@ -1019,7 +1019,8 @@ export class SecurityMonitoringDashboard extends EventEmitter {
 
   private async detectDDoS(event: SecurityEvent): Promise<ThreatDetection | null> {
     // Mock DDoS detection
-    if (Math.random() > 0.99) { // 1% chance for demo
+    const { randomInt } = require('crypto');
+    if (randomInt(0, 100) > 99) { // 1% chance for demo
       return {
         id: uuidv4(),
         type: ThreatType.DDoS,
@@ -1223,7 +1224,8 @@ export class SecurityMonitoringDashboard extends EventEmitter {
 
   private calculateFalsePositiveProb(event: SecurityEvent): number {
     // Mock false positive probability
-    return Math.random() * 0.1; // 0-10% chance
+    const { randomInt } = require('crypto');
+    return randomInt(0, 10) / 100; // 0-10% chance
   }
 
   private async enrichGeolocation(ipAddress: string): Promise<GeoLocation> {
@@ -1241,7 +1243,8 @@ export class SecurityMonitoringDashboard extends EventEmitter {
 
   private async detectAnomalies(event: SecurityEvent): Promise<Array<{type: string; description: string; riskScore: number}>> {
     // Mock anomaly detection
-    if (Math.random() > 0.95) { // 5% chance
+    const { randomInt } = require('crypto');
+    if (randomInt(0, 100) > 95) { // 5% chance
       return [{
         type: 'unusual_login_time',
         description: 'Login attempt outside normal hours',
@@ -1450,30 +1453,33 @@ export class SecurityMonitoringDashboard extends EventEmitter {
   }
 
   private calculatePerformanceMetrics(): PerformanceMetrics {
+    const { randomInt } = require('crypto');
     return {
-      eventIngestionRate: Math.floor(Math.random() * 1000) + 500, // Mock 500-1500 events/sec
-      alertProcessingTime: Math.floor(Math.random() * 100) + 50, // Mock 50-150ms
-      dashboardLoadTime: Math.floor(Math.random() * 500) + 200, // Mock 200-700ms
-      systemHealth: Math.floor(Math.random() * 10) + 90 // Mock 90-100%
+      eventIngestionRate: randomInt(500, 1500), // Mock 500-1500 events/sec
+      alertProcessingTime: randomInt(50, 150), // Mock 50-150ms
+      dashboardLoadTime: randomInt(200, 700), // Mock 200-700ms
+      systemHealth: randomInt(90, 100) // Mock 90-100%
     };
   }
 
   private calculateComplianceMetrics(): ComplianceMetrics {
+    const { randomInt } = require('crypto');
     return {
-      overallScore: Math.floor(Math.random() * 20) + 80, // Mock 80-100%
-      violations: Math.floor(Math.random() * 10),
-      remediated: Math.floor(Math.random() * 20),
-      pending: Math.floor(Math.random() * 5),
+      overallScore: randomInt(80, 100), // Mock 80-100%
+      violations: randomInt(0, 10),
+      remediated: randomInt(0, 20),
+      pending: randomInt(0, 5),
       riskLevel: 'medium'
     };
   }
 
   private calculateUserSecurityMetrics(): UserSecurityMetrics {
+    const { randomInt } = require('crypto');
     return {
-      mfaAdoptionRate: Math.floor(Math.random() * 30) + 70, // Mock 70-100%
-      suspiciousLogins: Math.floor(Math.random() * 50),
-      accountTakeovers: Math.floor(Math.random() * 5),
-      passwordStrengthScore: Math.floor(Math.random() * 20) + 80 // Mock 80-100%
+      mfaAdoptionRate: randomInt(70, 100), // Mock 70-100%
+      suspiciousLogins: randomInt(0, 50),
+      accountTakeovers: randomInt(0, 5),
+      passwordStrengthScore: randomInt(80, 100) // Mock 80-100%
     };
   }
 
@@ -1483,11 +1489,12 @@ export class SecurityMonitoringDashboard extends EventEmitter {
 
     platforms.forEach(platform => {
       const platformEvents = events.filter(e => e.platform === platform);
+      const { randomInt } = require('crypto');
       metrics[platform] = {
         events: platformEvents.length,
         alerts: Math.floor(platformEvents.length * 0.1), // Mock 10% alert rate
-        uptime: Math.floor(Math.random() * 5) + 95, // Mock 95-100% uptime
-        securityScore: Math.floor(Math.random() * 20) + 80 // Mock 80-100%
+        uptime: randomInt(95, 100), // Mock 95-100% uptime
+        securityScore: randomInt(80, 100) // Mock 80-100%
       };
     });
 
@@ -1505,9 +1512,10 @@ export class SecurityMonitoringDashboard extends EventEmitter {
 
   private async assessAlertImpact(eventId: string, severity: AlertSeverity): Promise<ImpactAssessment> {
     const event = this.events.get(eventId);
+    const { randomInt } = require('crypto');
     
     return {
-      affectedUsers: Math.floor(Math.random() * 1000) + 100,
+      affectedUsers: randomInt(100, 1100),
       affectedSystems: event ? [event.platform] : ['unknown'],
       businessImpact: severity === AlertSeverity.CRITICAL ? 'critical' : 'medium',
       financialImpact: severity === AlertSeverity.CRITICAL ? 50000 : 5000,
