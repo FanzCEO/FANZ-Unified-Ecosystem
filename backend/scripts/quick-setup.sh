@@ -176,6 +176,30 @@ BRAINTREE_PRIVATE_KEY=your-private-key
 COINBASE_COMMERCE_API_KEY=your-coinbase-api-key
 COINBASE_WEBHOOK_SECRET=your-webhook-secret
 
+# Adult-Friendly Payment Processors
+
+# CCBill (Primary adult payment processor)
+CCBILL_CLIENT_ACCNUM=your-ccbill-client-account
+CCBILL_CLIENT_SUBACC=your-ccbill-subaccount
+CCBILL_FLEX_ID=your-ccbill-flex-id
+CCBILL_SALT=your-ccbill-salt
+CCBILL_API_USERNAME=your-ccbill-api-username
+CCBILL_API_PASSWORD=your-ccbill-api-password
+CCBILL_ENVIRONMENT=sandbox
+
+# Paxum (Creator payouts)
+PAXUM_API_KEY=your-paxum-api-key
+PAXUM_API_SECRET=your-paxum-api-secret
+PAXUM_COMPANY_ID=your-paxum-company-id
+PAXUM_ENVIRONMENT=sandbox
+
+# Segpay (Alternative adult processor)
+SEGPAY_PACKAGE_ID=your-segpay-package-id
+SEGPAY_BILLERID=your-segpay-biller-id
+SEGPAY_USERNAME=your-segpay-username
+SEGPAY_PASSWORD=your-segpay-password
+SEGPAY_ENVIRONMENT=sandbox
+
 # Monitoring and Health Checks
 PROMETHEUS_ENABLED=true
 METRICS_PORT=$PROMETHEUS_PORT
