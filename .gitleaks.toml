@@ -1,0 +1,47 @@
+# 🔍 FANZ Ecosystem - Gitleaks Configuration
+title = "FANZ Gitleaks Configuration"
+
+[allowlist]
+description = "Allowlist for demo tokens and examples"
+regexes = [
+    "REDACTED_DEMO_TOKEN",
+    "fanz_vault_root_2024",
+    "test-api-key",
+    "your-secret-key-here",
+    "your-super-secure-jwt-secret-key",
+]
+
+paths = [
+    ".*/node_modules/.*",
+    ".*/dist/.*", 
+    ".*/build/.*",
+    ".*\\.git/.*",
+    ".*package-lock\\.json$",
+    ".*yarn\\.lock$",
+    "gitleaks-report\\.json$",
+]
+
+commits = [
+    "(?i)demo",
+    "(?i)example",
+    "(?i)documentation", 
+    "(?i)docs",
+]
+
+[[rules]]
+id = "fanz-api-key"
+description = "FANZ API Keys"
+regex = "(?i)fanz[_-]?api[_-]?key[_-]?[:=]\\s*['\"]?([a-z0-9]{32,})"
+tags = ["api", "fanz"]
+
+[[rules]]
+id = "payment-processor-key" 
+description = "Payment Processor API Keys"
+regex = "(?i)(ccbill|paxum|segpay|adyen|rapyd)[_-]?(api[_-]?)?key[_-]?[:=]\\s*['\"]?([a-z0-9]{20,})"
+tags = ["payment", "processor"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Keys"
+regex = "AKIA[0-9A-Z]{16}"
+tags = ["aws", "cloud"]
