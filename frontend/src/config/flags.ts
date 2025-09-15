@@ -10,10 +10,9 @@
 // FANZ payment stack uses adult-friendly processors (CCBill, Paxum, Segpay)
 export const WEB3_ENABLED = 
   (typeof import !== 'undefined' && 
-   (import as any).meta && 
-   (import as any).meta.env && 
-   (import as any).meta.env.VITE_FEATURE_WEB3
-    ? (import as any).meta.env.VITE_FEATURE_WEB3
+   typeof import.meta !== 'undefined' && 
+   import.meta.env
+    ? import.meta.env.VITE_FEATURE_WEB3
     : process.env.REACT_APP_FEATURE_WEB3) === 'true';
 
 // Additional feature flags can be added here following the same pattern
