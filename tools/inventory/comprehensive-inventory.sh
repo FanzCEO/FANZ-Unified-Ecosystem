@@ -260,26 +260,19 @@ analyze_clusters() {
     echo "## 🎯 Platform Cluster Analysis" >> "$REPORT_FILE"
     echo >> "$REPORT_FILE"
     
-    # Define platform clusters
-    declare -A clusters=(
-        ["frontend"]="FanzLab Universal Portal"
-        ["backend"]="Core Backend Services"
-        ["mobile"]="Mobile Applications (iOS/Android)"
-        ["ai"]="AI and ML Services"
-        ["blockchain"]="NFT Marketplace and Web3"
-        ["analytics"]="Analytics and Reporting"
-        ["security"]="FanzShield Security Platform"
-        ["payments"]="Payment Processing"
-        ["media"]="Media Processing Pipeline"
-    )
+    # Define platform clusters using regular arrays
+    clusters_dirs=("frontend" "backend" "mobile" "ai" "blockchain" "analytics" "security" "payments" "media")
+    clusters_descs=("FanzLab Universal Portal" "Core Backend Services" "Mobile Applications (iOS/Android)" "AI and ML Services" "NFT Marketplace and Web3" "Analytics and Reporting" "FanzShield Security Platform" "Payment Processing" "Media Processing Pipeline")
     
     echo "| Cluster | Description | Files | Lines | Primary Languages |" >> "$REPORT_FILE"
     echo "|---------|-------------|-------|-------|-------------------|" >> "$REPORT_FILE"
     
     cd "$REPO_ROOT"
-    for cluster_dir in "${!clusters[@]}"; do
+    for i in "${!clusters_dirs[@]}"; do
+        local cluster_dir="${clusters_dirs[$i]}"
+        local description="${clusters_descs[$i]}"
+        
         if [ -d "$cluster_dir" ]; then
-            local description="${clusters[$cluster_dir]}"
             local file_count=$(find "$cluster_dir" -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.go" -o -name "*.py" \) | wc -l | tr -d ' ')
             
             # Get lines of code for this cluster
