@@ -877,9 +877,16 @@ export class FanzBlockchainService extends EventEmitter {
     }
   }
 
-  private async verifyWalletSignature(address: string, signature: string): Promise<boolean> {
-    // Mock signature verification
-    return signature.length > 100; // Simple mock validation
+  private async verifyWalletSignature(address: string, signature: string, message: string): Promise<boolean> {
+    try {
+      // Recover the address from the signature and message
+      const recoveredAddress = ethers.verifyMessage(message, signature);
+      // Compare addresses (case-insensitive)
+      return recoveredAddress.toLowerCase() === address.toLowerCase();
+    } catch (error) {
+      // Verification failed
+      return false;
+    }
   }
 
   private async uploadToIPFS(metadata: NFTMetadata): Promise<string> {
