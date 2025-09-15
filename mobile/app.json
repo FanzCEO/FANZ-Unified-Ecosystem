@@ -1,0 +1,114 @@
+{
+  "name": "FanzMobile",
+  "displayName": "FANZ",
+  "expo": {
+    "name": "FANZ - Creator Economy",
+    "slug": "fanz-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fanz.mobile",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "FANZ needs camera access to capture photos and videos for content creation",
+        "NSMicrophoneUsageDescription": "FANZ needs microphone access for live streaming and video calls",
+        "NSPhotoLibraryUsageDescription": "FANZ needs photo library access to select media for sharing",
+        "NSLocationWhenInUseUsageDescription": "FANZ uses location for creator discovery and local events",
+        "NSFaceIDUsageDescription": "FANZ uses Face ID for secure authentication",
+        "NSContactsUsageDescription": "FANZ accesses contacts to help you find friends on the platform"
+      },
+      "associatedDomains": [
+        "applinks:fanz.app",
+        "applinks:*.fanz.app"
+      ]
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.fanz.mobile",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "USE_FINGERPRINT",
+        "USE_BIOMETRIC",
+        "VIBRATE",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "WAKE_LOCK",
+        "READ_CONTACTS",
+        "SYSTEM_ALERT_WINDOW"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "fanz.app"
+            },
+            {
+              "scheme": "https",
+              "host": "*.fanz.app"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "@react-native-firebase/app",
+        {
+          "ios": {
+            "googleServicesFile": "./ios/GoogleService-Info.plist"
+          },
+          "android": {
+            "googleServicesFile": "./android/app/google-services.json"
+          }
+        }
+      ],
+      [
+        "react-native-permissions",
+        {
+          "iosPermissions": [
+            "Camera",
+            "Microphone",
+            "PhotoLibrary",
+            "LocationWhenInUse",
+            "FaceID",
+            "Contacts"
+          ]
+        }
+      ]
+    ],
+    "scheme": "fanz",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": "exposdk:49.0.0"
+  }
+}
