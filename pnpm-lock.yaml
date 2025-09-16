@@ -350,20 +350,23 @@ importers:
         specifier: ^6.8.1
         version: 6.15.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       express:
-        specifier: ^4.18.2
-        version: 4.21.2
+        specifier: ^5.1.0
+        version: 5.1.0
       express-rate-limit:
-        specifier: ^7.1.5
-        version: 7.5.1(express@4.21.2)
+        specifier: ^7.5.1
+        version: 7.5.1(express@5.1.0)
       helmet:
-        specifier: ^7.1.0
-        version: 7.2.0
+        specifier: ^8.1.0
+        version: 8.1.0
       ioredis:
         specifier: ^5.3.2
         version: 5.7.0
       joi:
         specifier: ^17.11.0
         version: 17.13.3
+      jose:
+        specifier: ^5.10.0
+        version: 5.10.0
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -378,10 +381,13 @@ importers:
         version: 6.10.1
       openai:
         specifier: ^4.20.1
-        version: 4.104.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+        version: 4.104.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.1.8)
       pg:
         specifier: ^8.11.3
         version: 8.16.3
+      pino:
+        specifier: ^9.9.5
+        version: 9.9.5
       prom-client:
         specifier: ^15.0.0
         version: 15.1.3
@@ -397,15 +403,24 @@ importers:
       twilio:
         specifier: ^4.19.3
         version: 4.23.0
+      undici:
+        specifier: ^6.21.3
+        version: 6.21.3
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
+      viem:
+        specifier: ^2.37.6
+        version: 2.37.6(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
       web3:
         specifier: ^4.2.2
-        version: 4.16.0(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+        version: 4.16.0(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
       winston:
         specifier: ^3.11.0
         version: 3.17.0
+      zod:
+        specifier: 4.1.8
+        version: 4.1.8
     devDependencies:
       '@types/bcryptjs':
         specifier: ^2.4.6
@@ -448,10 +463,10 @@ importers:
         version: 9.0.8
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.12.0
-        version: 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.9.2))(eslint@8.57.1)(typescript@5.9.2)
+        version: 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1)(typescript@5.6.3)
       '@typescript-eslint/parser':
         specifier: ^6.12.0
-        version: 6.21.0(eslint@8.57.1)(typescript@5.9.2)
+        version: 6.21.0(eslint@8.57.1)(typescript@5.6.3)
       eslint:
         specifier: ^8.54.0
         version: 8.57.1
@@ -463,7 +478,7 @@ importers:
         version: 5.5.4(eslint-config-prettier@9.1.2(eslint@8.57.1))(eslint@8.57.1)(prettier@3.6.2)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.9.2))
+        version: 29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.6.3))
       node-pg-migrate:
         specifier: ^6.2.2
         version: 6.2.2(pg@8.16.3)
@@ -481,13 +496,13 @@ importers:
         version: 7.1.4
       ts-jest:
         specifier: ^29.1.1
-        version: 29.4.2(@babel/core@7.28.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.4))(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.9.2)))(typescript@5.9.2)
+        version: 29.4.2(@babel/core@7.28.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.4))(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.6.3)))(typescript@5.6.3)
       ts-node:
-        specifier: ^10.9.1
-        version: 10.9.2(@types/node@20.19.15)(typescript@5.9.2)
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.19.15)(typescript@5.6.3)
       typescript:
-        specifier: ^5.2.2
-        version: 5.9.2
+        specifier: ^5.6.3
+        version: 5.6.3
 
   blockchain:
     dependencies:
@@ -601,8 +616,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0(react@19.1.1)
       '@hookform/resolvers':
-        specifier: ^3.10.0
-        version: 3.10.0(react-hook-form@7.62.0(react@19.1.1))
+        specifier: ^5.2.2
+        version: 5.2.2(react-hook-form@7.62.0(react@19.1.1))
       '@react-three/drei':
         specifier: ^10.7.6
         version: 10.7.6(@react-three/fiber@9.3.0(@types/react@18.3.24)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(three@0.180.0))(@types/react@18.3.24)(@types/three@0.180.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(three@0.180.0)
@@ -713,29 +728,32 @@ importers:
         version: 0.180.0
       viem:
         specifier: ^2.37.6
-        version: 2.37.6(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+        version: 2.37.6(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
       zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        specifier: ^4.1.8
+        version: 4.1.8
       zustand:
-        specifier: ^4.5.7
-        version: 4.5.7(@types/react@18.3.24)(react@19.1.1)
+        specifier: ^5.0.8
+        version: 5.0.8(@types/react@18.3.24)(react@19.1.1)(use-sync-external-store@1.5.0(react@19.1.1))
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.35.0
+        version: 9.35.0
       '@storybook/addon-essentials':
         specifier: ^8.6.14
-        version: 8.6.14(@types/react@18.3.24)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+        version: 8.6.14(@types/react@18.3.24)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       '@storybook/addon-interactions':
         specifier: ^8.6.14
-        version: 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+        version: 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       '@storybook/addon-links':
         specifier: ^8.6.14
-        version: 8.6.14(react@19.1.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+        version: 8.6.14(react@19.1.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       '@storybook/blocks':
         specifier: ^8.6.14
-        version: 8.6.14(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+        version: 8.6.14(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       '@storybook/react':
         specifier: ^8.6.14
-        version: 8.6.14(@storybook/test@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))(typescript@5.6.3)
+        version: 8.6.14(@storybook/test@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))(typescript@5.6.3)
       '@tailwindcss/aspect-ratio':
         specifier: ^0.4.2
         version: 0.4.2(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.6.3)))
@@ -777,10 +795,10 @@ importers:
         version: 1.8.8
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.21.0
-        version: 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.6.3))(eslint@8.57.1)(typescript@5.6.3)
+        version: 6.21.0(@typescript-eslint/parser@6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3))(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
       '@typescript-eslint/parser':
         specifier: ^6.21.0
-        version: 6.21.0(eslint@8.57.1)(typescript@5.6.3)
+        version: 6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
       '@vitejs/plugin-react':
         specifier: ^5.0.2
         version: 5.0.2(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
@@ -788,14 +806,14 @@ importers:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.6)
       eslint:
-        specifier: ^8.57.1
-        version: 8.57.1
+        specifier: ^9.35.0
+        version: 9.35.0(jiti@1.21.7)
       eslint-plugin-react-hooks:
-        specifier: ^4.6.2
-        version: 4.6.2(eslint@8.57.1)
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.35.0(jiti@1.21.7))
       eslint-plugin-react-refresh:
         specifier: ^0.4.20
-        version: 0.4.20(eslint@8.57.1)
+        version: 0.4.20(eslint@9.35.0(jiti@1.21.7))
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.6.3))
@@ -823,12 +841,18 @@ importers:
       rollup-plugin-visualizer:
         specifier: ^6.0.3
         version: 6.0.3(rollup@2.79.2)
+      storybook:
+        specifier: 9.1.6
+        version: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.6.3))
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
+      typescript-eslint:
+        specifier: ^8.44.0
+        version: 8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
       vite:
         specifier: ^7.1.5
         version: 7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)
@@ -1918,13 +1942,41 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYwfLNzQ==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
 
+  '@eslint/config-array@0.21.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYEvjLxQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/config-helpers@0.3.1':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYOr/sPA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/core@0.15.2':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8Oyomg==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   '@eslint/eslintrc@2.1.4':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYaZFvtQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
+  '@eslint/eslintrc@3.3.1':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYcnM3IQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   '@eslint/js@8.57.1':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  '@eslint/js@9.35.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYCzuCPw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/object-schema@2.1.6':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYzoqFPA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/plugin-kit@0.3.5':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYTpii0w==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@ethereumjs/rlp@4.0.1':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYZcMpvw==}
@@ -2077,10 +2129,18 @@ packages:
     peerDependencies:
       react: '>= 16 || ^19.0.0-rc'
 
-  '@hookform/resolvers@3.10.0':
-    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYL3b0Ag==}
+  '@hookform/resolvers@5.2.2':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYAEUNlA==}
     peerDependencies:
-      react-hook-form: ^7.0.0
+      react-hook-form: ^7.55.0
+
+  '@humanfs/core@0.19.1':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYaGyKUA==}
+    engines: {node: '>=18.18.0'}
+
+  '@humanfs/node@0.16.7':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYTLUXEQ==}
+    engines: {node: '>=18.18.0'}
 
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYD2vRNw==}
@@ -2094,6 +2154,10 @@ packages:
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYIKcDcA==}
     deprecated: Use @eslint/object-schema instead
+
+  '@humanwhocodes/retry@0.4.3':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYVhDyhQ==}
+    engines: {node: '>=18.18'}
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYeikIFQ==}
@@ -3172,6 +3236,9 @@ packages:
   '@solidity-parser/parser@0.20.2':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYzIu7QA==}
 
+  '@standard-schema/utils@0.3.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYSAeU8g==}
+
   '@storybook/addon-actions@8.6.14':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYlhs9pQ==}
     peerDependencies:
@@ -3252,14 +3319,6 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY/9m1pw==}
     peerDependencies:
       storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
-
-  '@storybook/core@8.6.14':
-    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYBB/JmA==}
-    peerDependencies:
-      prettier: ^2 || ^3
-    peerDependenciesMeta:
-      prettier:
-        optional: true
 
   '@storybook/csf-plugin@8.6.14':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYpxS8qQ==}
@@ -3487,6 +3546,9 @@ packages:
   '@types/chai@4.3.20':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYrhiYxQ==}
 
+  '@types/chai@5.2.2':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYkqBmWg==}
+
   '@types/compression@1.8.1':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYYkN00Q==}
 
@@ -3537,6 +3599,9 @@ packages:
 
   '@types/d3-timer@3.0.2':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY21I9Lw==}
+
+  '@types/deep-eql@4.0.2':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY1BwyFw==}
 
   '@types/draco3d@1.4.10':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYceqNcw==}
@@ -3788,6 +3853,14 @@ packages:
       typescript:
         optional: true
 
+  '@typescript-eslint/eslint-plugin@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYs4ryOQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      '@typescript-eslint/parser': ^8.44.0
+      eslint: ^8.57.0 || ^9.0.0
+      typescript: '>=4.8.4 <6.0.0'
+
   '@typescript-eslint/parser@6.21.0':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYAUZjYQ==}
     engines: {node: ^16.0.0 || >=18.0.0}
@@ -3798,9 +3871,32 @@ packages:
       typescript:
         optional: true
 
+  '@typescript-eslint/parser@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY2ipoAw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: ^8.57.0 || ^9.0.0
+      typescript: '>=4.8.4 <6.0.0'
+
+  '@typescript-eslint/project-service@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8CoyVA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      typescript: '>=4.8.4 <6.0.0'
+
   '@typescript-eslint/scope-manager@6.21.0':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYS2RYsg==}
     engines: {node: ^16.0.0 || >=18.0.0}
+
+  '@typescript-eslint/scope-manager@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYRR7KzA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@typescript-eslint/tsconfig-utils@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8APDtQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      typescript: '>=4.8.4 <6.0.0'
 
   '@typescript-eslint/type-utils@6.21.0':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYA4VBag==}
@@ -3812,9 +3908,20 @@ packages:
       typescript:
         optional: true
 
+  '@typescript-eslint/type-utils@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYKCt6yg==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: ^8.57.0 || ^9.0.0
+      typescript: '>=4.8.4 <6.0.0'
+
   '@typescript-eslint/types@6.21.0':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYMN5lpg==}
     engines: {node: ^16.0.0 || >=18.0.0}
+
+  '@typescript-eslint/types@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYMB6ZvA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@typescript-eslint/typescript-estree@6.21.0':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYW2wmUQ==}
@@ -3825,15 +3932,32 @@ packages:
       typescript:
         optional: true
 
+  '@typescript-eslint/typescript-estree@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYEfn8Jw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      typescript: '>=4.8.4 <6.0.0'
+
   '@typescript-eslint/utils@6.21.0':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYYrbDQQ==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
 
+  '@typescript-eslint/utils@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYp9Riqg==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: ^8.57.0 || ^9.0.0
+      typescript: '>=4.8.4 <6.0.0'
+
   '@typescript-eslint/visitor-keys@6.21.0':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYEYXm0A==}
     engines: {node: ^16.0.0 || >=18.0.0}
+
+  '@typescript-eslint/visitor-keys@8.44.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYyW7DWw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYBfDe9g==}
@@ -3855,20 +3979,43 @@ packages:
   '@vitest/expect@2.0.5':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYNyXCpA==}
 
+  '@vitest/expect@3.2.4':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYOqqrig==}
+
+  '@vitest/mocker@3.2.4':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYW6qjEQ==}
+    peerDependencies:
+      msw: ^2.4.9
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0-0
+    peerDependenciesMeta:
+      msw:
+        optional: true
+      vite:
+        optional: true
+
   '@vitest/pretty-format@2.0.5':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYYdOmSQ==}
 
   '@vitest/pretty-format@2.1.9':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYwq7sOQ==}
 
+  '@vitest/pretty-format@3.2.4':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYPeIxtA==}
+
   '@vitest/spy@2.0.5':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYfH3JfA==}
+
+  '@vitest/spy@3.2.4':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY6ds+nw==}
 
   '@vitest/utils@2.0.5':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYTAO/UQ==}
 
   '@vitest/utils@2.1.9':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYBGX5iQ==}
+
+  '@vitest/utils@3.2.4':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYqgX2QA==}
 
   '@webgpu/types@0.1.65':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYy21nVA==}
@@ -3915,6 +4062,10 @@ packages:
 
   accepts@1.3.8:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY7+SJLw==}
+    engines: {node: '>= 0.6'}
+
+  accepts@2.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYmjNKng==}
     engines: {node: '>= 0.6'}
 
   acorn-globals@7.0.1:
@@ -4121,6 +4272,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYtGUjqg==}
     engines: {node: '>= 4.0.0'}
 
+  atomic-sleep@1.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYp3I9tQ==}
+    engines: {node: '>=8.0.0'}
+
   attr-accept@2.2.5:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8ZllYQ==}
     engines: {node: '>=4'}
@@ -4297,6 +4452,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY30203g==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
 
+  body-parser@2.2.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY/f2LTg==}
+    engines: {node: '>=18'}
+
   boolean@3.2.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYeYUzsw==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
@@ -4327,9 +4486,6 @@ packages:
 
   brorand@1.1.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYY2RP+w==}
-
-  browser-assert@1.2.1:
-    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYtuXIWQ==}
 
   browser-stdout@1.3.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYLkMpgw==}
@@ -4679,6 +4835,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYqk+tSQ==}
     engines: {node: '>= 0.6'}
 
+  content-disposition@1.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYrNJ1mg==}
+    engines: {node: '>= 0.6'}
+
   content-type@1.0.5:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYNtJwOA==}
     engines: {node: '>= 0.6'}
@@ -4688,6 +4848,10 @@ packages:
 
   cookie-signature@1.0.6:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYKM3orQ==}
+
+  cookie-signature@1.2.2:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYPZMbhg==}
+    engines: {node: '>=6.6.0'}
 
   cookie@0.4.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYvhaStA==}
@@ -5244,11 +5408,11 @@ packages:
       eslint-config-prettier:
         optional: true
 
-  eslint-plugin-react-hooks@4.6.2:
-    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYdSGKuQ==}
+  eslint-plugin-react-hooks@5.2.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYIAEapg==}
     engines: {node: '>=10'}
     peerDependencies:
-      eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
+      eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
 
   eslint-plugin-react-refresh@0.4.20:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYhP9WBA==}
@@ -5259,15 +5423,37 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYfQZlIg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
+  eslint-scope@8.4.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYG2NlTg==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   eslint-visitor-keys@3.4.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY2G+iag==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  eslint-visitor-keys@4.2.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYUjt7JQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   eslint@8.57.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYnLNGiA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
+
+  eslint@9.35.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYf06hrg==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    hasBin: true
+    peerDependencies:
+      jiti: '*'
+    peerDependenciesMeta:
+      jiti:
+        optional: true
+
+  espree@10.4.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYbH9CYQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   espree@9.6.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY/zFdwQ==}
@@ -5398,6 +5584,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYFbrXnA==}
     engines: {node: '>= 0.10.0'}
 
+  express@5.1.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYJDjFpA==}
+    engines: {node: '>= 18'}
+
   eyes@0.1.8:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYccPvFQ==}
     engines: {node: '> 0.1.90'}
@@ -5424,6 +5614,10 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYodg8dw==}
+
+  fast-redact@3.5.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8Hf70A==}
+    engines: {node: '>=6'}
 
   fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYIo6zkA==}
@@ -5474,6 +5668,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
 
+  file-entry-cache@8.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYVfZCnQ==}
+    engines: {node: '>=16.0.0'}
+
   file-selector@2.1.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYfTlaig==}
     engines: {node: '>= 12'}
@@ -5487,6 +5685,10 @@ packages:
 
   finalhandler@1.3.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYMDpyxQ==}
+    engines: {node: '>= 0.8'}
+
+  finalhandler@2.1.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYiI+q3Q==}
     engines: {node: '>= 0.8'}
 
   find-replace@3.0.0:
@@ -5507,6 +5709,10 @@ packages:
   flat-cache@3.2.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYYb4vbw==}
     engines: {node: ^10.12.0 || >=12.0.0}
+
+  flat-cache@4.0.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYAyqGyw==}
+    engines: {node: '>=16'}
 
   flat@5.0.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYIzz3hQ==}
@@ -5589,6 +5795,10 @@ packages:
   fresh@0.5.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYP9ej8Q==}
     engines: {node: '>= 0.6'}
+
+  fresh@2.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYVJHP2A==}
+    engines: {node: '>= 0.8'}
 
   fs-constants@1.0.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYBciwow==}
@@ -5737,6 +5947,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYgA4mFQ==}
     engines: {node: '>=8'}
 
+  globals@14.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYwbKwtQ==}
+    engines: {node: '>=18'}
+
   globalthis@1.0.4:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY54JhDQ==}
     engines: {node: '>= 0.4'}
@@ -5860,6 +6074,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY3Oy4Xw==}
     engines: {node: '>=16.0.0'}
 
+  helmet@8.1.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYw54Pmg==}
+    engines: {node: '>=18.0.0'}
+
   hls.js@1.6.12:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYhsehEQ==}
 
@@ -5916,6 +6134,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYD7WdMw==}
     engines: {node: '>=0.10.0'}
 
+  iconv-lite@0.7.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYVcIcBQ==}
+    engines: {node: '>=0.10.0'}
+
   idb@7.1.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY6xKIVQ==}
 
@@ -5930,6 +6152,10 @@ packages:
 
   ignore@5.3.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYJ2gq+g==}
+    engines: {node: '>= 4'}
+
+  ignore@7.0.5:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYr5NvGg==}
     engines: {node: '>= 4'}
 
   immediate@3.0.6:
@@ -6125,6 +6351,9 @@ packages:
 
   is-promise@2.2.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYh58QFQ==}
+
+  is-promise@4.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYlyH3AQ==}
 
   is-regex@1.2.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYrgez1g==}
@@ -6397,6 +6626,9 @@ packages:
   joi@17.13.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYoDv1fA==}
 
+  jose@5.10.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYxeM2Gg==}
+
   js-cookie@3.0.5:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY0+lVGw==}
     engines: {node: '>=14'}
@@ -6414,10 +6646,6 @@ packages:
   js-yaml@4.1.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYBtWvRA==}
     hasBin: true
-
-  jsdoc-type-pratt-parser@4.8.0:
-    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYYKB5rw==}
-    engines: {node: '>=12.0.0'}
 
   jsdom@20.0.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYCNJEsQ==}
@@ -6724,6 +6952,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYfWapPQ==}
     engines: {node: '>= 0.6'}
 
+  media-typer@1.1.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY2t5XKw==}
+    engines: {node: '>= 0.8'}
+
   memoize-one@5.2.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYOaHz4Q==}
 
@@ -6739,6 +6971,10 @@ packages:
 
   merge-descriptors@1.0.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY+hE6mQ==}
+
+  merge-descriptors@2.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY2l9Q3g==}
+    engines: {node: '>=18'}
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYUsbt3w==}
@@ -6782,6 +7018,10 @@ packages:
 
   mime-types@2.1.35:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYzaeXiw==}
+    engines: {node: '>= 0.6'}
+
+  mime-types@3.0.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYZ/5HWA==}
     engines: {node: '>= 0.6'}
 
   mime@1.6.0:
@@ -7008,6 +7248,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYeevw8w==}
     engines: {node: '>= 0.6'}
 
+  negotiator@1.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYy7u3Gg==}
+    engines: {node: '>= 0.6'}
+
   neo-async@2.6.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYdLpOuw==}
 
@@ -7137,6 +7381,10 @@ packages:
 
   obliterator@2.0.5:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYBozxTw==}
+
+  on-exit-leak-free@2.1.2:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYbbqcsA==}
+    engines: {node: '>=14.0.0'}
 
   on-finished@2.3.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY99Utww==}
@@ -7288,6 +7536,9 @@ packages:
   path-to-regexp@6.3.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYeEeOlQ==}
 
+  path-to-regexp@8.3.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYqMTWnA==}
+
   path-type@4.0.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8zPAvw==}
     engines: {node: '>=8'}
@@ -7360,6 +7611,16 @@ packages:
   pify@4.0.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY+geV2g==}
     engines: {node: '>=6'}
+
+  pino-abstract-transport@2.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYOaivMw==}
+
+  pino-std-serializers@7.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYmjkiFA==}
+
+  pino@9.9.5:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYd93dVg==}
+    hasBin: true
 
   pirates@4.0.7:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYB4G/FA==}
@@ -7575,9 +7836,8 @@ packages:
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYFFn1ag==}
 
-  process@0.11.10:
-    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYIdAF8A==}
-    engines: {node: '>= 0.6.0'}
+  process-warning@5.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYvEshkA==}
 
   progress@2.0.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYF9V9sA==}
@@ -7653,6 +7913,9 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYej3K9A==}
 
+  quick-format-unescaped@4.0.4:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYs9EHvg==}
+
   randombytes@2.1.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYR68amQ==}
 
@@ -7675,6 +7938,10 @@ packages:
   raw-body@2.5.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYloCVfA==}
     engines: {node: '>= 0.8'}
+
+  raw-body@3.0.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYepiKqA==}
+    engines: {node: '>= 0.10'}
 
   rc@1.2.8:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYyQYPOw==}
@@ -7869,6 +8136,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYWtxQwg==}
     engines: {node: '>= 14.18.0'}
 
+  real-require@0.2.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYtm5GFg==}
+    engines: {node: '>= 12.13.0'}
+
   recast@0.23.11:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYRryhWA==}
     engines: {node: '>= 4'}
@@ -8055,6 +8326,10 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
+  router@2.2.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYz+gAYQ==}
+    engines: {node: '>= 18'}
+
   rpc-websockets@9.1.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYd5MsEA==}
 
@@ -8142,6 +8417,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYgfq2hw==}
     engines: {node: '>= 0.8.0'}
 
+  send@1.2.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYLFjKSw==}
+    engines: {node: '>= 18'}
+
   serialize-error@7.0.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYaaElvw==}
     engines: {node: '>=10'}
@@ -8152,6 +8431,10 @@ packages:
   serve-static@1.16.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYWrIoTw==}
     engines: {node: '>= 0.8.0'}
+
+  serve-static@2.2.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY9oQItQ==}
+    engines: {node: '>= 18'}
 
   set-blocking@2.0.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYeLUehw==}
@@ -8320,6 +8603,9 @@ packages:
     peerDependencies:
       hardhat: ^2.11.0
 
+  sonic-boom@4.2.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYswwEww==}
+
   source-map-js@1.2.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -8410,8 +8696,8 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYOxJCoQ==}
     engines: {node: '>= 0.4'}
 
-  storybook@8.6.14:
-    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYwtdfxw==}
+  storybook@9.1.6:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYYtXpOg==}
     hasBin: true
     peerDependencies:
       prettier: ^2 || ^3
@@ -8685,6 +8971,9 @@ packages:
   thenify@3.3.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY+bheSw==}
 
+  thread-stream@3.1.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYB2J86A==}
+
   three-mesh-bvh@0.8.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY0PmiAg==}
     peerDependencies:
@@ -8716,8 +9005,16 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYjDV7kQ==}
     engines: {node: '>=14.0.0'}
 
+  tinyrainbow@2.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY5dDQXw==}
+    engines: {node: '>=14.0.0'}
+
   tinyspy@3.0.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYeJi77Q==}
+    engines: {node: '>=14.0.0'}
+
+  tinyspy@4.0.3:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYF8LR7A==}
     engines: {node: '>=14.0.0'}
 
   tldts-core@7.0.14:
@@ -8798,6 +9095,12 @@ packages:
     engines: {node: '>=16'}
     peerDependencies:
       typescript: '>=4.2.0'
+
+  ts-api-utils@2.1.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYwFW+ZQ==}
+    engines: {node: '>=18.12'}
+    peerDependencies:
+      typescript: '>=4.8.4'
 
   ts-command-line-args@2.5.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYd6+IYw==}
@@ -8925,6 +9228,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYXQBy8g==}
     engines: {node: '>= 0.6'}
 
+  type-is@2.0.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYcav+Gw==}
+    engines: {node: '>= 0.6'}
+
   typechain@8.3.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYhFYD/Q==}
     hasBin: true
@@ -8956,6 +9263,13 @@ packages:
     hasBin: true
     peerDependencies:
       typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x
+
+  typescript-eslint@8.44.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8bL3qw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: ^8.57.0 || ^9.0.0
+      typescript: '>=4.8.4 <6.0.0'
 
   typescript@5.6.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY3fn1qw==}
@@ -8999,6 +9313,10 @@ packages:
   undici@5.29.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYUw80Bg==}
     engines: {node: '>=14.0'}
+
+  undici@6.21.3:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYi1XEOw==}
+    engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYoxIGqg==}
@@ -9598,6 +9916,9 @@ packages:
 
   zod@3.25.76:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYcNQxcQ==}
+
+  zod@4.1.8:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYjnNYHQ==}
 
   zustand@4.5.7:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYesHWlw==}
@@ -11182,7 +11503,26 @@ snapshots:
       eslint: 8.57.1
       eslint-visitor-keys: 3.4.3
 
+  '@eslint-community/eslint-utils@4.9.0(eslint@9.35.0(jiti@1.21.7))':
+    dependencies:
+      eslint: 9.35.0(jiti@1.21.7)
+      eslint-visitor-keys: 3.4.3
+
   '@eslint-community/regexpp@4.12.1': {}
+
+  '@eslint/config-array@0.21.0':
+    dependencies:
+      '@eslint/object-schema': 2.1.6
+      debug: 4.4.3(supports-color@8.1.1)
+      minimatch: 3.1.2
+    transitivePeerDependencies:
+      - supports-color
+
+  '@eslint/config-helpers@0.3.1': {}
+
+  '@eslint/core@0.15.2':
+    dependencies:
+      '@types/json-schema': 7.0.15
 
   '@eslint/eslintrc@2.1.4':
     dependencies:
@@ -11198,7 +11538,30 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@eslint/eslintrc@3.3.1':
+    dependencies:
+      ajv: 6.12.6
+      debug: 4.4.3(supports-color@8.1.1)
+      espree: 10.4.0
+      globals: 14.0.0
+      ignore: 5.3.2
+      import-fresh: 3.3.1
+      js-yaml: 4.1.0
+      minimatch: 3.1.2
+      strip-json-comments: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@eslint/js@8.57.1': {}
+
+  '@eslint/js@9.35.0': {}
+
+  '@eslint/object-schema@2.1.6': {}
+
+  '@eslint/plugin-kit@0.3.5':
+    dependencies:
+      '@eslint/core': 0.15.2
+      levn: 0.4.1
 
   '@ethereumjs/rlp@4.0.1': {}
 
@@ -11517,9 +11880,17 @@ snapshots:
     dependencies:
       react: 19.1.1
 
-  '@hookform/resolvers@3.10.0(react-hook-form@7.62.0(react@19.1.1))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.62.0(react@19.1.1))':
     dependencies:
+      '@standard-schema/utils': 0.3.0
       react-hook-form: 7.62.0(react@19.1.1)
+
+  '@humanfs/core@0.19.1': {}
+
+  '@humanfs/node@0.16.7':
+    dependencies:
+      '@humanfs/core': 0.19.1
+      '@humanwhocodes/retry': 0.4.3
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
@@ -11532,6 +11903,8 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/object-schema@2.0.3': {}
+
+  '@humanwhocodes/retry@0.4.3': {}
 
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:
@@ -12392,7 +12765,7 @@ snapshots:
 
   '@scure/bip32@1.7.0':
     dependencies:
-      '@noble/curves': 1.9.1
+      '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
 
@@ -12902,147 +13275,128 @@ snapshots:
 
   '@solidity-parser/parser@0.20.2': {}
 
-  '@storybook/addon-actions@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@standard-schema/utils@0.3.0': {}
+
+  '@storybook/addon-actions@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
       '@types/uuid': 9.0.8
       dequal: 2.0.3
       polished: 4.3.1
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       uuid: 9.0.1
 
-  '@storybook/addon-backgrounds@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-backgrounds@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
       memoizerific: 1.11.3
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       ts-dedent: 2.2.0
 
-  '@storybook/addon-controls@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-controls@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
       dequal: 2.0.3
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       ts-dedent: 2.2.0
 
-  '@storybook/addon-docs@8.6.14(@types/react@18.3.24)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-docs@8.6.14(@types/react@18.3.24)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@mdx-js/react': 3.1.1(@types/react@18.3.24)(react@18.3.1)
-      '@storybook/blocks': 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/csf-plugin': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/react-dom-shim': 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+      '@storybook/blocks': 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/csf-plugin': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/react-dom-shim': 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       ts-dedent: 2.2.0
     transitivePeerDependencies:
       - '@types/react'
 
-  '@storybook/addon-essentials@8.6.14(@types/react@18.3.24)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-essentials@8.6.14(@types/react@18.3.24)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
-      '@storybook/addon-actions': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/addon-backgrounds': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/addon-controls': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/addon-docs': 8.6.14(@types/react@18.3.24)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/addon-highlight': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/addon-measure': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/addon-outline': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/addon-toolbars': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/addon-viewport': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      '@storybook/addon-actions': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/addon-backgrounds': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/addon-controls': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/addon-docs': 8.6.14(@types/react@18.3.24)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/addon-highlight': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/addon-measure': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/addon-outline': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/addon-toolbars': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/addon-viewport': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       ts-dedent: 2.2.0
     transitivePeerDependencies:
       - '@types/react'
 
-  '@storybook/addon-highlight@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-highlight@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/addon-interactions@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-interactions@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
-      '@storybook/instrumenter': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/test': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+      '@storybook/instrumenter': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/test': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       polished: 4.3.1
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       ts-dedent: 2.2.0
 
-  '@storybook/addon-links@8.6.14(react@19.1.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-links@8.6.14(react@19.1.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       ts-dedent: 2.2.0
     optionalDependencies:
       react: 19.1.1
 
-  '@storybook/addon-measure@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-measure@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       tiny-invariant: 1.3.3
 
-  '@storybook/addon-outline@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-outline@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       ts-dedent: 2.2.0
 
-  '@storybook/addon-toolbars@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-toolbars@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/addon-viewport@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/addon-viewport@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       memoizerific: 1.11.3
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/blocks@8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/blocks@8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/icons': 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       ts-dedent: 2.2.0
     optionalDependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@storybook/blocks@8.6.14(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/blocks@8.6.14(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/icons': 1.5.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       ts-dedent: 2.2.0
     optionalDependencies:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
 
-  '@storybook/components@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/components@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/core@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)':
+  '@storybook/csf-plugin@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
-      '@storybook/theming': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      better-opn: 3.0.2
-      browser-assert: 1.2.1
-      esbuild: 0.25.9
-      esbuild-register: 3.6.0(esbuild@0.25.9)
-      jsdoc-type-pratt-parser: 4.8.0
-      process: 0.11.10
-      recast: 0.23.11
-      semver: 7.7.2
-      util: 0.12.5
-      ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-    optionalDependencies:
-      prettier: 3.6.2
-    transitivePeerDependencies:
-      - bufferutil
-      - storybook
-      - supports-color
-      - utf-8-validate
-
-  '@storybook/csf-plugin@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
-    dependencies:
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
       unplugin: 1.16.1
 
   '@storybook/global@5.0.0': {}
@@ -13057,61 +13411,61 @@ snapshots:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
 
-  '@storybook/instrumenter@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/instrumenter@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
       '@vitest/utils': 2.1.9
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/manager-api@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/manager-api@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/preview-api@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/preview-api@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/react-dom-shim@8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/react-dom-shim@8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/react-dom-shim@8.6.14(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/react-dom-shim@8.6.14(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/react@8.6.14(@storybook/test@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))(typescript@5.6.3)':
+  '@storybook/react@8.6.14(@storybook/test@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))(typescript@5.6.3)':
     dependencies:
-      '@storybook/components': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+      '@storybook/components': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       '@storybook/global': 5.0.0
-      '@storybook/manager-api': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/preview-api': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/react-dom-shim': 8.6.14(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
-      '@storybook/theming': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+      '@storybook/manager-api': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/preview-api': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/react-dom-shim': 8.6.14(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
+      '@storybook/theming': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
     optionalDependencies:
-      '@storybook/test': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+      '@storybook/test': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       typescript: 5.6.3
 
-  '@storybook/test@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/test@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
       '@storybook/global': 5.0.0
-      '@storybook/instrumenter': 8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))
+      '@storybook/instrumenter': 8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))
       '@testing-library/dom': 10.4.0
       '@testing-library/jest-dom': 6.5.0
       '@testing-library/user-event': 14.5.2(@testing-library/dom@10.4.0)
       '@vitest/expect': 2.0.5
       '@vitest/spy': 2.0.5
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
-  '@storybook/theming@8.6.14(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))':
+  '@storybook/theming@8.6.14(storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)))':
     dependencies:
-      storybook: 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10)
+      storybook: 9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
 
   '@surma/rollup-plugin-off-main-thread@2.2.3':
     dependencies:
@@ -13296,6 +13650,10 @@ snapshots:
 
   '@types/chai@4.3.20': {}
 
+  '@types/chai@5.2.2':
+    dependencies:
+      '@types/deep-eql': 4.0.2
+
   '@types/compression@1.8.1':
     dependencies:
       '@types/express': 4.17.23
@@ -13344,6 +13702,8 @@ snapshots:
   '@types/d3-time@3.0.4': {}
 
   '@types/d3-timer@3.0.2': {}
+
+  '@types/deep-eql@4.0.2': {}
 
   '@types/draco3d@1.4.10': {}
 
@@ -13658,6 +14018,43 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/eslint-plugin@6.21.0(@typescript-eslint/parser@6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3))(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)':
+    dependencies:
+      '@eslint-community/regexpp': 4.12.1
+      '@typescript-eslint/parser': 6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      '@typescript-eslint/scope-manager': 6.21.0
+      '@typescript-eslint/type-utils': 6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      '@typescript-eslint/utils': 6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      '@typescript-eslint/visitor-keys': 6.21.0
+      debug: 4.4.3(supports-color@8.1.1)
+      eslint: 9.35.0(jiti@1.21.7)
+      graphemer: 1.4.0
+      ignore: 5.3.2
+      natural-compare: 1.4.0
+      semver: 7.7.2
+      ts-api-utils: 1.4.3(typescript@5.6.3)
+    optionalDependencies:
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/eslint-plugin@8.44.0(@typescript-eslint/parser@8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3))(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)':
+    dependencies:
+      '@eslint-community/regexpp': 4.12.1
+      '@typescript-eslint/parser': 8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      '@typescript-eslint/scope-manager': 8.44.0
+      '@typescript-eslint/type-utils': 8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      '@typescript-eslint/utils': 8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      '@typescript-eslint/visitor-keys': 8.44.0
+      eslint: 9.35.0(jiti@1.21.7)
+      graphemer: 1.4.0
+      ignore: 7.0.5
+      natural-compare: 1.4.0
+      ts-api-utils: 2.1.0(typescript@5.6.3)
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.6.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 6.21.0
@@ -13684,10 +14081,53 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/parser@6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)':
+    dependencies:
+      '@typescript-eslint/scope-manager': 6.21.0
+      '@typescript-eslint/types': 6.21.0
+      '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.6.3)
+      '@typescript-eslint/visitor-keys': 6.21.0
+      debug: 4.4.3(supports-color@8.1.1)
+      eslint: 9.35.0(jiti@1.21.7)
+    optionalDependencies:
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/parser@8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)':
+    dependencies:
+      '@typescript-eslint/scope-manager': 8.44.0
+      '@typescript-eslint/types': 8.44.0
+      '@typescript-eslint/typescript-estree': 8.44.0(typescript@5.6.3)
+      '@typescript-eslint/visitor-keys': 8.44.0
+      debug: 4.4.3(supports-color@8.1.1)
+      eslint: 9.35.0(jiti@1.21.7)
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/project-service@8.44.0(typescript@5.6.3)':
+    dependencies:
+      '@typescript-eslint/tsconfig-utils': 8.44.0(typescript@5.6.3)
+      '@typescript-eslint/types': 8.44.0
+      debug: 4.4.3(supports-color@8.1.1)
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/scope-manager@6.21.0':
     dependencies:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/visitor-keys': 6.21.0
+
+  '@typescript-eslint/scope-manager@8.44.0':
+    dependencies:
+      '@typescript-eslint/types': 8.44.0
+      '@typescript-eslint/visitor-keys': 8.44.0
+
+  '@typescript-eslint/tsconfig-utils@8.44.0(typescript@5.6.3)':
+    dependencies:
+      typescript: 5.6.3
 
   '@typescript-eslint/type-utils@6.21.0(eslint@8.57.1)(typescript@5.6.3)':
     dependencies:
@@ -13713,7 +14153,33 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/type-utils@6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)':
+    dependencies:
+      '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.6.3)
+      '@typescript-eslint/utils': 6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      debug: 4.4.3(supports-color@8.1.1)
+      eslint: 9.35.0(jiti@1.21.7)
+      ts-api-utils: 1.4.3(typescript@5.6.3)
+    optionalDependencies:
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/type-utils@8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)':
+    dependencies:
+      '@typescript-eslint/types': 8.44.0
+      '@typescript-eslint/typescript-estree': 8.44.0(typescript@5.6.3)
+      '@typescript-eslint/utils': 8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      debug: 4.4.3(supports-color@8.1.1)
+      eslint: 9.35.0(jiti@1.21.7)
+      ts-api-utils: 2.1.0(typescript@5.6.3)
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/types@6.21.0': {}
+
+  '@typescript-eslint/types@8.44.0': {}
 
   '@typescript-eslint/typescript-estree@6.21.0(typescript@5.6.3)':
     dependencies:
@@ -13745,6 +14211,22 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/typescript-estree@8.44.0(typescript@5.6.3)':
+    dependencies:
+      '@typescript-eslint/project-service': 8.44.0(typescript@5.6.3)
+      '@typescript-eslint/tsconfig-utils': 8.44.0(typescript@5.6.3)
+      '@typescript-eslint/types': 8.44.0
+      '@typescript-eslint/visitor-keys': 8.44.0
+      debug: 4.4.3(supports-color@8.1.1)
+      fast-glob: 3.3.3
+      is-glob: 4.0.3
+      minimatch: 9.0.5
+      semver: 7.7.2
+      ts-api-utils: 2.1.0(typescript@5.6.3)
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/utils@6.21.0(eslint@8.57.1)(typescript@5.6.3)':
     dependencies:
       '@eslint-community/eslint-utils': 4.9.0(eslint@8.57.1)
@@ -13773,10 +14255,40 @@ snapshots:
       - supports-color
       - typescript
 
+  '@typescript-eslint/utils@6.21.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)':
+    dependencies:
+      '@eslint-community/eslint-utils': 4.9.0(eslint@9.35.0(jiti@1.21.7))
+      '@types/json-schema': 7.0.15
+      '@types/semver': 7.7.1
+      '@typescript-eslint/scope-manager': 6.21.0
+      '@typescript-eslint/types': 6.21.0
+      '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.6.3)
+      eslint: 9.35.0(jiti@1.21.7)
+      semver: 7.7.2
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
+  '@typescript-eslint/utils@8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)':
+    dependencies:
+      '@eslint-community/eslint-utils': 4.9.0(eslint@9.35.0(jiti@1.21.7))
+      '@typescript-eslint/scope-manager': 8.44.0
+      '@typescript-eslint/types': 8.44.0
+      '@typescript-eslint/typescript-estree': 8.44.0(typescript@5.6.3)
+      eslint: 9.35.0(jiti@1.21.7)
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/visitor-keys@6.21.0':
     dependencies:
       '@typescript-eslint/types': 6.21.0
       eslint-visitor-keys: 3.4.3
+
+  '@typescript-eslint/visitor-keys@8.44.0':
+    dependencies:
+      '@typescript-eslint/types': 8.44.0
+      eslint-visitor-keys: 4.2.1
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -13806,6 +14318,23 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 1.2.0
 
+  '@vitest/expect@3.2.4':
+    dependencies:
+      '@types/chai': 5.2.2
+      '@vitest/spy': 3.2.4
+      '@vitest/utils': 3.2.4
+      chai: 5.3.3
+      tinyrainbow: 2.0.0
+
+  '@vitest/mocker@3.2.4(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))':
+    dependencies:
+      '@vitest/spy': 3.2.4
+      estree-walker: 3.0.3
+      magic-string: 0.30.19
+    optionalDependencies:
+      msw: 2.11.2(@types/node@20.19.15)(typescript@5.6.3)
+      vite: 7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)
+
   '@vitest/pretty-format@2.0.5':
     dependencies:
       tinyrainbow: 1.2.0
@@ -13814,9 +14343,17 @@ snapshots:
     dependencies:
       tinyrainbow: 1.2.0
 
+  '@vitest/pretty-format@3.2.4':
+    dependencies:
+      tinyrainbow: 2.0.0
+
   '@vitest/spy@2.0.5':
     dependencies:
       tinyspy: 3.0.2
+
+  '@vitest/spy@3.2.4':
+    dependencies:
+      tinyspy: 4.0.3
 
   '@vitest/utils@2.0.5':
     dependencies:
@@ -13830,6 +14367,12 @@ snapshots:
       '@vitest/pretty-format': 2.1.9
       loupe: 3.2.1
       tinyrainbow: 1.2.0
+
+  '@vitest/utils@3.2.4':
+    dependencies:
+      '@vitest/pretty-format': 3.2.4
+      loupe: 3.2.1
+      tinyrainbow: 2.0.0
 
   '@webgpu/types@0.1.65': {}
 
@@ -13859,16 +14402,22 @@ snapshots:
 
   abbrev@1.1.1: {}
 
+  abitype@0.7.1(typescript@5.6.3)(zod@4.1.8):
+    dependencies:
+      typescript: 5.6.3
+    optionalDependencies:
+      zod: 4.1.8
+
   abitype@0.7.1(typescript@5.9.2)(zod@3.25.76):
     dependencies:
       typescript: 5.9.2
     optionalDependencies:
       zod: 3.25.76
 
-  abitype@1.1.0(typescript@5.6.3)(zod@3.25.76):
+  abitype@1.1.0(typescript@5.6.3)(zod@4.1.8):
     optionalDependencies:
       typescript: 5.6.3
-      zod: 3.25.76
+      zod: 4.1.8
 
   abort-controller@3.0.0:
     dependencies:
@@ -13878,6 +14427,11 @@ snapshots:
     dependencies:
       mime-types: 2.1.35
       negotiator: 0.6.3
+
+  accepts@2.0.0:
+    dependencies:
+      mime-types: 3.0.1
+      negotiator: 1.0.0
 
   acorn-globals@7.0.1:
     dependencies:
@@ -14050,6 +14604,8 @@ snapshots:
   asynckit@0.4.0: {}
 
   at-least-node@1.0.0: {}
+
+  atomic-sleep@1.0.0: {}
 
   attr-accept@2.2.5: {}
 
@@ -14286,6 +14842,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  body-parser@2.2.0:
+    dependencies:
+      bytes: 3.1.2
+      content-type: 1.0.5
+      debug: 4.4.3(supports-color@8.1.1)
+      http-errors: 2.0.0
+      iconv-lite: 0.6.3
+      on-finished: 2.4.1
+      qs: 6.14.0
+      raw-body: 3.0.1
+      type-is: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
+
   boolean@3.2.0: {}
 
   borsh@0.7.0:
@@ -14327,8 +14897,6 @@ snapshots:
       xml2js: 0.5.0
 
   brorand@1.1.0: {}
-
-  browser-assert@1.2.1: {}
 
   browser-stdout@1.3.1: {}
 
@@ -14705,11 +15273,17 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
+  content-disposition@1.0.0:
+    dependencies:
+      safe-buffer: 5.2.1
+
   content-type@1.0.5: {}
 
   convert-source-map@2.0.0: {}
 
   cookie-signature@1.0.6: {}
+
+  cookie-signature@1.2.2: {}
 
   cookie@0.4.2: {}
 
@@ -15309,20 +15883,27 @@ snapshots:
     optionalDependencies:
       eslint-config-prettier: 9.1.2(eslint@8.57.1)
 
-  eslint-plugin-react-hooks@4.6.2(eslint@8.57.1):
+  eslint-plugin-react-hooks@5.2.0(eslint@9.35.0(jiti@1.21.7)):
     dependencies:
-      eslint: 8.57.1
+      eslint: 9.35.0(jiti@1.21.7)
 
-  eslint-plugin-react-refresh@0.4.20(eslint@8.57.1):
+  eslint-plugin-react-refresh@0.4.20(eslint@9.35.0(jiti@1.21.7)):
     dependencies:
-      eslint: 8.57.1
+      eslint: 9.35.0(jiti@1.21.7)
 
   eslint-scope@7.2.2:
     dependencies:
       esrecurse: 4.3.0
       estraverse: 5.3.0
 
+  eslint-scope@8.4.0:
+    dependencies:
+      esrecurse: 4.3.0
+      estraverse: 5.3.0
+
   eslint-visitor-keys@3.4.3: {}
+
+  eslint-visitor-keys@4.2.1: {}
 
   eslint@8.57.1:
     dependencies:
@@ -15366,6 +15947,54 @@ snapshots:
       text-table: 0.2.0
     transitivePeerDependencies:
       - supports-color
+
+  eslint@9.35.0(jiti@1.21.7):
+    dependencies:
+      '@eslint-community/eslint-utils': 4.9.0(eslint@9.35.0(jiti@1.21.7))
+      '@eslint-community/regexpp': 4.12.1
+      '@eslint/config-array': 0.21.0
+      '@eslint/config-helpers': 0.3.1
+      '@eslint/core': 0.15.2
+      '@eslint/eslintrc': 3.3.1
+      '@eslint/js': 9.35.0
+      '@eslint/plugin-kit': 0.3.5
+      '@humanfs/node': 0.16.7
+      '@humanwhocodes/module-importer': 1.0.1
+      '@humanwhocodes/retry': 0.4.3
+      '@types/estree': 1.0.8
+      '@types/json-schema': 7.0.15
+      ajv: 6.12.6
+      chalk: 4.1.2
+      cross-spawn: 7.0.6
+      debug: 4.4.3(supports-color@8.1.1)
+      escape-string-regexp: 4.0.0
+      eslint-scope: 8.4.0
+      eslint-visitor-keys: 4.2.1
+      espree: 10.4.0
+      esquery: 1.6.0
+      esutils: 2.0.3
+      fast-deep-equal: 3.1.3
+      file-entry-cache: 8.0.0
+      find-up: 5.0.0
+      glob-parent: 6.0.2
+      ignore: 5.3.2
+      imurmurhash: 0.1.4
+      is-glob: 4.0.3
+      json-stable-stringify-without-jsonify: 1.0.1
+      lodash.merge: 4.6.2
+      minimatch: 3.1.2
+      natural-compare: 1.4.0
+      optionator: 0.9.4
+    optionalDependencies:
+      jiti: 1.21.7
+    transitivePeerDependencies:
+      - supports-color
+
+  espree@10.4.0:
+    dependencies:
+      acorn: 8.15.0
+      acorn-jsx: 5.3.2(acorn@8.15.0)
+      eslint-visitor-keys: 4.2.1
 
   espree@9.6.1:
     dependencies:
@@ -15572,6 +16201,10 @@ snapshots:
     dependencies:
       express: 4.21.2
 
+  express-rate-limit@7.5.1(express@5.1.0):
+    dependencies:
+      express: 5.1.0
+
   express@4.21.2:
     dependencies:
       accepts: 1.3.8
@@ -15608,6 +16241,38 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  express@5.1.0:
+    dependencies:
+      accepts: 2.0.0
+      body-parser: 2.2.0
+      content-disposition: 1.0.0
+      content-type: 1.0.5
+      cookie: 0.7.2
+      cookie-signature: 1.2.2
+      debug: 4.4.3(supports-color@8.1.1)
+      encodeurl: 2.0.0
+      escape-html: 1.0.3
+      etag: 1.8.1
+      finalhandler: 2.1.0
+      fresh: 2.0.0
+      http-errors: 2.0.0
+      merge-descriptors: 2.0.0
+      mime-types: 3.0.1
+      on-finished: 2.4.1
+      once: 1.4.0
+      parseurl: 1.3.3
+      proxy-addr: 2.0.7
+      qs: 6.14.0
+      range-parser: 1.2.1
+      router: 2.2.0
+      send: 1.2.0
+      serve-static: 2.2.0
+      statuses: 2.0.2
+      type-is: 2.0.1
+      vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
+
   eyes@0.1.8: {}
 
   fast-deep-equal@3.1.3: {}
@@ -15629,6 +16294,8 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
+
+  fast-redact@3.5.0: {}
 
   fast-safe-stringify@2.1.1: {}
 
@@ -15676,6 +16343,10 @@ snapshots:
     dependencies:
       flat-cache: 3.2.0
 
+  file-entry-cache@8.0.0:
+    dependencies:
+      flat-cache: 4.0.1
+
   file-selector@2.1.2:
     dependencies:
       tslib: 2.8.1
@@ -15700,6 +16371,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  finalhandler@2.1.0:
+    dependencies:
+      debug: 4.4.3(supports-color@8.1.1)
+      encodeurl: 2.0.0
+      escape-html: 1.0.3
+      on-finished: 2.4.1
+      parseurl: 1.3.3
+      statuses: 2.0.2
+    transitivePeerDependencies:
+      - supports-color
+
   find-replace@3.0.0:
     dependencies:
       array-back: 3.1.0
@@ -15721,6 +16403,11 @@ snapshots:
       flatted: 3.3.3
       keyv: 4.5.4
       rimraf: 3.0.2
+
+  flat-cache@4.0.1:
+    dependencies:
+      flatted: 3.3.3
+      keyv: 4.5.4
 
   flat@5.0.2: {}
 
@@ -15805,6 +16492,8 @@ snapshots:
       react-dom: 19.1.1(react@19.1.1)
 
   fresh@0.5.2: {}
+
+  fresh@2.0.0: {}
 
   fs-constants@1.0.0: {}
 
@@ -15988,6 +16677,8 @@ snapshots:
     dependencies:
       type-fest: 0.20.2
 
+  globals@14.0.0: {}
+
   globalthis@1.0.4:
     dependencies:
       define-properties: 1.2.1
@@ -16155,6 +16846,8 @@ snapshots:
 
   helmet@7.2.0: {}
 
+  helmet@8.1.0: {}
+
   hls.js@1.6.12: {}
 
   hmac-drbg@1.0.1:
@@ -16221,6 +16914,10 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
+  iconv-lite@0.7.0:
+    dependencies:
+      safer-buffer: 2.1.2
+
   idb@7.1.1: {}
 
   ieee754@1.1.13: {}
@@ -16230,6 +16927,8 @@ snapshots:
   ignore-by-default@1.0.1: {}
 
   ignore@5.3.2: {}
+
+  ignore@7.0.5: {}
 
   immediate@3.0.6: {}
 
@@ -16404,6 +17103,8 @@ snapshots:
   is-potential-custom-element-name@1.0.1: {}
 
   is-promise@2.2.2: {}
+
+  is-promise@4.0.0: {}
 
   is-regex@1.2.1:
     dependencies:
@@ -16950,6 +17651,8 @@ snapshots:
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
 
+  jose@5.10.0: {}
+
   js-cookie@3.0.5: {}
 
   js-sha3@0.8.0: {}
@@ -16964,8 +17667,6 @@ snapshots:
   js-yaml@4.1.0:
     dependencies:
       argparse: 2.0.1
-
-  jsdoc-type-pratt-parser@4.8.0: {}
 
   jsdom@20.0.3(bufferutil@4.0.9)(utf-8-validate@5.0.10):
     dependencies:
@@ -17279,6 +17980,8 @@ snapshots:
 
   media-typer@0.3.0: {}
 
+  media-typer@1.1.0: {}
+
   memoize-one@5.2.1: {}
 
   memoizerific@1.11.3:
@@ -17290,6 +17993,8 @@ snapshots:
   memorystream@0.3.1: {}
 
   merge-descriptors@1.0.3: {}
+
+  merge-descriptors@2.0.0: {}
 
   merge-stream@2.0.0: {}
 
@@ -17327,6 +18032,10 @@ snapshots:
   mime-types@2.1.35:
     dependencies:
       mime-db: 1.52.0
+
+  mime-types@3.0.1:
+    dependencies:
+      mime-db: 1.54.0
 
   mime@1.6.0: {}
 
@@ -17552,6 +18261,8 @@ snapshots:
 
   negotiator@0.6.4: {}
 
+  negotiator@1.0.0: {}
+
   neo-async@2.6.2: {}
 
   node-abi@3.77.0:
@@ -17668,6 +18379,8 @@ snapshots:
 
   obliterator@2.0.5: {}
 
+  on-exit-leak-free@2.1.2: {}
+
   on-finished@2.3.0:
     dependencies:
       ee-first: 1.1.1
@@ -17704,7 +18417,7 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openai@4.104.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76):
+  openai@4.104.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.1.8):
     dependencies:
       '@types/node': 18.19.125
       '@types/node-fetch': 2.6.13
@@ -17715,7 +18428,7 @@ snapshots:
       node-fetch: 2.7.0
     optionalDependencies:
       ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      zod: 3.25.76
+      zod: 4.1.8
     transitivePeerDependencies:
       - encoding
 
@@ -17749,7 +18462,7 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
-  ox@0.9.3(typescript@5.6.3)(zod@3.25.76):
+  ox@0.9.3(typescript@5.6.3)(zod@4.1.8):
     dependencies:
       '@adraffy/ens-normalize': 1.11.0
       '@noble/ciphers': 1.3.0
@@ -17757,7 +18470,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.1.0(typescript@5.6.3)(zod@3.25.76)
+      abitype: 1.1.0(typescript@5.6.3)(zod@4.1.8)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 5.6.3
@@ -17826,6 +18539,8 @@ snapshots:
 
   path-to-regexp@6.3.0: {}
 
+  path-to-regexp@8.3.0: {}
+
   path-type@4.0.0: {}
 
   pathval@1.1.1: {}
@@ -17887,6 +18602,26 @@ snapshots:
   pify@2.3.0: {}
 
   pify@4.0.1: {}
+
+  pino-abstract-transport@2.0.0:
+    dependencies:
+      split2: 4.2.0
+
+  pino-std-serializers@7.0.0: {}
+
+  pino@9.9.5:
+    dependencies:
+      atomic-sleep: 1.0.0
+      fast-redact: 3.5.0
+      on-exit-leak-free: 2.1.2
+      pino-abstract-transport: 2.0.0
+      pino-std-serializers: 7.0.0
+      process-warning: 5.0.0
+      quick-format-unescaped: 4.0.4
+      real-require: 0.2.0
+      safe-stable-stringify: 2.5.0
+      sonic-boom: 4.2.0
+      thread-stream: 3.1.0
 
   pirates@4.0.7: {}
 
@@ -18029,7 +18764,7 @@ snapshots:
 
   process-nextick-args@2.0.1: {}
 
-  process@0.11.10: {}
+  process-warning@5.0.0: {}
 
   progress@2.0.3: {}
 
@@ -18104,6 +18839,8 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
+  quick-format-unescaped@4.0.4: {}
+
   randombytes@2.1.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -18123,6 +18860,13 @@ snapshots:
       bytes: 3.1.2
       http-errors: 2.0.0
       iconv-lite: 0.4.24
+      unpipe: 1.0.0
+
+  raw-body@3.0.1:
+    dependencies:
+      bytes: 3.1.2
+      http-errors: 2.0.0
+      iconv-lite: 0.7.0
       unpipe: 1.0.0
 
   rc@1.2.8:
@@ -18316,6 +19060,8 @@ snapshots:
       picomatch: 2.3.1
 
   readdirp@4.1.2: {}
+
+  real-require@0.2.0: {}
 
   recast@0.23.11:
     dependencies:
@@ -18539,6 +19285,16 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.50.2
       fsevents: 2.3.3
 
+  router@2.2.0:
+    dependencies:
+      debug: 4.4.3(supports-color@8.1.1)
+      depd: 2.0.0
+      is-promise: 4.0.0
+      parseurl: 1.3.3
+      path-to-regexp: 8.3.0
+    transitivePeerDependencies:
+      - supports-color
+
   rpc-websockets@9.1.3:
     dependencies:
       '@swc/helpers': 0.5.17
@@ -18656,6 +19412,22 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  send@1.2.0:
+    dependencies:
+      debug: 4.4.3(supports-color@8.1.1)
+      encodeurl: 2.0.0
+      escape-html: 1.0.3
+      etag: 1.8.1
+      fresh: 2.0.0
+      http-errors: 2.0.0
+      mime-types: 3.0.1
+      ms: 2.1.3
+      on-finished: 2.4.1
+      range-parser: 1.2.1
+      statuses: 2.0.2
+    transitivePeerDependencies:
+      - supports-color
+
   serialize-error@7.0.1:
     dependencies:
       type-fest: 0.13.1
@@ -18670,6 +19442,15 @@ snapshots:
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.19.0
+    transitivePeerDependencies:
+      - supports-color
+
+  serve-static@2.2.0:
+    dependencies:
+      encodeurl: 2.0.0
+      escape-html: 1.0.3
+      parseurl: 1.3.3
+      send: 1.2.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18961,6 +19742,10 @@ snapshots:
       shelljs: 0.8.5
       web3-utils: 1.10.4
 
+  sonic-boom@4.2.0:
+    dependencies:
+      atomic-sleep: 1.0.0
+
   source-map-js@1.2.1: {}
 
   source-map-support@0.5.13:
@@ -19043,15 +19828,29 @@ snapshots:
       es-errors: 1.3.0
       internal-slot: 1.1.0
 
-  storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10):
+  storybook@9.1.6(@testing-library/dom@10.4.0)(bufferutil@4.0.9)(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(prettier@3.6.2)(utf-8-validate@5.0.10)(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1)):
     dependencies:
-      '@storybook/core': 8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)
+      '@storybook/global': 5.0.0
+      '@testing-library/jest-dom': 6.8.0
+      '@testing-library/user-event': 14.6.1(@testing-library/dom@10.4.0)
+      '@vitest/expect': 3.2.4
+      '@vitest/mocker': 3.2.4(msw@2.11.2(@types/node@20.19.15)(typescript@5.6.3))(vite@7.1.5(@types/node@20.19.15)(jiti@1.21.7)(terser@5.44.0)(yaml@2.8.1))
+      '@vitest/spy': 3.2.4
+      better-opn: 3.0.2
+      esbuild: 0.25.9
+      esbuild-register: 3.6.0(esbuild@0.25.9)
+      recast: 0.23.11
+      semver: 7.7.2
+      ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
       prettier: 3.6.2
     transitivePeerDependencies:
+      - '@testing-library/dom'
       - bufferutil
+      - msw
       - supports-color
       - utf-8-validate
+      - vite
 
   stream-chain@2.2.5: {}
 
@@ -19439,6 +20238,10 @@ snapshots:
     dependencies:
       any-promise: 1.3.0
 
+  thread-stream@3.1.0:
+    dependencies:
+      real-require: 0.2.0
+
   three-mesh-bvh@0.8.3(three@0.180.0):
     dependencies:
       three: 0.180.0
@@ -19468,7 +20271,11 @@ snapshots:
 
   tinyrainbow@1.2.0: {}
 
+  tinyrainbow@2.0.0: {}
+
   tinyspy@3.0.2: {}
+
+  tinyspy@4.0.3: {}
 
   tldts-core@7.0.14: {}
 
@@ -19547,6 +20354,10 @@ snapshots:
     dependencies:
       typescript: 5.9.2
 
+  ts-api-utils@2.1.0(typescript@5.6.3):
+    dependencies:
+      typescript: 5.6.3
+
   ts-command-line-args@2.5.1:
     dependencies:
       chalk: 4.1.2
@@ -19561,6 +20372,26 @@ snapshots:
       typescript: 5.9.2
 
   ts-interface-checker@0.1.13: {}
+
+  ts-jest@29.4.2(@babel/core@7.28.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.4))(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.6.3)))(typescript@5.6.3):
+    dependencies:
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      handlebars: 4.7.8
+      jest: 29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.6.3))
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.7.2
+      type-fest: 4.41.0
+      typescript: 5.6.3
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.28.4
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.28.4)
+      jest-util: 29.7.0
 
   ts-jest@29.4.2(@babel/core@7.28.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.4))(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.9.2)))(typescript@5.9.2):
     dependencies:
@@ -19599,7 +20430,6 @@ snapshots:
       typescript: 5.6.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-    optional: true
 
   ts-node@10.9.2(@types/node@20.19.15)(typescript@5.9.2):
     dependencies:
@@ -19684,6 +20514,12 @@ snapshots:
       media-typer: 0.3.0
       mime-types: 2.1.35
 
+  type-is@2.0.1:
+    dependencies:
+      content-type: 1.0.5
+      media-typer: 1.1.0
+      mime-types: 3.0.1
+
   typechain@8.3.2(typescript@5.9.2):
     dependencies:
       '@types/prettier': 2.7.3
@@ -19743,6 +20579,17 @@ snapshots:
       shiki: 0.14.7
       typescript: 5.9.2
 
+  typescript-eslint@8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3):
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 8.44.0(@typescript-eslint/parser@8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3))(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      '@typescript-eslint/parser': 8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      '@typescript-eslint/typescript-estree': 8.44.0(typescript@5.6.3)
+      '@typescript-eslint/utils': 8.44.0(eslint@9.35.0(jiti@1.21.7))(typescript@5.6.3)
+      eslint: 9.35.0(jiti@1.21.7)
+      typescript: 5.6.3
+    transitivePeerDependencies:
+      - supports-color
+
   typescript@5.6.3: {}
 
   typescript@5.9.2: {}
@@ -19772,6 +20619,8 @@ snapshots:
   undici@5.29.0:
     dependencies:
       '@fastify/busboy': 2.1.1
+
+  undici@6.21.3: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 
@@ -19883,15 +20732,15 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  viem@2.37.6(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.25.76):
+  viem@2.37.6(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8):
     dependencies:
       '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.1.0(typescript@5.6.3)(zod@3.25.76)
+      abitype: 1.1.0(typescript@5.6.3)(zod@4.1.8)
       isows: 1.0.7(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      ox: 0.9.3(typescript@5.6.3)(zod@3.25.76)
+      ox: 0.9.3(typescript@5.6.3)(zod@4.1.8)
       ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     optionalDependencies:
       typescript: 5.6.3
@@ -19973,6 +20822,17 @@ snapshots:
     dependencies:
       web3-types: 1.10.0
 
+  web3-eth-abi@4.4.1(typescript@5.6.3)(zod@4.1.8):
+    dependencies:
+      abitype: 0.7.1(typescript@5.6.3)(zod@4.1.8)
+      web3-errors: 1.3.1
+      web3-types: 1.10.0
+      web3-utils: 4.3.3
+      web3-validator: 2.0.6
+    transitivePeerDependencies:
+      - typescript
+      - zod
+
   web3-eth-abi@4.4.1(typescript@5.9.2)(zod@3.25.76):
     dependencies:
       abitype: 0.7.1(typescript@5.9.2)(zod@3.25.76)
@@ -19994,6 +20854,23 @@ snapshots:
       web3-utils: 4.3.3
       web3-validator: 2.0.6
 
+  web3-eth-contract@4.7.2(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8):
+    dependencies:
+      '@ethereumjs/rlp': 5.0.2
+      web3-core: 4.7.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-errors: 1.3.1
+      web3-eth: 4.11.1(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
+      web3-eth-abi: 4.4.1(typescript@5.6.3)(zod@4.1.8)
+      web3-types: 1.10.0
+      web3-utils: 4.3.3
+      web3-validator: 2.0.6
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - typescript
+      - utf-8-validate
+      - zod
+
   web3-eth-contract@4.7.2(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76):
     dependencies:
       '@ethereumjs/rlp': 5.0.2
@@ -20001,6 +20878,24 @@ snapshots:
       web3-errors: 1.3.1
       web3-eth: 4.11.1(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       web3-eth-abi: 4.4.1(typescript@5.9.2)(zod@3.25.76)
+      web3-types: 1.10.0
+      web3-utils: 4.3.3
+      web3-validator: 2.0.6
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - typescript
+      - utf-8-validate
+      - zod
+
+  web3-eth-ens@4.4.0(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8):
+    dependencies:
+      '@adraffy/ens-normalize': 1.11.0
+      web3-core: 4.7.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-errors: 1.3.1
+      web3-eth: 4.11.1(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
+      web3-eth-contract: 4.7.2(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
+      web3-net: 4.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       web3-types: 1.10.0
       web3-utils: 4.3.3
       web3-validator: 2.0.6
@@ -20036,10 +20931,45 @@ snapshots:
       web3-utils: 4.3.3
       web3-validator: 2.0.6
 
+  web3-eth-personal@4.1.0(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8):
+    dependencies:
+      web3-core: 4.7.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-eth: 4.11.1(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
+      web3-rpc-methods: 1.3.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-types: 1.10.0
+      web3-utils: 4.3.3
+      web3-validator: 2.0.6
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - typescript
+      - utf-8-validate
+      - zod
+
   web3-eth-personal@4.1.0(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76):
     dependencies:
       web3-core: 4.7.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       web3-eth: 4.11.1(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+      web3-rpc-methods: 1.3.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-types: 1.10.0
+      web3-utils: 4.3.3
+      web3-validator: 2.0.6
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - typescript
+      - utf-8-validate
+      - zod
+
+  web3-eth@4.11.1(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8):
+    dependencies:
+      setimmediate: 1.0.5
+      web3-core: 4.7.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-errors: 1.3.1
+      web3-eth-abi: 4.4.1(typescript@5.6.3)(zod@4.1.8)
+      web3-eth-accounts: 4.3.1
+      web3-net: 4.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-providers-ws: 4.0.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       web3-rpc-methods: 1.3.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       web3-types: 1.10.0
       web3-utils: 4.3.3
@@ -20161,6 +21091,32 @@ snapshots:
       web3-errors: 1.3.1
       web3-types: 1.10.0
       zod: 3.25.76
+
+  web3@4.16.0(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8):
+    dependencies:
+      web3-core: 4.7.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-errors: 1.3.1
+      web3-eth: 4.11.1(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
+      web3-eth-abi: 4.4.1(typescript@5.6.3)(zod@4.1.8)
+      web3-eth-accounts: 4.3.1
+      web3-eth-contract: 4.7.2(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
+      web3-eth-ens: 4.4.0(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
+      web3-eth-iban: 4.0.7
+      web3-eth-personal: 4.1.0(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@4.1.8)
+      web3-net: 4.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-providers-http: 4.2.0
+      web3-providers-ws: 4.0.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-rpc-methods: 1.3.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-rpc-providers: 1.0.0-rc.4(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      web3-types: 1.10.0
+      web3-utils: 4.3.3
+      web3-validator: 2.0.6
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - typescript
+      - utf-8-validate
+      - zod
 
   web3@4.16.0(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76):
     dependencies:
@@ -20582,6 +21538,8 @@ snapshots:
   yoctocolors-cjs@2.1.3: {}
 
   zod@3.25.76: {}
+
+  zod@4.1.8: {}
 
   zustand@4.5.7(@types/react@18.3.24)(react@19.1.1):
     dependencies:
