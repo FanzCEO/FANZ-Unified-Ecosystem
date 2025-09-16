@@ -43,9 +43,9 @@ services:
   # 🗄️ CORE INFRASTRUCTURE
   # ============================================
   
-  # PostgreSQL Database
+  # PostgreSQL Database (Hardened)
   postgres:
-    image: postgres:15-alpine
+    image: postgres:15-alpine@sha256:REDACTED_AWS_SECRET_KEYece84824a14c9d6fbbab02d0
     container_name: fanz_postgres
     restart: unless-stopped
     environment:
@@ -66,9 +66,9 @@ services:
       timeout: 10s
       retries: 3
 
-  # Redis Cache & Sessions
+  # Redis Cache & Sessions (Hardened)
   redis:
-    image: redis:7-alpine
+    image: redis:7-alpine@sha256:REDACTED_AWS_SECRET_KEY13465bb14d845db72a4e3e08
     container_name: fanz_redis
     restart: unless-stopped
     command: redis-server --requirepass ${REDIS_PASSWORD:-fanz_redis_password} --maxmemory 512mb --maxmemory-policy allkeys-lru

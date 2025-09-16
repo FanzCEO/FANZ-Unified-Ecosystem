@@ -5,6 +5,14 @@ import userRoutes from './user.routes';
 import contentRoutes from './content.routes';
 import paymentRoutes from './payment.routes';
 import { optionalAuth } from '../middleware/auth';
+import { 
+  createVendorAccessContainer, 
+  createVendorAccessRoutes,
+  createVendorAccessMiddleware,
+  addVendorAccessHealthChecks
+} from './vendor-access';
+import { db } from '../config/database';
+import { addVendorAccessProtection } from './protected-examples';
 
 const logger = new Logger('Routes');
 
@@ -14,6 +22,24 @@ export const setupRoutes = (app: Application) => {
   
   // API v1 base route
   const apiV1 = '/api/v1';
+  
+  // Setup vendor access system
+  try {
+    const vendorAccessContainer = createVendorAccessContainer(db.getPool());
+    const vendorAccessRoutes = createVendorAccessRoutes(vendorAccessContainer);
+    const vendorAccessMiddleware = createVendorAccessMiddleware(vendorAccessContainer);
+    
+    // Mount vendor access routes
+    app.use(`${apiV1}/vendor-access`, vendorAccessRoutes);
+    addVendorAccessHealthChecks(vendorAccessRoutes, vendorAccessContainer);
+    
+    // Store middleware for use in other routes
+    app.locals.vendorAccessMiddleware = vendorAccessMiddleware;
+    
+    logger.info('Vendor access system integrated successfully');
+  } catch (error) {
+    logger.error('Failed to setup vendor access system', { error: error.message });
+  }
   
   // Health check and test endpoints
   app.get(`${apiV1}/test`, optionalAuth, (req, res) => {
@@ -43,6 +69,11 @@ export const setupRoutes = (app: Application) => {
   // Payment and financial management routes
   app.use(`${apiV1}/payment`, paymentRoutes);
   
+  // Add vendor access protection to existing routes
+  if (app.locals.vendorAccessMiddleware) {
+    addVendorAccessProtection(app, apiV1);
+  }
+  
   // Health status endpoint with more details
   app.get(`${apiV1}/status`, (req, res) => {
     res.json({
@@ -65,6 +96,7 @@ export const setupRoutes = (app: Application) => {
         users: `${apiV1}/users`,
         content: `${apiV1}/content`,
         payment: `${apiV1}/payment`,
+        vendorAccess: `${apiV1}/vendor-access`,
         test: `${apiV1}/test`,
         health: '/health',
         metrics: '/metrics'
@@ -91,6 +123,7 @@ export const setupRoutes = (app: Application) => {
       `${apiV1}/users/*`,
       `${apiV1}/content/*`,
       `${apiV1}/payment/*`,
+      `${apiV1}/vendor-access/*`,
       `${apiV1}/test`,
       `${apiV1}/status`
     ]
