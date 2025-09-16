@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+/* FANZ Unified Ecosystem - Global Styles */
+
+/* Custom CSS Variables for FANZ Branding */
+:root {
+  --fanz-primary: #3B82F6;
+  --fanz-secondary: #8B5CF6;
+  --fanz-accent: #EC4899;
+  --fanz-success: #10B981;
+  --fanz-warning: #F59E0B;
+  --fanz-error: #EF4444;
+  --fanz-dark: #1F2937;
+  --fanz-light: #F9FAFB;
+}
+
+/* Global Base Styles */
+html {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 
+               'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 
+               'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--fanz-light);
+  color: var(--fanz-dark);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--fanz-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fanz-secondary);
+}
+
+/* Focus Styles for Accessibility */
+*:focus {
+  outline: 2px solid var(--fanz-primary);
+  outline-offset: 2px;
+}
+
+/* Animation Utilities */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Custom Component Styles */
+.fanz-gradient-bg {
+  background: linear-gradient(135deg, var(--fanz-primary), var(--fanz-secondary));
+}
+
+.fanz-glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Loading Spinner */
+.fanz-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Text */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fanz-light: #1F2937;
+    --fanz-dark: #F9FAFB;
+  }
+  
+  body {
+    background-color: var(--fanz-light);
+    color: var(--fanz-dark);
+  }
+}

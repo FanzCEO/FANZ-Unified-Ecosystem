@@ -79,6 +79,7 @@
     "@storybook/react": "^8.6.14",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^14.3.1",
@@ -109,8 +110,7 @@
     "typescript": "^5.9.2",
     "vite": "^6.3.6",
     "vite-bundle-analyzer": "^0.23.0",
-    "vite-plugin-pwa": "^0.21.2",
-    "vite-plugin-windicss": "^1.9.4"
+    "vite-plugin-pwa": "^0.21.2"
   },
   "browserslist": {
     "production": [
