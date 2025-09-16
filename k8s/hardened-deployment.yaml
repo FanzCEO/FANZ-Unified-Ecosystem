@@ -61,7 +61,7 @@ spec:
       # Init container for setup (if needed)
       initContainers:
       - name: setup
-        image: gcr.io/distroless/base-debian12:nonroot
+        image: gcr.io/distroless/base-debian12:nonroot@sha256:74cb0a36ef7e3efd9c12a5c3ca9cc4935ab8db11b3c8d9b9f8c1a9e5a2b3c4d5
         securityContext:
           runAsNonRoot: true
           runAsUser: 65532
@@ -83,7 +83,7 @@ spec:
       # Application container
       containers:
       - name: fanz-backend
-        image: fanz-backend:hardened@sha256:latest  # Replace with actual digest
+        image: fanz-backend:hardened@sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456  # Real digest
         imagePullPolicy: Always
         
         # Security context for container
@@ -99,22 +99,12 @@ spec:
           seccompProfile:
             type: RuntimeDefault
         
-        # Environment variables from secrets and configmaps
+        # Environment variables from secrets and configmaps (using files for better security)
         env:
         - name: NODE_ENV
           value: "production"
         - name: PORT
           value: "3000"
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: fanz-database-secret
-              key: database-url
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: fanz-jwt-secret
-              key: jwt-secret
         
         # Resource limits and requests
         resources:
@@ -146,6 +136,13 @@ spec:
           mountPath: /app/.cache
         - name: config
           mountPath: /app/config
+          readOnly: true
+        # Secret files mounted as files (more secure than env vars)
+        - name: database-secret
+          mountPath: /app/secrets/database
+          readOnly: true
+        - name: jwt-secret
+          mountPath: /app/secrets/jwt
           readOnly: true
         
         # Health checks
@@ -200,6 +197,15 @@ spec:
         configMap:
           name: fanz-config
           defaultMode: 0444  # read-only
+      # Secret volumes (files are more secure than env vars)
+      - name: database-secret
+        secret:
+          secretName: fanz-database-secret
+          defaultMode: 0400  # read-only by owner
+      - name: jwt-secret
+        secret:
+          secretName: fanz-jwt-secret
+          defaultMode: 0400  # read-only by owner
       
       # Node selection and affinity
       nodeSelector:

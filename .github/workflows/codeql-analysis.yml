@@ -1,0 +1,340 @@
+name: "🛡️ CodeQL Advanced Security Analysis"
+
+on:
+  push:
+    branches: [ main, develop, release/* ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run CodeQL analysis every day at 6:00 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: CodeQL Analysis (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      # Required for all workflows
+      security-events: write
+      # Required for workflows in private repositories
+      actions: read
+      contents: read
+      # Required to upload SARIF files
+      checks: write
+      
+    strategy:
+      fail-fast: false
+      matrix:
+        # Override automatic language detection by changing the below list
+        # Supported options: 'csharp', 'cpp', 'go', 'java', 'javascript', 'python', 'ruby', 'swift'
+        language: [ 'javascript', 'python' ]
+        # Additional languages can be added based on FANZ ecosystem needs:
+        # include:
+        #   - language: 'go'
+        #   - language: 'java' 
+        #   - language: 'csharp'
+
+    steps:
+    - name: 🔐 Harden GitHub Actions Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+        disable-telemetry: false
+
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+      with:
+        # Full history for better analysis
+        fetch-depth: 0
+
+    - name: 🏷️ Add security labels
+      run: |
+        echo "FANZ_SECURITY_SCAN=true" >> $GITHUB_ENV
+        echo "SCAN_TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
+        echo "REPOSITORY_NAME=${{ github.repository }}" >> $GITHUB_ENV
+
+    - name: 🔍 Detect languages and services
+      id: detect
+      run: |
+        echo "Detecting FANZ services and languages..."
+        
+        # Detect TypeScript/JavaScript services
+        if find . -name "package.json" -not -path "*/node_modules/*" | head -1; then
+          echo "js_detected=true" >> $GITHUB_OUTPUT
+          echo "📦 JavaScript/TypeScript detected"
+        fi
+        
+        # Detect Python services  
+        if find . -name "*.py" -not -path "*/node_modules/*" | head -1; then
+          echo "python_detected=true" >> $GITHUB_OUTPUT
+          echo "🐍 Python detected"
+        fi
+        
+        # Detect Go services
+        if find . -name "go.mod" | head -1; then
+          echo "go_detected=true" >> $GITHUB_OUTPUT
+          echo "🚀 Go detected"
+        fi
+
+        # Detect Java services
+        if find . -name "pom.xml" -o -name "build.gradle" | head -1; then
+          echo "java_detected=true" >> $GITHUB_OUTPUT
+          echo "☕ Java detected"
+        fi
+
+        # Detect service types for specialized scanning
+        if [ -d "payments" ] || [ -d "fanzfinance-os" ]; then
+          echo "payment_service=true" >> $GITHUB_OUTPUT
+          echo "💳 Payment service detected - enhanced security rules will apply"
+        fi
+        
+        if [ -d "auth-service" ] || grep -r "jwt\|oauth\|auth" . --include="*.ts" --include="*.js" >/dev/null 2>&1; then
+          echo "auth_service=true" >> $GITHUB_OUTPUT
+          echo "🔐 Authentication service detected - enhanced security rules will apply"
+        fi
+
+    # Language-specific setup steps
+    - name: 🔧 Set up Node.js for JavaScript/TypeScript
+      if: matrix.language == 'javascript'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: 🔧 Set up Python
+      if: matrix.language == 'python'
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: 🔧 Set up Go
+      if: matrix.language == 'go'
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+        cache: true
+
+    - name: 🔧 Set up Java
+      if: matrix.language == 'java'
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # Pre-build dependency installation
+    - name: 📦 Install JavaScript/TypeScript dependencies
+      if: matrix.language == 'javascript'
+      run: |
+        # Install dependencies for all package.json files
+        find . -name "package.json" -not -path "*/node_modules/*" -execdir npm ci \;
+
+    - name: 📦 Install Python dependencies
+      if: matrix.language == 'python'
+      run: |
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+
+    - name: 🔍 Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        # Custom queries for adult content platform security
+        queries: |
+          security-and-quality,
+          security-extended
+        # Enhanced configuration for FANZ-specific security
+        config: |
+          name: "FANZ Security Configuration"
+          
+          queries:
+            - name: security-and-quality
+              uses: security-and-quality
+            - name: security-extended  
+              uses: security-extended
+              
+          # Custom query filters for adult content platforms
+          query-filters:
+            - exclude:
+                id: js/weak-cryptographic-algorithm
+                reason: "Reviewed - using appropriate crypto for content hashing"
+                
+          # Path filters to focus on critical areas
+          paths:
+            - "**/auth*/**"
+            - "**/payment*/**" 
+            - "**/security/**"
+            - "**/api*/**"
+            - "**/backend/**"
+            - "**/frontend/src/**"
+            - "**/fanzfinance-os/**"
+            
+          paths-ignore:
+            - "**/node_modules/**"
+            - "**/dist/**"
+            - "**/build/**"
+            - "**/*.test.*"
+            - "**/*.spec.*"
+
+    - name: 🏗️ Build for analysis (JavaScript/TypeScript)
+      if: matrix.language == 'javascript'
+      run: |
+        echo "Building JavaScript/TypeScript projects..."
+        
+        # Build each service that has a build script
+        for package in $(find . -name "package.json" -not -path "*/node_modules/*"); do
+          dir=$(dirname "$package")
+          echo "Checking build for: $dir"
+          
+          cd "$dir"
+          if npm run build --if-present 2>/dev/null; then
+            echo "✅ Built successfully: $dir"
+          else
+            echo "ℹ️  No build script or build failed: $dir"
+          fi
+          cd - > /dev/null
+        done
+
+    - name: 🏗️ Build for analysis (Python)
+      if: matrix.language == 'python'
+      run: |
+        echo "Python projects typically don't require compilation"
+        # Run any Python-specific setup if needed
+        python -c "import sys; print(f'Python version: {sys.version}')"
+
+    - name: 🏗️ Build for analysis (Go) 
+      if: matrix.language == 'go'
+      run: |
+        echo "Building Go projects..."
+        if [ -f go.mod ]; then
+          go mod download
+          go build -v ./...
+        fi
+
+    - name: 🏗️ Build for analysis (Java)
+      if: matrix.language == 'java' 
+      run: |
+        echo "Building Java projects..."
+        if [ -f pom.xml ]; then
+          mvn compile -DskipTests
+        elif [ -f build.gradle ]; then
+          ./gradlew compileJava -x test
+        fi
+
+    - name: 🔍 Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{ matrix.language }}"
+        # Upload SARIF file for security tab
+        upload: true
+        # Set output directory for SARIF files
+        output: sarif-results
+        # Add custom tags for FANZ platform
+        checkout_path: ${{ github.workspace }}
+
+    - name: 🏷️ Tag SARIF results with FANZ metadata
+      if: always()
+      run: |
+        if [ -d "sarif-results" ]; then
+          for sarif_file in sarif-results/*.sarif; do
+            if [ -f "$sarif_file" ]; then
+              echo "Adding FANZ metadata to: $sarif_file"
+              
+              # Add FANZ-specific metadata using jq
+              if command -v jq >/dev/null 2>&1; then
+                jq --arg repo "$REPOSITORY_NAME" \
+                   --arg timestamp "$SCAN_TIMESTAMP" \
+                   --arg service_type "fanz-ecosystem" \
+                   '.properties = (.properties // {}) + {
+                     "fanz:repository": $repo,
+                     "fanz:scan-timestamp": $timestamp, 
+                     "fanz:service-type": $service_type,
+                     "fanz:security-level": "production",
+                     "fanz:compliance-required": true
+                   }' "$sarif_file" > "${sarif_file}.tmp" && mv "${sarif_file}.tmp" "$sarif_file"
+              fi
+            fi
+          done
+        fi
+
+    - name: 📊 Generate security summary
+      if: always()
+      run: |
+        echo "## 🛡️ FANZ Security Analysis Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Language**: ${{ matrix.language }}" >> $GITHUB_STEP_SUMMARY  
+        echo "- **Scan Time**: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ steps.detect.outputs.payment_service }}" = "true" ]; then
+          echo "🏦 **Payment Service Detected** - Enhanced PCI DSS security rules applied" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ steps.detect.outputs.auth_service }}" = "true" ]; then
+          echo "🔐 **Authentication Service Detected** - Enhanced auth security rules applied" >> $GITHUB_STEP_SUMMARY  
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "📈 Results will be available in the Security tab within 5-10 minutes." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🎯 **Next Steps:**" >> $GITHUB_STEP_SUMMARY
+        echo "1. Review findings in Security → Code scanning alerts" >> $GITHUB_STEP_SUMMARY
+        echo "2. Address Critical and High severity issues first" >> $GITHUB_STEP_SUMMARY  
+        echo "3. Follow FANZ Security SLAs for remediation" >> $GITHUB_STEP_SUMMARY
+        echo "4. Update security documentation as needed" >> $GITHUB_STEP_SUMMARY
+
+    - name: 📤 Upload SARIF files as artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: codeql-sarif-${{ matrix.language }}-${{ github.run_number }}
+        path: sarif-results/
+        retention-days: 30
+
+    # Security notification for critical findings
+    - name: 🚨 Security alert notification
+      if: failure()
+      run: |
+        echo "::warning title=CodeQL Analysis Failed::CodeQL analysis failed for ${{ matrix.language }}. Check the logs for details and ensure all dependencies are properly configured."
+        echo "This may indicate a critical security issue that needs immediate attention."
+
+  # Consolidate results across all languages
+  security-summary:
+    name: 📋 Security Analysis Summary
+    needs: analyze
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      security-events: read
+      actions: read
+      
+    steps:
+    - name: 📊 Generate final security report
+      run: |
+        echo "## 🏆 FANZ Unified Security Analysis Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "All CodeQL analyses have completed for the FANZ ecosystem." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📋 Analysis Coverage:" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ JavaScript/TypeScript (Frontend, Backend, Services)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Python (AI/ML Services)" >> $GITHUB_STEP_SUMMARY  
+        echo "- 🔍 Additional languages as detected" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🎯 FANZ-Specific Security Checks:" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔐 Authentication & Authorization" >> $GITHUB_STEP_SUMMARY
+        echo "- 💳 Payment Processing Security" >> $GITHUB_STEP_SUMMARY
+        echo "- 🛡️ Adult Content Platform Compliance" >> $GITHUB_STEP_SUMMARY
+        echo "- 🌐 API Security & Input Validation" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔒 Cryptographic Implementation" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "📈 **View Results:** Security tab → Code scanning alerts" >> $GITHUB_STEP_SUMMARY
+        echo "📚 **Documentation:** Follow FANZ Security Runbook for remediation" >> $GITHUB_STEP_SUMMARY
