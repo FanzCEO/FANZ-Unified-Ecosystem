@@ -57,25 +57,30 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ethers": "^6.8.1",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.1.5",
-    "helmet": "^7.1.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^8.1.0",
     "ioredis": "^5.3.2",
     "joi": "^17.11.0",
+    "jose": "^5.10.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.7",
     "openai": "^4.20.1",
     "pg": "^8.11.3",
+    "pino": "^9.9.5",
     "prom-client": "^15.0.0",
     "sharp": "^0.33.0",
     "socket.io": "^4.7.4",
     "square": "^30.0.0",
     "twilio": "^4.19.3",
+    "undici": "^6.21.3",
     "uuid": "^9.0.1",
+    "viem": "^2.37.6",
     "web3": "^4.2.2",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "zod": "4.1.8"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -103,8 +108,8 @@
     "rimraf": "^5.0.5",
     "supertest": "^7.1.4",
     "ts-jest": "^29.1.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
   },
   "nodemonConfig": {
     "watch": [
