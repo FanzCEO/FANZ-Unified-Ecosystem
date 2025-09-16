@@ -1,48 +1,71 @@
-# 🚀 FANZ Unified Ecosystem - Multi-stage Docker Template
-# Template for building secure, production-ready containers
+# 🛡️ FANZ Unified Ecosystem - HARDENED Multi-stage Docker Template
+# Template for building security-hardened, production-ready containers
+# Implements: Distroless runtime, pinned digests, minimal attack surface
 
-# Stage 1: Base dependencies
-FROM node:18-alpine AS base
-RUN apk add --no-cache libc6-compat
+# Stage 1: Dependency resolution with pinned base image
+FROM node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e AS base
+
+# Install only essential dependencies with security updates
+RUN apk update && apk upgrade --no-cache && \
+    apk add --no-cache \
+    libc6-compat && \
+    rm -rf /var/cache/apk/*
+
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
+# Copy lockfiles for reproducible builds
 COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
 
-# Stage 2: Build the application
+# Install dependencies with frozen lockfile
+RUN corepack enable pnpm && \
+    pnpm i --frozen-lockfile --ignore-scripts && \
+    pnpm store prune
+
+# Stage 2: Build stage
 FROM base AS builder
 WORKDIR /app
+
+# Copy source code (use .dockerignore to exclude sensitive files)
 COPY . .
 
-# Build the application
-RUN pnpm turbo build
+# Build application and cleanup
+RUN pnpm turbo build && \
+    pnpm prune --prod && \
+    rm -rf src/ *.md docs/ .git/ tests/ coverage/
 
-# Stage 3: Production runtime
-FROM node:18-alpine AS runner
-WORKDIR /app
+# Stage 3: Hardened production runtime using distroless
+FROM gcr.io/distroless/nodejs18-debian12:nonroot AS runner
 
-# Create a non-root user
-RUN addgroup --system --gid 1001 fanz
-RUN adduser --system --uid 1001 fanz
+# Container metadata and security labels
+LABEL maintainer="FANZ Security Team <security@fanz.network>" \
+      version="1.0.0" \
+      description="FANZ Service - Security Hardened" \
+      security-scan="required" \
+      base-image="distroless/nodejs18"
 
-# Copy built application
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package.json ./package.json
+# Copy only necessary files with proper ownership
+COPY --from=builder --chown=nonroot:nonroot /app/dist ./dist
+COPY --from=builder --chown=nonroot:nonroot /app/node_modules ./node_modules
+COPY --from=builder --chown=nonroot:nonroot /app/package.json ./package.json
 
-# Install production dependencies only
-RUN corepack enable pnpm && pnpm i --prod --frozen-lockfile
+# Create logs directory with minimal permissions
+USER root
+RUN mkdir -p /app/logs && \
+    chown -R nonroot:nonroot /app/logs && \
+    chmod 750 /app/logs
 
-# Set ownership and permissions
-RUN chown -R fanz:fanz /app
-USER fanz
+# Switch to non-root user (distroless nonroot = 65532:65532)
+USER 65532:65532
 
-# Expose port
+# Set temporary directory for writable filesystem
+VOLUME ["/tmp"]
+
+# Expose only required port
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
+# Health check with optimized parameters
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })"]
 
-# Start the application
+# Start application (distroless includes proper init system)
 CMD ["node", "dist/index.js"]

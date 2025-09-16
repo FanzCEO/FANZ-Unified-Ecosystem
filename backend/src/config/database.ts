@@ -140,6 +140,10 @@ class DatabaseManager {
     };
   }
 
+  public getPool(): Pool {
+    return this.pool;
+  }
+
   public async close(): Promise<void> {
     try {
       await this.pool.end();

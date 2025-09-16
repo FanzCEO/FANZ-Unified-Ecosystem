@@ -1,0 +1,61 @@
+# 🛡️ FANZ Pod Security Policy
+# Implements strict security controls for all containers
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: fanz-restricted-psp
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'runtime/default'
+    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
+spec:
+  # Prevent privilege escalation
+  privileged: false
+  allowPrivilegeEscalation: false
+  
+  # Require dropping all capabilities
+  requiredDropCapabilities:
+    - ALL
+  
+  # Allow only specific capabilities if needed
+  allowedCapabilities: []
+  
+  # Prevent containers from running as root
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+    ranges:
+      - min: 1000
+        max: 65535
+  
+  runAsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1000
+        max: 65535
+  
+  # File system restrictions
+  fsGroup:
+    rule: 'RunAsAny'
+  
+  readOnlyRootFilesystem: true
+  
+  # Network restrictions
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  hostPorts:
+    - min: 0
+      max: 0
+  
+  # Volume restrictions
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'persistentVolumeClaim'
+    - 'hostPath'
+  
+  allowedHostPaths:
+    - pathPrefix: "/var/log/fanz"
+      readOnly: false

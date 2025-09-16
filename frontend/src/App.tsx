@@ -288,13 +288,13 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className=\"min-h-screen bg-gray-50 flex flex-col\">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Global Header */}
       <EcosystemHeader 
         onMenuClick={() => setSidebarOpen(!sidebarOpen)}
       />
       
-      <div className=\"flex-1 flex overflow-hidden\">
+      <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
         {isAuthenticated && (
           <EcosystemSidebar
@@ -305,7 +305,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         )}
         
         {/* Main Content */}
-        <main className=\"flex-1 overflow-auto bg-white\">
+        <main className="flex-1 overflow-auto bg-white">
           <ErrorBoundary>
             {children}
           </ErrorBoundary>
@@ -317,7 +317,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       
       {/* Toast Notifications */}
       <Toaster 
-        position=\"top-right\"
+        position="top-right"
         toastOptions={{
           duration: 4000,
           style: {
@@ -342,7 +342,7 @@ const ProtectedRoute: React.FC<{
   }
 
   if (!isAuthenticated) {
-    return <Navigate to=\"/auth\" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   // Check platform access if specified
@@ -353,10 +353,10 @@ const ProtectedRoute: React.FC<{
     
     if (!hasAccess) {
       return (
-        <div className=\"flex items-center justify-center h-64\">
-          <div className=\"text-center\">
-            <h2 className=\"text-2xl font-bold text-gray-900 mb-2\">Access Required</h2>
-            <p className=\"text-gray-600\">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Required</h2>
+            <p className="text-gray-600">
               You need access to {PLATFORM_CONFIG[platform as keyof typeof PLATFORM_CONFIG]?.name} to view this page.
             </p>
           </div>
@@ -373,68 +373,68 @@ const LandingPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    return <Navigate to=\"/dashboard\" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (
-    <div className=\"min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900\">
-      <div className=\"relative z-10 flex flex-col items-center justify-center min-h-screen px-4\">
-        <div className=\"text-center mb-12\">
-          <h1 className=\"text-6xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent\">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+        <div className="text-center mb-12">
+          <h1 className="text-6xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             FANZ Ecosystem
           </h1>
-          <p className=\"text-2xl text-gray-300 mb-8\">
+          <p className="text-2xl text-gray-300 mb-8">
             The Complete Creator Economy Platform
           </p>
-          <p className=\"text-lg text-gray-400 max-w-2xl mx-auto mb-12\">
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-12">
             13 unified platforms, zero feature loss. Experience the future of creator economy 
             with seamless cross-platform integration, unified analytics, and advanced AI tools.
           </p>
         </div>
 
         {/* Platform Grid */}
-        <div className=\"grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12 max-w-6xl\">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12 max-w-6xl">
           {Object.entries(PLATFORM_CONFIG).map(([key, platform]) => (
             <div
               key={key}
-              className=\"bg-white/10 backdrop-blur-lg rounded-lg p-4 text-center hover:bg-white/20 transition-all duration-300\"
+              className="bg-white/10 backdrop-blur-lg rounded-lg p-4 text-center hover:bg-white/20 transition-all duration-300"
             >
-              <div className=\"text-3xl mb-2\">{platform.icon}</div>
-              <div className=\"text-white text-sm font-medium\">{platform.name}</div>
-              <div className=\"text-gray-300 text-xs\">{platform.description}</div>
+              <div className="text-3xl mb-2">{platform.icon}</div>
+              <div className="text-white text-sm font-medium">{platform.name}</div>
+              <div className="text-gray-300 text-xs">{platform.description}</div>
             </div>
           ))}
         </div>
 
         {/* CTA Buttons */}
-        <div className=\"flex flex-col sm:flex-row gap-4\">
+        <div className="flex flex-col sm:flex-row gap-4">
           <button
             onClick={() => window.location.href = '/auth'}
-            className=\"bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl\"
+            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Get Started
           </button>
           <button
             onClick={() => window.location.href = '/about'}
-            className=\"bg-white/10 backdrop-blur-lg text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/20 transition-all duration-300 border border-white/20\"
+            className="bg-white/10 backdrop-blur-lg text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/20 transition-all duration-300 border border-white/20"
           >
             Learn More
           </button>
         </div>
 
         {/* Stats */}
-        <div className=\"grid grid-cols-3 gap-8 mt-16 text-center\">
+        <div className="grid grid-cols-3 gap-8 mt-16 text-center">
           <div>
-            <div className=\"text-3xl font-bold text-white\">13</div>
-            <div className=\"text-gray-400\">Unified Platforms</div>
+            <div className="text-3xl font-bold text-white">13</div>
+            <div className="text-gray-400">Unified Platforms</div>
           </div>
           <div>
-            <div className=\"text-3xl font-bold text-white\">64%</div>
-            <div className=\"text-gray-400\">Complexity Reduction</div>
+            <div className="text-3xl font-bold text-white">64%</div>
+            <div className="text-gray-400">Complexity Reduction</div>
           </div>
           <div>
-            <div className=\"text-3xl font-bold text-white\">0</div>
-            <div className=\"text-gray-400\">Feature Loss</div>
+            <div className="text-3xl font-bold text-white">0</div>
+            <div className="text-gray-400">Feature Loss</div>
           </div>
         </div>
       </div>
@@ -450,11 +450,11 @@ const App: React.FC = () => {
         <Router>
           <Routes>
             {/* Landing Page */}
-            <Route path=\"/\" element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
             
             {/* Authentication */}
             <Route 
-              path=\"/auth\" 
+              path="/auth" 
               element={
                 <AppLayout>
                   <UnifiedAuth />
@@ -464,7 +464,7 @@ const App: React.FC = () => {
 
             {/* Protected Routes */}
             <Route 
-              path=\"/dashboard\" 
+              path="/dashboard" 
               element={
                 <ProtectedRoute>
                   <AppLayout>
@@ -503,7 +503,7 @@ const App: React.FC = () => {
 
             {/* Unified Features */}
             <Route 
-              path=\"/analytics\" 
+              path="/analytics" 
               element={
                 <ProtectedRoute>
                   <AppLayout>
@@ -516,7 +516,7 @@ const App: React.FC = () => {
             />
 
             <Route 
-              path=\"/wallet\" 
+              path="/wallet" 
               element={
                 <ProtectedRoute>
                   <AppLayout>
@@ -529,7 +529,7 @@ const App: React.FC = () => {
             />
 
             <Route 
-              path=\"/settings\" 
+              path="/settings" 
               element={
                 <ProtectedRoute>
                   <AppLayout>
@@ -542,7 +542,7 @@ const App: React.FC = () => {
             />
 
             <Route 
-              path=\"/profile\" 
+              path="/profile" 
               element={
                 <ProtectedRoute>
                   <AppLayout>
@@ -556,8 +556,8 @@ const App: React.FC = () => {
 
             {/* Catch all - redirect to dashboard if authenticated, otherwise to landing */}
             <Route 
-              path=\"*\" 
-              element={<Navigate to=\"/\" replace />} 
+              path="*" 
+              element={<Navigate to="/" replace />} 
             />
           </Routes>
         </Router>

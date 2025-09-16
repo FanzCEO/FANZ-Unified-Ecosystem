@@ -1,0 +1,27 @@
+# 🔒 FANZ Security Context Configuration
+# Default security context for all containers
+securityContext:
+  # Run as non-root user
+  runAsNonRoot: true
+  runAsUser: 65532  # distroless nonroot user
+  runAsGroup: 65532
+  
+  # Read-only root filesystem
+  readOnlyRootFilesystem: true
+  
+  # Drop all capabilities
+  capabilities:
+    drop:
+    - ALL
+  
+  # Prevent privilege escalation
+  allowPrivilegeEscalation: false
+  
+  # SELinux/AppArmor options
+  seLinuxOptions:
+    type: "spc_t"
+    level: "s0"
+  
+  # Seccomp profile
+  seccompProfile:
+    type: RuntimeDefault

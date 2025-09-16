@@ -1,5 +1,6 @@
-# 🔐 HARDENED MULTI-STAGE DOCKERFILE FOR FANZ BACKEND
-# Implements security best practices: minimal images, non-root user, read-only filesystem
+# 🌐 FANZ API GATEWAY - HARDENED DOCKERFILE
+# Security-hardened API gateway service container
+# Implements: Distroless runtime, pinned digests, minimal attack surface
 
 # Stage 1: Build stage with pinned digest for supply chain security
 FROM node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e AS builder
@@ -17,7 +18,7 @@ RUN apk update && apk upgrade --no-cache && \
 WORKDIR /usr/src/app
 
 # Copy package files first for better Docker layer caching
-COPY package*.json tsconfig.json ./
+COPY package*.json ./
 
 # Install dependencies with frozen lockfile for reproducible builds
 RUN npm ci --frozen-lockfile && \
@@ -25,7 +26,7 @@ RUN npm ci --frozen-lockfile && \
     rm -rf ~/.npm
 
 # Copy source code
-COPY src ./src
+COPY . .
 
 # Build application and remove dev dependencies
 RUN npm run build && \
@@ -37,8 +38,9 @@ FROM gcr.io/distroless/nodejs18-debian12:nonroot AS production
 # Set proper labels for container metadata
 LABEL maintainer="FANZ Security Team <security@fanz.network>" \
       version="1.0.0" \
-      description="FANZ Unified Backend - Security Hardened" \
-      security-scan="required"
+      description="FANZ API Gateway - Security Hardened" \
+      security-scan="required" \
+      service="api-gateway"
 
 # Copy only built application and production dependencies
 COPY --from=builder --chown=nonroot:nonroot /usr/src/app/dist ./dist
@@ -61,11 +63,11 @@ VOLUME ["/tmp"]
 # Note: This is handled by Kubernetes deployment manifest
 
 # Expose only necessary ports
-EXPOSE 3000
+EXPOSE 8080
 
 # Health check with timeout
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["node", "-e", "require('http').get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })"]
+  CMD ["node", "-e", "require('http').get('http://localhost:8080/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })"]
 
 # Start application with proper signal handling (distroless includes init)
 CMD ["node", "dist/server.js"]

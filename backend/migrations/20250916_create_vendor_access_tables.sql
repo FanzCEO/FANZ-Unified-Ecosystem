@@ -333,8 +333,8 @@ CREATE VIEW vendor_security_metrics AS
 SELECT 
     DATE(val.timestamp) as date,
     COUNT(*) as total_activities,
-    COUNT(CASE WHEN val.risk_score > 70 THEN 1 END) as high_risk_activities,
-    COUNT(CASE WHEN val.response_status >= 400 THEN 1 END) as error_responses,
+    COUNT(CASE WHEN val.risk_score > 7 THEN 1 END) as high_risk_activities,
+    COUNT(CASE WHEN val.success = false THEN 1 END) as error_responses,
     COUNT(DISTINCT val.vendor_id) as active_vendors,
     AVG(val.risk_score) as avg_risk_score
 FROM vendor_audit_logs val
