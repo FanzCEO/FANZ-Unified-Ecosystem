@@ -200,6 +200,12 @@ export const requireModerator = authorize('admin', 'super_admin', 'moderator');
 // Creator-only middleware
 export const requireCreator = authorize('creator', 'admin', 'super_admin');
 
+// Role-based requirement function
+export const requireRole = (...roles: string[]) => authorize(...roles);
+
+// Ownership requirement function 
+export const requireOwnership = (param?: string) => authorizeOwnership(param);
+
 // Premium user middleware
 export const requirePremium = authorize('premium_fan', 'creator', 'admin', 'super_admin');
 

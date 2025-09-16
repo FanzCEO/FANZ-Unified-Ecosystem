@@ -60,3 +60,21 @@ export function validateDate(value: any, fieldName: string): void {
     throw new ValidationError(`${fieldName} must be a valid date`, fieldName);
   }
 }
+
+// Type conversion helpers for query parameters
+export function toString(value: any): string {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value)) return value[0] || '';
+  return String(value);
+}
+
+export function toNumber(value: any): number {
+  const str = toString(value);
+  const num = parseInt(str, 10);
+  return isNaN(num) ? 0 : num;
+}
+
+export function toBoolean(value: any): boolean {
+  const str = toString(value).toLowerCase();
+  return str === 'true' || str === '1' || str === 'yes';
+}

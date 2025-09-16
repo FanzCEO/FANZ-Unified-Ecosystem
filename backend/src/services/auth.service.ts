@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import * as jose from 'jose';
+import bcrypt from 'bcrypt';
 import { config } from '../config';
 import { Logger } from '../utils/logger';
 import { redis } from '../config/redis';
@@ -62,14 +62,16 @@ export class AuthService {
   };
 
   // Generate JWT access token
-  generateAccessToken(payload: JWTPayload): string {
+  async generateAccessToken(payload: JWTPayload): Promise<string> {
     try {
-      const token = jwt.sign(payload, config.JWT_SECRET, {
-        expiresIn: config.JWT_EXPIRES_IN,
-        issuer: 'fanz.eco',
-        audience: 'fanz-api',
-        algorithm: 'HS256'
-      });
+      const secret = new TextEncoder().encode(config.JWT_SECRET);
+      const token = await new jose.SignJWT(payload)
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setIssuer('fanz.eco')
+        .setAudience('fanz-api')
+        .setExpirationTime(config.JWT_EXPIRES_IN)
+        .sign(secret);
 
       logger.debug('Access token generated', { userId: payload.userId });
       return token;
@@ -83,7 +85,7 @@ export class AuthService {
   }
 
   // Generate JWT refresh token
-  generateRefreshToken(payload: JWTPayload): string {
+  async generateRefreshToken(payload: JWTPayload): Promise<string> {
     try {
       const refreshPayload = {
         ...payload,
@@ -91,12 +93,14 @@ export class AuthService {
         type: 'refresh'
       };
 
-      const token = jwt.sign(refreshPayload, config.REFRESH_TOKEN_SECRET, {
-        expiresIn: config.REFRESH_TOKEN_EXPIRES_IN,
-        issuer: 'fanz.eco',
-        audience: 'fanz-api',
-        algorithm: 'HS256'
-      });
+      const secret = new TextEncoder().encode(config.REFRESH_TOKEN_SECRET);
+      const token = await new jose.SignJWT(refreshPayload)
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setIssuer('fanz.eco')
+        .setAudience('fanz-api')
+        .setExpirationTime(config.REFRESH_TOKEN_EXPIRES_IN)
+        .sign(secret);
 
       logger.debug('Refresh token generated', { userId: payload.userId });
       return token;
@@ -112,12 +116,16 @@ export class AuthService {
   // Verify JWT token
   async verifyToken(token: string, isRefreshToken: boolean = false): Promise<JWTPayload> {
     try {
-      const secret = isRefreshToken ? config.REFRESH_TOKEN_SECRET : config.JWT_SECRET;
+      const secret = new TextEncoder().encode(
+        isRefreshToken ? config.REFRESH_TOKEN_SECRET : config.JWT_SECRET
+      );
       
-      const decoded = jwt.verify(token, secret, {
+      const { payload } = await jose.jwtVerify(token, secret, {
         issuer: 'fanz.eco',
         audience: 'fanz-api'
-      }) as JWTPayload;
+      });
+
+      const decoded = payload as JWTPayload;
 
       // Check if token is blacklisted
       const isBlacklisted = await this.isTokenBlacklisted(token);
@@ -132,10 +140,10 @@ export class AuthService {
 
       return decoded;
     } catch (error) {
-      if (error instanceof jwt.TokenExpiredError) {
+      if (error instanceof jose.errors.JWTExpired) {
         logger.warn('Token expired', { token: token.substring(0, 20) + '...' });
         throw new AuthenticationError('Token expired');
-      } else if (error instanceof jwt.JsonWebTokenError) {
+      } else if (error instanceof jose.errors.JWTInvalid) {
         logger.warn('Invalid token', { token: token.substring(0, 20) + '...' });
         throw new AuthenticationError('Invalid token');
       } else {
@@ -156,8 +164,8 @@ export class AuthService {
       sessionId
     };
 
-    const accessToken = this.generateAccessToken(payload);
-    const refreshToken = this.generateRefreshToken(payload);
+    const accessToken = await this.generateAccessToken(payload);
+    const refreshToken = await this.generateRefreshToken(payload);
 
     // Store session in Redis
     await this.storeUserSession(user.id, sessionId, {
