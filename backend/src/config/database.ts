@@ -194,7 +194,7 @@ async function setupDatabaseExtensions(db: DatabaseManager): Promise<void> {
 
 // Repository base class with common database operations
 export abstract class BaseRepository {
-  protected db: DatabaseManager;
+  public db: DatabaseManager;
 
   constructor() {
     this.db = DatabaseManager.getInstance();
@@ -300,7 +300,7 @@ export abstract class BaseRepository {
     const query = `
       UPDATE ${table} 
       SET deleted_at = NOW(), updated_at = NOW()
-      WHERE id = $1 AND deleted_at IS NULL
+      WHERE id = $1
     `;
     const result = await this.db.query(query, [id]);
     return result.rowCount > 0;
