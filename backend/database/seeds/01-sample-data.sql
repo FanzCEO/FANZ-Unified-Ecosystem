@@ -195,8 +195,8 @@ INSERT INTO payouts (
  'payout_mock_001', '{"status": "completed", "processed_at": "2024-12-01T10:00:00Z"}'::jsonb),
 
 -- Processing payout
-(uuid_generate_v4(), creator2_id, 200.00, 'USD', 'paypal',
- '{"email": "creator2@example.com", "paypal_id": "mock_paypal_123"}'::jsonb,
+(uuid_generate_v4(), creator2_id, 200.00, 'USD', 'paxum',
+ '{"email": "creator2@example.com", "paxum_id": "mock_paxum_123"}'::jsonb,
  'processing', NOW() - INTERVAL '7 days', NOW(), 1.50,
  'payout_mock_002', '{"status": "processing", "initiated_at": "2024-12-08T14:30:00Z"}'::jsonb),
 

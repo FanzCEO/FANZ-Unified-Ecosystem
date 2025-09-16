@@ -279,7 +279,7 @@ CREATE TABLE payment_tokens (
   id UUID PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES users(id),
   token_id VARCHAR(100) UNIQUE NOT NULL, -- Tokenized card reference
-  payment_processor VARCHAR(50) NOT NULL, -- 'stripe', 'square', etc.
+  payment_processor VARCHAR(50) NOT NULL, -- 'ccbill', 'paxum', 'segpay', etc.
   card_brand VARCHAR(20), -- 'visa', 'mastercard', 'amex'
   last_four_digits CHAR(4),
   expiry_month INTEGER,
