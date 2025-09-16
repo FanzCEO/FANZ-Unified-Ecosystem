@@ -52,7 +52,7 @@ export interface PayoutRequest {
   amount: number;
   currency: string;
   destination: {
-    type: 'bank_account' | 'paypal' | 'crypto' | 'check';
+    type: 'bank_account' | 'paxum' | 'crypto' | 'check';
     details: Record<string, any>;
   };
   description?: string;

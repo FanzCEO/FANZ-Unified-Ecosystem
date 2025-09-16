@@ -67,7 +67,7 @@ const tipSchema = Joi.object({
 const payoutRequestSchema = Joi.object({
   amount: Joi.number().positive().required(),
   currency: Joi.string().length(3).default('USD'),
-  payout_method: Joi.string().valid('bank_transfer', 'paypal', 'crypto', 'check', 'store_credit').required(),
+  payout_method: Joi.string().valid('bank_transfer', 'paxum', 'crypto', 'check', 'store_credit').required(),
   payout_details: Joi.object().required()
 });
 

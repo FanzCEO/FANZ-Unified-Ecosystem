@@ -209,7 +209,7 @@ components:
           type: string
         payment_method:
           type: string
-          enum: [credit_card, bank_account, paypal, crypto, store_credit]
+          enum: [credit_card, bank_account, paxum, crypto, store_credit]
         payment_method_details:
           type: object
         metadata:
@@ -338,7 +338,7 @@ components:
           default: USD
         payout_method:
           type: string
-          enum: [bank_transfer, paypal, crypto, check, store_credit]
+          enum: [bank_transfer, paxum, crypto, check, store_credit]
         payout_details:
           type: object
         status:
@@ -649,7 +649,7 @@ paths:
                   maxLength: 500
                 payment_method:
                   type: string
-                  enum: [credit_card, bank_account, paypal, crypto, store_credit]
+                  enum: [credit_card, bank_account, paxum, crypto, store_credit]
                 payment_method_details:
                   type: object
       responses:
@@ -754,7 +754,7 @@ paths:
                   format: uuid
                 payment_method:
                   type: string
-                  enum: [credit_card, bank_account, paypal]
+                  enum: [credit_card, bank_account, paxum]
                 payment_method_details:
                   type: object
       responses:
@@ -816,7 +816,7 @@ paths:
                   default: USD
                 payout_method:
                   type: string
-                  enum: [bank_transfer, paypal, crypto, check]
+                  enum: [bank_transfer, paxum, crypto, check]
                 payout_details:
                   type: object
       responses:
