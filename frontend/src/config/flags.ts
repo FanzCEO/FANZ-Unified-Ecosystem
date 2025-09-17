@@ -18,8 +18,23 @@ function getFeatureFlag(viteVar: string, nodeVar: string): boolean {
     value = import.meta.env[viteVar];
   } else if (typeof process !== 'undefined' && process.env) {
     value = process.env[nodeVar];
+  } else {
+    console.warn(
+      `[FeatureFlags] Neither import.meta.env nor process.env is defined. Feature flag "${viteVar}" / "${nodeVar}" cannot be resolved.`
+    );
   }
-  return value === 'true';
+  if (typeof value === 'string') {
+    switch (value.trim().toLowerCase()) {
+      case 'true':
+      case '1':
+      case 'yes':
+      case 'on':
+        return true;
+      default:
+        return false;
+    }
+  }
+  return false;
 }
 
 // Web3 Feature Flag - Controls blockchain wallet connections
