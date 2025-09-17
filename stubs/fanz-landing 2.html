@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FANZ Landing - Welcome Portal</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            text-align: center; 
+            padding: 40px;
+        }
+        .logo { 
+            font-size: 3em; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+        }
+        .subtitle { 
+            font-size: 1.2em; 
+            margin-bottom: 40px; 
+            opacity: 0.9;
+        }
+        .platforms { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+            margin-top: 40px; 
+        }
+        .platform { 
+            background: rgba(255,255,255,0.1); 
+            padding: 20px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .platform h3 { 
+            margin: 0 0 10px 0; 
+            font-size: 1.5em; 
+        }
+        .platform p { 
+            margin: 0; 
+            opacity: 0.8; 
+        }
+        .status { 
+            background: rgba(0,255,0,0.2); 
+            padding: 10px; 
+            border-radius: 5px; 
+            margin: 20px 0; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🚀 FANZ Landing</div>
+        <div class="subtitle">Your Gateway to the FANZ Ecosystem</div>
+        
+        <div class="status">
+            ✅ Service Running - Port 3000
+        </div>
+        
+        <div class="platforms">
+            <div class="platform">
+                <h3>🎯 BoyFanz</h3>
+                <p>Male-focused community platform</p>
+                <small>Port 3001</small>
+            </div>
+            <div class="platform">
+                <h3>💖 GirlFanz</h3>
+                <p>Female-focused community platform</p>
+                <small>Port 3002</small>
+            </div>
+            <div class="platform">
+                <h3>🐾 PupFanz</h3>
+                <p>Specialized community platform</p>
+                <small>Port 3003</small>
+            </div>
+            <div class="platform">
+                <h3>⚡ API Gateway</h3>
+                <p>Central API routing hub</p>
+                <small>Port 8090</small>
+            </div>
+            <div class="platform">
+                <h3>🎛️ FanzDash</h3>
+                <p>Admin control center</p>
+                <small>Port 3030</small>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FANZ API Gateway</title>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #0f3460 0%, #16537e 100%);
+            color: #00ff00;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 20px;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+        .logo { 
+            font-size: 2.2em; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+        }
+        .status { 
+            background: rgba(0,255,0,0.1); 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 20px 0; 
+            text-align: center;
+            border: 1px solid #00ff00;
+        }
+        .endpoints { 
+            display: grid; 
+            gap: 15px; 
+        }
+        .endpoint { 
+            background: rgba(0,0,0,0.3); 
+            padding: 15px; 
+            border-radius: 5px; 
+            border-left: 4px solid #00ff00;
+            font-family: 'Courier New', monospace;
+        }
+        .method { 
+            color: #ff6b6b; 
+            font-weight: bold; 
+            display: inline-block;
+            width: 60px;
+        }
+        .path { 
+            color: #4ecdc4; 
+            margin-left: 10px; 
+        }
+        .description { 
+            color: #ffe66d; 
+            margin-top: 5px; 
+            font-size: 0.9em; 
+        }
+        .services { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 15px; 
+            margin-top: 30px; 
+        }
+        .service { 
+            background: rgba(0,255,0,0.1); 
+            padding: 15px; 
+            border-radius: 5px; 
+            border: 1px solid rgba(0,255,0,0.3);
+        }
+        .service-name { 
+            color: #00ff00; 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+        }
+        .service-status { 
+            color: #4ecdc4; 
+            font-size: 0.9em; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">⚡ FANZ API Gateway</div>
+            <div>Central API Routing Hub</div>
+        </div>
+        
+        <div class="status">
+            ✅ API Gateway Online - Port 8090
+        </div>
+        
+        <h3>🔗 Available Endpoints</h3>
+        <div class="endpoints">
+            <div class="endpoint">
+                <span class="method">GET</span><span class="path">/api/v1/auth/login</span>
+                <div class="description">User authentication endpoint</div>
+            </div>
+            <div class="endpoint">
+                <span class="method">GET</span><span class="path">/api/v1/platforms</span>
+                <div class="description">List available platforms</div>
+            </div>
+            <div class="endpoint">
+                <span class="method">POST</span><span class="path">/api/v1/content/upload</span>
+                <div class="description">Content upload service</div>
+            </div>
+            <div class="endpoint">
+                <span class="method">GET</span><span class="path">/api/v1/users/profile</span>
+                <div class="description">User profile management</div>
+            </div>
+            <div class="endpoint">
+                <span class="method">POST</span><span class="path">/api/v1/payments/process</span>
+                <div class="description">Payment processing</div>
+            </div>
+            <div class="endpoint">
+                <span class="method">GET</span><span class="path">/api/v1/media/stream</span>
+                <div class="description">Media streaming service</div>
+            </div>
+        </div>
+        
+        <h3>🌐 Connected Services</h3>
+        <div class="services">
+            <div class="service">
+                <div class="service-name">Auth Service</div>
+                <div class="service-status">🟢 Online</div>
+            </div>
+            <div class="service">
+                <div class="service-name">Media Hub</div>
+                <div class="service-status">🟢 Online</div>
+            </div>
+            <div class="service">
+                <div class="service-name">FanzFinance</div>
+                <div class="service-status">🟢 Online</div>
+            </div>
+            <div class="service">
+                <div class="service-name">Event Bus</div>
+                <div class="service-status">🟢 Online</div>
+            </div>
+            <div class="service">
+                <div class="service-name">BoyFanz Platform</div>
+                <div class="service-status">🟢 Online</div>
+            </div>
+            <div class="service">
+                <div class="service-name">GirlFanz Platform</div>
+                <div class="service-status">🟢 Online</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

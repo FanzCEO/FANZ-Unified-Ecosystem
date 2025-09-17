@@ -1,0 +1,317 @@
+# Tax Product Category Taxonomy
+# FANZ Unified Ecosystem - Canonical Product Categories for Tax Calculation
+
+taxonomy:
+  version: "1.0"
+  effective_date: "2025-09-16"
+  description: "Canonical tax categories for all FANZ platforms"
+
+categories:
+  DIGITAL_DOWNLOAD:
+    code: "DIGITAL_DOWNLOAD"
+    name: "Digital Downloads"
+    description: "Downloadable digital content including videos, images, audio files"
+    tax_classification: "digital_goods"
+    provider_codes:
+      avalara: "DIGITAL_GOODS"
+      taxjar: "31000"  # Digital products
+    default_taxability: "varies_by_state"
+    
+  DIGITAL_STREAM:
+    code: "DIGITAL_STREAM"
+    name: "Digital Streaming"
+    description: "Real-time streaming content including live streams, on-demand video"
+    tax_classification: "digital_services"
+    provider_codes:
+      avalara: "DIGITAL_SERVICES"
+      taxjar: "81112"  # Video streaming
+    default_taxability: "varies_by_state"
+    
+  DIGITAL_SUBSCRIPTION:
+    code: "DIGITAL_SUBSCRIPTION"
+    name: "Digital Subscriptions"
+    description: "Recurring access to digital content or services"
+    tax_classification: "digital_services"
+    provider_codes:
+      avalara: "DIGITAL_SERVICES"
+      taxjar: "81112"  # Streaming services
+    default_taxability: "varies_by_state"
+    
+  MEMBERSHIP_FEE:
+    code: "MEMBERSHIP_FEE"
+    name: "Membership Fees"
+    description: "Platform membership or access fees"
+    tax_classification: "services"
+    provider_codes:
+      avalara: "MEMBERSHIP_SERVICES"
+      taxjar: "81394"  # Membership clubs
+    default_taxability: "varies_by_state"
+    
+  PLATFORM_FEE:
+    code: "PLATFORM_FEE"
+    name: "Platform Service Fees"
+    description: "Transaction fees, processing fees, platform usage fees"
+    tax_classification: "services"
+    provider_codes:
+      avalara: "PLATFORM_SERVICES"
+      taxjar: "52232"  # Financial services
+    default_taxability: "usually_taxable"
+    
+  CREATOR_SERVICE:
+    code: "CREATOR_SERVICE"
+    name: "Creator Services"
+    description: "Services provided by creators (custom content, consultations)"
+    tax_classification: "professional_services"
+    provider_codes:
+      avalara: "PROFESSIONAL_SERVICES"
+      taxjar: "54169"  # Professional services
+    default_taxability: "varies_by_state"
+    
+  VOLUNTARY_TIP:
+    code: "VOLUNTARY_TIP"
+    name: "Voluntary Tips"
+    description: "Optional tips given to creators"
+    tax_classification: "gratuity"
+    provider_codes:
+      avalara: "TIPS_GRATUITIES"
+      taxjar: "99999"  # Non-taxable items
+    default_taxability: "usually_exempt"
+    
+  DONATION:
+    code: "DONATION"
+    name: "Donations"
+    description: "Charitable or voluntary donations"
+    tax_classification: "donation"
+    provider_codes:
+      avalara: "DONATIONS"
+      taxjar: "99999"  # Non-taxable items
+    default_taxability: "exempt"
+    
+  GIFT_CARD:
+    code: "GIFT_CARD"
+    name: "Gift Cards"
+    description: "Prepaid gift cards or credits"
+    tax_classification: "stored_value"
+    provider_codes:
+      avalara: "GIFT_CARDS"
+      taxjar: "99999"  # Non-taxable at sale
+    default_taxability: "exempt_at_sale"
+    notes: "Tax applies on redemption, not purchase"
+    
+  PHYSICAL_GOODS:
+    code: "PHYSICAL_GOODS"
+    name: "Physical Goods"
+    description: "Physical merchandise, collectibles, tangible products"
+    tax_classification: "tangible_personal_property"
+    provider_codes:
+      avalara: "TANGIBLE_PERSONAL_PROPERTY"
+      taxjar: "00000"  # General merchandise
+    default_taxability: "taxable"
+    
+  SHIPPING:
+    code: "SHIPPING"
+    name: "Shipping and Handling"
+    description: "Shipping, delivery, and handling charges"
+    tax_classification: "shipping"
+    provider_codes:
+      avalara: "SHIPPING"
+      taxjar: "92000"  # Shipping charges
+    default_taxability: "varies_by_state"
+    notes: "Taxability depends on underlying goods and state rules"
+
+# Platform-specific SKU mappings
+platform_mappings:
+  fanz:
+    # Core FANZ platform mappings
+    subscriptions:
+      - sku: "SUB_MONTHLY_BASIC"
+        category: "DIGITAL_SUBSCRIPTION"
+        description: "Monthly basic subscription"
+        
+      - sku: "SUB_MONTHLY_PREMIUM"
+        category: "DIGITAL_SUBSCRIPTION"
+        description: "Monthly premium subscription"
+        
+      - sku: "SUB_ANNUAL_BASIC"
+        category: "DIGITAL_SUBSCRIPTION"
+        description: "Annual basic subscription"
+        
+    tips:
+      - sku: "TIP_SMALL"
+        category: "VOLUNTARY_TIP"
+        description: "Small tip ($1-10)"
+        
+      - sku: "TIP_MEDIUM"
+        category: "VOLUNTARY_TIP"
+        description: "Medium tip ($11-50)"
+        
+      - sku: "TIP_LARGE"
+        category: "VOLUNTARY_TIP"
+        description: "Large tip ($51+)"
+        
+    content:
+      - sku: "PPV_VIDEO"
+        category: "DIGITAL_DOWNLOAD"
+        description: "Pay-per-view video content"
+        
+      - sku: "PPV_IMAGE_SET"
+        category: "DIGITAL_DOWNLOAD"
+        description: "Pay-per-view image collection"
+        
+  fanztube:
+    # FanzTube platform mappings
+    subscriptions:
+      - sku: "TUBE_MONTHLY"
+        category: "DIGITAL_SUBSCRIPTION"
+        description: "FanzTube monthly subscription"
+        
+    content:
+      - sku: "TUBE_PPV_VIDEO"
+        category: "DIGITAL_STREAM"
+        description: "Pay-per-view streaming video"
+        
+      - sku: "TUBE_LIVE_ACCESS"
+        category: "DIGITAL_STREAM"
+        description: "Live stream access"
+        
+  fanzcommerce:
+    # FanzCommerce platform mappings
+    products:
+      - sku: "MERCH_TSHIRT"
+        category: "PHYSICAL_GOODS"
+        description: "Physical merchandise - t-shirt"
+        
+      - sku: "MERCH_POSTER"
+        category: "PHYSICAL_GOODS"
+        description: "Physical merchandise - poster"
+        
+      - sku: "DIGITAL_WALLPAPER"
+        category: "DIGITAL_DOWNLOAD"
+        description: "Digital wallpaper downloads"
+        
+    shipping:
+      - sku: "SHIPPING_STANDARD"
+        category: "SHIPPING"
+        description: "Standard shipping"
+        
+      - sku: "SHIPPING_EXPRESS"
+        category: "SHIPPING"
+        description: "Express shipping"
+        
+  fanzspicyai:
+    # FanzSpicyAI platform mappings
+    services:
+      - sku: "AI_CHAT_CREDITS"
+        category: "DIGITAL_SUBSCRIPTION"
+        description: "AI chat service credits"
+        
+      - sku: "AI_IMAGE_GENERATION"
+        category: "CREATOR_SERVICE"
+        description: "AI image generation service"
+        
+  fanzmedia:
+    # FanzMedia platform mappings
+    content:
+      - sku: "MEDIA_DOWNLOAD"
+        category: "DIGITAL_DOWNLOAD"
+        description: "Media file download"
+        
+      - sku: "MEDIA_STREAM"
+        category: "DIGITAL_STREAM"
+        description: "Media streaming access"
+        
+  fanzdash:
+    # FanzDash platform mappings (administrative)
+    services:
+      - sku: "ADMIN_FEE"
+        category: "PLATFORM_FEE"
+        description: "Administrative service fee"
+        
+  fanzlanding:
+    # FanzLanding platform mappings
+    services:
+      - sku: "LANDING_PREMIUM"
+        category: "MEMBERSHIP_FEE"
+        description: "Premium landing page features"
+        
+  fanzfiliate:
+    # FanzFiliate affiliate platform mappings
+    commissions:
+      - sku: "AFFILIATE_COMMISSION"
+        category: "PLATFORM_FEE"
+        description: "Affiliate commission (internal accounting)"
+        taxable_to_affiliate: true
+        
+  fanzhub:
+    # FanzHub platform mappings
+    storage:
+      - sku: "HUB_STORAGE"
+        category: "DIGITAL_SUBSCRIPTION"
+        description: "Cloud storage subscription"
+        
+  starzcards:
+    # StarzCards platform mappings
+    cards:
+      - sku: "TRADING_CARD_DIGITAL"
+        category: "DIGITAL_DOWNLOAD"
+        description: "Digital trading card"
+        
+      - sku: "TRADING_CARD_PHYSICAL"
+        category: "PHYSICAL_GOODS"
+        description: "Physical trading card"
+        
+  clubcentral:
+    # ClubCentral platform mappings
+    memberships:
+      - sku: "CLUB_MEMBERSHIP"
+        category: "MEMBERSHIP_FEE"
+        description: "Club membership fee"
+        
+  migrationhq:
+    # MigrationHQ platform mappings
+    services:
+      - sku: "MIGRATION_SERVICE"
+        category: "CREATOR_SERVICE"
+        description: "Content migration service"
+        
+  fanzos:
+    # FanzOS platform mappings
+    subscriptions:
+      - sku: "OS_LICENSE"
+        category: "DIGITAL_SUBSCRIPTION"
+        description: "FanzOS software license"
+
+# Special handling rules
+special_rules:
+  bundling:
+    description: "When multiple categories are bundled, allocate based on fair market value"
+    example: "Subscription + physical merchandise bundle"
+    
+  promotions:
+    description: "Discount allocation maintains category proportions"
+    example: "50% off subscription maintains digital subscription category"
+    
+  gift_cards:
+    description: "Tax on redemption using category of redeemed items"
+    example: "Gift card used for subscription = digital subscription tax"
+    
+  tips_vs_purchases:
+    description: "Distinguish voluntary tips from required payments"
+    criteria: "Customer can complete transaction without payment"
+
+# Audit and versioning
+audit:
+  change_approval_required: true
+  approvers: ["finance_director", "tax_counsel"]
+  
+versioning:
+  schema_version: "1.0"
+  backwards_compatible: true
+  migration_strategy: "additive_only"
+  
+validation:
+  required_fields: ["code", "name", "tax_classification", "default_taxability"]
+  code_format: "UPPERCASE_UNDERSCORE"
+  
+last_updated: "2025-09-16"
+updated_by: "tax_compliance_system"
