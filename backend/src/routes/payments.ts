@@ -13,8 +13,7 @@ import { logger } from '../utils/logger';
 import { asyncHandler } from '../utils/asyncHandler';
 import { validateRequest } from '../middleware/validation';
 import { authenticateUser, authenticateCreator } from '../middleware/authentication';
-import * as validator from 'express-validator';
-const { body, param, query } = validator;
+const { body, param, query } = require('express-validator');
 
 const router = Router();
 const complianceService = new ComplianceValidationService();

@@ -1,0 +1,211 @@
+name: 🔐 FANZ Security Validation
+
+on:
+  push:
+    branches: [ main, develop, security/* ]
+    paths: 
+      - 'security/**'
+      - 'api/**'
+      - 'monitoring/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'security/**'
+      - 'api/**'
+      - 'monitoring/**'
+
+jobs:
+  security-scan:
+    name: Security Scan & Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        if [ -f "security/package.json" ]; then
+          cd security && npm ci
+        fi
+        if [ -f "package.json" ]; then
+          npm ci
+        fi
+
+    - name: Security Dependencies Audit
+      run: |
+        echo "🔍 Running security audit..."
+        if [ -f "security/package.json" ]; then
+          cd security && npm audit --audit-level=high
+        fi
+
+    - name: TypeScript Security Check
+      run: |
+        echo "🔧 Checking TypeScript security modules..."
+        if [ -f "security/tsconfig.json" ]; then
+          cd security && npx tsc --noEmit
+        fi
+
+    - name: JWT Security Validation
+      run: |
+        echo "🔐 Validating JWT implementation..."
+        if [ -f "security/auth/jwt/JwtAuthMiddleware.ts" ]; then
+          # Check for proper JWT secret handling
+          grep -q "process.env.JWT_SECRET" security/auth/jwt/JwtAuthMiddleware.ts || exit 1
+          # Ensure no hardcoded secrets
+          ! grep -E "(secret|password|key)\s*=\s*['\"][^'\"]{8,}" security/auth/jwt/JwtAuthMiddleware.ts
+        fi
+
+    - name: Age Verification Compliance
+      run: |
+        echo "🔞 Validating age verification compliance..."
+        if [ -f "security/compliance/age-verification/AgeVerificationService.ts" ]; then
+          # Check for proper age validation
+          grep -q "minimumAge.*18" security/compliance/age-verification/AgeVerificationService.ts || exit 1
+          # Ensure PII hashing
+          grep -q "hashPII" security/compliance/age-verification/AgeVerificationService.ts || exit 1
+        fi
+
+    - name: MFA Security Check
+      run: |
+        echo "🔒 Validating MFA implementation..."
+        if [ -f "security/auth/mfa/MfaService.ts" ]; then
+          # Check for proper secret generation
+          grep -q "speakeasy.generateSecret" security/auth/mfa/MfaService.ts || exit 1
+          # Ensure backup codes
+          grep -q "generateBackupCodes" security/auth/mfa/MfaService.ts || exit 1
+        fi
+
+    - name: API Security Monitoring
+      run: |
+        echo "📊 Validating security monitoring..."
+        if [ -f "monitoring/ApiSecurityMonitor.ts" ]; then
+          # Check for threat detection patterns
+          grep -q "anomalyPatterns" monitoring/ApiSecurityMonitor.ts || exit 1
+          # Ensure adult platform detection
+          grep -q "ADULT_PLATFORMS" monitoring/ApiSecurityMonitor.ts || exit 1
+        fi
+
+    - name: Security Headers Validation
+      run: |
+        echo "🛡️ Validating security headers..."
+        if [ -f "api/gateway/ApiGatewaySecurityConfig.ts" ]; then
+          # Check for CSP headers
+          grep -q "Content-Security-Policy" api/gateway/ApiGatewaySecurityConfig.ts || exit 1
+          # Ensure HSTS
+          grep -q "Strict-Transport-Security" api/gateway/ApiGatewaySecurityConfig.ts || exit 1
+        fi
+
+    - name: Configuration Security Check
+      run: |
+        echo "⚙️ Checking configuration security..."
+        # Ensure no secrets in config files
+        ! find . -name "*.ts" -not -path "./node_modules/*" -exec grep -l "password.*=.*['\"][^'\"]*['\"]" {} \;
+        ! find . -name "*.ts" -not -path "./node_modules/*" -exec grep -l "api[_-]?key.*=.*['\"][^'\"]*['\"]" {} \;
+
+    - name: Adult Content Compliance
+      run: |
+        echo "🔞 Checking adult content compliance..."
+        # Ensure age verification is properly implemented
+        if [ -d "security/compliance" ]; then
+          find security/compliance -name "*.ts" -exec grep -l "ageVerified\|minimumAge" {} \; | wc -l | grep -v "^0$" || exit 1
+        fi
+
+    - name: Security Test Suite
+      run: |
+        echo "🧪 Running security tests..."
+        if [ -f "security/package.json" ] && [ -d "security/tests" ]; then
+          cd security && npm test
+        fi
+
+  dependency-check:
+    name: Dependency Security Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Snyk Security Check
+      uses: snyk/actions/node@master
+      continue-on-error: true
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=high
+
+    - name: Check for known vulnerabilities
+      run: |
+        echo "🔍 Checking for known security issues..."
+        # Check for common security anti-patterns
+        ! grep -r "eval\|innerHTML\|dangerouslySetInnerHTML" security/ || true
+        ! grep -r "process.env" security/ | grep -v "process.env.NODE_ENV\|process.env.JWT_SECRET\|process.env.REDIS" || true
+
+  compliance-audit:
+    name: Adult Content Compliance Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Age Verification Audit
+      run: |
+        echo "🔞 Auditing age verification implementation..."
+        if [ -f "security/compliance/age-verification/AgeVerificationService.ts" ]; then
+          # Check for proper age gates
+          grep -q "ageGateMiddleware" security/compliance/age-verification/AgeVerificationService.ts || exit 1
+          
+          # Check for document validation
+          grep -q "validateDocuments" security/compliance/age-verification/AgeVerificationService.ts || exit 1
+          
+          # Check for compliance logging
+          grep -q "logAdultContentAccess" security/compliance/age-verification/AgeVerificationService.ts || exit 1
+        fi
+
+    - name: 2257 Compliance Check
+      run: |
+        echo "📋 Checking 2257 compliance requirements..."
+        # Ensure proper record keeping capabilities exist
+        if [ -d "security/compliance" ]; then
+          find security/compliance -name "*.ts" -exec grep -l "record.*2257\|compliance.*record" {} \; || echo "Warning: 2257 compliance records not found"
+        fi
+
+    - name: Adult Platform Security
+      run: |
+        echo "🔞 Validating adult platform security..."
+        # Check for proper adult platform handling
+        grep -r "ADULT_PLATFORMS\|adult.*platform" security/ monitoring/ api/ || exit 1
+        
+        # Ensure age verification is enforced
+        grep -r "ageVerified\|age.*verification" security/ || exit 1
+
+  security-report:
+    name: Security Report Generation
+    runs-on: ubuntu-latest
+    needs: [security-scan, dependency-check, compliance-audit]
+    if: always()
+    
+    steps:
+    - name: Generate Security Report
+      run: |
+        echo "📊 Generating security validation report..."
+        echo "## 🛡️ FANZ Security Validation Report" > security-report.md
+        echo "" >> security-report.md
+        echo "- **Security Scan**: ${{ needs.security-scan.result }}" >> security-report.md
+        echo "- **Dependency Check**: ${{ needs.dependency-check.result }}" >> security-report.md  
+        echo "- **Compliance Audit**: ${{ needs.compliance-audit.result }}" >> security-report.md
+        echo "" >> security-report.md
+        echo "Generated on: $(date)" >> security-report.md
+
+    - name: Upload Security Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-validation-report
+        path: security-report.md

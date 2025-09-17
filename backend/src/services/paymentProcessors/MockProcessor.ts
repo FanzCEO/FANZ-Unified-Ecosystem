@@ -326,7 +326,7 @@ export class MockProcessor implements IPaymentProcessor {
         ...data
       },
       timestamp: new Date(),
-      signature: `mock_signature_${uuidv4()}`
+      signature: `mock_signature_${randomUUID()}`
     };
   }
 }
