@@ -232,6 +232,47 @@ class JWTService {
   }
 
   /**
+   * Generate both access and refresh tokens for admin (convenience method)
+   */
+  generateAdminTokens(adminData) {
+    const accessToken = this.generateAdminToken(adminData);
+    const refreshToken = this.generateAdminRefreshToken(adminData);
+    
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      token_type: 'Bearer',
+      expires_in: this.TOKEN_EXPIRES_IN,
+      refresh_expires_in: this.REFRESH_EXPIRES_IN
+    };
+  }
+
+  /**
+   * Generate vendor token (convenience method)
+   */
+  generateVendorToken(vendorData, accessData) {
+    const payload = {
+      vendor_id: vendorData.id,
+      vendor_name: vendorData.name,
+      vendor_company: vendorData.company,
+      vendor_email: vendorData.email,
+      type: 'vendor_access',
+      access_level: accessData.level,
+      permissions: accessData.permissions || [],
+      token_id: accessData.token_id,
+      session_id: crypto.randomUUID(),
+      issued_at: Date.now(),
+      expires_at: accessData.expires_at
+    };
+
+    return jwt.sign(payload, this.JWT_SECRET, {
+      expiresIn: this.VENDOR_TOKEN_EXPIRES_IN,
+      issuer: 'fanz-vendor-system',
+      audience: 'fanz-vendor'
+    });
+  }
+
+  /**
    * Refresh admin token
    */
   async refreshAdminToken(refreshToken) {

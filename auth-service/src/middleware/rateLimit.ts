@@ -1,7 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 import rateLimit, { RateLimitRequestHandler, Options } from 'express-rate-limit';
 import RedisStore from 'rate-limit-redis';
-import jwt from 'jsonwebtoken';
+import * as jose from 'jose';
+
+// Extend Express Request interface
+declare global {
+  namespace Express {
+    interface Request {
+      rateLimit?: {
+        limit: number;
+        remaining: number;
+        resetTime: number;
+      };
+    }
+  }
+}
 import { RedisClientType } from 'redis';
 import { rateLimitConfig } from '../config/rateLimitConfig';
 import { 
@@ -73,21 +86,25 @@ const shouldBypassRateLimit = (req: Request): boolean => {
       const token = authHeader && authHeader.split(' ')[1];
       
       if (token) {
-        const decoded = jwt.decode(token) as any;
-        
-        // Check for trusted audience
-        if (decoded?.aud && rateLimitConfig.bypass.trustedAudiences.includes(decoded.aud)) {
-          bypassReason = `jwt-audience-${decoded.aud}`;
-        }
-        
-        // Check for service claim
-        if (!bypassReason && decoded?.svc && decoded.svc === rateLimitConfig.bypass.serviceClaimValue) {
-          bypassReason = `jwt-service-${decoded.svc}`;
-        }
-        
-        // Check for internal service issuer
-        if (!bypassReason && decoded?.iss && rateLimitConfig.bypass.trustedAudiences.includes(decoded.iss)) {
-          bypassReason = `jwt-issuer-${decoded.iss}`;
+        try {
+          const decoded = jose.decodeJwt(token);
+          
+          // Check for trusted audience
+          if (decoded?.aud && rateLimitConfig.bypass.trustedAudiences.includes(decoded.aud as string)) {
+            bypassReason = `jwt-audience-${decoded.aud}`;
+          }
+          
+          // Check for service claim
+          if (!bypassReason && decoded?.svc && decoded.svc === rateLimitConfig.bypass.serviceClaimValue) {
+            bypassReason = `jwt-service-${decoded.svc}`;
+          }
+          
+          // Check for internal service issuer
+          if (!bypassReason && decoded?.iss && rateLimitConfig.bypass.trustedAudiences.includes(decoded.iss as string)) {
+            bypassReason = `jwt-issuer-${decoded.iss}`;
+          }
+        } catch (error) {
+          // Token parsing failed, continue with normal rate limiting
         }
       }
     } catch (error) {
@@ -115,7 +132,7 @@ const extractBypassUserId = (req: Request): { userId?: string } | null => {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
     if (token) {
-      return jwt.decode(token) as any;
+      return jose.decodeJwt(token) as any;
     }
   } catch (error) {
     // Ignore
@@ -355,8 +372,8 @@ export const createStandardLimiterIP = (name: string): RateLimitRequestHandler =
  */
 export const applyMultipleRateLimiters = (
   limiters: RateLimitRequestHandler[]
-): RateLimitRequestHandler => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (!rateLimitConfig.enabled) {
       return next();
     }
@@ -375,7 +392,11 @@ export const applyMultipleRateLimiters = (
       }
       
       const limiter = limiters[currentIndex++];
-      limiter(req, res, runNextLimiter);
+      if (limiter) {
+        limiter(req, res, runNextLimiter);
+      } else {
+        runNextLimiter();
+      }
     };
     
     runNextLimiter();

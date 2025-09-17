@@ -1,8 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
+const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
+const { optionalAuth } = require('./middleware/auth-middleware');
 
-// Create direct database connection pool for auth server
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Create direct database connection pool
 const dbConnection = new Pool({
   user: process.env.DB_USER || 'fanz_user',
   host: process.env.DB_HOST || 'localhost', 
@@ -13,16 +19,11 @@ const dbConnection = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000
 });
-const authRoutes = require('./routes/auth');
-const { optionalAuth } = require('./middleware/auth-middleware');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -38,6 +39,9 @@ app.use((req, res, next) => {
 
 // Mount authentication routes
 app.use('/api/auth', authRoutes);
+
+// Mount admin management routes (protected)
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
@@ -86,7 +90,7 @@ app.get('/api/status', optionalAuth, async (req, res) => {
     const tableStats = await dbConnection.query(`
       SELECT schemaname, tablename, n_tup_ins as inserts, n_tup_upd as updates, n_tup_del as deletes
       FROM pg_stat_user_tables 
-      WHERE tablename IN ('vendor_profiles', 'vendor_access_tokens', 'admin_users')
+      WHERE tablename IN ('vendor_profiles', 'vendor_access_tokens', 'admin_users', 'access_grants')
       ORDER BY tablename
     `);
 
@@ -104,9 +108,8 @@ app.get('/api/status', optionalAuth, async (req, res) => {
     const tokenStats = await dbConnection.query(`
       SELECT 
         COUNT(*) as total_tokens,
-        COUNT(*) FILTER (WHERE status = 'active') as active_tokens,
-        COUNT(*) FILTER (WHERE expires_at > NOW()) as valid_tokens,
-        COUNT(*) FILTER (WHERE last_used_at > NOW() - INTERVAL '24 hours') as used_recently
+        COUNT(*) FILTER (WHERE expires_at > NOW() AND revoked = false) as valid_tokens,
+        COUNT(*) FILTER (WHERE last_used > NOW() - INTERVAL '24 hours') as used_recently
       FROM vendor_access_tokens
     `);
 
@@ -119,6 +122,16 @@ app.get('/api/status', optionalAuth, async (req, res) => {
       FROM admin_users
     `);
 
+    // Access grants statistics
+    const grantsStats = await dbConnection.query(`
+      SELECT 
+        COUNT(*) as total_grants,
+        COUNT(*) FILTER (WHERE status = 'pending') as pending_grants,
+        COUNT(*) FILTER (WHERE status = 'approved') as approved_grants,
+        COUNT(*) FILTER (WHERE status = 'active') as active_grants
+      FROM access_grants
+    `);
+
     const response = {
       success: true,
       database: {
@@ -126,7 +139,8 @@ app.get('/api/status', optionalAuth, async (req, res) => {
         table_stats: tableStats.rows,
         vendor_stats: vendorStats.rows[0],
         token_stats: tokenStats.rows[0],
-        admin_stats: adminStats.rows[0]
+        admin_stats: adminStats.rows[0],
+        grants_stats: grantsStats.rows[0]
       },
       timestamp: new Date().toISOString()
     };
@@ -278,6 +292,91 @@ app.get('/api/vendors/:id', async (req, res) => {
   }
 });
 
+// API Documentation endpoint
+app.get('/api/docs', (req, res) => {
+  res.json({
+    success: true,
+    title: 'FANZ Enhanced Vendor Management API',
+    version: '2.0.0',
+    description: 'Complete vendor access management system with JWT authentication',
+    
+    authentication: {
+      type: 'Bearer JWT',
+      login_endpoint: 'POST /api/auth/admin/login',
+      token_validation: 'POST /api/auth/validate',
+      example: 'Authorization: Bearer <your-jwt-token>'
+    },
+
+    public_endpoints: {
+      'GET /api/health': 'System health check',
+      'GET /api/status': 'Database and system status',
+      'GET /api/vendors': 'List approved vendor profiles',
+      'GET /api/vendors/stats': 'Vendor statistics',
+      'GET /api/vendors/:id': 'Get specific vendor profile',
+      'GET /api/docs': 'This documentation'
+    },
+
+    authentication_endpoints: {
+      'POST /api/auth/admin/login': 'Admin login with email/password',
+      'POST /api/auth/admin/refresh': 'Refresh access token',
+      'GET /api/auth/admin/profile': 'Get admin profile (requires auth)',
+      'POST /api/auth/admin/create': 'Create new admin user (requires auth + permissions)',
+      'POST /api/auth/vendor/login': 'Vendor authentication',
+      'POST /api/auth/validate': 'Validate any token',
+      'POST /api/auth/logout': 'Logout (admin)'
+    },
+
+    admin_vendor_management: {
+      'GET /api/admin/vendors': 'List all vendors (admin view)',
+      'POST /api/admin/vendors': 'Create new vendor profile',
+      'GET /api/admin/vendors/:id': 'Get detailed vendor profile',
+      'PUT /api/admin/vendors/:id': 'Update vendor profile',
+      'DELETE /api/admin/vendors/:id': 'Delete vendor profile'
+    },
+
+    admin_grants_management: {
+      'GET /api/admin/grants': 'List all access grants',
+      'POST /api/admin/grants': 'Create new access grant',
+      'GET /api/admin/grants/:id': 'Get detailed access grant',
+      'POST /api/admin/grants/:id/approve': 'Approve access grant',
+      'POST /api/admin/grants/:id/revoke': 'Revoke access grant',
+      'POST /api/admin/grants/:id/extend': 'Extend access grant'
+    },
+
+    admin_dashboard: {
+      'GET /api/admin/dashboard': 'Admin dashboard overview',
+      'GET /api/admin/health': 'Detailed system health (admin)',
+      'GET /api/admin/audit-log': 'Admin activity audit log',
+      'GET /api/admin/analytics': 'System analytics and trends'
+    },
+
+    permissions: {
+      'admin:manage': 'Create/manage other admin users',
+      'vendor:manage': 'Full vendor management (create, edit, delete, grants)',
+      'vendor:view': 'View vendor profiles and stats',
+      'analytics:view': 'View system analytics and reports',
+      'system:admin': 'System administration tasks',
+      'audit:view': 'View audit logs and security events'
+    },
+
+    response_format: {
+      success_response: {
+        success: true,
+        data: '...',
+        timestamp: 'ISO 8601 timestamp'
+      },
+      error_response: {
+        success: false,
+        error: 'Error type',
+        message: 'Human readable error message',
+        timestamp: 'ISO 8601 timestamp'
+      }
+    },
+
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Error handling middleware
 app.use((error, req, res, next) => {
   console.error('Unhandled error:', error);
@@ -295,6 +394,7 @@ app.use((req, res) => {
     success: false,
     error: 'Endpoint not found',
     message: `${req.method} ${req.url} is not a valid endpoint`,
+    available_endpoints: '/api/docs',
     timestamp: new Date().toISOString()
   });
 });
@@ -328,28 +428,46 @@ process.on('SIGTERM', async () => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log('\\n🚀 FANZ Vendor Access System with JWT Authentication');
-  console.log('='.repeat(60));
+  console.log('\\n🚀 FANZ Enhanced Vendor Management System');
+  console.log('='.repeat(70));
   console.log(`📡 Server running on port ${PORT}`);
   console.log(`🌐 API Base URL: http://localhost:${PORT}/api`);
+  console.log(`📚 API Documentation: http://localhost:${PORT}/api/docs`);
   console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
   console.log('\\n🔐 Authentication Endpoints:');
-  console.log(`   POST /api/auth/admin/login     - Admin login`);
-  console.log(`   POST /api/auth/vendor/login    - Vendor login`);
-  console.log(`   POST /api/auth/admin/refresh   - Refresh admin token`);
-  console.log(`   GET  /api/auth/admin/profile   - Get admin profile`);
-  console.log(`   POST /api/auth/validate        - Validate any token`);
-  console.log(`   POST /api/auth/logout          - Logout (admin)`);
+  console.log(`   POST /api/auth/admin/login      - Admin login`);
+  console.log(`   POST /api/auth/vendor/login     - Vendor login`);
+  console.log(`   POST /api/auth/admin/refresh    - Refresh admin token`);
+  console.log(`   GET  /api/auth/admin/profile    - Get admin profile`);
+  console.log(`   POST /api/auth/validate         - Validate any token`);
+  console.log(`   POST /api/auth/logout           - Logout (admin)`);
+  console.log('\\n👤 Admin Vendor Management:');
+  console.log(`   GET    /api/admin/vendors       - List all vendors`);
+  console.log(`   POST   /api/admin/vendors       - Create vendor`);
+  console.log(`   GET    /api/admin/vendors/:id   - Get vendor details`);
+  console.log(`   PUT    /api/admin/vendors/:id   - Update vendor`);
+  console.log(`   DELETE /api/admin/vendors/:id   - Delete vendor`);
+  console.log('\\n🔑 Admin Access Grants:');
+  console.log(`   GET  /api/admin/grants          - List all grants`);
+  console.log(`   POST /api/admin/grants          - Create grant`);
+  console.log(`   POST /api/admin/grants/:id/approve - Approve grant`);
+  console.log(`   POST /api/admin/grants/:id/revoke  - Revoke grant`);
+  console.log(`   POST /api/admin/grants/:id/extend  - Extend grant`);
+  console.log('\\n📊 Admin Dashboard:');
+  console.log(`   GET  /api/admin/dashboard       - Dashboard overview`);
+  console.log(`   GET  /api/admin/health          - System health`);
+  console.log(`   GET  /api/admin/audit-log       - Activity audit log`);
+  console.log(`   GET  /api/admin/analytics       - System analytics`);
   console.log('\\n📊 Public Endpoints:');
-  console.log(`   GET  /api/vendors              - List vendor profiles`);
-  console.log(`   GET  /api/vendors/:id          - Get specific vendor`);
-  console.log(`   GET  /api/vendors/stats        - Vendor statistics`);
-  console.log(`   GET  /api/status               - System status`);
+  console.log(`   GET  /api/vendors               - List vendor profiles`);
+  console.log(`   GET  /api/vendors/:id           - Get specific vendor`);
+  console.log(`   GET  /api/vendors/stats         - Vendor statistics`);
+  console.log(`   GET  /api/status                - System status`);
   console.log('\\n👤 Default Admin Credentials:');
   console.log(`   Email: admin@fanz.com`);
   console.log(`   Password: admin123`);
   console.log('\\n⚠️  Remember to change default credentials in production!');
-  console.log('='.repeat(60));
+  console.log('='.repeat(70));
 });
 
 module.exports = app;

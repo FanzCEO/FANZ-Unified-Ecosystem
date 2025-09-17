@@ -1,6 +1,6 @@
 import express from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import * as jose from 'jose';
 import { Pool } from 'pg';
 import redis from 'redis';
 import { z } from 'zod';
@@ -175,17 +175,30 @@ app.post('/api/auth/register',
     ]);
 
     // Generate JWT tokens
-    const accessToken = jwt.sign(
-      { userId: user.id, username: user.username, role: user.role },
-      AUTH_CONFIG.jwtSecret,
-      { expiresIn: AUTH_CONFIG.jwtExpiry }
-    );
+    const secret = new TextEncoder().encode(AUTH_CONFIG.jwtSecret);
+    
+    const accessToken = await new jose.SignJWT({
+      userId: user.id,
+      username: user.username,
+      role: user.role
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setIssuer('fanz.eco')
+      .setAudience('fanz-auth')
+      .setExpirationTime(AUTH_CONFIG.jwtExpiry)
+      .sign(secret);
 
-    const refreshToken = jwt.sign(
-      { userId: user.id, type: 'refresh' },
-      AUTH_CONFIG.jwtSecret,
-      { expiresIn: AUTH_CONFIG.refreshTokenExpiry }
-    );
+    const refreshToken = await new jose.SignJWT({
+      userId: user.id,
+      type: 'refresh'
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setIssuer('fanz.eco')
+      .setAudience('fanz-auth')
+      .setExpirationTime(AUTH_CONFIG.refreshTokenExpiry)
+      .sign(secret);
 
     // Store session in Redis
     const sessionData: UserSession = {
@@ -218,7 +231,7 @@ app.post('/api/auth/register',
       refreshToken
     );
 
-    res.status(201).json({
+    return res.status(201).json({
       message: 'User registered successfully',
       user: {
         id: user.id,
@@ -245,7 +258,7 @@ app.post('/api/auth/register',
     }
 
     console.error('Registration error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Registration failed',
       ecosystem: 'fanz-unified'
     });
@@ -307,17 +320,30 @@ app.post('/api/auth/login',
     );
 
     // Generate JWT tokens
-    const accessToken = jwt.sign(
-      { userId: user.id, username: user.username, role: user.role },
-      AUTH_CONFIG.jwtSecret,
-      { expiresIn: AUTH_CONFIG.jwtExpiry }
-    );
+    const secret = new TextEncoder().encode(AUTH_CONFIG.jwtSecret);
+    
+    const accessToken = await new jose.SignJWT({
+      userId: user.id,
+      username: user.username,
+      role: user.role
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setIssuer('fanz.eco')
+      .setAudience('fanz-auth')
+      .setExpirationTime(AUTH_CONFIG.jwtExpiry)
+      .sign(secret);
 
-    const refreshToken = jwt.sign(
-      { userId: user.id, type: 'refresh' },
-      AUTH_CONFIG.jwtSecret,
-      { expiresIn: AUTH_CONFIG.refreshTokenExpiry }
-    );
+    const refreshToken = await new jose.SignJWT({
+      userId: user.id,
+      type: 'refresh'
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setIssuer('fanz.eco')
+      .setAudience('fanz-auth')
+      .setExpirationTime(AUTH_CONFIG.refreshTokenExpiry)
+      .sign(secret);
 
     // Create session data
     const sessionData: UserSession = {
@@ -345,7 +371,7 @@ app.post('/api/auth/login',
       refreshToken
     );
 
-    res.json({
+    return res.json({
       message: 'Login successful',
       user: {
         id: user.id,
@@ -377,7 +403,7 @@ app.post('/api/auth/login',
     }
 
     console.error('Login error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Login failed',
       ecosystem: 'fanz-unified'
     });
@@ -403,7 +429,21 @@ app.post('/api/auth/refresh',
     }
 
     // Verify refresh token
-    const decoded = jwt.verify(refreshToken, AUTH_CONFIG.jwtSecret) as any;
+    const secret = new TextEncoder().encode(AUTH_CONFIG.jwtSecret);
+    
+    let decoded: any;
+    try {
+      const { payload } = await jose.jwtVerify(refreshToken, secret, {
+        issuer: 'fanz.eco',
+        audience: 'fanz-auth'
+      });
+      decoded = payload;
+    } catch (error) {
+      return res.status(401).json({
+        error: 'Invalid refresh token',
+        ecosystem: 'fanz-unified'
+      });
+    }
     
     if (decoded.type !== 'refresh') {
       return res.status(401).json({
@@ -437,20 +477,26 @@ app.post('/api/auth/refresh',
     const user = userResult.rows[0];
 
     // Generate new access token
-    const newAccessToken = jwt.sign(
-      { userId: user.id, username: user.username, role: user.role },
-      AUTH_CONFIG.jwtSecret,
-      { expiresIn: AUTH_CONFIG.jwtExpiry }
-    );
+    const newAccessToken = await new jose.SignJWT({
+      userId: user.id,
+      username: user.username,
+      role: user.role
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setIssuer('fanz.eco')
+      .setAudience('fanz-auth')
+      .setExpirationTime(AUTH_CONFIG.jwtExpiry)
+      .sign(secret);
 
-    res.json({
+    return res.json({
       accessToken: newAccessToken,
       ecosystem: 'fanz-unified'
     });
 
   } catch (error) {
     console.error('Token refresh error:', error);
-    res.status(401).json({
+    return res.status(401).json({
       error: 'Token refresh failed',
       ecosystem: 'fanz-unified'
     });
@@ -466,13 +512,21 @@ app.post('/api/auth/logout',
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token) {
-      const decoded = jwt.verify(token, AUTH_CONFIG.jwtSecret) as any;
-      
-      // Remove session and refresh token from Redis
-      await Promise.all([
-        redisClient.del(`session:${decoded.userId}`),
-        redisClient.del(`refresh:${decoded.userId}`)
-      ]);
+      try {
+        const secret = new TextEncoder().encode(AUTH_CONFIG.jwtSecret);
+        const { payload } = await jose.jwtVerify(token, secret, {
+          issuer: 'fanz.eco',
+          audience: 'fanz-auth'
+        });
+        
+        // Remove session and refresh token from Redis
+        await Promise.all([
+          redisClient.del(`session:${payload.userId}`),
+          redisClient.del(`refresh:${payload.userId}`)
+        ]);
+      } catch (error) {
+        // Token invalid, but continue with logout anyway
+      }
     }
 
     res.json({
@@ -504,7 +558,20 @@ app.post('/api/auth/platform-access',
       });
     }
 
-    const decoded = jwt.verify(token, AUTH_CONFIG.jwtSecret) as any;
+    let decoded: any;
+    try {
+      const secret = new TextEncoder().encode(AUTH_CONFIG.jwtSecret);
+      const { payload } = await jose.jwtVerify(token, secret, {
+        issuer: 'fanz.eco',
+        audience: 'fanz-auth'
+      });
+      decoded = payload;
+    } catch (error) {
+      return res.status(401).json({
+        error: 'Invalid access token',
+        ecosystem: 'fanz-unified'
+      });
+    }
     const validatedData = platformAccessSchema.parse(req.body);
 
     // Grant platform access
@@ -554,7 +621,7 @@ app.post('/api/auth/platform-access',
       );
     }
 
-    res.json({
+    return res.json({
       message: 'Platform access granted',
       platform: validatedData.platform,
       permissions: validatedData.permissions,
@@ -563,7 +630,7 @@ app.post('/api/auth/platform-access',
 
   } catch (error) {
     console.error('Platform access error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to grant platform access',
       ecosystem: 'fanz-unified'
     });
@@ -585,7 +652,20 @@ app.get('/api/user/profile',
       });
     }
 
-    const decoded = jwt.verify(token, AUTH_CONFIG.jwtSecret) as any;
+    let decoded: any;
+    try {
+      const secret = new TextEncoder().encode(AUTH_CONFIG.jwtSecret);
+      const { payload } = await jose.jwtVerify(token, secret, {
+        issuer: 'fanz.eco',
+        audience: 'fanz-auth'
+      });
+      decoded = payload;
+    } catch (error) {
+      return res.status(401).json({
+        error: 'Invalid access token',
+        ecosystem: 'fanz-unified'
+      });
+    }
 
     // Get session from Redis (includes latest platform access)
     const sessionData = await redisClient.get(`session:${decoded.userId}`);
@@ -598,7 +678,7 @@ app.get('/api/user/profile',
 
     const session: UserSession = JSON.parse(sessionData);
 
-    res.json({
+    return res.json({
       user: {
         id: decoded.userId,
         username: session.username,
@@ -612,7 +692,7 @@ app.get('/api/user/profile',
 
   } catch (error) {
     console.error('Profile fetch error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Failed to fetch profile',
       ecosystem: 'fanz-unified'
     });
@@ -637,7 +717,21 @@ app.post('/api/auth/validate',
       });
     }
 
-    const decoded = jwt.verify(token, AUTH_CONFIG.jwtSecret) as any;
+    let decoded: any;
+    try {
+      const secret = new TextEncoder().encode(AUTH_CONFIG.jwtSecret);
+      const { payload } = await jose.jwtVerify(token, secret, {
+        issuer: 'fanz.eco',
+        audience: 'fanz-auth'
+      });
+      decoded = payload;
+    } catch (error) {
+      return res.status(401).json({
+        valid: false,
+        error: 'Invalid token',
+        ecosystem: 'fanz-unified'
+      });
+    }
     
     // Check session exists
     const sessionData = await redisClient.get(`session:${decoded.userId}`);
@@ -650,7 +744,7 @@ app.post('/api/auth/validate',
 
     const session: UserSession = JSON.parse(sessionData);
 
-    res.json({
+    return res.json({
       valid: true,
       user: {
         id: decoded.userId,
@@ -662,7 +756,7 @@ app.post('/api/auth/validate',
     });
 
   } catch (error) {
-    res.status(401).json({
+    return res.status(401).json({
       valid: false,
       error: 'Invalid token'
     });
@@ -681,7 +775,7 @@ const startAuthService = async () => {
     console.log('💶 Redis connected successfully');
     
     // Initialize rate limiting with Redis store
-    initializeRateLimitStore(redisClient);
+    initializeRateLimitStore(redisClient as any);
     console.log('🚦 Rate limiting initialized');
 
     // Start server
