@@ -7,6 +7,7 @@ const router = express.Router();
 // Import sub-routers
 const vendorsRouter = require('./vendors');
 const grantsRouter = require('./grants');
+const activityRouter = require('./activity');
 
 // Database connection for admin dashboard
 const dbConnection = new Pool({
@@ -23,6 +24,7 @@ const dbConnection = new Pool({
 // Mount sub-routers
 router.use('/vendors', vendorsRouter);
 router.use('/grants', grantsRouter);
+router.use('/activity', activityRouter);
 
 /**
  * Admin Dashboard Overview

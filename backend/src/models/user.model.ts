@@ -545,7 +545,7 @@ export class UserRepository extends BaseRepository {
       // Add verification filter
       if (verified !== undefined) {
         whereClause += ` AND u.email_verified = $${paramIndex}`;
-        params.push(verified);
+        params.push(String(verified));
         paramIndex++;
       }
 
@@ -580,7 +580,7 @@ export class UserRepository extends BaseRepository {
         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
       `;
       
-      params.push(limit, offset);
+      params.push(String(limit), String(offset));
       const result = await this.db.query(searchQuery, params);
 
       const users = result.rows.map(row => ({
