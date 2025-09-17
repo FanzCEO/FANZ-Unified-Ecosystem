@@ -61,6 +61,15 @@ export function validateDate(value: any, fieldName: string): void {
   }
 }
 
+// Validate multiple fields in an object
+export function validateRequiredFields(obj: Record<string, any>, requiredFields: string[]): void {
+  for (const field of requiredFields) {
+    if (obj[field] === undefined || obj[field] === null || obj[field] === '') {
+      throw new ValidationError(`${field} is required`, field);
+    }
+  }
+}
+
 // Type conversion helpers for query parameters
 export function toString(value: any): string {
   if (typeof value === 'string') return value;

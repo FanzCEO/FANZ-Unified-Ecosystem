@@ -41,17 +41,13 @@ const productionFormat = winston.format.combine(
   winston.format.errors({ stack: true }),
   winston.format.json(),
   winston.format.printf((info) => {
+    const { timestamp, level, service, message, ...rest } = info;
     return JSON.stringify({
-      timestamp: info.timestamp,
-      level: info.level,
-      service: info.service || 'fanz-api',
-      message: info.message,
-      ...info,
-      // Remove duplicated fields
-      timestamp: undefined,
-      level: undefined,
-      service: undefined,
-      message: undefined
+      timestamp,
+      level,
+      service: service || 'fanz-api',
+      message,
+      ...rest
     });
   })
 );

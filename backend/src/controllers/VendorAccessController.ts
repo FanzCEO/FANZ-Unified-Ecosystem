@@ -13,7 +13,7 @@ import VendorAccessDelegationService, {
   VendorType 
 } from '../services/vendor-access/VendorAccessDelegationService';
 import { AuditLogger } from '../services/security/AuditLogger';
-import { validateRequired, validateEnum, validateArray } from '../utils/validation';
+import { validateRequiredFields, validateEnum, validateArray } from '../utils/validation';
 
 @injectable()
 export class VendorAccessController {
@@ -35,7 +35,7 @@ export class VendorAccessController {
       const { email, name, company, vendorType, contactInfo } = req.body;
 
       // Validate required fields
-      validateRequired({ email, name, company, vendorType, contactInfo });
+      validateRequiredFields({ email, name, company, vendorType, contactInfo }, ['email', 'name', 'company', 'vendorType', 'contactInfo']);
       validateEnum(vendorType, VendorType, 'vendorType');
 
       const vendor = await this.vendorAccessService.registerVendor({
@@ -49,7 +49,7 @@ export class VendorAccessController {
       await this.auditLogger.log({
         action: 'vendor_registration_api',
         vendorId: vendor.id,
-        adminUserId: req.user?.id,
+        adminUserId: req.user?.userId,
         metadata: { email, company, vendorType },
         severity: 'INFO'
       });
@@ -82,7 +82,7 @@ export class VendorAccessController {
       const { id } = req.params;
       const { backgroundCheckPassed, ndaSigned, complianceTrainingCompleted } = req.body;
 
-      validateRequired({ backgroundCheckPassed, ndaSigned, complianceTrainingCompleted });
+      validateRequiredFields({ backgroundCheckPassed, ndaSigned, complianceTrainingCompleted }, ['backgroundCheckPassed', 'ndaSigned', 'complianceTrainingCompleted']);
 
       await this.vendorAccessService.completeVendorVerification(id, {
         backgroundCheckPassed: Boolean(backgroundCheckPassed),
@@ -93,7 +93,7 @@ export class VendorAccessController {
       await this.auditLogger.log({
         action: 'vendor_verification_api',
         vendorId: id,
-        adminUserId: req.user?.id,
+        adminUserId: req.user?.userId,
         metadata: { backgroundCheckPassed, ndaSigned, complianceTrainingCompleted },
         severity: 'MEDIUM'
       });
@@ -159,7 +159,7 @@ export class VendorAccessController {
       } = req.body;
 
       // Validate required fields
-      validateRequired({ vendorId, categories, accessLevel, durationHours, justification });
+      validateRequiredFields({ vendorId, categories, accessLevel, durationHours, justification }, ['vendorId', 'categories', 'accessLevel', 'durationHours', 'justification']);
       validateArray(categories, 'categories');
       validateEnum(accessLevel, AccessLevel, 'accessLevel');
 
@@ -170,7 +170,7 @@ export class VendorAccessController {
 
       const grant = await this.vendorAccessService.createAccessGrant({
         vendorId,
-        grantedBy: req.user!.id,
+        grantedBy: req.user!.userId,
         categories,
         accessLevel,
         durationHours: Number(durationHours),
@@ -183,7 +183,7 @@ export class VendorAccessController {
         action: 'access_grant_created_api',
         vendorId,
         grantId: grant.id,
-        adminUserId: req.user?.id,
+        adminUserId: req.user?.userId,
         metadata: { categories, accessLevel, durationHours, justification },
         severity: 'HIGH'
       });
@@ -215,7 +215,7 @@ export class VendorAccessController {
   async approveGrant(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const approverId = req.user!.id;
+      const approverId = req.user!.userId;
 
       await this.vendorAccessService.approveAccessGrant(id, approverId);
 
@@ -246,20 +246,20 @@ export class VendorAccessController {
     try {
       const { id } = req.params;
 
-      const accessToken = await this.vendorAccessService.generateAccessToken(id);
+      const accessToken = await this.vendorAccessService.generateAccessToken(id, req.user!.userId);
 
       await this.auditLogger.log({
         action: 'access_token_generated_api',
         grantId: id,
         vendorId: accessToken.vendorId,
-        adminUserId: req.user?.id,
+        adminUserId: req.user?.userId,
         severity: 'HIGH'
       });
 
       res.json({
         success: true,
         token: accessToken.token,
-        expiresAt: accessToken.expiresAt,
+        expiresAt: accessToken.expires_at,
         message: 'Token generated successfully. Share securely with vendor.'
       });
     } catch (error) {
@@ -308,16 +308,16 @@ export class VendorAccessController {
   async emergencyRevokeAll(req: Request, res: Response) {
     try {
       const { reason } = req.body;
-      validateRequired({ reason });
+      validateRequiredFields({ reason }, ['reason']);
 
       await this.vendorAccessService.emergencyRevokeAllAccess(
         reason,
-        req.user!.id
+        req.user!.userId
       );
 
       await this.auditLogger.log({
         action: 'emergency_revoke_all_api',
-        adminUserId: req.user?.id,
+        adminUserId: req.user?.userId,
         reason,
         severity: 'CRITICAL'
       });
@@ -342,18 +342,14 @@ export class VendorAccessController {
     try {
       const { id } = req.params;
       const { reason } = req.body;
-      validateRequired({ reason });
+      validateRequiredFields({ reason }, ['reason']);
 
-      await this.vendorAccessService.revokeVendorAccess(
-        id,
-        reason,
-        req.user!.id
-      );
+      await this.vendorAccessService.revokeAccess(id, req.user!.userId);
 
       await this.auditLogger.log({
         action: 'vendor_access_revoked_api',
         vendorId: id,
-        adminUserId: req.user?.id,
+        adminUserId: req.user?.userId,
         reason,
         severity: 'HIGH'
       });

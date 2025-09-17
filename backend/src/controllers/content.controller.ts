@@ -671,13 +671,13 @@ export class ContentController {
       const params = [searchTerm];
       let paramIndex = 2;
 
-      if (content_type) {
+      if (content_type && typeof content_type === 'string') {
         whereClause += ` AND p.content_type = $${paramIndex}`;
         params.push(content_type);
         paramIndex++;
       }
 
-      if (category) {
+      if (category && typeof category === 'string') {
         whereClause += ` AND cc.slug = $${paramIndex}`;
         params.push(category);
         paramIndex++;
@@ -699,7 +699,7 @@ export class ContentController {
         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
       `;
 
-      params.push(Number(limit), offset);
+      params.push(String(Number(limit)), String(offset));
 
       const result = await contentRepository.db.query(searchQuery, params);
       const posts = result.rows;

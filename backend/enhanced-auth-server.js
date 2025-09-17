@@ -4,6 +4,7 @@ const { Pool } = require('pg');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const { optionalAuth } = require('./middleware/auth-middleware');
+const { trackVendorActivity, trackAdminActivity } = require('./middleware/activity-tracker-middleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,8 +41,8 @@ app.use((req, res, next) => {
 // Mount authentication routes
 app.use('/api/auth', authRoutes);
 
-// Mount admin management routes (protected)
-app.use('/api/admin', adminRoutes);
+// Mount admin management routes (protected with activity tracking)
+app.use('/api/admin', trackAdminActivity, adminRoutes);
 
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
@@ -350,13 +351,22 @@ app.get('/api/docs', (req, res) => {
       'GET /api/admin/analytics': 'System analytics and trends'
     },
 
+    admin_activity_monitoring: {
+      'GET /api/admin/activity/activities': 'List vendor activities with filtering',
+      'GET /api/admin/activity/sessions': 'List vendor sessions with status',
+      'GET /api/admin/activity/summary/:vendor_id': 'Get vendor activity summary',
+      'GET /api/admin/activity/risk-analytics': 'Risk analytics and trends',
+      'GET /api/admin/activity/live-feed': 'Real-time activity feed',
+      'POST /api/admin/activity/sessions/:id/end': 'Terminate vendor session'
+    },
+
     permissions: {
       'admin:manage': 'Create/manage other admin users',
-      'vendor:manage': 'Full vendor management (create, edit, delete, grants)',
+      'vendor:manage': 'Full vendor management (create, edit, delete, grants, session control)',
       'vendor:view': 'View vendor profiles and stats',
       'analytics:view': 'View system analytics and reports',
       'system:admin': 'System administration tasks',
-      'audit:view': 'View audit logs and security events'
+      'audit:view': 'View audit logs, security events, and activity monitoring'
     },
 
     response_format: {
@@ -458,6 +468,13 @@ app.listen(PORT, () => {
   console.log(`   GET  /api/admin/health          - System health`);
   console.log(`   GET  /api/admin/audit-log       - Activity audit log`);
   console.log(`   GET  /api/admin/analytics       - System analytics`);
+  console.log('\\n🔍 Admin Activity Monitoring:');
+  console.log(`   GET  /api/admin/activity/activities    - Vendor activities`);
+  console.log(`   GET  /api/admin/activity/sessions      - Vendor sessions`);
+  console.log(`   GET  /api/admin/activity/summary/:id   - Vendor activity summary`);
+  console.log(`   GET  /api/admin/activity/risk-analytics - Risk analytics`);
+  console.log(`   GET  /api/admin/activity/live-feed     - Real-time activity`);
+  console.log(`   POST /api/admin/activity/sessions/:id/end - Terminate session`);
   console.log('\\n📊 Public Endpoints:');
   console.log(`   GET  /api/vendors               - List vendor profiles`);
   console.log(`   GET  /api/vendors/:id           - Get specific vendor`);

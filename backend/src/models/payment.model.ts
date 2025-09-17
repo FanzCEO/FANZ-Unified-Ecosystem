@@ -496,7 +496,7 @@ export class PaymentRepository extends BaseRepository {
         ORDER BY created_at DESC
         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
       `;
-      params.push(limit, offset);
+      params.push(String(limit), String(offset));
 
       const countQuery = `
         SELECT COUNT(*) as count FROM transactions

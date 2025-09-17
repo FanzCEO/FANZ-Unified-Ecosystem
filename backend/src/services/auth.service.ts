@@ -12,8 +12,8 @@ import {
 
 const logger = new Logger('AuthService');
 
-// JWT payload interface
-export interface JWTPayload {
+// JWT payload interface - extends jose.JWTPayload
+export interface JWTPayload extends jose.JWTPayload {
   userId: string;
   email: string;
   username: string;
@@ -65,7 +65,7 @@ export class AuthService {
   async generateAccessToken(payload: JWTPayload): Promise<string> {
     try {
       const secret = new TextEncoder().encode(config.JWT_SECRET);
-      const token = await new jose.SignJWT(payload)
+      const token = await new jose.SignJWT(payload as any)
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setIssuer('fanz.eco')
@@ -94,7 +94,7 @@ export class AuthService {
       };
 
       const secret = new TextEncoder().encode(config.REFRESH_TOKEN_SECRET);
-      const token = await new jose.SignJWT(refreshPayload)
+      const token = await new jose.SignJWT(refreshPayload as any)
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setIssuer('fanz.eco')
@@ -125,7 +125,7 @@ export class AuthService {
         audience: 'fanz-api'
       });
 
-      const decoded = payload as JWTPayload;
+      const decoded = payload as unknown as JWTPayload;
 
       // Check if token is blacklisted
       const isBlacklisted = await this.isTokenBlacklisted(token);
@@ -169,8 +169,8 @@ export class AuthService {
 
     // Store session in Redis
     await this.storeUserSession(user.id, sessionId, {
-      accessToken: accessToken.substring(-10), // Store only last 10 chars for reference
-      refreshToken: refreshToken.substring(-10),
+      accessToken: accessToken.substring(accessToken.length - 10), // Store only last 10 chars for reference
+      refreshToken: refreshToken.substring(refreshToken.length - 10),
       createdAt: new Date(),
       deviceInfo: null // Can be populated from request headers
     });
@@ -211,13 +211,13 @@ export class AuthService {
         sessionId: decoded.sessionId
       };
 
-      const accessToken = this.generateAccessToken(newPayload);
-      const newRefreshToken = this.generateRefreshToken(newPayload);
+      const accessToken = await this.generateAccessToken(newPayload);
+      const newRefreshToken = await this.generateRefreshToken(newPayload);
 
       // Update session
       await this.updateUserSession(decoded.userId, decoded.sessionId, {
-        accessToken: accessToken.substring(-10),
-        refreshToken: newRefreshToken.substring(-10),
+        accessToken: accessToken.substring(accessToken.length - 10),
+        refreshToken: newRefreshToken.substring(newRefreshToken.length - 10),
         refreshedAt: new Date()
       });
 
@@ -419,7 +419,7 @@ export class AuthService {
   // Get token expiration time
   private getTokenExpiration(token: string): number {
     try {
-      const decoded = jwt.decode(token) as any;
+      const decoded = jose.decodeJwt(token) as any;
       return decoded.exp * 1000;
     } catch {
       return 0;
