@@ -6,24 +6,24 @@ import axios from 'axios';
 interface NFTMarketplaceContract extends ethers.Contract {
   createAndListNFT(
     tokenURI: string,
-    price: ethers.BigNumber,
+    price: ethers.BigNumberish,
     category: string,
     isAdultContent: boolean,
     royaltyFeeNumerator: number,
     platform: string
-  ): Promise<ethers.ContractTransaction>;
+  ): Promise<ethers.ContractTransactionResponse>;
   
   purchaseNFT(
     tokenId: number,
-    options: { value: ethers.BigNumber }
-  ): Promise<ethers.ContractTransaction>;
+    options: { value: ethers.BigNumberish }
+  ): Promise<ethers.ContractTransactionResponse>;
   
   listNFT(
     tokenId: number,
-    price: ethers.BigNumber
-  ): Promise<ethers.ContractTransaction>;
+    price: ethers.BigNumberish
+  ): Promise<ethers.ContractTransactionResponse>;
   
-  delistNFT(tokenId: number): Promise<ethers.ContractTransaction>;
+  delistNFT(tokenId: number): Promise<ethers.ContractTransactionResponse>;
   
   getActiveMarketItems(): Promise<MarketItem[]>;
   getUserNFTs(userAddress: string): Promise<MarketItem[]>;
@@ -31,20 +31,20 @@ interface NFTMarketplaceContract extends ethers.Contract {
   verifyCreator(
     creator: string,
     platform: string
-  ): Promise<ethers.ContractTransaction>;
+  ): Promise<ethers.ContractTransactionResponse>;
   
-  verifyAge(user: string): Promise<ethers.ContractTransaction>;
+  verifyAge(user: string): Promise<ethers.ContractTransactionResponse>;
 }
 
 interface MarketItem {
-  tokenId: ethers.BigNumber;
+  tokenId: bigint;
   seller: string;
   owner: string;
   creator: string;
-  price: ethers.BigNumber;
+  price: bigint;
   sold: boolean;
   active: boolean;
-  listingTime: ethers.BigNumber;
+  listingTime: bigint;
   category: string;
   isAdultContent: boolean;
   requiresAgeVerification: boolean;
@@ -94,7 +94,7 @@ interface NFTMetadata {
  * Supports NFT marketplace, wallet connections, and creator verification
  */
 export class Web3Service extends EventEmitter {
-  private provider: ethers.providers.JsonRpcProvider | null = null;
+  private provider: ethers.JsonRpcProvider | null = null;
   private signer: ethers.Wallet | null = null;
   private contract: NFTMarketplaceContract | null = null;
   private config: Web3Config;
@@ -129,7 +129,7 @@ export class Web3Service extends EventEmitter {
   private async initialize(): Promise<void> {
     try {
       // Initialize provider
-      this.provider = new ethers.providers.JsonRpcProvider(this.config.rpcUrl);
+      this.provider = new ethers.JsonRpcProvider(this.config.rpcUrl);
       
       // Initialize signer if private key provided
       if (this.config.privateKey) {
@@ -174,7 +174,7 @@ export class Web3Service extends EventEmitter {
         tokenId: tokenId.toString(),
         seller,
         owner,
-        price: ethers.utils.formatEther(price),
+        price: ethers.formatEther(price),
         category,
         isAdultContent
       });
@@ -186,9 +186,9 @@ export class Web3Service extends EventEmitter {
         tokenId: tokenId.toString(),
         seller,
         buyer,
-        price: ethers.utils.formatEther(price),
-        platformFee: ethers.utils.formatEther(platformFee),
-        royaltyFee: ethers.utils.formatEther(royaltyFee)
+        price: ethers.formatEther(price),
+        platformFee: ethers.formatEther(platformFee),
+        royaltyFee: ethers.formatEther(royaltyFee)
       });
     });
 
@@ -240,7 +240,7 @@ export class Web3Service extends EventEmitter {
       const tokenURI = await this.uploadToIPFS(metadata);
       
       // Convert price to Wei
-      const priceWei = ethers.utils.parseEther(priceInEth);
+      const priceWei = ethers.parseEther(priceInEth);
       
       // Convert royalty percentage to basis points (5% = 500)
       const royaltyBasisPoints = royaltyPercentage * 100;
@@ -259,15 +259,22 @@ export class Web3Service extends EventEmitter {
       const receipt = await tx.wait();
       
       // Extract token ID from events
-      const event = receipt.events?.find(e => e.event === 'MarketItemCreated');
-      const tokenId = event?.args?.tokenId?.toString();
+      const event = receipt?.logs?.find(log => {
+        try {
+          const parsed = this.contract?.interface.parseLog({ topics: log.topics as string[], data: log.data });
+          return parsed?.name === 'MarketItemCreated';
+        } catch {
+          return false;
+        }
+      });
+      const tokenId = event ? this.contract?.interface.parseLog({ topics: event.topics as string[], data: event.data })?.args?.tokenId?.toString() : undefined;
 
       return {
         hash: tx.hash,
         tokenId: tokenId ? parseInt(tokenId) : undefined,
         success: true,
-        gasUsed: receipt.gasUsed.toString(),
-        effectiveGasPrice: receipt.effectiveGasPrice.toString()
+        gasUsed: receipt?.gasUsed?.toString(),
+        effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
       console.error('Failed to create NFT:', error);
@@ -288,7 +295,7 @@ export class Web3Service extends EventEmitter {
         throw new Error('Contract or signer not initialized');
       }
 
-      const priceWei = ethers.utils.parseEther(priceInEth);
+      const priceWei = ethers.parseEther(priceInEth);
       
       const tx = await this.contract.purchaseNFT(tokenId, {
         value: priceWei
@@ -300,8 +307,8 @@ export class Web3Service extends EventEmitter {
         hash: tx.hash,
         tokenId,
         success: true,
-        gasUsed: receipt.gasUsed.toString(),
-        effectiveGasPrice: receipt.effectiveGasPrice.toString()
+        gasUsed: receipt?.gasUsed?.toString(),
+        effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
       console.error('Failed to purchase NFT:', error);
@@ -322,7 +329,7 @@ export class Web3Service extends EventEmitter {
         throw new Error('Contract or signer not initialized');
       }
 
-      const priceWei = ethers.utils.parseEther(priceInEth);
+      const priceWei = ethers.parseEther(priceInEth);
       const tx = await this.contract.listNFT(tokenId, priceWei);
       const receipt = await tx.wait();
 
@@ -330,8 +337,8 @@ export class Web3Service extends EventEmitter {
         hash: tx.hash,
         tokenId,
         success: true,
-        gasUsed: receipt.gasUsed.toString(),
-        effectiveGasPrice: receipt.effectiveGasPrice.toString()
+        gasUsed: receipt?.gasUsed?.toString(),
+        effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
       console.error('Failed to list NFT:', error);
@@ -359,8 +366,8 @@ export class Web3Service extends EventEmitter {
         hash: tx.hash,
         tokenId,
         success: true,
-        gasUsed: receipt.gasUsed.toString(),
-        effectiveGasPrice: receipt.effectiveGasPrice.toString()
+        gasUsed: receipt?.gasUsed?.toString(),
+        effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
       console.error('Failed to delist NFT:', error);
@@ -421,8 +428,8 @@ export class Web3Service extends EventEmitter {
       return {
         hash: tx.hash,
         success: true,
-        gasUsed: receipt.gasUsed.toString(),
-        effectiveGasPrice: receipt.effectiveGasPrice.toString()
+        gasUsed: receipt?.gasUsed?.toString(),
+        effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
       console.error('Failed to verify creator:', error);
@@ -449,8 +456,8 @@ export class Web3Service extends EventEmitter {
       return {
         hash: tx.hash,
         success: true,
-        gasUsed: receipt.gasUsed.toString(),
-        effectiveGasPrice: receipt.effectiveGasPrice.toString()
+        gasUsed: receipt?.gasUsed?.toString(),
+        effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
       console.error('Failed to verify age:', error);
@@ -471,8 +478,8 @@ export class Web3Service extends EventEmitter {
         throw new Error('Provider not initialized');
       }
 
-      const gasPrice = await this.provider.getGasPrice();
-      return ethers.utils.formatUnits(gasPrice, 'gwei');
+      const gasPrice = await this.provider.getFeeData();
+      return ethers.formatUnits(gasPrice.gasPrice || 0n, 'gwei');
     } catch (error) {
       console.error('Failed to get gas price:', error);
       return '0';
@@ -489,7 +496,7 @@ export class Web3Service extends EventEmitter {
       }
 
       const balance = await this.provider.getBalance(address);
-      return ethers.utils.formatEther(balance);
+      return ethers.formatEther(balance);
     } catch (error) {
       console.error('Failed to get balance:', error);
       return '0';
@@ -519,7 +526,7 @@ export class Web3Service extends EventEmitter {
   /**
    * Get transaction receipt
    */
-  async getTransactionReceipt(hash: string): Promise<ethers.providers.TransactionReceipt | null> {
+  async getTransactionReceipt(hash: string): Promise<ethers.TransactionReceipt | null> {
     try {
       if (!this.provider) {
         throw new Error('Provider not initialized');
@@ -538,7 +545,7 @@ export class Web3Service extends EventEmitter {
   async waitForTransaction(
     hash: string,
     confirmations: number = 1
-  ): Promise<ethers.providers.TransactionReceipt | null> {
+  ): Promise<ethers.TransactionReceipt | null> {
     try {
       if (!this.provider) {
         throw new Error('Provider not initialized');
@@ -558,7 +565,7 @@ export class Web3Service extends EventEmitter {
     try {
       // This would typically be handled on the frontend
       // Here we just validate the address format
-      if (!ethers.utils.isAddress(address)) {
+      if (!ethers.isAddress(address)) {
         throw new Error('Invalid wallet address');
       }
 

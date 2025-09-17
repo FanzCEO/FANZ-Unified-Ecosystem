@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as validator from 'express-validator';
-const { validationResult } = validator;
+const { validationResult } = require('express-validator');
 import { logger } from '../utils/logger';
 
 /**
