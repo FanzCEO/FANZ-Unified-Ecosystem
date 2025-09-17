@@ -1,0 +1,1081 @@
+# 🚪 FANZ API Gateway Configuration - Kong
+# 
+# Comprehensive API Gateway setup with security, rate limiting, and routing
+# Supports all 9 platform clusters with cluster-specific configurations
+
+_format_version: "3.0"
+_transform: true
+
+# ===== SERVICES DEFINITION =====
+
+services:
+  # ===== AUTHENTICATION SERVICE =====
+  - name: fanz-auth
+    url: http://fanz-auth:3001
+    protocol: http
+    host: fanz-auth
+    port: 3001
+    path: /
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    tags:
+      - auth
+      - core
+
+  # ===== PERMISSIONS SERVICE =====
+  - name: fanz-permissions
+    url: http://fanz-permissions:3002
+    protocol: http
+    host: fanz-permissions
+    port: 3002
+    path: /
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    tags:
+      - permissions
+      - security
+      - core
+
+  # ===== FINANCIAL SERVICES =====
+  - name: fanz-finance-ledger
+    url: http://fanz-finance-ledger:3010
+    protocol: http
+    host: fanz-finance-ledger
+    port: 3010
+    path: /
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    tags:
+      - finance
+      - ledger
+      - core
+
+  - name: fanz-finance-payments
+    url: http://fanz-finance-payments:3011
+    protocol: http
+    host: fanz-finance-payments
+    port: 3011
+    path: /
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    tags:
+      - finance
+      - payments
+      - core
+
+  - name: fanz-finance-reports
+    url: http://fanz-finance-reports:3012
+    protocol: http
+    host: fanz-finance-reports
+    port: 3012
+    path: /
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    tags:
+      - finance
+      - reports
+      - core
+
+  # ===== PLATFORM CLUSTER SERVICES =====
+  - name: fanzlab-platform
+    url: http://fanzlab-platform:4000
+    protocol: http
+    host: fanzlab-platform
+    port: 4000
+    path: /
+    tags:
+      - platform
+      - fanzlab
+      - universal
+
+  - name: boyfanz-platform
+    url: http://boyfanz-platform:4001
+    protocol: http
+    host: boyfanz-platform
+    port: 4001
+    path: /
+    tags:
+      - platform
+      - boyfanz
+      - neon-red
+
+  - name: girlfanz-platform
+    url: http://girlfanz-platform:4002
+    protocol: http
+    host: girlfanz-platform
+    port: 4002
+    path: /
+    tags:
+      - platform
+      - girlfanz
+      - neon-pink
+
+  - name: daddyfanz-platform
+    url: http://daddyfanz-platform:4003
+    protocol: http
+    host: daddyfanz-platform
+    port: 4003
+    path: /
+    tags:
+      - platform
+      - daddyfanz
+      - neon-gold
+
+  - name: pupfanz-platform
+    url: http://pupfanz-platform:4004
+    protocol: http
+    host: pupfanz-platform
+    port: 4004
+    path: /
+    tags:
+      - platform
+      - pupfanz
+      - neon-green
+
+  - name: taboofanz-platform
+    url: http://taboofanz-platform:4005
+    protocol: http
+    host: taboofanz-platform
+    port: 4005
+    path: /
+    tags:
+      - platform
+      - taboofanz
+      - dark-neon-blue
+      - adult-extreme
+
+  - name: transfanz-platform
+    url: http://transfanz-platform:4006
+    protocol: http
+    host: transfanz-platform
+    port: 4006
+    path: /
+    tags:
+      - platform
+      - transfanz
+      - turquoise-neon
+
+  - name: cougarfanz-platform
+    url: http://cougarfanz-platform:4007
+    protocol: http
+    host: cougarfanz-platform
+    port: 4007
+    path: /
+    tags:
+      - platform
+      - cougarfanz
+      - mature-gold
+
+  - name: fanzcock-platform
+    url: http://fanzcock-platform:4008
+    protocol: http
+    host: fanzcock-platform
+    port: 4008
+    path: /
+    tags:
+      - platform
+      - fanzcock
+      - xxx-red-black
+      - adult-tiktok
+
+  # ===== CONTENT & MEDIA SERVICES =====
+  - name: fanz-media-core
+    url: http://fanz-media-core:5000
+    protocol: http
+    host: fanz-media-core
+    port: 5000
+    path: /
+    tags:
+      - media
+      - content
+      - core
+
+  - name: fanz-content-ai
+    url: http://fanz-content-ai:5001
+    protocol: http
+    host: fanz-content-ai
+    port: 5001
+    path: /
+    tags:
+      - ai
+      - content
+      - moderation
+
+  # ===== COMPLIANCE SERVICES =====
+  - name: fanz-compliance
+    url: http://fanz-compliance:6000
+    protocol: http
+    host: fanz-compliance
+    port: 6000
+    path: /
+    tags:
+      - compliance
+      - legal
+      - core
+
+# ===== ROUTES DEFINITION =====
+
+routes:
+  # ===== AUTHENTICATION ROUTES =====
+  - name: auth-api
+    service: fanz-auth
+    paths:
+      - /api/v1/auth
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    strip_path: false
+    preserve_host: true
+    tags:
+      - auth
+      - api
+
+  # ===== PERMISSIONS ROUTES =====
+  - name: permissions-api
+    service: fanz-permissions
+    paths:
+      - /api/v1/permissions
+      - /api/v1/authorize
+      - /api/v1/roles
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    strip_path: false
+    preserve_host: true
+    tags:
+      - permissions
+      - api
+
+  # ===== FINANCIAL API ROUTES =====
+  - name: finance-ledger-api
+    service: fanz-finance-ledger
+    paths:
+      - /api/v1/ledger
+      - /api/v1/accounts
+      - /api/v1/balances
+    methods:
+      - GET
+      - POST
+    strip_path: false
+    preserve_host: true
+    tags:
+      - finance
+      - ledger
+      - api
+
+  - name: finance-payments-api
+    service: fanz-finance-payments
+    paths:
+      - /api/v1/payments
+      - /api/v1/payouts
+      - /api/v1/webhooks
+    methods:
+      - GET
+      - POST
+      - PUT
+    strip_path: false
+    preserve_host: true
+    tags:
+      - finance
+      - payments
+      - api
+
+  - name: finance-reports-api
+    service: fanz-finance-reports
+    paths:
+      - /api/v1/reports
+      - /api/v1/dashboard
+      - /api/v1/analytics
+    methods:
+      - GET
+    strip_path: false
+    preserve_host: true
+    tags:
+      - finance
+      - reports
+      - api
+
+  # ===== PLATFORM CLUSTER ROUTES =====
+  - name: fanzlab-routes
+    service: fanzlab-platform
+    hosts:
+      - fanzlab.com
+      - www.fanzlab.com
+      - api.fanzlab.com
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    strip_path: false
+    preserve_host: true
+    tags:
+      - fanzlab
+      - platform
+
+  - name: boyfanz-routes
+    service: boyfanz-platform
+    hosts:
+      - boyfanz.com
+      - www.boyfanz.com
+      - api.boyfanz.com
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    strip_path: false
+    preserve_host: true
+    tags:
+      - boyfanz
+      - platform
+
+  - name: girlfanz-routes
+    service: girlfanz-platform
+    hosts:
+      - girlfanz.com
+      - www.girlfanz.com
+      - api.girlfanz.com
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    strip_path: false
+    preserve_host: true
+    tags:
+      - girlfanz
+      - platform
+
+  - name: daddyfanz-routes
+    service: daddyfanz-platform
+    hosts:
+      - daddyfanz.com
+      - www.daddyfanz.com
+      - api.daddyfanz.com
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    strip_path: false
+    preserve_host: true
+    tags:
+      - daddyfanz
+      - platform
+
+  - name: pupfanz-routes
+    service: pupfanz-platform
+    hosts:
+      - pupfanz.com
+      - www.pupfanz.com
+      - api.pupfanz.com
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    strip_path: false
+    preserve_host: true
+    tags:
+      - pupfanz
+      - platform
+
+  - name: taboofanz-routes
+    service: taboofanz-platform
+    hosts:
+      - taboofanz.com
+      - www.taboofanz.com
+      - api.taboofanz.com
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    strip_path: false
+    preserve_host: true
+    tags:
+      - taboofanz
+      - platform
+      - adult-extreme
+
+  - name: transfanz-routes
+    service: transfanz-platform
+    hosts:
+      - transfanz.com
+      - www.transfanz.com
+      - api.transfanz.com
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    strip_path: false
+    preserve_host: true
+    tags:
+      - transfanz
+      - platform
+
+  - name: cougarfanz-routes
+    service: cougarfanz-platform
+    hosts:
+      - cougarfanz.com
+      - www.cougarfanz.com
+      - api.cougarfanz.com
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    strip_path: false
+    preserve_host: true
+    tags:
+      - cougarfanz
+      - platform
+
+  - name: fanzcock-routes
+    service: fanzcock-platform
+    hosts:
+      - fanzcock.com
+      - www.fanzcock.com
+      - api.fanzcock.com
+    paths:
+      - /
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    strip_path: false
+    preserve_host: true
+    tags:
+      - fanzcock
+      - platform
+      - adult-tiktok
+
+  # ===== MEDIA & CONTENT ROUTES =====
+  - name: media-api
+    service: fanz-media-core
+    paths:
+      - /api/v1/media
+      - /api/v1/upload
+      - /api/v1/transcode
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    strip_path: false
+    preserve_host: true
+    tags:
+      - media
+      - api
+
+  - name: content-ai-api
+    service: fanz-content-ai
+    paths:
+      - /api/v1/ai
+      - /api/v1/moderate
+      - /api/v1/classify
+    methods:
+      - GET
+      - POST
+    strip_path: false
+    preserve_host: true
+    tags:
+      - ai
+      - content
+      - api
+
+  # ===== COMPLIANCE ROUTES =====
+  - name: compliance-api
+    service: fanz-compliance
+    paths:
+      - /api/v1/compliance
+      - /api/v1/age-verify
+      - /api/v1/kyc
+      - /api/v1/2257
+    methods:
+      - GET
+      - POST
+      - PUT
+    strip_path: false
+    preserve_host: true
+    tags:
+      - compliance
+      - api
+
+# ===== PLUGINS CONFIGURATION =====
+
+plugins:
+  # ===== GLOBAL PLUGINS =====
+  - name: cors
+    config:
+      origins:
+        - "https://fanzlab.com"
+        - "https://www.fanzlab.com"
+        - "https://boyfanz.com"
+        - "https://www.boyfanz.com"
+        - "https://girlfanz.com"
+        - "https://www.girlfanz.com"
+        - "https://daddyfanz.com"
+        - "https://www.daddyfanz.com"
+        - "https://pupfanz.com"
+        - "https://www.pupfanz.com"
+        - "https://taboofanz.com"
+        - "https://www.taboofanz.com"
+        - "https://transfanz.com"
+        - "https://www.transfanz.com"
+        - "https://cougarfanz.com"
+        - "https://www.cougarfanz.com"
+        - "https://fanzcock.com"
+        - "https://www.fanzcock.com"
+        - "http://localhost:3000"
+        - "http://localhost:3001"
+      methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+        - OPTIONS
+      headers:
+        - Accept
+        - Accept-Version
+        - Authorization
+        - Content-Length
+        - Content-MD5
+        - Content-Type
+        - Date
+        - X-Auth-Token
+        - X-API-Key
+        - X-Cluster
+        - X-Request-ID
+      exposed_headers:
+        - X-Auth-Token
+        - X-Request-ID
+        - X-RateLimit-Remaining
+        - X-RateLimit-Limit
+      credentials: true
+      max_age: 3600
+
+  - name: request-id
+    config:
+      header_name: X-Request-ID
+      generator: uuid
+
+  - name: correlation-id
+    config:
+      header_name: X-Correlation-ID
+      generator: uuid
+      echo_downstream: true
+
+  - name: prometheus
+    config:
+      per_consumer: true
+      status_code_metrics: true
+      latency_metrics: true
+      bandwidth_metrics: true
+      upstream_health_metrics: true
+
+  # ===== GLOBAL RATE LIMITING =====
+  - name: rate-limiting
+    config:
+      minute: 1000
+      hour: 10000
+      day: 100000
+      policy: redis
+      redis_host: redis
+      redis_port: 6379
+      redis_database: 2
+      hide_client_headers: false
+
+  # ===== BOT PROTECTION =====
+  - name: bot-detection
+    config:
+      whitelist: []
+      blacklist:
+        - "badbot"
+        - "scraper"
+        - "crawler"
+      allow_bots: false
+
+  # ===== IP RESTRICTION FOR ADMIN APIs =====
+  - name: ip-restriction
+    route: permissions-api
+    config:
+      allow:
+        - "10.0.0.0/8"
+        - "192.168.0.0/16"
+        - "172.16.0.0/12"
+      deny: []
+
+  - name: ip-restriction
+    route: finance-ledger-api
+    config:
+      allow:
+        - "10.0.0.0/8"
+        - "192.168.0.0/16"
+        - "172.16.0.0/12"
+      deny: []
+
+  # ===== AUTHENTICATION PLUGINS =====
+  - name: oidc
+    route: finance-ledger-api
+    config:
+      client_id: "${OIDC_CLIENT_ID}"
+      client_secret: "${OIDC_CLIENT_SECRET}"
+      discovery: "${OIDC_DISCOVERY_URL}"
+      redirect_uri: "${OIDC_REDIRECT_URI}"
+      scope: "openid profile email"
+      response_type: "code"
+      ssl_verify: true
+      session_secret: "${OIDC_SESSION_SECRET}"
+      introspection_endpoint: "${OIDC_INTROSPECTION_ENDPOINT}"
+      timeout: 3000
+      keepalive: true
+      use_jwks: true
+
+  - name: oidc
+    route: finance-payments-api
+    config:
+      client_id: "${OIDC_CLIENT_ID}"
+      client_secret: "${OIDC_CLIENT_SECRET}"
+      discovery: "${OIDC_DISCOVERY_URL}"
+      redirect_uri: "${OIDC_REDIRECT_URI}"
+      scope: "openid profile email finance:payments"
+      response_type: "code"
+      ssl_verify: true
+      session_secret: "${OIDC_SESSION_SECRET}"
+      introspection_endpoint: "${OIDC_INTROSPECTION_ENDPOINT}"
+
+  - name: oidc
+    route: finance-reports-api
+    config:
+      client_id: "${OIDC_CLIENT_ID}"
+      client_secret: "${OIDC_CLIENT_SECRET}"
+      discovery: "${OIDC_DISCOVERY_URL}"
+      redirect_uri: "${OIDC_REDIRECT_URI}"
+      scope: "openid profile email finance:reports"
+      response_type: "code"
+      ssl_verify: true
+      session_secret: "${OIDC_SESSION_SECRET}"
+      introspection_endpoint: "${OIDC_INTROSPECTION_ENDPOINT}"
+
+  # ===== JWT AUTHENTICATION FOR API ROUTES =====
+  - name: jwt
+    route: media-api
+    config:
+      key_claim_name: iss
+      secret_is_base64: false
+      claims_to_verify:
+        - exp
+        - iat
+        - sub
+      anonymous: false
+      run_on_preflight: true
+
+  - name: jwt
+    route: content-ai-api
+    config:
+      key_claim_name: iss
+      secret_is_base64: false
+      claims_to_verify:
+        - exp
+        - iat
+        - sub
+      anonymous: false
+
+  # ===== CLUSTER-SPECIFIC RATE LIMITS =====
+  - name: rate-limiting
+    route: taboofanz-routes
+    config:
+      minute: 500   # Lower limits for extreme content
+      hour: 5000
+      day: 50000
+      policy: redis
+      redis_host: redis
+      redis_port: 6379
+      redis_database: 3
+
+  - name: rate-limiting
+    route: fanzcock-routes
+    config:
+      minute: 2000  # Higher limits for video platform
+      hour: 20000
+      day: 200000
+      policy: redis
+      redis_host: redis
+      redis_port: 6379
+      redis_database: 4
+
+  # ===== ADULT CONTENT AGE VERIFICATION =====
+  - name: request-validator
+    route: taboofanz-routes
+    config:
+      body_schema: |
+        {
+          "type": "object",
+          "properties": {
+            "age_verified": {
+              "type": "boolean",
+              "enum": [true]
+            }
+          },
+          "required": ["age_verified"]
+        }
+      allowed_content_types:
+        - application/json
+        - application/x-www-form-urlencoded
+
+  # ===== WAF (WEB APPLICATION FIREWALL) =====
+  - name: waf
+    config:
+      rules: |
+        SecRuleEngine On
+        SecRule ARGS "@detectSQLi" \
+          "id:1001,phase:2,block,msg:'SQL Injection Attack Detected',logdata:'Matched Data: %{MATCHED_VAR} found within %{MATCHED_VAR_NAME}'"
+        SecRule ARGS "@detectXSS" \
+          "id:1002,phase:2,block,msg:'XSS Attack Detected',logdata:'Matched Data: %{MATCHED_VAR} found within %{MATCHED_VAR_NAME}'"
+        SecRule REQUEST_HEADERS:User-Agent "@pm badbot malware" \
+          "id:1003,phase:1,deny,msg:'Malicious User Agent'"
+        SecRule REMOTE_ADDR "@ipMatchFromFile /etc/kong/blocklist.txt" \
+          "id:1004,phase:1,deny,msg:'IP Address Blocked'"
+
+  # ===== RESPONSE TRANSFORMATION =====
+  - name: response-transformer
+    config:
+      add:
+        headers:
+          - "X-Powered-By: FANZ-OS"
+          - "X-Content-Type-Options: nosniff"
+          - "X-Frame-Options: DENY"
+          - "X-XSS-Protection: 1; mode=block"
+          - "Strict-Transport-Security: max-age=31536000; includeSubDomains"
+          - "Referrer-Policy: strict-origin-when-cross-origin"
+      remove:
+        headers:
+          - "Server"
+          - "X-Powered-By"
+
+  # ===== REQUEST TRANSFORMATION FOR CLUSTER ROUTING =====
+  - name: request-transformer
+    route: boyfanz-routes
+    config:
+      add:
+        headers:
+          - "X-Cluster: boyfanz"
+          - "X-Theme: neon-red"
+
+  - name: request-transformer
+    route: girlfanz-routes
+    config:
+      add:
+        headers:
+          - "X-Cluster: girlfanz"
+          - "X-Theme: neon-pink"
+
+  - name: request-transformer
+    route: daddyfanz-routes
+    config:
+      add:
+        headers:
+          - "X-Cluster: daddyfanz"
+          - "X-Theme: neon-gold"
+
+  - name: request-transformer
+    route: pupfanz-routes
+    config:
+      add:
+        headers:
+          - "X-Cluster: pupfanz"
+          - "X-Theme: neon-green"
+
+  - name: request-transformer
+    route: taboofanz-routes
+    config:
+      add:
+        headers:
+          - "X-Cluster: taboofanz"
+          - "X-Theme: dark-neon-blue"
+          - "X-Content-Level: extreme"
+
+  - name: request-transformer
+    route: transfanz-routes
+    config:
+      add:
+        headers:
+          - "X-Cluster: transfanz"
+          - "X-Theme: turquoise-neon"
+
+  - name: request-transformer
+    route: cougarfanz-routes
+    config:
+      add:
+        headers:
+          - "X-Cluster: cougarfanz"
+          - "X-Theme: mature-gold"
+
+  - name: request-transformer
+    route: fanzcock-routes
+    config:
+      add:
+        headers:
+          - "X-Cluster: fanzcock"
+          - "X-Theme: xxx-red-black"
+          - "X-Content-Type: short-video"
+
+  # ===== CIRCUIT BREAKER FOR FINANCIAL SERVICES =====
+  - name: proxy-circuit-breaker
+    service: fanz-finance-ledger
+    config:
+      failure_threshold: 10
+      recovery_timeout: 30
+      healthy_threshold: 3
+
+  - name: proxy-circuit-breaker
+    service: fanz-finance-payments
+    config:
+      failure_threshold: 5
+      recovery_timeout: 60
+      healthy_threshold: 2
+
+  # ===== CACHING FOR STATIC CONTENT =====
+  - name: proxy-cache
+    route: media-api
+    config:
+      content_type:
+        - "image/jpeg"
+        - "image/png"
+        - "image/webp"
+        - "video/mp4"
+        - "video/webm"
+      cache_ttl: 3600
+      cache_control: true
+      vary_headers:
+        - Accept-Encoding
+
+  # ===== REQUEST SIZE LIMITING =====
+  - name: request-size-limiting
+    route: media-api
+    config:
+      allowed_payload_size: 100  # 100 MB for media uploads
+
+  - name: request-size-limiting
+    config:
+      allowed_payload_size: 1    # 1 MB for regular API calls
+
+  # ===== HEALTH CHECKS =====
+  - name: upstream-health-check
+    service: fanz-auth
+    config:
+      active:
+        http_path: "/health"
+        https_sni: fanz-auth
+        healthy:
+          interval: 10
+          http_statuses: [200, 302]
+        unhealthy:
+          interval: 10
+          http_failures: 3
+          tcp_failures: 3
+          timeout: 5
+      passive:
+        healthy:
+          http_statuses: [200, 201, 202, 204, 300, 302]
+        unhealthy:
+          http_statuses: [429, 500, 502, 503, 504]
+          tcp_failures: 3
+
+  # ===== LOGGING =====
+  - name: file-log
+    config:
+      path: /var/log/kong/access.log
+      reopen: true
+
+  - name: http-log
+    config:
+      http_endpoint: http://logstash:5044
+      method: POST
+      timeout: 1000
+      keepalive: 1000
+      content_type: application/json
+
+# ===== UPSTREAMS DEFINITION =====
+
+upstreams:
+  - name: fanz-auth-upstream
+    algorithm: round-robin
+    hash_on: none
+    hash_fallback: none
+    healthchecks:
+      active:
+        http_path: "/health"
+        healthy:
+          interval: 10
+          successes: 3
+        unhealthy:
+          interval: 10
+          http_failures: 3
+    targets:
+      - target: fanz-auth:3001
+        weight: 100
+
+  - name: fanz-permissions-upstream
+    algorithm: round-robin
+    healthchecks:
+      active:
+        http_path: "/health"
+        healthy:
+          interval: 10
+          successes: 3
+        unhealthy:
+          interval: 10
+          http_failures: 3
+    targets:
+      - target: fanz-permissions:3002
+        weight: 100
+
+  # ===== FINANCIAL SERVICES UPSTREAMS =====
+  - name: fanz-finance-ledger-upstream
+    algorithm: least-connections
+    healthchecks:
+      active:
+        http_path: "/health"
+        healthy:
+          interval: 5
+          successes: 2
+        unhealthy:
+          interval: 5
+          http_failures: 2
+    targets:
+      - target: fanz-finance-ledger-1:3010
+        weight: 100
+      - target: fanz-finance-ledger-2:3010
+        weight: 100
+
+  - name: fanz-finance-payments-upstream
+    algorithm: least-connections
+    healthchecks:
+      active:
+        http_path: "/health"
+        healthy:
+          interval: 5
+          successes: 2
+        unhealthy:
+          interval: 5
+          http_failures: 2
+    targets:
+      - target: fanz-finance-payments-1:3011
+        weight: 100
+      - target: fanz-finance-payments-2:3011
+        weight: 100
+
+# ===== CONSUMERS (API KEYS & AUTHENTICATION) =====
+
+consumers:
+  - username: fanz-admin
+    custom_id: admin-001
+    tags:
+      - admin
+      - internal
+
+  - username: fanz-finance-service
+    custom_id: finance-001
+    tags:
+      - service
+      - finance
+      - internal
+
+  - username: fanz-media-service
+    custom_id: media-001
+    tags:
+      - service
+      - media
+      - internal
+
+  - username: external-partner
+    custom_id: partner-001
+    tags:
+      - partner
+      - external
+
+# ===== API KEYS =====
+
+key-auths:
+  - consumer: fanz-admin
+    key: "${FANZ_ADMIN_API_KEY}"
+    tags:
+      - admin
+
+  - consumer: fanz-finance-service
+    key: "${FANZ_FINANCE_API_KEY}"
+    tags:
+      - finance-service
+
+  - consumer: fanz-media-service
+    key: "${FANZ_MEDIA_API_KEY}"
+    tags:
+      - media-service
+
+# ===== JWT CREDENTIALS =====
+
+jwt_secrets:
+  - consumer: fanz-admin
+    key: fanz-admin-jwt
+    secret: "${JWT_SECRET_ADMIN}"
+    algorithm: HS256
+
+  - consumer: fanz-finance-service
+    key: fanz-finance-jwt
+    secret: "${JWT_SECRET_FINANCE}"
+    algorithm: HS256
+
+# ===== ACL GROUPS =====
+
+acls:
+  - consumer: fanz-admin
+    group: admin
+
+  - consumer: fanz-finance-service
+    group: finance
+
+  - consumer: fanz-media-service
+    group: media
+
+  - consumer: external-partner
+    group: partner

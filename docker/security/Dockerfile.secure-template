@@ -1,0 +1,55 @@
+# 🔐 FANZ Secure Dockerfile Template
+# Adult content platform security hardening
+
+# Use specific version tags, never 'latest'
+FROM node:18.17.0-alpine3.18
+
+# Create non-root user for adult platform compliance
+RUN addgroup -g 1001 -S fanz && \
+    adduser -S fanz -u 1001 -G fanz
+
+# Set security labels
+LABEL security.scan="required" \
+      compliance.adult-content="true" \
+      compliance.age-verification="required" \
+      security.non-root="true"
+
+# Install security updates only
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache \
+        ca-certificates \
+        tini && \
+    rm -rf /var/cache/apk/*
+
+# Create secure directories
+RUN mkdir -p /app && \
+    chown -R fanz:fanz /app
+
+# Switch to non-root user
+USER fanz
+WORKDIR /app
+
+# Copy package files first for layer caching
+COPY --chown=fanz:fanz package*.json ./
+
+# Install dependencies with security audit
+RUN npm ci --only=production && \
+    npm audit fix && \
+    npm cache clean --force
+
+# Copy application code
+COPY --chown=fanz:fanz . .
+
+# Expose port (non-privileged)
+EXPOSE 3000
+
+# Use tini as PID 1 for proper signal handling
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# Health check for container orchestration
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD node healthcheck.js || exit 1
+
+# Run as non-root user
+CMD ["node", "server.js"]

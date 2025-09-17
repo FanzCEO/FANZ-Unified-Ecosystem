@@ -1,0 +1,8 @@
+failure-threshold: warning
+ignored:
+  - DL3008  # Pin versions in apt get install
+  - DL3009  # Delete the apt-get lists after installing something
+trustedRegistries:
+  - docker.io
+  - gcr.io
+  - registry.k8s.io

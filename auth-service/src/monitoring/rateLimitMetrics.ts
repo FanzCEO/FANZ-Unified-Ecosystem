@@ -113,9 +113,9 @@ class RateLimitMetrics {
       event => new Date(event.timestamp) > oneHourAgo
     );
     
-    const totalExceeded = this.metrics.get('rate_limit_exceeded_sensitive') || 0 +
-                         this.metrics.get('rate_limit_exceeded_token') || 0 +
-                         this.metrics.get('rate_limit_exceeded_standard') || 0;
+    const totalExceeded = (this.metrics.get('rate_limit_exceeded_sensitive') || 0) +
+                         (this.metrics.get('rate_limit_exceeded_token') || 0) +
+                         (this.metrics.get('rate_limit_exceeded_standard') || 0);
     
     const ipCounts = new Map<string, number>();
     const categoryBreakdown: Record<string, number> = {};

@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { Request } from 'express';
-import jwt from 'jsonwebtoken';
+import * as jose from 'jose';
 import { rateLimitConfig } from '../config/rateLimitConfig';
 
 // 🔑 Privacy-Preserving Key Generators for Rate Limiting
@@ -57,9 +57,13 @@ export const generateUserKey = ({ req, prefix = '' }: KeyGeneratorOptions): stri
     if (token) {
       // Don't verify the token here - just extract the userId if present
       // Verification will be handled by auth middleware later
-      const decoded = jwt.decode(token) as any;
-      if (decoded && decoded.userId) {
-        return `${rateLimitConfig.redisPrefix}${prefix}user:${decoded.userId}`;
+      try {
+        const decoded = jose.decodeJwt(token);
+        if (decoded && decoded.userId) {
+          return `${rateLimitConfig.redisPrefix}${prefix}user:${decoded.userId}`;
+        }
+      } catch (error) {
+        // Ignore token parsing errors
       }
     }
   } catch (error) {
@@ -88,9 +92,13 @@ export const generateTenantKey = ({ req, prefix = '' }: KeyGeneratorOptions): st
     const token = authHeader && authHeader.split(' ')[1];
     
     if (token) {
-      const decoded = jwt.decode(token) as any;
-      if (decoded && decoded.tenantId) {
-        return `${rateLimitConfig.redisPrefix}${prefix}tenant:${decoded.tenantId}`;
+      try {
+        const decoded = jose.decodeJwt(token);
+        if (decoded && decoded.tenantId) {
+          return `${rateLimitConfig.redisPrefix}${prefix}tenant:${decoded.tenantId}`;
+        }
+      } catch (error) {
+        // Ignore token parsing errors
       }
     }
   } catch (error) {
@@ -134,9 +142,13 @@ export const generateCompositeKey = (
           const authHeader = req.headers.authorization;
           const token = authHeader && authHeader.split(' ')[1];
           if (token) {
-            const decoded = jwt.decode(token) as any;
-            if (decoded && decoded.userId) {
-              keyParts.push(`user:${decoded.userId}`);
+            try {
+              const decoded = jose.decodeJwt(token);
+              if (decoded && decoded.userId) {
+                keyParts.push(`user:${decoded.userId}`);
+              }
+            } catch (error) {
+              // Ignore token parsing errors
             }
           }
         } catch (error) {
@@ -182,9 +194,11 @@ export const extractLoggingMetadata = (req: Request) => {
   if (authHeader) {
     try {
       const token = authHeader.split(' ')[1];
-      const decoded = jwt.decode(token) as any;
-      userId = decoded?.userId;
-      userRole = decoded?.role;
+      if (token) {
+        const decoded = jose.decodeJwt(token);
+        userId = decoded?.userId as string;
+        userRole = decoded?.role as string;
+      }
     } catch (error) {
       // Ignore token parsing errors
     }
