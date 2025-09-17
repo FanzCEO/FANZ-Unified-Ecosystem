@@ -93,3 +93,5 @@ terraform/tfplan
 terraform/.terraform/
 *.tfstate
 *.tfstate.*
+package-lock.json
+yarn.lock

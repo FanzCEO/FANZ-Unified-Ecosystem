@@ -36,11 +36,32 @@ services:
 
   # Real FanzLanding Platform (Node.js/React App)
   fanz-landing:
-    image: node:20-alpine
+    build:
+      context: REDACTED_AWS_SECRET_KEYLanding
+      dockerfile_inline: |
+        FROM node:20-alpine as builder
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --legacy-peer-deps
+        COPY . .
+        RUN npx vite build
+        
+        FROM node:20-alpine as production
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --omit=dev --legacy-peer-deps && npm install tsx && npm cache clean --force
+        COPY --from=builder /app/dist ./dist
+        COPY --from=builder /app/server ./server
+        COPY --from=builder /app/shared ./shared
+        COPY --from=builder /app/vite.config.ts ./vite.config.ts
+        COPY --from=builder /app/tsconfig.json ./tsconfig.json
+        COPY --from=builder /app/dist/public ./server/public
+        EXPOSE 3000
+        CMD ["npx", "tsx", "server/index.ts"]
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - PORT=3000
       - DATABASE_URL=postgresql://fanz_user:${DB_PASSWORD:-dev_password_123}@postgres:5432/fanz_ecosystem
       - REDIS_URL=redis://redis:6379
@@ -57,20 +78,36 @@ services:
         condition: service_healthy
     networks:
       - fanz-net
-    volumes:
-      - REDACTED_AWS_SECRET_KEYLanding:/app
-      - /app/node_modules
-    working_dir: /app
-    command: ["sh", "-c", "npm install --legacy-peer-deps && npm run dev"]
     restart: unless-stopped
 
   # Real FanzDash Platform (Admin Control Center)
   fanzdash:
-    image: node:20-alpine
+    build:
+      context: REDACTED_AWS_SECRET_KEYDash
+      dockerfile_inline: |
+        FROM node:20-alpine as builder
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --legacy-peer-deps
+        COPY . .
+        RUN npx vite build
+        
+        FROM node:20-alpine as production
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --omit=dev --legacy-peer-deps && npm install tsx --legacy-peer-deps && npm cache clean --force
+        COPY --from=builder /app/dist ./dist
+        COPY --from=builder /app/server ./server
+        COPY --from=builder /app/shared ./shared
+        COPY --from=builder /app/vite.config.ts ./vite.config.ts
+        COPY --from=builder /app/tsconfig.json ./tsconfig.json
+        COPY --from=builder /app/dist/public ./server/public
+        EXPOSE 3030
+        CMD ["npx", "tsx", "server/index.ts"]
     ports:
       - "3030:3030"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - PORT=3030
       - DATABASE_URL=postgresql://fanz_user:${DB_PASSWORD:-dev_password_123}@postgres:5432/fanz_ecosystem
       - REDIS_URL=redis://redis:6379
@@ -88,11 +125,6 @@ services:
         condition: service_healthy
     networks:
       - fanz-net
-    volumes:
-      - REDACTED_AWS_SECRET_KEYDash:/app
-      - /app/node_modules
-    working_dir: /app
-    command: ["sh", "-c", "npm install --legacy-peer-deps && npm run dev"]
     restart: unless-stopped
 
   # API Gateway (Enhanced with Security Fixes)
@@ -106,11 +138,11 @@ services:
         COPY api-gateway/ ./
         RUN npm install --legacy-peer-deps
         EXPOSE 8090
-        CMD ["npm", "run", "dev"]
+        CMD ["sh", "-c", "npm run build && npm start"]
     ports:
       - "8090:8090"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - PORT=8090
       - DATABASE_URL=postgresql://fanz_user:${DB_PASSWORD:-dev_password_123}@postgres:5432/fanz_ecosystem
       - REDIS_URL=redis://redis:6379

@@ -1,0 +1,54 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: fanz-platform-psp
+  labels:
+    app: fanz-security
+    compliance: adult-content
+spec:
+  # Require non-root containers for compliance
+  runAsUser:
+    rule: MustRunAsNonRoot
+  runAsGroup:
+    rule: MustRunAs
+    ranges:
+    - min: 1001
+      max: 65535
+  
+  # Filesystem restrictions
+  fsGroup:
+    rule: RunAsAny
+  readOnlyRootFilesystem: true
+  
+  # Security context restrictions
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  allowedCapabilities: []
+  
+  # Volume restrictions for adult content compliance
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
+  - persistentVolumeClaim
+  
+  # Network restrictions
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  
+  # SELinux (if applicable)
+  seLinux:
+    rule: RunAsAny
+  
+  # Seccomp
+  seccompProfiles:
+  - runtime/default
+  
+  # AppArmor (if applicable)
+  annotations:
+    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
+    apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'

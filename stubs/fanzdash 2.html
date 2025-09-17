@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FanzDash - Admin Control Center</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding: 20px;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+        }
+        .logo { 
+            font-size: 2.5em; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+        }
+        .subtitle { 
+            font-size: 1.1em; 
+            opacity: 0.8; 
+        }
+        .status { 
+            background: rgba(0,255,0,0.2); 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 20px 0; 
+            text-align: center;
+        }
+        .controls { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+        }
+        .control-section { 
+            background: rgba(255,255,255,0.1); 
+            padding: 25px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .control-section h3 { 
+            margin: 0 0 15px 0; 
+            font-size: 1.3em; 
+            color: #3498db;
+        }
+        .control-section ul { 
+            margin: 0; 
+            padding: 0; 
+            list-style: none; 
+        }
+        .control-section li { 
+            padding: 8px 0; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+        }
+        .control-section li:last-child { 
+            border-bottom: none; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎛️ FanzDash</div>
+            <div class="subtitle">Central Admin Control Center</div>
+        </div>
+        
+        <div class="status">
+            ✅ Admin Dashboard Active - Port 3030
+        </div>
+        
+        <div class="controls">
+            <div class="control-section">
+                <h3>🔒 Security & Moderation</h3>
+                <ul>
+                    <li>• User Management</li>
+                    <li>• Content Moderation</li>
+                    <li>• Ban/Suspension Controls</li>
+                    <li>• Security Auditing</li>
+                </ul>
+            </div>
+            
+            <div class="control-section">
+                <h3>📊 Platform Analytics</h3>
+                <ul>
+                    <li>• User Activity Monitoring</li>
+                    <li>• Revenue Analytics</li>
+                    <li>• Performance Metrics</li>
+                    <li>• Traffic Analysis</li>
+                </ul>
+            </div>
+            
+            <div class="control-section">
+                <h3>⚙️ System Management</h3>
+                <ul>
+                    <li>• Platform Configuration</li>
+                    <li>• Service Status</li>
+                    <li>• Database Management</li>
+                    <li>• API Gateway Control</li>
+                </ul>
+            </div>
+            
+            <div class="control-section">
+                <h3>👥 Creator Relations</h3>
+                <ul>
+                    <li>• Creator Approval/Denial</li>
+                    <li>• Payment Processing</li>
+                    <li>• Support Tickets</li>
+                    <li>• Creator Analytics</li>
+                </ul>
+            </div>
+            
+            <div class="control-section">
+                <h3>🌐 Platform Control</h3>
+                <ul>
+                    <li>• BoyFanz Management</li>
+                    <li>• GirlFanz Management</li>
+                    <li>• PupFanz Management</li>
+                    <li>• Cross-Platform SSO</li>
+                </ul>
+            </div>
+            
+            <div class="control-section">
+                <h3>📋 Compliance & Legal</h3>
+                <ul>
+                    <li>• ADA Compliance</li>
+                    <li>• GDPR Management</li>
+                    <li>• Age Verification</li>
+                    <li>• Legal Documentation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

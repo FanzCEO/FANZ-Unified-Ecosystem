@@ -1,0 +1,18 @@
+// OpenTelemetry tracing for FANZ-Unified-Ecosystem
+const { NodeSDK } = require('@opentelemetry/sdk-node');
+const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
+const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
+
+const jaegerExporter = new JaegerExporter({
+  endpoint: process.env.JAEGER_ENDPOINT || 'http://localhost:14268/api/traces',
+});
+
+const sdk = new NodeSDK({
+  serviceName: 'FANZ-Unified-Ecosystem',
+  traceExporter: jaegerExporter,
+  instrumentations: [getNodeAutoInstrumentations()]
+});
+
+sdk.start();
+
+module.exports = sdk;
