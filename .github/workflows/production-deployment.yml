@@ -2,6 +2,8 @@
 # Enterprise-grade CI/CD with security scanning, testing, and automated deployment
 
 name: Production Deployment Pipeline
+permissions:
+  contents: read
 
 on:
   push:
