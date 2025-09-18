@@ -438,12 +438,18 @@ export class VendorAccessController {
 
   private getCategoryDescription(category: AccessCategory): string {
     const descriptions: Record<AccessCategory, string> = {
+      // Core categories
+      [AccessCategory.USER_MANAGEMENT]: 'Manage user accounts and profiles',
+      [AccessCategory.CONTENT_MODERATION]: 'Review and moderate flagged content',
+      [AccessCategory.FINANCIAL_REPORTS]: 'Access revenue and financial reports',
+      [AccessCategory.PLATFORM_SETTINGS]: 'Configure platform settings and policies',
+      [AccessCategory.SECURITY_AUDIT]: 'Conduct security audits and reviews',
+      // Extended categories
       [AccessCategory.ADMIN_PANEL_MEMBERS]: 'Manage member accounts, profiles, and settings',
       [AccessCategory.ADMIN_PANEL_STAFF]: 'Manage staff accounts, roles, and permissions',
       [AccessCategory.ADMIN_PANEL_CONTENT]: 'Oversee content policies and moderation rules',
       [AccessCategory.ADMIN_PANEL_PAYMENTS]: 'View and manage payment transactions',
       [AccessCategory.ADMIN_PANEL_ANALYTICS]: 'Access platform analytics and dashboards',
-      [AccessCategory.CONTENT_MODERATION]: 'Review and moderate flagged content',
       [AccessCategory.CONTENT_MODERATION_APPEALS]: 'Handle content moderation appeals',
       [AccessCategory.PAYMENT_PROCESSING]: 'Access payment gateway integrations (CCBill/Paxum/Segpay)',
       [AccessCategory.PAYMENT_DISPUTES]: 'Handle payment disputes and chargebacks',
@@ -452,7 +458,6 @@ export class VendorAccessController {
       [AccessCategory.SYSTEM_MAINTENANCE]: 'Perform system maintenance and deployments',
       [AccessCategory.SECURITY_MONITORING]: 'Monitor security alerts and incidents',
       [AccessCategory.ANALYTICS_READONLY]: 'View-only access to analytics data',
-      [AccessCategory.FINANCIAL_REPORTS]: 'Access revenue and financial reports',
       [AccessCategory.COMPLIANCE_AUDIT]: 'Access compliance records and audit trails',
       [AccessCategory.PLATFORM_METRICS]: 'View platform usage and performance metrics',
       [AccessCategory.CREATOR_SUPPORT]: 'Provide support to content creators',
@@ -473,6 +478,7 @@ export class VendorAccessController {
       [AccessLevel.READ_ONLY]: 'View-only access, cannot modify data',
       [AccessLevel.READ_WRITE]: 'Can view and modify data within scope',
       [AccessLevel.ADMIN]: 'Full administrative access within scope',
+      [AccessLevel.FULL_ACCESS]: 'Complete access with all privileges',
       [AccessLevel.EMERGENCY]: 'Emergency access with elevated privileges'
     };
     

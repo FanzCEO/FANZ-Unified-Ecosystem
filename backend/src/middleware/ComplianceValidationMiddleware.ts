@@ -1,7 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-import { PaymentRequest, PayoutRequest } from '../services/payment/types/PaymentTypes';
+import { PaymentRequest as BasePaymentRequest, PayoutRequest as BasePayoutRequest } from '..REDACTED_AWS_SECRET_KEYPaymentProcessor';
 import { logger } from '../utils/logger';
 import crypto from 'crypto';
+
+// Extended interfaces for compliance validation
+interface PaymentRequest extends BasePaymentRequest {
+  transactionId?: string;
+  contentType?: 'adult' | 'general' | 'premium';
+  transactionType?: 'tip' | 'content_purchase' | 'subscription' | 'one_time';
+}
+
+interface PayoutRequest extends BasePayoutRequest {
+  payoutId?: string;
+}
 
 interface AgeVerificationResult {
   verified: boolean;

@@ -102,7 +102,7 @@ router.get('/:userId/following', userController.getFollowing);
  */
 router.put('/creator-profile', 
   authenticate,
-  requireRole(['creator']),
+  requireRole('creator'),
   rateLimitByUser(5, 60 * 1000), // 5 updates per minute
   userController.updateCreatorProfile
 );
@@ -119,7 +119,7 @@ router.put('/creator-profile',
  */
 router.get('/admin/all', 
   authenticate,
-  requireRole(['admin', 'moderator']),
+  requireRole('admin', 'moderator'),
   userController.getAllUsers
 );
 
@@ -132,7 +132,7 @@ router.get('/admin/all',
  */
 router.put('/admin/:userId/status', 
   authenticate,
-  requireRole(['admin']),
+  requireRole('admin'),
   rateLimitByUser(10, 60 * 1000), // 10 status changes per minute
   userController.updateUserStatus
 );

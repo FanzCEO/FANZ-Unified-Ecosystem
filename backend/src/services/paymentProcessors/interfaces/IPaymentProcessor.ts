@@ -1,6 +1,6 @@
 export interface PaymentMethod {
   id: string;
-  type: 'credit_card' | 'bank_account' | 'crypto' | 'digital_wallet';
+  type: 'credit_card' | 'bank_account' | 'crypto' | 'digital_wallet' | 'prepaid_card';
   details: Record<string, any>;
 }
 
@@ -52,7 +52,7 @@ export interface PayoutRequest {
   amount: number;
   currency: string;
   destination: {
-    type: 'bank_account' | 'paxum' | 'crypto' | 'check';
+    type: 'bank_account' | 'paxum' | 'paxum_ewallet' | 'crypto' | 'check' | 'prepaid_card';
     details: Record<string, any>;
   };
   description?: string;
@@ -80,6 +80,9 @@ export interface WebhookEvent {
   timestamp: Date;
   signature?: string;
 }
+
+// Alias for backward compatibility
+export type WebhookData = WebhookEvent;
 
 export interface IPaymentProcessor {
   // Processor identification

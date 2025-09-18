@@ -537,7 +537,7 @@ interface VirtualSpacesResponse {
 // Connection
 const socket = io('ws://localhost:3001', {
   auth: {
-    token: 'your-jwt-token'
+    token: '{{YOUR_JWT_TOKEN}}'
   }
 });
 

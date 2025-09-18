@@ -170,7 +170,7 @@ POST /api/auth/validate
 Content-Type: application/json
 
 {
-  "token": "your-jwt-token"
+  "token": "{{YOUR_JWT_TOKEN}}"
 }
 ```
 

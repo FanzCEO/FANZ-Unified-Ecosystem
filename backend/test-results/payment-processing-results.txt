@@ -1,0 +1,73 @@
+
+> fanz-unified-ecosystem-backend@1.0.0 test
+> jest tests/unit/payments.test.ts
+
+● Validation Warning:
+
+  Unknown option "moduleNameMapping" with value {"^@/(.*)$": "<rootDir>/src/$1", "^@tests/(.*)$": "<rootDir>/tests/$1"} was found.
+  This is probably a typing mistake. Fixing it will remove this message.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+
+● Validation Warning:
+
+  Unknown option "moduleNameMapping" with value {"^@/(.*)$": "<rootDir>/src/$1", "^@tests/(.*)$": "<rootDir>/tests/$1"} was found.
+  This is probably a typing mistake. Fixing it will remove this message.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+
+🚀 Setting up test environment...
+📊 Setting up test database...
+✅ Test database ready
+🔴 Checking Redis availability...
+⚠️ Redis not available, tests will use in-memory cache
+✅ Test environment setup complete
+PASS tests/unit/payments.test.ts
+  Payment Processing
+    Payment Processing
+      ✓ should process a valid payment successfully (15 ms)
+      ✓ should handle payment failures gracefully (2 ms)
+      ✓ should reject payments with excessive amounts (2 ms)
+      ✓ should handle international payments correctly (2 ms)
+      ✓ should process micro payments (2 ms)
+      ✓ should store transaction data correctly (2 ms)
+    Refund Processing
+      ✓ should process a full refund successfully (3 ms)
+      ✓ should process a partial refund successfully (3 ms)
+      ✓ should reject refunds for non-existent transactions (3 ms)
+      ✓ should reject refunds exceeding original transaction amount (3 ms)
+      ✓ should handle refund failures gracefully (4 ms)
+      ✓ should store refund data correctly (3 ms)
+    Payout Processing
+      ✓ should process a valid payout successfully (2 ms)
+      ✓ should handle large payouts (2 ms)
+      ✓ should handle international payouts (1 ms)
+      ✓ should handle payout failures gracefully (2 ms)
+      ✓ should store payout data correctly (2 ms)
+    Webhook Handling
+      ✓ should handle webhooks successfully (52 ms)
+      ✓ should validate webhook signatures (51 ms)
+    Performance and Load Testing
+      ✓ should handle multiple concurrent payments (3 ms)
+      ✓ should maintain performance under load (14 ms)
+    Edge Cases and Error Handling
+      ✓ should handle zero amount payments (2 ms)
+      ✓ should handle negative amounts gracefully (1 ms)
+      ✓ should handle very large numbers (10 ms)
+      ✓ should handle special characters in descriptions (2 ms)
+    Test Utilities and Helpers
+      ✓ should provide access to all transactions (2 ms)
+      ✓ should allow clearing all data (1 ms)
+      ✓ should allow configuring success rates (3 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       28 passed, 28 total
+Snapshots:   0 total
+Time:        0.279 s, estimated 1 s
+Ran all test suites matching /tests\/unit\/payments.test.ts/i.
+🧹 Cleaning up test environment...
+📊 Cleaning up test data...
+🔌 Closing connections...
+✅ Test environment cleanup complete

@@ -1,0 +1,4 @@
+
+> fanz-unified-ecosystem-backend@1.0.0 type-check
+> tsc --noEmit
+

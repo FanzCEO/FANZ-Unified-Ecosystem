@@ -681,7 +681,15 @@ export class VendorAccessDatabaseAdapter {
       },
       status: row.status,
       createdAt: row.created_at,
-      updatedAt: row.updated_at
+      updatedAt: row.updated_at,
+      // Required database fields
+      vendor_type: row.vendor_type,
+      company_name: row.company || row.company_name,
+      contact_email: row.email || row.contact_email,
+      security_clearance_level: row.security_clearance_level || 'read-only',
+      compliance_certifications: row.compliance_certifications || [],
+      created_at: row.created_at,
+      updated_at: row.updated_at
     };
   }
 
@@ -694,6 +702,8 @@ export class VendorAccessDatabaseAdapter {
       accessLevel: row.access_level,
       restrictions: JSON.parse(row.restrictions || '{}'),
       validity: {
+        startDate: row.start_time || new Date(),
+        endDate: row.end_time,
         startTime: row.start_time,
         endTime: row.end_time,
         maxDurationHours: row.max_duration_hours,
@@ -701,6 +711,7 @@ export class VendorAccessDatabaseAdapter {
         autoRenew: row.auto_renew
       },
       approval: {
+        status: row.approved ? 'approved' : (row.approved === false ? 'denied' : 'pending'),
         requiredApprovers: row.required_approvers || [],
         currentApprovals: row.current_approvals || [],
         approved: row.approved,
@@ -709,7 +720,14 @@ export class VendorAccessDatabaseAdapter {
       },
       status: row.status,
       createdAt: row.created_at,
-      updatedAt: row.updated_at
+      updatedAt: row.updated_at,
+      // Required database fields
+      vendor_profile_id: row.vendor_id,
+      category: row.categories?.[0] || 'user-management',
+      access_level: row.access_level,
+      granted_by: row.granted_by,
+      created_at: row.created_at,
+      expires_at: row.end_time
     };
   }
 
@@ -722,8 +740,15 @@ export class VendorAccessDatabaseAdapter {
       userAgent: row.user_agent,
       startTime: row.start_time,
       lastActivity: row.last_activity,
-      endTime: row.end_time,
-      activities: [] // Activities would be loaded separately if needed
+      // Required database fields
+      vendor_profile_id: row.vendor_id,
+      access_token_id: row.token_id || row.access_token_id,
+      ip_address: row.ip_address,
+      user_agent: row.user_agent,
+      started_at: row.start_time || row.started_at,
+      last_activity: row.last_activity,
+      expires_at: row.expires_at || new Date(Date.now() + 24 * 60 * 60 * 1000),
+      status: row.status || 'active'
     };
   }
 

@@ -1,0 +1,206 @@
+{
+  "name": "@fanz/media-core-service",
+  "version": "1.0.0",
+  "description": "🎬 FanzMediaCore - Comprehensive media processing platform for the FANZ ecosystem with transcoding, watermarking, CDN integration, and adult content support",
+  "main": "dist/src/FanzMediaCoreService.js",
+  "module": "dist/src/FanzMediaCoreService.mjs",
+  "types": "dist/src/FanzMediaCoreService.d.ts",
+  "scripts": {
+    "build": "tsc && tsc --module es2022 --outDir dist/esm && npm run build:rename-mjs",
+    "build:rename-mjs": "find dist/esm -name '*.js' -exec sh -c 'mv \"$1\" \"${1%.js}.mjs\"' _ {} \\;",
+    "build:watch": "tsc --watch",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest --testNamePattern='Integration'",
+    "test:workers": "jest --testNamePattern='Worker'",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublish": "npm run clean && npm run build",
+    "demo": "tsx scripts/demo.ts",
+    "demo:upload": "tsx scripts/demo-upload.ts",
+    "demo:transcode": "tsx scripts/demo-transcode.ts",
+    "demo:streaming": "tsx scripts/demo-streaming.ts",
+    "workers:start": "tsx scripts/start-workers.ts",
+    "workers:stop": "tsx scripts/stop-workers.ts",
+    "health:check": "tsx scripts/health-check.ts",
+    "analytics:export": "tsx scripts/export-analytics.ts"
+  },
+  "keywords": [
+    "fanz",
+    "media-processing",
+    "transcoding",
+    "cdn",
+    "video-processing",
+    "image-processing",
+    "audio-processing",
+    "watermarking",
+    "streaming",
+    "adult-content",
+    "creator-economy",
+    "dmca-protection",
+    "content-moderation",
+    "analytics"
+  ],
+  "author": "FANZ Engineering Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshuastone/FANZ-Unified-Ecosystem.git",
+    "directory": "services/fanz-media-core"
+  },
+  "homepage": "https://github.com/joshuastone/FANZ-Unified-Ecosystem/tree/main/services/fanz-media-core",
+  "bugs": {
+    "url": "https://github.com/joshuastone/FANZ-Unified-Ecosystem/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "uuid": "^9.0.1",
+    "events": "^3.3.0",
+    "@types/uuid": "^9.0.7",
+    "crypto": "^1.0.1",
+    "path": "^0.12.7",
+    "mime-types": "^2.1.35",
+    "file-type": "^18.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/jest": "^29.5.8",
+    "@types/mime-types": "^2.1.4",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.2",
+    "prettier": "^3.1.0",
+    "supertest": "^6.3.3",
+    "@types/supertest": "^6.0.2"
+  },
+  "peerDependencies": {
+    "redis": ">=4.0.0",
+    "aws-sdk": ">=3.0.0",
+    "ffmpeg-static": ">=5.0.0",
+    "sharp": ">=0.32.0"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.33.0",
+    "ffmpeg-static": "^5.2.0",
+    "aws-sdk": "^2.1503.0",
+    "@aws-sdk/client-s3": "^3.460.0",
+    "@aws-sdk/client-cloudfront": "^3.460.0",
+    "@google-cloud/storage": "^7.7.0",
+    "@google-cloud/video-intelligence": "^5.3.0",
+    "@azure/storage-blob": "^12.17.0",
+    "@azure/cognitiveservices-contentmoderator": "^7.0.0",
+    "cloudflare": "^3.3.0"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "scripts/",
+    "config/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src",
+      "<rootDir>/tests"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.test.ts",
+      "**/?(*.)+(spec|test).ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/index.ts"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.ts"
+    ],
+    "testTimeout": 30000
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "prettier"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "@typescript-eslint/recommended",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-empty-function": "warn"
+    },
+    "env": {
+      "node": true,
+      "jest": true
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false,
+    "bracketSpacing": true,
+    "arrowParens": "avoid"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "ts",
+    "exec": "tsx src/index.ts"
+  },
+  "config": {
+    "maxFileSize": 1073741824,
+    "defaultWorkerCount": 4,
+    "supportedImageFormats": ["jpg", "jpeg", "png", "gif", "webp", "tiff", "bmp"],
+    "supportedVideoFormats": ["mp4", "avi", "mov", "wmv", "flv", "webm", "mkv"],
+    "supportedAudioFormats": ["mp3", "wav", "aac", "flac", "ogg", "m4a"],
+    "defaultCDNTTL": 86400,
+    "maxTranscodeRetries": 3
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/joshuastone"
+  }
+}

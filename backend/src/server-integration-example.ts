@@ -154,7 +154,7 @@ export function createApp(): Application {
     (req, res) => {
       res.json({ 
         message: 'Content moderation tools',
-        permissions: req.vendorPermissions
+        permissions: req.vendor?.category || 'none'
       });
     }
   );
@@ -165,7 +165,7 @@ export function createApp(): Application {
     (req, res) => {
       res.json({ 
         message: 'Admin user management',
-        accessLevel: req.vendorAccessLevel
+        accessLevel: req.vendor?.level || 'none'
       });
     }
   );

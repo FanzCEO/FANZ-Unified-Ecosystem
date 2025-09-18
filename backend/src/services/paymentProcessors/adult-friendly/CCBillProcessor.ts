@@ -44,7 +44,7 @@ export class CCBillProcessor implements IPaymentProcessor {
     try {
       // CCBill uses FlexForms for payment processing
       // This creates a payment token/URL for frontend integration
-      const paymentData = {
+      const paymentData: any = {
         clientAccnum: this.config.clientAccnum,
         clientSubacc: this.config.clientSubacc,
         formPrice: request.amount.toFixed(2),

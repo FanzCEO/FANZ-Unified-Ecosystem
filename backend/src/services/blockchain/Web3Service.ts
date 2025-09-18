@@ -2,8 +2,8 @@ import { ethers } from 'ethers';
 import { EventEmitter } from 'events';
 import axios from 'axios';
 
-// Contract ABI interfaces
-interface NFTMarketplaceContract extends ethers.Contract {
+// Contract ABI interfaces - Use type alias instead of interface extension
+type NFTMarketplaceContract = ethers.Contract & {
   createAndListNFT(
     tokenURI: string,
     price: ethers.BigNumberish,
@@ -34,7 +34,7 @@ interface NFTMarketplaceContract extends ethers.Contract {
   ): Promise<ethers.ContractTransactionResponse>;
   
   verifyAge(user: string): Promise<ethers.ContractTransactionResponse>;
-}
+};
 
 interface MarketItem {
   tokenId: bigint;

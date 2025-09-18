@@ -46,6 +46,25 @@ export class FanzDashSecurityCenter {
     console.log('Threat intelligence updated:', data);
   }
 
+  async alertHighRiskVendorActivity(data: {
+    vendorId: string;
+    activity: string;
+    riskLevel: string;
+    details?: any;
+  }): Promise<void> {
+    // Send security alert for high-risk vendor activity
+    await this.sendSecurityAlert({
+      type: 'suspicious_activity',
+      severity: data.riskLevel as 'low' | 'medium' | 'high' | 'critical',
+      message: `High-risk vendor activity detected: ${data.activity}`,
+      details: {
+        vendorId: data.vendorId,
+        activity: data.activity,
+        ...data.details
+      }
+    });
+  }
+
   async getSecurityMetrics(): Promise<any> {
     return {
       alerts: { total: 0, resolved: 0, pending: 0 },
