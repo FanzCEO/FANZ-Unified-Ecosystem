@@ -5,12 +5,23 @@ export interface PaymentMethod {
 }
 
 export interface PaymentRequest {
+  transactionId?: string;
   amount: number;
   currency: string;
+  customerId: string;
   paymentMethod: PaymentMethod;
   description?: string;
   metadata?: Record<string, any>;
-  customerId?: string;
+  contentType?: 'general' | 'adult';
+  transactionType?: 'one_time' | 'subscription' | 'tip';
+  customerInfo?: {
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    country?: string;
+  };
+  successUrl?: string;
+  failureUrl?: string;
   idempotencyKey?: string;
 }
 
@@ -24,13 +35,14 @@ export interface PaymentResponse {
   processingFee?: number;
   errorMessage?: string;
   errorCode?: string;
+  error?: string; // Alias for errorMessage
   metadata?: Record<string, any>;
   processorResponse?: Record<string, any>;
 }
 
 export interface RefundRequest {
   transactionId: string;
-  processorTransactionId: string;
+  processorTransactionId?: string;
   amount?: number; // Partial refund if specified
   reason?: string;
   metadata?: Record<string, any>;
@@ -49,14 +61,16 @@ export interface RefundResponse {
 }
 
 export interface PayoutRequest {
+  payoutId?: string;
   amount: number;
   currency: string;
   destination: {
-    type: 'bank_account' | 'paxum' | 'paxum_ewallet' | 'crypto' | 'check' | 'prepaid_card';
+    type: 'paxum_ewallet' | 'wire_transfer' | 'bank_transfer' | 'crypto' | 'check' | 'prepaid_card';
     details: Record<string, any>;
   };
   description?: string;
   metadata?: Record<string, any>;
+  creatorId?: string;
 }
 
 export interface PayoutResponse {
@@ -67,9 +81,11 @@ export interface PayoutResponse {
   amount?: number;
   currency?: string;
   processingFee?: number;
-  estimatedArrival?: Date;
+  estimatedArrival?: string | Date;
   errorMessage?: string;
   errorCode?: string;
+  error?: string; // Alias for errorMessage
+  metadata?: Record<string, any>;
   processorResponse?: Record<string, any>;
 }
 
@@ -81,8 +97,14 @@ export interface WebhookEvent {
   signature?: string;
 }
 
-// Alias for backward compatibility
-export type WebhookData = WebhookEvent;
+export interface WebhookData {
+  data: any;
+  signature?: string;
+  headers?: Record<string, string>;
+  payload?: any;
+  rawPayload?: string;
+  timestamp?: string;
+}
 
 export interface IPaymentProcessor {
   // Processor identification
@@ -102,7 +124,8 @@ export interface IPaymentProcessor {
   getTransactionStatus(processorTransactionId: string): Promise<PaymentResponse>;
   
   // Webhook handling
-  verifyWebhookSignature?(payload: string, signature: string): boolean;
+  handleWebhook(data: WebhookData): Promise<boolean>;
+  verifyWebhookSignature?(payload: string, signature: string, timestamp?: string): boolean;
   parseWebhookEvent?(payload: string): WebhookEvent;
   
   // Health check

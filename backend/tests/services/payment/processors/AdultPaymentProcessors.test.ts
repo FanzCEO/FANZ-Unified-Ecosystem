@@ -392,7 +392,7 @@ describe('Adult-Friendly Payment Processors', () => {
     });
 
     it('should get default processor based on preferences', () => {
-      const defaultProcessor = PaymentProcessorFactory.getDefaultProcessor();
+    const defaultProcessor = PaymentProcessorFactory.getBestProcessor({});
 
       expect(['ccbill', 'paxum', 'mock']).toContain(defaultProcessor.constructor.name.toLowerCase().replace('processor', ''));
     });

@@ -49,11 +49,13 @@ describe('PaymentController', () => {
   let paymentController: PaymentController;
   let mockRequest: any;
   let mockResponse: any;
+  let mockNext: any;
 
   beforeEach(() => {
     paymentController = new PaymentController();
     mockRequest = createMockRequest();
     mockResponse = createMockResponse();
+    mockNext = jest.fn();
   });
 
   describe('createTransaction', () => {
@@ -77,7 +79,7 @@ describe('PaymentController', () => {
       // Mock transaction creation
       (paymentRepository.createTransaction as jest.Mock).mockResolvedValue(mockTransaction);
 
-      await paymentController.createTransaction(mockRequest, mockResponse);
+      await paymentController.createTransaction(mockRequest, mockResponse, mockNext);
 
       expect(paymentRepository.getUserBalance).toHaveBeenCalledWith(
         mockUser.userId, 'available', 'USD'
@@ -101,7 +103,7 @@ describe('PaymentController', () => {
       });
 
       await expect(
-        paymentController.createTransaction(mockRequest, mockResponse)
+        paymentController.createTransaction(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Insufficient balance');
     });
 
@@ -110,7 +112,7 @@ describe('PaymentController', () => {
       mockRequest.user = null;
 
       await expect(
-        paymentController.createTransaction(mockRequest, mockResponse)
+        paymentController.createTransaction(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Authentication required');
     });
 
@@ -122,7 +124,7 @@ describe('PaymentController', () => {
       mockRequest.user = mockUser;
 
       await expect(
-        paymentController.createTransaction(mockRequest, mockResponse)
+        paymentController.createTransaction(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow();
     });
   });
@@ -148,7 +150,7 @@ describe('PaymentController', () => {
       (paymentRepository.createTransaction as jest.Mock).mockResolvedValue(mockTransaction);
       (paymentRepository.processTransaction as jest.Mock).mockResolvedValue(mockTransaction);
 
-      await paymentController.sendTip(mockRequest, mockResponse);
+      await paymentController.sendTip(mockRequest, mockResponse, mockNext);
 
       expect(paymentRepository.createTransaction).toHaveBeenCalled();
       expect(paymentRepository.processTransaction).toHaveBeenCalledWith(mockTransaction.id);
@@ -168,7 +170,7 @@ describe('PaymentController', () => {
       mockRequest.user = mockUser;
 
       await expect(
-        paymentController.sendTip(mockRequest, mockResponse)
+        paymentController.sendTip(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow();
     });
   });
@@ -189,7 +191,7 @@ describe('PaymentController', () => {
 
       (paymentRepository.createSubscriptionPlan as jest.Mock).mockResolvedValue(mockSubscriptionPlan);
 
-      await paymentController.createSubscriptionPlan(mockRequest, mockResponse);
+      await paymentController.createSubscriptionPlan(mockRequest, mockResponse, mockNext);
 
       expect(paymentRepository.createSubscriptionPlan).toHaveBeenCalledWith(
         mockCreator.userId, 
@@ -208,7 +210,7 @@ describe('PaymentController', () => {
       mockRequest.user = mockUser; // Regular user, not creator
 
       await expect(
-        paymentController.createSubscriptionPlan(mockRequest, mockResponse)
+        paymentController.createSubscriptionPlan(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Only creators can create subscription plans');
     });
 
@@ -220,7 +222,7 @@ describe('PaymentController', () => {
       mockRequest.user = mockCreator;
 
       await expect(
-        paymentController.createSubscriptionPlan(mockRequest, mockResponse)
+        paymentController.createSubscriptionPlan(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow();
     });
   });
@@ -253,7 +255,7 @@ describe('PaymentController', () => {
       };
       (paymentRepository.createSubscription as jest.Mock).mockResolvedValue(mockSubscription);
 
-      await paymentController.subscribe(mockRequest, mockResponse);
+      await paymentController.subscribe(mockRequest, mockResponse, mockNext);
 
       expect(paymentRepository.getSubscriptionPlan).toHaveBeenCalledWith(validSubscribeData.plan_id);
       expect(paymentRepository.createSubscription).toHaveBeenCalled();
@@ -267,7 +269,7 @@ describe('PaymentController', () => {
       (paymentRepository.getSubscriptionPlan as jest.Mock).mockResolvedValue(null);
 
       await expect(
-        paymentController.subscribe(mockRequest, mockResponse)
+        paymentController.subscribe(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Subscription plan not found');
     });
   });
@@ -284,7 +286,7 @@ describe('PaymentController', () => {
 
       (paymentRepository.getUserBalances as jest.Mock).mockResolvedValue(mockBalances);
 
-      await paymentController.getUserBalances(mockRequest, mockResponse);
+      await paymentController.getUserBalances(mockRequest, mockResponse, mockNext);
 
       expect(paymentRepository.getUserBalances).toHaveBeenCalledWith(mockUser.userId);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -324,7 +326,7 @@ describe('PaymentController', () => {
       };
       (paymentRepository.createPayout as jest.Mock).mockResolvedValue(mockPayout);
 
-      await paymentController.requestPayout(mockRequest, mockResponse);
+      await paymentController.requestPayout(mockRequest, mockResponse, mockNext);
 
       expect(paymentRepository.getUserBalance).toHaveBeenCalledWith(
         mockCreator.userId, 'earnings', 'USD'
@@ -338,7 +340,7 @@ describe('PaymentController', () => {
       mockRequest.user = mockUser; // Regular user
 
       await expect(
-        paymentController.requestPayout(mockRequest, mockResponse)
+        paymentController.requestPayout(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Only creators can request payouts');
     });
 
@@ -351,7 +353,7 @@ describe('PaymentController', () => {
       });
 
       await expect(
-        paymentController.requestPayout(mockRequest, mockResponse)
+        paymentController.requestPayout(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Insufficient earnings balance');
     });
   });
@@ -381,7 +383,7 @@ describe('PaymentController', () => {
         .mockResolvedValueOnce({ rows: [mockDashboardData] })
         .mockResolvedValueOnce({ rows: [mockSubscriptionData] });
 
-      await paymentController.getFinancialDashboard(mockRequest, mockResponse);
+      await paymentController.getFinancialDashboard(mockRequest, mockResponse, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -398,7 +400,7 @@ describe('PaymentController', () => {
       mockRequest.user = mockUser; // Regular user
 
       await expect(
-        paymentController.getFinancialDashboard(mockRequest, mockResponse)
+        paymentController.getFinancialDashboard(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Admin access required');
     });
   });
@@ -412,7 +414,7 @@ describe('PaymentController', () => {
       (paymentRepository.getTransactionById as jest.Mock).mockResolvedValue(mockTx);
       (paymentRepository.processTransaction as jest.Mock).mockResolvedValue(mockTx);
 
-      await paymentController.processTransaction(mockRequest, mockResponse);
+      await paymentController.processTransaction(mockRequest, mockResponse, mockNext);
 
       expect(paymentRepository.getTransactionById).toHaveBeenCalledWith('tx-123');
       expect(paymentRepository.processTransaction).toHaveBeenCalledWith('tx-123');
@@ -426,7 +428,7 @@ describe('PaymentController', () => {
       (paymentRepository.getTransactionById as jest.Mock).mockResolvedValue(null);
 
       await expect(
-        paymentController.processTransaction(mockRequest, mockResponse)
+        paymentController.processTransaction(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Transaction not found');
     });
 
@@ -438,7 +440,7 @@ describe('PaymentController', () => {
       (paymentRepository.getTransactionById as jest.Mock).mockResolvedValue(mockTx);
 
       await expect(
-        paymentController.processTransaction(mockRequest, mockResponse)
+        paymentController.processTransaction(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Access denied to this transaction');
     });
 
@@ -450,7 +452,7 @@ describe('PaymentController', () => {
       (paymentRepository.getTransactionById as jest.Mock).mockResolvedValue(mockTx);
       (paymentRepository.processTransaction as jest.Mock).mockResolvedValue(mockTx);
 
-      await paymentController.processTransaction(mockRequest, mockResponse);
+      await paymentController.processTransaction(mockRequest, mockResponse, mockNext);
 
       expect(paymentRepository.processTransaction).toHaveBeenCalledWith('tx-123');
       expect(mockResponse.status).toHaveBeenCalledWith(200);
