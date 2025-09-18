@@ -123,6 +123,33 @@ export {
   type ProcessedWebhookRequest
 } from './middleware/webhook.js';
 
+// Security headers middleware exports
+export {
+  SecurityHeaders,
+  createSecurityHeaders,
+  createStrictSecurityHeaders,
+  createDevelopmentHeaders,
+  getNonce,
+  nonceScript,
+  nonceStyle,
+  type SecurityHeadersConfig,
+  type RequestWithNonce
+} from './middleware/headers.js';
+
+// Error handling middleware exports
+export {
+  ErrorHandler,
+  createErrorHandler,
+  createProductionErrorHandler,
+  createDevelopmentErrorHandler,
+  createSecureError,
+  secureErrorResponse,
+  type ErrorConfig,
+  type SecureError,
+  type SecureErrorResponse,
+  type ErrorContext
+} from './middleware/errorHandler.js';
+
 // =============================================================================
 // SECURITY UTILITIES
 // =============================================================================
@@ -203,6 +230,9 @@ export function createSecurityChain(config: MiddlewareChainConfig = {}) {
     middleware.push(createRateLimiter('standard'));
   }
   
+  // Add security headers early in the chain
+  middleware.push(createSecurityHeaders());
+  
   if (config.validation !== false) {
     middleware.push(createValidator());
   }
@@ -219,6 +249,7 @@ export function createSecurityChain(config: MiddlewareChainConfig = {}) {
     middleware.push(createCSRFMiddleware());
   }
   
+  // Error handler should be last
   if (config.errorHandler !== false) {
     middleware.push(createErrorHandler());
   }
@@ -232,6 +263,7 @@ export function createSecurityChain(config: MiddlewareChainConfig = {}) {
 export function createAuthChain() {
   return [
     createRateLimiter('auth'),
+    createSecurityHeaders(),
     createValidator(),
     createCSRFMiddleware(),
     createErrorHandler()
@@ -244,11 +276,12 @@ export function createAuthChain() {
 export function createPaymentChain() {
   return [
     createRateLimiter('payment'),
+    createStrictSecurityHeaders(), // Use strictest headers for payments
     createValidator(),
     createAuthenticator(),
     createAuthorizer(),
     createCSRFMiddleware(),
-    createErrorHandler()
+    createProductionErrorHandler() // Use production error handler for payments
   ];
 }
 
