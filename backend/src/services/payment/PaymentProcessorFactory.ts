@@ -69,12 +69,7 @@ export class PaymentProcessorFactory {
     const processor = this.processors.get(type);
     
     if (!processor) {
-      // Always return mock processor if requested processor is not available
-      if (type !== 'mock') {
-        logger.warn(`Processor ${type} not available, falling back to mock processor`);
-        return this.getProcessor('mock');
-      }
-      throw new Error(`Payment processor ${type} is not available`);
+      throw new Error(`Unsupported payment processor: ${type}`);
     }
 
     return processor;

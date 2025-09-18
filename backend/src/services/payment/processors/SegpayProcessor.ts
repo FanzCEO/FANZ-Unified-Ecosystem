@@ -296,10 +296,10 @@ export class SegpayProcessor implements IPaymentProcessor {
       // Segpay uses auth_key for webhook verification
       const webhookData = JSON.parse(payload) as SegpayWebhookPayload;
       
-      // Generate expected auth key using secure HMAC-SHA256 instead of plain SHA256
+      // Generate expected auth key using SHA256 hash with transaction_id + amount + password pattern
       const expectedAuthKey = crypto
-        .createHmac('sha256', this.config.password)
-        .update(`${webhookData.transaction_id}${webhookData.amount}`)
+        .createHash('sha256')
+        .update(`${webhookData.transaction_id}${webhookData.amount}${this.config.password}`)
         .digest('hex');
 
       // Use time-constant comparison to prevent timing attacks
