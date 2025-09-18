@@ -230,6 +230,84 @@ export {
   type AuditQuery
 } from './utils/auditLogger.js';
 
+// File system safety utilities exports
+export {
+  PathSafety,
+  FileUploadSafety,
+  StaticFileSafety,
+  fileSystemUtils,
+  DEFAULT_UPLOAD_CONFIG,
+  DEFAULT_STATIC_CONFIG,
+  type FileUploadConfig,
+  type StaticServeConfig,
+  type FileMetadata
+} from './utils/fileSystemSafety.js';
+
+// CORS and cookie utilities exports
+export {
+  CORSManager,
+  SecureCookieManager,
+  SessionManager,
+  CacheControlManager,
+  CORS_CONFIGS,
+  SECURE_COOKIE_CONFIGS,
+  type CORSConfig,
+  type CookieConfig,
+  type SessionConfig
+} from './utils/corsAndCookies.js';
+
+// OWASP Top 10 protections exports
+export {
+  SSRFProtection,
+  CommandInjectionProtection,
+  DeserializationSecurity,
+  DoSProtection,
+  OWASPProtections,
+  DEFAULT_SSRF_CONFIG,
+  DEFAULT_DOS_CONFIG,
+  type SSRFConfig,
+  type CommandInjectionConfig,
+  type DeserializationConfig,
+  type DoSConfig
+} from './utils/owaspProtections.js';
+
+// Financial security utilities exports
+export {
+  TransactionIdempotency,
+  LedgerValidator,
+  BalanceLockManager,
+  FinancialRBAC,
+  FinancialEventMonitor,
+  FinanceSecurityMiddleware,
+  FinanceScopes,
+  DEFAULT_FINANCE_CONFIG,
+  MoneyAmountSchema,
+  AccountIdSchema,
+  TransactionIdSchema,
+  ExternalIdSchema,
+  type MoneyAmount,
+  type LedgerEntry,
+  type Transaction,
+  type IdempotencyKey,
+  type BalanceLock,
+  type FinanceSecurityConfig
+} from './utils/financeSecurityUtils.js';
+
+// Security monitoring and alerting exports
+export {
+  SecurityMonitoringSystem,
+  SecurityEventType,
+  SecurityThreatLevel,
+  AutoResponseAction,
+  DEFAULT_MONITORING_CONFIG,
+  DEFAULT_DETECTION_RULES,
+  type SecurityEvent,
+  type DetectionRule,
+  type SecurityMetric,
+  type ThreatIntelligence,
+  type SecurityMonitoringConfig
+} from './utils/securityMonitoring.js';
+
 // =============================================================================
 // MIDDLEWARE CHAINS
 // =============================================================================
@@ -339,6 +417,50 @@ export function createPaymentChain(allowedTables: string[] = [], redisClient?: a
     auditLogger.auditMiddleware(), // Critical audit logging for payments
     createProductionErrorHandler() // Use production error handler for payments
   ];
+}
+
+/**
+ * Financial transaction chain with comprehensive security
+ */
+export function createFinanceChain(scope: FinanceScopes, config?: Partial<FinanceSecurityConfig>, redisClient?: any) {
+  const auditLogger = createProductionAuditLogger(redisClient);
+  const financeSecurityMiddleware = new FinanceSecurityMiddleware(auditLogger, config);
+  
+  return [
+    auditLogger.correlationMiddleware(),
+    createRateLimiter('payment'), // Use payment rate limiter for finance operations
+    createStrictSecurityHeaders(),
+    createValidator(),
+    createAuthenticator(),
+    createAuthorizer(),
+    ...financeSecurityMiddleware.createFinanceChain(scope), // Comprehensive financial security
+    auditLogger.auditMiddleware(),
+    createProductionErrorHandler()
+  ];
+}
+
+/**
+ * Ledger operation chain with double-entry validation
+ */
+export function createLedgerChain(redisClient?: any) {
+  return createFinanceChain(FinanceScopes.LEDGER_POST, {
+    requireMakerChecker: true,
+    require2FA: true,
+    auditAllTransactions: true
+  }, redisClient);
+}
+
+/**
+ * Payout chain with maximum security controls
+ */
+export function createPayoutChain(redisClient?: any) {
+  return createFinanceChain(FinanceScopes.PAYOUT_EXECUTE, {
+    requireMakerChecker: true,
+    require2FA: true,
+    maxTransactionAmount: { amount: 50000000, currency: 'USD' }, // $500k limit
+    auditAllTransactions: true,
+    enableRealTimeMonitoring: true
+  }, redisClient);
 }
 
 /**
@@ -541,6 +663,9 @@ export default {
   createPaymentChain,
   createWebhookChain,
   createStaticChain,
+  createFinanceChain,
+  createLedgerChain,
+  createPayoutChain,
   
   // Core utilities
   config,
