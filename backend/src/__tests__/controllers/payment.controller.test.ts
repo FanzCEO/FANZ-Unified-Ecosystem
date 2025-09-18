@@ -379,7 +379,7 @@ describe('PaymentController', () => {
         cancelled_subscriptions: 3
       };
 
-      mockDb.query
+      (mockDb.query as jest.Mock)
         .mockResolvedValueOnce({ rows: [mockDashboardData] })
         .mockResolvedValueOnce({ rows: [mockSubscriptionData] });
 

@@ -34,11 +34,13 @@ describe('FinancialReportsController', () => {
   let financialReportsController: FinancialReportsController;
   let mockRequest: any;
   let mockResponse: any;
+  let mockNext: jest.Mock;
 
   beforeEach(() => {
     financialReportsController = new FinancialReportsController();
     mockRequest = createMockRequest();
     mockResponse = createMockResponse();
+    mockNext = jest.fn();
   });
 
   describe('generateProfitLossStatement', () => {
@@ -69,12 +71,12 @@ describe('FinancialReportsController', () => {
         currency: 'USD' 
       };
 
-      mockDb.query
+      (mockDb.query as jest.Mock)
         .mockResolvedValueOnce({ rows: [mockRevenueData] })
         .mockResolvedValueOnce({ rows: [mockExpensesData] })
         .mockResolvedValueOnce({ rows: [mockMetricsData] });
 
-      await financialReportsController.generateProfitLossStatement(mockRequest, mockResponse);
+      await financialReportsController.generateProfitLossStatement(mockRequest, mockResponse, mockNext);
 
       expect(mockDb.query).toHaveBeenCalledTimes(3);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -105,7 +107,7 @@ describe('FinancialReportsController', () => {
       mockRequest.user = mockUser; // Regular user
 
       await expect(
-        financialReportsController.generateProfitLossStatement(mockRequest, mockResponse)
+        financialReportsController.generateProfitLossStatement(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Admin access required');
     });
 
@@ -116,7 +118,7 @@ describe('FinancialReportsController', () => {
       };
 
       await expect(
-        financialReportsController.generateProfitLossStatement(mockRequest, mockResponse)
+        financialReportsController.generateProfitLossStatement(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow();
     });
 
@@ -129,12 +131,12 @@ describe('FinancialReportsController', () => {
         currency: 'USD' 
       };
 
-      mockDb.query
+      (mockDb.query as jest.Mock)
         .mockResolvedValueOnce({ rows: [mockRevenueData] })
         .mockResolvedValueOnce({ rows: [mockExpensesData] })
         .mockResolvedValueOnce({ rows: [mockMetricsData] });
 
-      await financialReportsController.generateProfitLossStatement(mockRequest, mockResponse);
+      await financialReportsController.generateProfitLossStatement(mockRequest, mockResponse, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(
@@ -177,12 +179,12 @@ describe('FinancialReportsController', () => {
         currency: 'USD' 
       };
 
-      mockDb.query
+      (mockDb.query as jest.Mock)
         .mockResolvedValueOnce({ rows: [mockAssetsData] })
         .mockResolvedValueOnce({ rows: [mockLiabilitiesData] })
         .mockResolvedValueOnce({ rows: [mockReserveData] });
 
-      await financialReportsController.generateBalanceSheet(mockRequest, mockResponse);
+      await financialReportsController.generateBalanceSheet(mockRequest, mockResponse, mockNext);
 
       expect(mockDb.query).toHaveBeenCalledTimes(3);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -218,7 +220,7 @@ describe('FinancialReportsController', () => {
       mockRequest.user = mockUser; // Regular user
 
       await expect(
-        financialReportsController.generateBalanceSheet(mockRequest, mockResponse)
+        financialReportsController.generateBalanceSheet(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Admin access required');
     });
   });
@@ -249,12 +251,12 @@ describe('FinancialReportsController', () => {
         currency: 'USD' 
       };
 
-      mockDb.query
+      (mockDb.query as jest.Mock)
         .mockResolvedValueOnce({ rows: [mockOperatingData] })
         .mockResolvedValueOnce({ rows: [mockUserFlowsData] })
         .mockResolvedValueOnce({ rows: [mockOperationalData] });
 
-      await financialReportsController.generateCashFlowStatement(mockRequest, mockResponse);
+      await financialReportsController.generateCashFlowStatement(mockRequest, mockResponse, mockNext);
 
       expect(mockDb.query).toHaveBeenCalledTimes(3);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -290,7 +292,7 @@ describe('FinancialReportsController', () => {
       mockRequest.user = mockUser; // Regular user
 
       await expect(
-        financialReportsController.generateCashFlowStatement(mockRequest, mockResponse)
+        financialReportsController.generateCashFlowStatement(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Admin access required');
     });
   });
@@ -310,9 +312,9 @@ describe('FinancialReportsController', () => {
         { period: '2023-01-03', revenue: 200.00, transactions: 10 }
       ];
 
-      mockDb.query.mockResolvedValue({ rows: mockAnalyticsData });
+      (mockDb.query as jest.Mock).mockResolvedValue({ rows: mockAnalyticsData });
 
-      await financialReportsController.getFinancialAnalytics(mockRequest, mockResponse);
+      await financialReportsController.getFinancialAnalytics(mockRequest, mockResponse, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -340,9 +342,9 @@ describe('FinancialReportsController', () => {
         }
       ];
 
-      mockDb.query.mockResolvedValue({ rows: mockCreatorAnalytics });
+      (mockDb.query as jest.Mock).mockResolvedValue({ rows: mockCreatorAnalytics });
 
-      await financialReportsController.getFinancialAnalytics(mockRequest, mockResponse);
+      await financialReportsController.getFinancialAnalytics(mockRequest, mockResponse, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -355,7 +357,7 @@ describe('FinancialReportsController', () => {
       mockRequest.user = mockUser; // Regular user (not creator or admin)
 
       await expect(
-        financialReportsController.getFinancialAnalytics(mockRequest, mockResponse)
+        financialReportsController.getFinancialAnalytics(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Access denied');
     });
 
@@ -366,7 +368,7 @@ describe('FinancialReportsController', () => {
       };
 
       await expect(
-        financialReportsController.getFinancialAnalytics(mockRequest, mockResponse)
+        financialReportsController.getFinancialAnalytics(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow();
     });
   });
@@ -413,12 +415,12 @@ describe('FinancialReportsController', () => {
       mockRequest.user = mockAdmin;
       mockRequest.query = { period: '30d' };
 
-      mockDb.query
+      (mockDb.query as jest.Mock)
         .mockResolvedValueOnce({ rows: [mockKpiData] })
         .mockResolvedValueOnce({ rows: [mockGrowthData] })
         .mockResolvedValueOnce({ rows: mockTopPerformers });
 
-      await financialReportsController.getExecutiveDashboard(mockRequest, mockResponse);
+      await financialReportsController.getExecutiveDashboard(mockRequest, mockResponse, mockNext);
 
       expect(mockDb.query).toHaveBeenCalledTimes(3);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -465,12 +467,12 @@ describe('FinancialReportsController', () => {
       mockRequest.user = mockAdmin;
       mockRequest.query = { period: '30d' };
 
-      mockDb.query
+      (mockDb.query as jest.Mock)
         .mockResolvedValueOnce({ rows: [mockKpiData] })
         .mockResolvedValueOnce({ rows: [mockGrowthData] })
         .mockResolvedValueOnce({ rows: mockTopPerformers });
 
-      await financialReportsController.getExecutiveDashboard(mockRequest, mockResponse);
+      await financialReportsController.getExecutiveDashboard(mockRequest, mockResponse, mockNext);
 
       const responseCall = mockResponse.json.mock.calls[0][0];
       const dashboard = responseCall.data.executive_dashboard;
@@ -496,12 +498,12 @@ describe('FinancialReportsController', () => {
         previous_users: 0
       };
 
-      mockDb.query
+      (mockDb.query as jest.Mock)
         .mockResolvedValueOnce({ rows: [mockKpiData] })
         .mockResolvedValueOnce({ rows: [mockGrowthDataZero] })
         .mockResolvedValueOnce({ rows: mockTopPerformers });
 
-      await financialReportsController.getExecutiveDashboard(mockRequest, mockResponse);
+      await financialReportsController.getExecutiveDashboard(mockRequest, mockResponse, mockNext);
 
       const responseCall = mockResponse.json.mock.calls[0][0];
       const dashboard = responseCall.data.executive_dashboard;
@@ -515,7 +517,7 @@ describe('FinancialReportsController', () => {
       mockRequest.user = mockUser; // Regular user
 
       await expect(
-        financialReportsController.getExecutiveDashboard(mockRequest, mockResponse)
+        financialReportsController.getExecutiveDashboard(mockRequest, mockResponse, mockNext)
       ).rejects.toThrow('Admin access required');
     });
   });
