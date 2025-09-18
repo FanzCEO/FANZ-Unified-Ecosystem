@@ -1,5 +1,5 @@
 import { logger } from '../../utils/logger';
-import { PaymentProcessorFactory } from '..REDACTED_AWS_SECRET_KEYry';
+import { PaymentProcessorFactory } from '../payment/PaymentProcessorFactory';
 // ProcessorHealthCheck interface - define inline or import from correct location
 interface ProcessorHealthCheck {
   healthy: boolean;
@@ -136,7 +136,7 @@ export class ProcessorMonitoringService extends EventEmitter {
    */
   async checkProcessorHealth(processorName: string): Promise<ProcessorHealthCheck> {
     try {
-      const processor = PaymentProcessorFactory.getProcessor('mock'); // Only mock processor available currently
+      const processor = PaymentProcessorFactory.getProcessor(processorName as any); // Use the actual processor
       const startTime = Date.now();
       
       const healthResult = await processor.healthCheck();

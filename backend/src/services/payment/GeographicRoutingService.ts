@@ -40,10 +40,10 @@ export class GeographicRoutingService {
    * Select the best payment processor based on geographic and transaction criteria
    */
   async routePaymentProcessor(request: PaymentRequest): Promise<RoutingDecision> {
-    const userCountry = 'US'; // Default since customerInfo may not exist on base interface
+    const userCountry = request.customerInfo?.country || 'US';
     const region = this.getRegionForCountry(userCountry);
     const amount = request.amount;
-    const transactionType = 'one_time'; // Default transaction type
+    const transactionType = request.transactionType || 'one_time';
     const currency = request.currency;
 
     logger.info('Routing payment processor', {
@@ -54,54 +54,43 @@ export class GeographicRoutingService {
       currency
     });
 
-    // For now, always use mock processor since others are not implemented
-    logger.info('Using mock processor (other processors not implemented)');
-    return {
-      primaryProcessor: 'mock',
-      reason: 'Mock processor - other processors in development',
-      confidence: 1.0,
-      metadata: { mockProcessor: true, originalCountry: userCountry }
-    };
-
-    // TODO: Re-enable when other processors are implemented
     // Get applicable processors based on routing rules
-    // const applicableProcessors = this.getApplicableProcessors({
-    //   region,
-    //   amount,
-    //   transactionType,
-    //   currency,
-    //   country: userCountry,
-    //   isAdultContent: request.contentType === 'adult'
-    // });
+    const applicableProcessors = this.getApplicableProcessors({
+      region,
+      amount,
+      transactionType,
+      currency,
+      country: userCountry,
+      isAdultContent: request.contentType === 'adult'
+    });
 
-    // if (applicableProcessors.length === 0) {
-    //   logger.warn('No applicable processors found, falling back to mock');
-    //   return {
-    //     primaryProcessor: 'mock',
-    //     reason: 'No processors matched criteria - using fallback',
-    //     confidence: 0.1,
-    //     metadata: { fallbackUsed: true, originalCountry: userCountry }
-    //   };
-    // }
+    if (applicableProcessors.length === 0) {
+      logger.warn('No applicable processors found, falling back to mock');
+      return {
+        primaryProcessor: 'mock',
+        reason: 'No processors matched criteria - using fallback',
+        confidence: 0.1,
+        metadata: { fallbackUsed: true, originalCountry: userCountry }
+      };
+    }
 
-    // TODO: Re-enable when other processors are implemented  
     // Apply intelligent routing logic
-    // const routingDecision = this.applyIntelligentRouting(
-    //   applicableProcessors,
-    //   {
-    //     userCountry,
-    //     region,
-    //     amount,
-    //     transactionType,
-    //     currency,
-    //     isSubscription: transactionType === 'subscription',
-    //     isHighValue: amount > 100,
-    //     isAdultContent: request.contentType === 'adult'
-    //   }
-    // );
+    const routingDecision = this.applyIntelligentRouting(
+      applicableProcessors,
+      {
+        userCountry,
+        region,
+        amount,
+        transactionType,
+        currency,
+        isSubscription: transactionType === 'subscription',
+        isHighValue: amount > 100,
+        isAdultContent: request.contentType === 'adult'
+      }
+    );
 
-    // logger.info('Processor routing decision', routingDecision);
-    // return routingDecision;
+    logger.info('Processor routing decision', routingDecision);
+    return routingDecision;
   }
 
   /**
@@ -202,7 +191,7 @@ export class GeographicRoutingService {
       // CCBill - Primary for North America and Europe
       {
         processor: 'ccbill',
-        priority: 10,
+        priority: 5,
         regions: ['NORTH_AMERICA', 'EUROPE', 'OCEANIA'],
         transactionTypes: ['subscription', 'one_time', 'tip'],
         minAmount: 1.00,
@@ -219,13 +208,13 @@ export class GeographicRoutingService {
       // Segpay - Primary for Europe, secondary for others
       {
         processor: 'segpay',
-        priority: 15,
+        priority: 10,
         regions: ['EUROPE'],
         transactionTypes: ['subscription', 'one_time'],
         minAmount: 1.00,
         maxAmount: 500.00,
         isEnabled: true,
-        environment: 'production',
+        environment: 'all',
         conditions: {
           currencies: ['EUR', 'USD', 'GBP'],
           adultContentSupport: true,
@@ -236,13 +225,13 @@ export class GeographicRoutingService {
       // Segpay - Fallback for North America
       {
         processor: 'segpay',
-        priority: 25,
+        priority: 20,
         regions: ['NORTH_AMERICA'],
         transactionTypes: ['subscription', 'one_time'],
         minAmount: 1.00,
         maxAmount: 300.00,
         isEnabled: true,
-        environment: 'production',
+        environment: 'all',
         conditions: {
           currencies: ['USD', 'CAD'],
           adultContentSupport: true
@@ -258,7 +247,7 @@ export class GeographicRoutingService {
         minAmount: 10.00,
         maxAmount: 10000.00,
         isEnabled: true,
-        environment: 'production',
+        environment: 'all',
         conditions: {
           currencies: ['USD', 'EUR', 'CAD', 'GBP'],
           adultContentSupport: true

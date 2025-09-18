@@ -75,7 +75,31 @@ export class CCBillProcessor implements IPaymentProcessor {
 
       // Validate amount is positive
       if (request.amount <= 0) {
-        throw new Error('Payment amount must be positive');
+        return {
+          success: false,
+          status: 'failed',
+          error: 'Payment amount must be positive',
+          errorMessage: 'Payment amount must be positive'
+        };
+      }
+      
+      // Validate required fields
+      if (!request.customerId) {
+        return {
+          success: false,
+          status: 'failed',
+          error: 'Customer ID is required',
+          errorMessage: 'Customer ID is required'
+        };
+      }
+      
+      if (!request.paymentMethod) {
+        return {
+          success: false,
+          status: 'failed',
+          error: 'Payment method is required',
+          errorMessage: 'Payment method is required'
+        };
       }
 
       // CCBill uses FlexForms for hosted payment pages

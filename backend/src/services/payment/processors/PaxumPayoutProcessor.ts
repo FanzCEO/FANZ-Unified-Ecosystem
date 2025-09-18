@@ -97,6 +97,17 @@ export class PaxumPayoutProcessor implements IPaymentProcessor {
       if (request.amount <= 0) {
         throw new Error('Payout amount must be positive');
       }
+      
+      // Validate destination type
+      if (!['paxum_ewallet', 'wire_transfer'].includes(request.destination.type)) {
+        return {
+          success: false,
+          status: 'failed',
+          error: 'Invalid destination type',
+          errorMessage: 'Invalid destination type. Paxum supports paxum_ewallet and wire_transfer only.',
+          processorResponse: { processor: 'paxum' }
+        };
+      }
 
       // Generate signature for API authentication
       const timestamp = Date.now().toString();
@@ -125,7 +136,7 @@ export class PaxumPayoutProcessor implements IPaymentProcessor {
         return {
           success: true,
           payoutId: response.data.payoutId || payoutData.transactionId,
-          status: 'completed',
+          status: 'processing',
           estimatedArrival: 'Instant',
           processorResponse: {
             processor: 'paxum',

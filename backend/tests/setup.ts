@@ -1,6 +1,7 @@
 // 🧪 FANZ Backend - Global Test Setup
 import { config } from 'dotenv';
 import { performance } from 'perf_hooks';
+import axios from 'axios';
 
 // Load test environment variables
 config({ path: '.env.test' });
@@ -11,6 +12,10 @@ process.env.LOG_LEVEL = 'error'; // Reduce log noise in tests
 
 // Global test timeout
 jest.setTimeout(30000);
+
+// Mock axios globally for all HTTP requests
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 // Mock console methods in test environment
 const originalConsole = { ...console };
@@ -26,11 +31,23 @@ beforeAll(() => {
   
   // Keep console.error for debugging
   console.error = originalConsole.error;
+  
+  // Set up default mocks for payment processors using axios mocking
+  setupAxiosMocks();
+});
+
+beforeEach(() => {
+  // Reset axios mocks before each test
+  jest.clearAllMocks();
+  setupAxiosMocks();
 });
 
 afterAll(() => {
   // Restore console methods
   Object.assign(console, originalConsole);
+  
+  // Restore axios mocks
+  jest.restoreAllMocks();
 });
 
 // Global test utilities
@@ -171,3 +188,79 @@ const originalEmit = process.emit;
   }
   return originalEmit.apply(process, [name, data, ...args] as any);
 };
+
+// Set up default HTTP mocks for payment processors using axios mocking
+function setupAxiosMocks() {
+  // Mock axios.post for various payment processor endpoints
+  mockedAxios.post.mockImplementation((url: string, data?: any, config?: any) => {
+    console.log('🔄 Mocked axios.post called for:', url);
+    
+    // CCBill API mocks
+    if (url.includes('ccbill.com')) {
+      if (url.includes('/wap-frontflex/flexforms/ping')) {
+        return Promise.resolve({ data: { status: 'ok' }, status: 200 });
+      }
+      if (url.includes('/wap-frontflex/refund')) {
+        return Promise.resolve({
+          data: {
+            results: [{
+              approved: '1',
+              refundId: 'mock-refund-123'
+            }]
+          },
+          status: 200
+        });
+      }
+      // Default CCBill response
+      return Promise.resolve({ data: { status: 'ok' }, status: 200 });
+    }
+    
+    // Paxum API mocks
+    if (url.includes('paxum.com')) {
+      if (url.includes('/api/payout')) {
+        return Promise.resolve({
+          data: {
+            success: true,
+            status: 'success',
+            payoutId: 'mock-payout-123',
+            transactionId: 'mock-txn-456'
+          },
+          status: 200
+        });
+      }
+      // Default Paxum response
+      return Promise.resolve({ data: { status: 'healthy' }, status: 200 });
+    }
+    
+    // Segpay API mocks
+    if (url.includes('segpay.com')) {
+      return Promise.resolve({
+        data: {
+          success: true,
+          transactionId: 'mock-segpay-123'
+        },
+        status: 200
+      });
+    }
+    
+    // Default fallback response
+    return Promise.resolve({ data: { status: 'ok' }, status: 200 });
+  });
+  
+  // Mock axios.get for health checks and other GET requests
+  mockedAxios.get.mockImplementation((url: string, config?: any) => {
+    console.log('🔄 Mocked axios.get called for:', url);
+    
+    if (url.includes('paxum.com')) {
+      return Promise.resolve({ data: { status: 'healthy' }, status: 200 });
+    }
+    if (url.includes('segpay.com')) {
+      return Promise.resolve({ data: { status: 'ok' }, status: 200 });
+    }
+    if (url.includes('ccbill.com')) {
+      return Promise.resolve({ data: { status: 'ok' }, status: 200 });
+    }
+    
+    return Promise.resolve({ data: { status: 'ok' }, status: 200 });
+  });
+}
