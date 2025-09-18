@@ -41,7 +41,7 @@ module.exports = {
   verbose: true,
   forceExit: true,
   detectOpenHandles: true,
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@tests/(.*)$': '<rootDir>/tests/$1'
   },

@@ -1,0 +1,71 @@
+# 🤖 FanzGPT AI Assistant - Development Dockerfile
+# Multi-stage build for efficient development with hot reload
+
+FROM node:18-alpine as base
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache \
+    curl \
+    git \
+    python3 \
+    make \
+    g++ \
+    libc6-compat
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY .eslintrc.js ./
+COPY .prettierrc.js ./
+COPY jest.config.js ./
+
+# Install dependencies with cache
+RUN npm ci --only=development
+
+# Create necessary directories
+RUN mkdir -p src logs coverage
+
+# Development stage
+FROM base as development
+
+# Set environment
+ENV NODE_ENV=development
+ENV PORT=3100
+
+# Install development tools globally
+RUN npm install -g \
+    nodemon \
+    ts-node \
+    tsx \
+    @types/node
+
+# Copy source code
+COPY src/ ./src/
+COPY scripts/ ./scripts/
+COPY tests/ ./tests/
+
+# Create logs directory and set permissions
+RUN mkdir -p logs && chmod 755 logs
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S fanzgpt -u 1001 -G nodejs
+
+# Change ownership of app directory
+RUN chown -R fanzgpt:nodejs /app
+
+# Switch to non-root user
+USER fanzgpt
+
+# Expose port
+EXPOSE 3100
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3100/health || exit 1
+
+# Development command with hot reload
+CMD ["npm", "run", "dev"]

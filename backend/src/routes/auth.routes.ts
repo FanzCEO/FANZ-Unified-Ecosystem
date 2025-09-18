@@ -6,11 +6,20 @@ import {
   rateLimitByUser 
 } from '../middleware/auth';
 import { metricsMiddleware } from '../middleware/metrics';
+import { 
+  authRateLimit,
+  securityValidation,
+  progressiveSlowdown
+} from '../middleware/enhancedSecurity';
+import { secureRandomMiddleware } from '../middleware/secureRandom';
 
 const router = Router();
 
-// Apply metrics middleware to all auth routes
+// Apply security middleware to all auth routes
 router.use(metricsMiddleware);
+router.use(secureRandomMiddleware);
+router.use(securityValidation);
+router.use(progressiveSlowdown);
 
 /**
  * @route   POST /api/v1/auth/register
@@ -18,7 +27,7 @@ router.use(metricsMiddleware);
  * @access  Public
  * @body    { email, username, password, role, profile }
  */
-router.post('/register', authController.register);
+router.post('/register', authRateLimit, authController.register);
 
 /**
  * @route   POST /api/v1/auth/login
@@ -26,7 +35,7 @@ router.post('/register', authController.register);
  * @access  Public
  * @body    { email, password }
  */
-router.post('/login', authController.login);
+router.post('/login', authRateLimit, authController.login);
 
 /**
  * @route   POST /api/v1/auth/refresh
@@ -34,21 +43,21 @@ router.post('/login', authController.login);
  * @access  Public
  * @body    { refresh_token }
  */
-router.post('/refresh', authController.refreshToken);
+router.post('/refresh', authRateLimit, authController.refreshToken);
 
 /**
  * @route   POST /api/v1/auth/logout
  * @desc    Logout current session (blacklist current token)
  * @access  Private
  */
-router.post('/logout', authenticate, authController.logout);
+router.post('/logout', authRateLimit, authenticate, authController.logout);
 
 /**
  * @route   POST /api/v1/auth/logout-all
  * @desc    Logout from all devices (revoke all tokens)
  * @access  Private
  */
-router.post('/logout-all', authenticate, authController.logoutAll);
+router.post('/logout-all', authRateLimit, authenticate, authController.logoutAll);
 
 /**
  * @route   GET /api/v1/auth/profile
@@ -78,8 +87,8 @@ router.get('/validate', authenticate, authController.validateToken);
  * @body    { current_password, new_password }
  */
 router.post('/change-password', 
+  authRateLimit,
   authenticate,
-  rateLimitByUser(5, 15 * 60 * 1000), // 5 attempts per 15 minutes
   authController.changePassword
 );
 
@@ -90,7 +99,7 @@ router.post('/change-password',
  * @body    { email }
  */
 router.post('/reset-password', 
-  rateLimitByUser(3, 60 * 60 * 1000), // 3 attempts per hour
+  authRateLimit,
   authController.requestPasswordReset
 );
 

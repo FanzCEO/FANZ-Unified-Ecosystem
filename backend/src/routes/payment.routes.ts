@@ -5,8 +5,20 @@ import { validateRequest } from '../middleware/validation';
 import { rateLimiter } from '../middleware/rateLimiter';
 import { paymentController } from '../controllers/payment.controller';
 import { financialReportsController } from '../controllers/financial-reports.controller';
+import {
+  paymentRateLimit,
+  adminRateLimit,
+  securityValidation,
+  progressiveSlowdown
+} from '../middleware/enhancedSecurity';
+import { secureRandomMiddleware } from '../middleware/secureRandom';
 
 const router = Router();
+
+// Apply security middleware to all payment routes
+router.use(secureRandomMiddleware);
+router.use(securityValidation);
+router.use(progressiveSlowdown);
 
 // =====================================================
 // TRANSACTION MANAGEMENT ROUTES
@@ -18,7 +30,7 @@ const router = Router();
  * @access Private (authenticated users)
  */
 router.post('/transactions', 
-  rateLimiter({ windowMs: 15 * 60 * 1000, max: 50 }), // 50 requests per 15 minutes
+  paymentRateLimit,
   authenticate,
   paymentController.createTransaction
 );
@@ -29,7 +41,7 @@ router.post('/transactions',
  * @access Private (transaction owner or admin)
  */
 router.post('/transactions/:transactionId/process',
-  rateLimiter({ windowMs: 15 * 60 * 1000, max: 30 }), // 30 requests per 15 minutes
+  paymentRateLimit,
   authenticate,
   paymentController.processTransaction
 );
@@ -68,7 +80,7 @@ router.get('/balances',
  * @access Private (authenticated users)
  */
 router.post('/tip',
-  rateLimiter({ windowMs: 15 * 60 * 1000, max: 20 }), // 20 tips per 15 minutes
+  paymentRateLimit,
   authenticate,
   paymentController.sendTip
 );
@@ -83,7 +95,7 @@ router.post('/tip',
  * @access Private (creators and admins)
  */
 router.post('/subscription-plans',
-  rateLimiter({ windowMs: 15 * 60 * 1000, max: 10 }), // 10 plans per 15 minutes
+  paymentRateLimit,
   authenticate,
   authorize(['creator', 'admin']),
   paymentController.createSubscriptionPlan
@@ -95,7 +107,7 @@ router.post('/subscription-plans',
  * @access Private (authenticated users)
  */
 router.post('/subscribe',
-  rateLimiter({ windowMs: 15 * 60 * 1000, max: 10 }), // 10 subscriptions per 15 minutes
+  paymentRateLimit,
   authenticate,
   paymentController.subscribe
 );
@@ -120,7 +132,7 @@ router.get('/subscriptions',
  * @access Private (creators only)
  */
 router.post('/payouts/request',
-  rateLimiter({ windowMs: 60 * 60 * 1000, max: 5 }), // 5 payout requests per hour
+  paymentRateLimit,
   authenticate,
   authorize(['creator']),
   paymentController.requestPayout
@@ -147,6 +159,7 @@ router.get('/earnings/summary',
  * @access Private (admin only)
  */
 router.get('/admin/dashboard',
+  adminRateLimit,
   authenticate,
   authorize(['admin']),
   paymentController.getFinancialDashboard
@@ -158,6 +171,7 @@ router.get('/admin/dashboard',
  * @access Private (admin only)
  */
 router.get('/admin/trial-balance',
+  adminRateLimit,
   authenticate,
   authorize(['admin']),
   paymentController.getTrialBalance
@@ -173,7 +187,7 @@ router.get('/admin/trial-balance',
  * @access Private (admin only)
  */
 router.get('/reports/profit-loss',
-  rateLimiter({ windowMs: 60 * 60 * 1000, max: 10 }), // 10 reports per hour
+  adminRateLimit,
   authenticate,
   authorize(['admin']),
   financialReportsController.generateProfitLossStatement
@@ -185,7 +199,7 @@ router.get('/reports/profit-loss',
  * @access Private (admin only)
  */
 router.get('/reports/balance-sheet',
-  rateLimiter({ windowMs: 60 * 60 * 1000, max: 10 }), // 10 reports per hour
+  adminRateLimit,
   authenticate,
   authorize(['admin']),
   financialReportsController.generateBalanceSheet

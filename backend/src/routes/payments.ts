@@ -34,6 +34,7 @@ import { logger } from '../utils/logger';
 import { asyncHandler } from '../utils/asyncHandler';
 import { validateRequest } from '../middleware/validation';
 import { authenticateUser, authenticateCreator } from '../middleware/authentication';
+import { SecureRandom } from '../middleware/secureRandom';
 const { body, param, query } = require('express-validator');
 
 const router = Router();
@@ -66,7 +67,7 @@ router.post('/process',
     
     try {
       const paymentRequest: PaymentRequest = {
-        transactionId: req.body.transactionId || `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        transactionId: req.body.transactionId || SecureRandom.transactionId(),
         amount: req.body.amount,
         currency: req.body.currency,
         transactionType: req.body.transactionType,
@@ -245,7 +246,7 @@ router.post('/payouts',
 
     try {
       const payoutRequest: PayoutRequest = {
-        payoutId: req.body.payoutId || `payout_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        payoutId: req.body.payoutId || SecureRandom.transactionId('payout'),
         amount: req.body.amount,
         currency: req.body.currency,
         destination: req.body.destination,

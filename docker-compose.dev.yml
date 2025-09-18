@@ -160,6 +160,49 @@ services:
       retries: 3
     restart: unless-stopped
 
+  # 🤖 FanzGPT AI Assistant Service
+  fanz-gpt-dev:
+    build:
+      context: ./services/fanz-gpt
+      dockerfile: Dockerfile.dev
+    container_name: fanz-gpt-dev
+    environment:
+      - NODE_ENV=development
+      - PORT=3100
+      - DATABASE_URL=postgresql://fanz_dev:dev_password_123@postgres-dev:5432/fanz_ecosystem_dev
+      - REDIS_URL=redis://:dev_redis_password@redis-dev:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - JWT_SECRET=dev_jwt_secret_very_long_and_secure
+      - LOG_LEVEL=debug
+      - ANALYTICS_ENABLED=true
+      - CACHE_ENABLED=true
+      - CONTENT_MODERATION_STRICT=false
+      - ADULT_CONTENT_ALLOWED=true
+      - FEATURE_CONTENT_GENERATION=true
+      - FEATURE_CHAT_ASSISTANCE=true
+      - FEATURE_IMAGE_ANALYSIS=true
+      - FEATURE_VOICE_PROCESSING=true
+      - FEATURE_CREATOR_TOOLS=true
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./services/fanz-gpt:/app
+      - /app/node_modules
+      - ./services/fanz-gpt/logs:/app/logs
+    networks:
+      - fanz-dev-network
+    depends_on:
+      - postgres-dev
+      - redis-dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    command: npm run dev
+
   # 🚀 Main API Server
   fanz-api-dev:
     build:
@@ -176,6 +219,7 @@ services:
       - BLOCKCHAIN_URL=http://blockchain-dev:8545
       - QUANTUM_URL=http://quantum-dev:8000
       - METAVERSE_URL=http://metaverse-dev:9000
+      - FANZ_GPT_URL=http://fanz-gpt-dev:3100
       - JWT_SECRET=dev_jwt_secret_very_long_and_secure
       - API_RATE_LIMIT=1000
       - CORS_ORIGIN=http://localhost:3001,http://localhost:3002
@@ -196,6 +240,7 @@ services:
       - blockchain-dev
       - quantum-dev
       - metaverse-dev
+      - fanz-gpt-dev
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 30s
