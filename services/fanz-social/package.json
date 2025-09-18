@@ -1,0 +1,150 @@
+{
+  "name": "@fanz/social-service",
+  "version": "1.0.0",
+  "description": "🌐 FanzSocial - Comprehensive social networking core service for the FANZ ecosystem with adult-content awareness and privacy controls",
+  "main": "dist/src/FanzSocialService.js",
+  "module": "dist/src/FanzSocialService.mjs",
+  "types": "dist/src/FanzSocialService.d.ts",
+  "scripts": {
+    "build": "tsc && tsc --module es2022 --outDir dist/esm && npm run build:rename-mjs",
+    "build:rename-mjs": "find dist/esm -name '*.js' -exec sh -c 'mv \"$1\" \"${1%.js}.mjs\"' _ {} \\;",
+    "build:watch": "tsc --watch",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublish": "npm run clean && npm run build",
+    "demo": "tsx scripts/demo.ts",
+    "seed": "tsx scripts/seed-data.ts"
+  },
+  "keywords": [
+    "fanz",
+    "social-network",
+    "adult-content",
+    "creator-economy",
+    "feeds",
+    "connections",
+    "posts",
+    "stories",
+    "notifications",
+    "moderation",
+    "trending",
+    "discovery"
+  ],
+  "author": "FANZ Engineering Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshuastone/FANZ-Unified-Ecosystem.git",
+    "directory": "services/fanz-social"
+  },
+  "homepage": "https://github.com/joshuastone/FANZ-Unified-Ecosystem/tree/main/services/fanz-social",
+  "bugs": {
+    "url": "https://github.com/joshuastone/FANZ-Unified-Ecosystem/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "uuid": "^9.0.1",
+    "events": "^3.3.0",
+    "@types/uuid": "^9.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/jest": "^29.5.8",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.2",
+    "prettier": "^3.1.0"
+  },
+  "peerDependencies": {
+    "redis": ">=4.0.0"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src",
+      "<rootDir>/tests"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.test.ts",
+      "**/?(*.)+(spec|test).ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/index.ts"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ]
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "prettier"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "@typescript-eslint/recommended",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "@typescript-eslint/no-explicit-any": "warn"
+    },
+    "env": {
+      "node": true,
+      "jest": true
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "ts",
+    "exec": "tsx src/index.ts"
+  }
+}

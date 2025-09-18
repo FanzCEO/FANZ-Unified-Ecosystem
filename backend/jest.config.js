@@ -1,7 +1,8 @@
+// 🧪 FANZ Backend - Jest Testing Configuration
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/src', '<rootDir>/tests'],
   testMatch: [
     '**/__tests__/**/*.ts',
     '**/?(*.)+(spec|test).ts'
@@ -13,19 +14,39 @@ module.exports = {
     'src/**/*.ts',
     '!src/**/*.d.ts',
     '!src/types/**',
-    '!src/config/**',
-    '!src/migrations/**'
+    '!src/**/__tests__/**',
+    '!src/server.ts',
+    '!src/config/database.ts'
   ],
   coverageDirectory: 'coverage',
   coverageReporters: [
     'text',
     'lcov',
-    'html'
+    'html',
+    'cobertura'
   ],
-  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  },
+  setupFilesAfterEnv: [
+    '<rootDir>/tests/setup.ts'
+  ],
   testTimeout: 30000,
+  maxWorkers: 4,
   verbose: true,
-  collectCoverage: false,
+  forceExit: true,
+  detectOpenHandles: true,
+  moduleNameMapping: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@tests/(.*)$': '<rootDir>/tests/$1'
+  },
+  globalSetup: '<rootDir>/tests/globalSetup.ts',
+  globalTeardown: '<rootDir>/tests/globalTeardown.ts',
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/'

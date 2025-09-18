@@ -1,0 +1,37 @@
+apiVersion: v2
+name: fanz-platform
+description: FANZ Unified Ecosystem - Enterprise Creator Economy Platform
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+home: https://fanz.com
+sources:
+  - https://github.com/fanz/unified-ecosystem
+maintainers:
+  - name: FANZ Platform Team
+    email: platform@fanz.com
+keywords:
+  - fanz
+  - creator-economy
+  - platform
+  - enterprise
+dependencies:
+  - name: postgresql
+    version: "12.1.9"
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+  - name: redis
+    version: "17.4.3"
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+  - name: nginx-ingress
+    version: "4.4.2"
+    repository: https://kubernetes.github.io/ingress-nginx
+    condition: ingress-nginx.enabled
+  - name: cert-manager
+    version: "v1.13.2"
+    repository: https://charts.jetstack.io
+    condition: cert-manager.enabled
+annotations:
+  category: Platform
+  licenses: Proprietary

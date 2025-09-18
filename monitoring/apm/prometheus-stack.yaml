@@ -1,0 +1,441 @@
+# FANZ Platform - Advanced Monitoring Stack
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    name: monitoring
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: kube-prometheus-stack
+  namespace: kube-system
+spec:
+  chart: kube-prometheus-stack
+  repo: https://prometheus-community.github.io/helm-charts
+  targetNamespace: monitoring
+  version: "55.5.0"
+  valuesContent: |-
+    # Prometheus Configuration
+    prometheus:
+      prometheusSpec:
+        replicas: 3
+        retention: 30d
+        retentionSize: 100GB
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: gp3
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 200Gi
+        resources:
+          requests:
+            cpu: 1
+            memory: 4Gi
+          limits:
+            cpu: 4
+            memory: 16Gi
+        additionalScrapeConfigs:
+          - job_name: 'fanz-platform'
+            kubernetes_sd_configs:
+              - role: endpoints
+                namespaces:
+                  names:
+                    - default
+                    - fanz-platform
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+                action: keep
+                regex: true
+              - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+                action: replace
+                target_label: __metrics_path__
+                regex: (.+)
+        alerting:
+          alertmanagers:
+            - namespace: monitoring
+              name: alertmanager-operated
+              port: web
+
+    # Grafana Configuration  
+    grafana:
+      replicas: 2
+      adminPassword: ${GRAFANA_ADMIN_PASSWORD}
+      persistence:
+        enabled: true
+        storageClassName: gp3
+        size: 50Gi
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 1
+          memory: 2Gi
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: 'fanz-dashboards'
+              orgId: 1
+              folder: 'FANZ Platform'
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/fanz
+      datasources:
+        datasources.yaml:
+          apiVersion: 1
+          datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://prometheus-operated:9090
+              access: proxy
+              isDefault: true
+            - name: Loki
+              type: loki
+              url: http://loki:3100
+              access: proxy
+            - name: Tempo
+              type: tempo
+              url: http://tempo:3100
+              access: proxy
+            - name: PostgreSQL
+              type: postgres
+              url: postgresql.default.svc.cluster.local:5432
+              database: fanzdb
+              user: ${POSTGRES_USER}
+              secureJsonData:
+                password: ${POSTGRES_PASSWORD}
+      sidecar:
+        dashboards:
+          enabled: true
+          label: grafana_dashboard
+          searchNamespace: ALL
+        datasources:
+          enabled: true
+          label: grafana_datasource
+          searchNamespace: ALL
+
+    # AlertManager Configuration
+    alertmanager:
+      alertmanagerSpec:
+        replicas: 3
+        retention: 120h
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: gp3
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+      config:
+        global:
+          resolve_timeout: 5m
+          slack_api_url: ${SLACK_API_URL}
+        templates:
+          - '/etc/alertmanager/config/*.tmpl'
+        route:
+          group_by: ['alertname', 'cluster', 'service']
+          group_wait: 10s
+          group_interval: 10s
+          repeat_interval: 12h
+          receiver: 'web.hook'
+          routes:
+            - match:
+                alertname: DeadMansSwitch
+              receiver: 'null'
+            - match:
+                severity: critical
+              receiver: 'critical-alerts'
+              continue: true
+            - match:
+                severity: warning
+              receiver: 'warning-alerts'
+              continue: true
+        receivers:
+          - name: 'null'
+          - name: 'web.hook'
+            webhook_configs:
+              - url: 'http://alertmanager-webhook:5001/webhook'
+                send_resolved: true
+          - name: 'critical-alerts'
+            slack_configs:
+              - api_url: ${SLACK_API_URL}
+                channel: '#fanz-alerts-critical'
+                title: 'CRITICAL ALERT - FANZ Platform'
+                text: |
+                  {{ range .Alerts }}
+                  *Alert:* {{ .Annotations.summary }}
+                  *Description:* {{ .Annotations.description }}
+                  *Severity:* {{ .Labels.severity }}
+                  *Instance:* {{ .Labels.instance }}
+                  {{ end }}
+            pagerduty_configs:
+              - routing_key: ${PAGERDUTY_ROUTING_KEY}
+                severity: critical
+          - name: 'warning-alerts'
+            slack_configs:
+              - api_url: ${SLACK_API_URL}
+                channel: '#fanz-alerts-warning'
+                title: 'WARNING - FANZ Platform'
+                text: |
+                  {{ range .Alerts }}
+                  *Alert:* {{ .Annotations.summary }}
+                  *Description:* {{ .Annotations.description }}
+                  *Severity:* {{ .Labels.severity }}
+                  *Instance:* {{ .Labels.instance }}
+                  {{ end }}
+
+    # Node Exporter Configuration
+    nodeExporter:
+      enabled: true
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+    # Kube State Metrics Configuration
+    kubeStateMetrics:
+      enabled: true
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+    # Service Monitors
+    defaultRules:
+      create: true
+      rules:
+        alertmanager: true
+        etcd: true
+        configReloaders: true
+        general: true
+        k8s: true
+        kubeApiserverAvailability: true
+        kubeApiserverBurnrate: true
+        kubeApiserverHistogram: true
+        kubeApiserverSlos: true
+        kubeControllerManager: true
+        kubelet: true
+        kubeProxy: true
+        kubePrometheusGeneral: true
+        kubePrometheusNodeRecording: true
+        kubernetesApps: true
+        kubernetesResources: true
+        kubernetesStorage: true
+        kubernetesSystem: true
+        kubeScheduler: true
+        kubeStateMetrics: true
+        network: true
+        node: true
+        nodeExporterAlerting: true
+        nodeExporterRecording: true
+        prometheus: true
+        prometheusOperator: true
+
+---
+# Custom FANZ Platform ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fanz-platform-services
+  namespace: monitoring
+  labels:
+    app: fanz-platform
+spec:
+  selector:
+    matchLabels:
+      monitoring: enabled
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+    - port: http
+      path: /actuator/prometheus
+      interval: 30s
+      scrapeTimeout: 10s
+
+---
+# Loki for Log Aggregation
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: loki
+  namespace: kube-system
+spec:
+  chart: loki
+  repo: https://grafana.github.io/helm-charts
+  targetNamespace: monitoring
+  version: "5.38.0"
+  valuesContent: |-
+    loki:
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 3
+      storage:
+        bucketNames:
+          chunks: fanz-loki-chunks
+          ruler: fanz-loki-ruler
+          admin: fanz-loki-admin
+        type: s3
+        s3:
+          endpoint: s3.amazonaws.com
+          region: ${AWS_REGION}
+          bucketNames:
+            chunks: fanz-loki-chunks
+            ruler: fanz-loki-ruler
+            admin: fanz-loki-admin
+      schemaConfig:
+        configs:
+          - from: 2020-10-24
+            store: boltdb-shipper
+            object_store: s3
+            schema: v11
+            index:
+              prefix: index_
+              period: 24h
+    
+    write:
+      replicas: 3
+      persistence:
+        size: 50Gi
+        storageClass: gp3
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          cpu: 2
+          memory: 4Gi
+    
+    read:
+      replicas: 3
+      persistence:
+        size: 50Gi
+        storageClass: gp3
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          cpu: 2
+          memory: 4Gi
+
+    backend:
+      replicas: 3
+      persistence:
+        size: 50Gi
+        storageClass: gp3
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          cpu: 2
+          memory: 4Gi
+
+---
+# Tempo for Distributed Tracing
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: tempo
+  namespace: kube-system
+spec:
+  chart: tempo
+  repo: https://grafana.github.io/helm-charts
+  targetNamespace: monitoring
+  version: "1.6.2"
+  valuesContent: |-
+    tempo:
+      retention: 720h
+      backend: s3
+      s3:
+        bucket: fanz-tempo-traces
+        region: ${AWS_REGION}
+    
+    persistence:
+      enabled: true
+      storageClassName: gp3
+      size: 100Gi
+    
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2
+        memory: 4Gi
+
+---
+# Jaeger for Advanced Tracing
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: jaeger
+  namespace: kube-system
+spec:
+  chart: jaeger
+  repo: https://jaegertracing.github.io/helm-charts
+  targetNamespace: monitoring
+  version: "0.71.11"
+  valuesContent: |-
+    provisionDataStore:
+      cassandra: false
+      elasticsearch: true
+    
+    elasticsearch:
+      replicas: 3
+      minimumMasterNodes: 2
+      resources:
+        requests:
+          cpu: 1
+          memory: 2Gi
+        limits:
+          cpu: 2
+          memory: 4Gi
+      volumeClaimTemplate:
+        storageClassName: gp3
+        resources:
+          requests:
+            storage: 100Gi
+    
+    collector:
+      replicaCount: 3
+      resources:
+        requests:
+          cpu: 500m
+          memory: 512Mi
+        limits:
+          cpu: 1
+          memory: 1Gi
+    
+    query:
+      replicaCount: 2
+      resources:
+        requests:
+          cpu: 200m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi

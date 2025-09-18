@@ -1,0 +1,405 @@
+name: 🚀 FANZ Backend - CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, production]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy.yml'
+  pull_request:
+    branches: [main, production]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  NODE_VERSION: '18'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/fanz-backend
+
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+  actions: read
+
+jobs:
+  # Code Quality & Security Checks
+  quality-check:
+    name: 🔍 Code Quality & Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Run TypeScript compilation
+        working-directory: backend
+        run: npm run type-check
+
+      - name: Run ESLint
+        working-directory: backend
+        run: npm run lint
+
+      - name: Run Prettier check
+        working-directory: backend
+        run: npm run format:check
+
+      - name: Security audit
+        working-directory: backend
+        run: npm audit --audit-level=high
+
+      - name: Check for outdated dependencies
+        working-directory: backend
+        run: npm outdated || true
+
+  # Unit & Integration Tests
+  test:
+    name: 🧪 Test Suite
+    runs-on: ubuntu-latest
+    needs: quality-check
+    
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: fanz_test
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Build application
+        working-directory: backend
+        run: npm run build
+
+      - name: Run unit tests
+        working-directory: backend
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/fanz_test
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-secret
+          ENCRYPTION_KEY: test-encryption-key
+        run: npm test -- --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          directory: backend/coverage
+          fail_ci_if_error: true
+
+      - name: Store test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: |
+            backend/coverage/
+            backend/test-results.xml
+
+  # Container Security Scanning
+  security-scan:
+    name: 🔒 Container Security Scan
+    runs-on: ubuntu-latest
+    needs: [quality-check, test]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        working-directory: backend
+        run: |
+          docker build -t temp-scan-image .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'temp-scan-image'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Build and Push Container
+  build-push:
+    name: 🏗️ Build & Push Container
+    runs-on: ubuntu-latest
+    needs: [quality-check, test, security-scan]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+      image-url: ${{ steps.build.outputs.image-url }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+            BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+            VCS_REF=${{ github.sha }}
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v3
+        with:
+          name: sbom
+          path: sbom.spdx.json
+
+  # Deploy to Staging
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build-push
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event.inputs.environment == 'staging')
+    environment:
+      name: staging
+      url: https://api-staging.fanz.network
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'latest'
+
+      - name: Configure Kubernetes context
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > /tmp/kubeconfig
+          echo "KUBECONFIG=/tmp/kubeconfig" >> $GITHUB_ENV
+
+      - name: Deploy to Staging
+        working-directory: backend
+        run: |
+          # Replace image in k8s manifests
+          sed -i "s|fanz/backend:latest|${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}|g" k8s-deployment.yaml
+          
+          # Apply configurations
+          kubectl apply -f k8s-deployment.yaml
+          
+          # Wait for rollout
+          kubectl rollout status deployment/fanz-backend -n fanz-backend --timeout=600s
+
+      - name: Run smoke tests
+        run: |
+          # Wait for service to be ready
+          sleep 30
+          
+          # Basic health check
+          kubectl run curl-test --image=curlimages/curl --restart=Never --rm -i -- \
+            curl -f http://fanz-backend-service.fanz-backend.svc.cluster.local/health
+
+      - name: Notify deployment
+        if: success()
+        run: |
+          echo "✅ Staging deployment successful!"
+          echo "🔗 URL: https://api-staging.fanz.network"
+
+  # Deploy to Production
+  deploy-production:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-push, deploy-staging]
+    if: (github.ref == 'refs/heads/production' && github.event_name == 'push') || (github.event.inputs.environment == 'production')
+    environment:
+      name: production
+      url: https://api.fanz.network
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configure Kubernetes context
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_PRODUCTION }}" | base64 -d > /tmp/kubeconfig
+          echo "KUBECONFIG=/tmp/kubeconfig" >> $GITHUB_ENV
+
+      - name: Pre-deployment backup
+        run: |
+          # Create backup of current deployment
+          kubectl get deployment fanz-backend -n fanz-backend -o yaml > deployment-backup.yaml
+
+      - name: Deploy to Production
+        working-directory: backend
+        run: |
+          # Replace image in k8s manifests  
+          sed -i "s|fanz/backend:latest|${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}|g" k8s-deployment.yaml
+          
+          # Apply configurations
+          kubectl apply -f k8s-deployment.yaml
+          
+          # Wait for rollout with longer timeout for production
+          kubectl rollout status deployment/fanz-backend -n fanz-backend --timeout=900s
+
+      - name: Production smoke tests
+        run: |
+          # Wait for service to be ready
+          sleep 60
+          
+          # Comprehensive health checks
+          kubectl run prod-health-check --image=curlimages/curl --restart=Never --rm -i -- \
+            sh -c "
+              curl -f http://fanz-backend-service.fanz-backend.svc.cluster.local/health && \
+              curl -f http://fanz-backend-service.fanz-backend.svc.cluster.local/status
+            "
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "🚨 Production deployment failed - initiating rollback"
+          kubectl apply -f deployment-backup.yaml
+          kubectl rollout status deployment/fanz-backend -n fanz-backend --timeout=600s
+
+      - name: Post-deployment validation
+        run: |
+          # Check pod health
+          kubectl get pods -n fanz-backend -l app=fanz-backend
+          
+          # Check HPA status
+          kubectl get hpa -n fanz-backend
+          
+          # Verify ingress
+          kubectl get ingress -n fanz-backend
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "🎉 Production deployment successful!"
+          echo "🔗 URL: https://api.fanz.network"
+          echo "📊 Monitor: https://grafana.fanz.network"
+
+      - name: Create GitHub release
+        if: success() && github.ref == 'refs/heads/production'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: FANZ Backend v${{ github.run_number }}
+          body: |
+            🚀 **Production Deployment - v${{ github.run_number }}**
+            
+            **Commit:** ${{ github.sha }}
+            **Branch:** ${{ github.ref_name }}
+            **Deployed:** ${{ github.event.head_commit.timestamp }}
+            
+            **Changes:**
+            ${{ github.event.head_commit.message }}
+            
+            **Docker Image:** 
+            `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}`
+            
+            **Production URL:** https://api.fanz.network
+            **Health Check:** https://api.fanz.network/health
+          draft: false
+          prerelease: false

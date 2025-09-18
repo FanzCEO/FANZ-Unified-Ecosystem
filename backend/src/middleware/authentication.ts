@@ -1,31 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
 
-// Extend Express Request type to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-        role: 'user' | 'creator' | 'admin';
-        ageVerified?: boolean;
-        ageVerifiedAt?: Date;
-        age?: number;
-        country?: string;
-        verificationLevel?: 'basic' | 'premium';
-        createdAt?: Date;
-        // Creator-specific fields
-        idVerified?: boolean;
-        idVerifiedAt?: Date;
-        fullName?: string;
-        compliance2257Verified?: boolean;
-        compliance2257ExpiresAt?: Date;
-        taxFormOnFile?: boolean;
-        taxFormType?: 'W9' | 'W8';
-      };
-    }
-  }
+// This file provides compatibility with the main auth middleware
+// Import the proper JWTPayload from auth service
+import { JWTPayload } from '../services/auth.service';
+
+// Extend the JWTPayload to include additional user fields for compatibility
+interface ExtendedUser extends JWTPayload {
+  // Additional fields from the legacy user interface
+  id?: string; // Alias for userId
+  ageVerified?: boolean;
+  ageVerifiedAt?: Date;
+  age?: number;
+  country?: string;
+  verificationLevel?: 'basic' | 'premium';
+  createdAt?: Date;
+  // Creator-specific fields
+  idVerified?: boolean;
+  idVerifiedAt?: Date;
+  fullName?: string;
+  compliance2257Verified?: boolean;
+  compliance2257ExpiresAt?: Date;
+  taxFormOnFile?: boolean;
+  taxFormType?: 'W9' | 'W8';
 }
 
 /**
@@ -47,9 +44,12 @@ export const authenticateUser = (req: Request, res: Response, next: NextFunction
 
   try {
     // Mock user data - in production, decode JWT and fetch user from database
+    const mockUserId = 'user-' + Math.random().toString(36).substr(2, 9);
     req.user = {
-      id: 'user-' + Math.random().toString(36).substr(2, 9),
+      userId: mockUserId,
+      id: mockUserId, // Legacy compatibility
       email: 'user@example.com',
+      username: 'mockuser',
       role: 'user',
       ageVerified: true,
       ageVerifiedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
@@ -57,7 +57,7 @@ export const authenticateUser = (req: Request, res: Response, next: NextFunction
       country: 'US',
       verificationLevel: 'premium',
       createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) // 90 days ago
-    };
+    } as ExtendedUser;
 
     logger.debug('User authenticated', {
       userId: req.user.id,
@@ -91,9 +91,12 @@ export const authenticateCreator = (req: Request, res: Response, next: NextFunct
     // Check if user is a creator
     if (!req.user || req.user.role !== 'creator') {
       // Mock creator data for development
+      const mockCreatorId = 'creator-' + Math.random().toString(36).substr(2, 9);
       req.user = {
-        id: 'creator-' + Math.random().toString(36).substr(2, 9),
+        userId: mockCreatorId,
+        id: mockCreatorId, // Legacy compatibility
         email: 'creator@example.com',
+        username: 'mockcreator',
         role: 'creator',
         ageVerified: true,
         ageVerifiedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
@@ -109,7 +112,7 @@ export const authenticateCreator = (req: Request, res: Response, next: NextFunct
         compliance2257ExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
         taxFormOnFile: true,
         taxFormType: 'W9'
-      };
+      } as ExtendedUser;
     }
 
     logger.debug('Creator authenticated', {

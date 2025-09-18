@@ -469,13 +469,13 @@ export class VendorAccessMiddleware {
     });
   }
 
-  private async logVendorActivity(req: Request, vendorId: string, endpoint: string, status: string) {
+  private async logVendorActivity(req: Request, vendorId: string, endpoint: string, status: 'allowed' | 'denied') {
     await this.auditLogger.log({
       action: 'vendor_activity',
       vendorId,
       endpoint,
       method: req.method,
-      status,
+      status: status === 'allowed' ? 'success' : 'failure',
       userAgent: req.headers['user-agent'],
       ipAddress: this.getClientIP(req),
       severity: 'INFO'
@@ -492,12 +492,12 @@ export class VendorAccessMiddleware {
   }
 
   private async alertHighRiskActivity(vendorId: string, endpoint: string, riskScore: number, ipAddress: string) {
+    // Alert high risk activity to security center
     await this.securityCenter.alertHighRiskVendorActivity({
       vendorId,
-      endpoint,
-      riskScore,
-      ipAddress,
-      timestamp: new Date()
+      activity: endpoint,
+      riskLevel: riskScore > 90 ? 'critical' : riskScore > 70 ? 'high' : 'medium',
+      details: { endpoint, riskScore, ipAddress }
     });
 
     await this.auditLogger.log({

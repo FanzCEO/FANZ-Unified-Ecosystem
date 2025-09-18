@@ -1,16 +1,15 @@
 import crypto from 'crypto';
 import axios from 'axios';
-import { IPaymentProcessor, IPayoutProcessor } from '../interfaces/IPaymentProcessor';
+import { IPaymentProcessor } from '../../paymentProcessors/interfaces/IPaymentProcessor';
 import {
   PaymentRequest,
-  PaymentResult,
+  PaymentResponse,
   RefundRequest,
-  RefundResult,
+  RefundResponse,
   PayoutRequest,
-  PayoutResult,
-  WebhookData,
-  ProcessorHealthCheck
-} from '../types/PaymentTypes';
+  PayoutResponse,
+  WebhookData
+} from '../../paymentProcessors/interfaces/IPaymentProcessor';
 import { logger } from '../../../utils/logger';
 
 interface SegpayConfig {
@@ -57,7 +56,7 @@ interface SegpayWebhookPayload {
   x_trans_id?: string;
 }
 
-export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
+export class SegpayProcessor implements IPaymentProcessor {
   private config: SegpayConfig;
   private baseUrl: string;
 
@@ -68,10 +67,33 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
       : 'https://test.segpay.com';
   }
 
-  async processPayment(request: PaymentRequest): Promise<PaymentResult> {
+  getName(): string {
+    return 'Segpay';
+  }
+
+  getVersion(): string {
+    return '1.0.0';
+  }
+
+  getSupportedFeatures() {
+    return {
+      payouts: false,
+      refunds: true,
+      webhooks: true,
+      recurringPayments: true,
+      multiCurrency: true,
+      cryptoPayments: false
+    };
+  }
+
+  getSupportedPaymentMethods(): string[] {
+    return ['credit_card', 'debit_card'];
+  }
+
+  async processPayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
       logger.info('Processing Segpay payment', { 
-        transactionId: request.transactionId,
+        customerId: request.customerId,
         amount: request.amount 
       });
 
@@ -84,15 +106,15 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
         x_amount: request.amount.toFixed(2),
         x_currency: request.currency,
         x_description: request.description || 'FANZ Content Purchase',
-        x_customer_email: request.customerInfo?.email || '',
-        x_customer_firstname: request.customerInfo?.firstName || '',
-        x_customer_lastname: request.customerInfo?.lastName || '',
-        x_customer_phone: request.customerInfo?.phone,
-        x_zip_code: request.customerInfo?.zipCode,
-        x_country: request.customerInfo?.country,
+        x_customer_email: request.customerId || '',
+        x_customer_firstname: 'Customer',
+        x_customer_lastname: 'User',
+        x_customer_phone: '',
+        x_zip_code: '',
+        x_country: 'US',
         x_member_id: request.customerId,
-        x_url_success: request.successUrl || `${process.env.APP_BASE_URL}/payment/success`,
-        x_url_decline: request.failureUrl || `${process.env.APP_BASE_URL}/payment/failure`,
+        x_url_success: `${process.env.APP_BASE_URL}/payment/success`,
+        x_url_decline: `${process.env.APP_BASE_URL}/payment/failure`,
         x_url_postback: `${process.env.APP_BASE_URL}/webhooks/segpay`,
         x_version: '1.0'
       };
@@ -102,9 +124,9 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
 
       return {
         success: true,
-        transactionId: request.transactionId || this.generateTransactionId(),
+        transactionId: request.customerId || this.generateTransactionId(),
         status: 'pending',
-        processorTransactionId: request.transactionId,
+        processorTransactionId: request.customerId,
         metadata: {
           paymentUrl,
           processor: 'segpay',
@@ -113,20 +135,20 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
       };
 
     } catch (error) {
-      logger.error('Segpay payment processing failed', { error, requestId: request.transactionId });
+      logger.error('Segpay payment processing failed', { error, requestId: request.customerId });
       return {
         success: false,
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error',
-        metadata: { processor: 'segpay' }
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        processorResponse: { processor: 'segpay' }
       };
     }
   }
 
-  async processRefund(request: RefundRequest): Promise<RefundResult> {
+  async processRefund(request: RefundRequest): Promise<RefundResponse> {
     try {
       logger.info('Processing Segpay refund', { 
-        transactionId: request.originalTransactionId,
+        transactionId: request.transactionId,
         amount: request.amount 
       });
 
@@ -135,7 +157,7 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
       const refundData = {
         username: this.config.username,
         password: this.config.password,
-        transaction_id: request.originalTransactionId,
+        transaction_id: request.transactionId,
         amount: request.amount?.toFixed(2),
         reason: request.reason || 'Customer request'
       };
@@ -152,7 +174,7 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
           success: true,
           refundId: response.data.refund_id || this.generateTransactionId(),
           status: 'completed',
-          metadata: {
+          processorResponse: {
             processor: 'segpay',
             processorRefundId: response.data.refund_id
           }
@@ -162,30 +184,30 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
       }
 
     } catch (error) {
-      logger.error('Segpay refund failed', { error, requestId: request.originalTransactionId });
+      logger.error('Segpay refund failed', { error, requestId: request.transactionId });
       return {
         success: false,
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Refund failed',
-        metadata: { processor: 'segpay' }
+        errorMessage: error instanceof Error ? error.message : 'Refund failed',
+        processorResponse: { processor: 'segpay' }
       };
     }
   }
 
-  async processPayout(request: PayoutRequest): Promise<PayoutResult> {
+  async processPayout?(request: PayoutRequest): Promise<PayoutResponse> {
     // Segpay primarily focuses on payment processing
     // Payouts are typically handled through their merchant portal
     logger.warn('Segpay does not support automated payouts - use merchant portal');
     
-    return {
-      success: false,
-      status: 'failed',
-      error: 'Segpay does not support automated payouts',
-      metadata: { processor: 'segpay' }
-    };
+      return {
+        success: false,
+        status: 'failed',
+        errorMessage: 'Segpay does not support automated payouts',
+        processorResponse: { processor: 'segpay' }
+      };
   }
 
-  async getTransactionStatus(transactionId: string): Promise<PaymentResult> {
+  async getTransactionStatus(transactionId: string): Promise<PaymentResponse> {
     try {
       const response = await axios.post(`${this.baseUrl}/api/transaction/status`, {
         username: this.config.username,
@@ -217,19 +239,19 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
       logger.error('Failed to get Segpay transaction status', { error, transactionId });
       return {
         success: false,
-        status: 'unknown',
-        error: error instanceof Error ? error.message : 'Status check failed',
-        metadata: { processor: 'segpay' }
+        status: 'failed',
+        errorMessage: error instanceof Error ? error.message : 'Status check failed',
+        processorResponse: { processor: 'segpay' }
       };
     }
   }
 
   async handleWebhook(data: WebhookData): Promise<boolean> {
     try {
-      const payload = data.payload as SegpayWebhookPayload;
+      const payload = data.data as SegpayWebhookPayload;
       
       // Verify webhook authenticity
-      if (!this.verifyWebhookSignature(data.rawPayload, data.signature || '')) {
+      if (!this.verifyWebhookSignature(JSON.stringify(data.data), data.signature || '')) {
         logger.error('Segpay webhook signature verification failed');
         return false;
       }
@@ -287,7 +309,7 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
     }
   }
 
-  async healthCheck(): Promise<ProcessorHealthCheck> {
+  async healthCheck(): Promise<{ healthy: boolean; message?: string; details?: Record<string, any> }> {
     try {
       // Test API connectivity with a simple authentication check
       const response = await axios.post(`${this.baseUrl}/api/test`, {
@@ -300,11 +322,11 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
       const isHealthy = response.status === 200;
 
       return {
-        processor: 'segpay',
         healthy: isHealthy,
         message: isHealthy ? 'Segpay API accessible' : 'Segpay API connection failed',
-        responseTime: Date.now(),
-        metadata: {
+        details: {
+          processor: 'segpay',
+          responseTime: Date.now(),
           environment: this.config.environment,
           packageId: this.config.packageId
         }
@@ -312,11 +334,13 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
 
     } catch (error) {
       return {
-        processor: 'segpay',
         healthy: false,
         message: error instanceof Error ? error.message : 'Health check failed',
-        responseTime: Date.now(),
-        metadata: { environment: this.config.environment }
+        details: { 
+          processor: 'segpay',
+          responseTime: Date.now(),
+          environment: this.config.environment 
+        }
       };
     }
   }
@@ -338,17 +362,17 @@ export class SegpayProcessor implements IPaymentProcessor, IPayoutProcessor {
     return `segpay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private mapSegpayStatus(segpayStatus: string): PaymentResult['status'] {
-    const statusMap: Record<string, PaymentResult['status']> = {
+  private mapSegpayStatus(segpayStatus: string): PaymentResponse['status'] {
+    const statusMap: Record<string, PaymentResponse['status']> = {
       'approved': 'completed',
       'declined': 'failed',
       'pending': 'pending',
       'cancelled': 'cancelled',
-      'refunded': 'refunded',
-      'chargeback': 'disputed'
+      'refunded': 'completed',
+      'chargeback': 'failed'
     };
 
-    return statusMap[segpayStatus.toLowerCase()] || 'unknown';
+    return statusMap[segpayStatus.toLowerCase()] || 'failed';
   }
 
   private async handlePurchaseWebhook(payload: SegpayWebhookPayload): Promise<void> {

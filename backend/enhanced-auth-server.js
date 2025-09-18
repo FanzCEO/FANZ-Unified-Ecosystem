@@ -305,7 +305,7 @@ app.get('/api/docs', (req, res) => {
       type: 'Bearer JWT',
       login_endpoint: 'POST /api/auth/admin/login',
       token_validation: 'POST /api/auth/validate',
-      example: 'Authorization: Bearer <your-jwt-token>'
+      example: 'Authorization: Bearer {{YOUR_JWT_TOKEN}}'
     },
 
     public_endpoints: {

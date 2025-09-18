@@ -1,3 +1,133 @@
+# 🎬 FanzMediaCore - Media Processing & CDN Service
+
+Comprehensive media processing platform for the FANZ ecosystem. Handles upload, processing, transcoding, watermarking, storage, and CDN delivery with specialized support for adult content and creator protection.
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/)
+[![Redis](https://img.shields.io/badge/Redis-5.0+-red)](https://redis.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## 🌟 Overview
+
+FanzMediaCore provides scalable, secure media handling for the entire FANZ Unified Ecosystem. It supports multi-format uploads, transcoding, watermarking, and adaptive streaming, with an adult-content-aware moderation layer and DMCA protection workflows.
+
+## ✨ Features
+
+- 📤 Multi-format media upload and validation
+- 🖼️ Image processing: resize, optimize, watermark, filters
+- 🎥 Video transcoding: multi-quality (480p→1440p), thumbnails
+- 🎵 Audio processing: format convert, bitrate control
+- 🏷️ Watermarking: text/logo, position, opacity, size
+- 🌐 CDN integration: cache, geo-routing, invalidation
+- 📡 Streaming: HLS/DASH manifests with optional encryption
+- 🛡️ Moderation: AI analysis, flags, manual review
+- 📈 Analytics: views, bandwidth, geo/device/referrer breakdown
+- 🧬 Fingerprinting: hashes, duplicate detection
+- 📜 DMCA: takedown requests, monitoring, automation
+- 🩺 Health: workers, queues, storage, memory
+
+## 🚀 Quick Start
+
+```bash
+# From the repo root
+cd services/fanz-media-core
+npm install
+npm run demo
+```
+
+## 🔧 Configuration
+
+```ts
+const config: MediaCoreConfig = {
+  redis: { host: 'localhost', port: 6379, database: 12 },
+  upload: { maxFileSize: 500*1024*1024, allowedTypes: [...], tempDir: '/tmp/mediacore' },
+  storage: { provider: 'aws_s3', bucket: 'fanz-media-storage', region: 'us-west-2', ... },
+  cdn: { provider: 'cloudflare', endpoint: 'https://cdn.fanz.com', ... },
+  processing: { workers: { count: 4, maxConcurrent: 8 }, image: {...}, video: {...}, audio: {...} },
+  streaming: { enabled: true, formats: ['hls','dash'], encryption: true, adaptiveBitrate: true },
+  protection: { watermark: {...}, dmca: {...}, drm: {...} },
+  moderation: { enabled: true, aiProvider: 'google-vision', confidenceThreshold: 0.8 },
+  analytics: { enabled: true, retentionDays: 365, aggregationInterval: 3600 }
+}
+```
+
+## 🧪 Demo Scenarios
+
+The demo covers:
+- Image upload → thumbnails → optimization → watermark
+- Video upload → multi-quality transcode → thumbnails → HLS/DASH manifests
+- Audio upload → optimization
+- Moderation analysis (mock) and analytics tracking
+- CDN cache invalidation and usage stats (mock)
+- Fingerprinting and duplicate detection (mock)
+
+Run: `npm run demo`
+
+## 📚 API Highlights
+
+```ts
+// Upload media
+const media = await mediaCore.uploadMedia({ originalFilename, mimetype, size, uploadedBy, clusterId, ... })
+
+// Generate thumbnails
+await mediaCore.generateThumbnails(media, [{ width: 320, height: 180 }])
+
+// Transcode video
+await mediaCore.transcodeVideo(media, [MediaQuality.LOW, MediaQuality.MEDIUM, MediaQuality.HIGH])
+
+// Apply watermark
+await mediaCore.applyWatermark(media, { enabled: true, type: WatermarkType.COMBINED, text: '@handle', ... })
+
+// Streaming manifests
+await mediaCore.createStreamingManifest(media, StreamingType.HLS)
+
+// Get secure streaming URL
+const url = await mediaCore.getStreamingUrl(media.id, MediaQuality.HD)
+
+// Moderation
+const mod = await mediaCore.moderateContent(media)
+
+// Analytics
+const stats = await mediaCore.getMediaAnalytics(media.id, '30d')
+
+// CDN
+await mediaCore.invalidateCDNCache(media.id)
+```
+
+## 🛡️ Adult Content & Compliance
+
+- Age-gated content levels with delivery controls
+- Region-based allow/block lists for compliance
+- Watermark and fingerprint enforcement to deter piracy
+- DMCA workflows with evidence tracking and status transitions
+
+## 📈 Observability
+
+- Health heartbeat stored in Redis at `mediacore:health`
+- Queue metrics: pending, processing, failed
+- Storage metrics: counts, sizes
+
+## 🧩 Integration
+
+Meant to integrate with:
+- FanzSocial (content references)
+- CreatorCRM (usage attribution, compliance)
+- FanzFinance (cost accounting, revenue attribution)
+- FanzProtect (risk, anti-piracy)
+
+## 🗺️ Roadmap
+
+- Real ffmpeg integration (transcode, thumbnails)
+- Sharp-based image processing pipeline
+- Actual CDN provider SDKs (Cloudflare/CloudFront)
+- Real AI moderation providers
+- Persistent queue (BullMQ/Redis Streams) and worker pool
+- Webhooks for status updates
+
+## 📄 License
+
+MIT
+
 # 🎬 FANZ Media Core Service Suite
 
 **Enterprise-grade media processing, delivery, and intelligence platform for the FANZ Unified Ecosystem**

@@ -1,0 +1,62 @@
+
+> fanz-unified-ecosystem-backend@1.0.0 test
+> jest tests/unit/basic.test.ts
+
+● Validation Warning:
+
+  Unknown option "moduleNameMapping" with value {"^@/(.*)$": "<rootDir>/src/$1", "^@tests/(.*)$": "<rootDir>/tests/$1"} was found.
+  This is probably a typing mistake. Fixing it will remove this message.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+
+● Validation Warning:
+
+  Unknown option "moduleNameMapping" with value {"^@/(.*)$": "<rootDir>/src/$1", "^@tests/(.*)$": "<rootDir>/tests/$1"} was found.
+  This is probably a typing mistake. Fixing it will remove this message.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+
+🚀 Setting up test environment...
+📊 Setting up test database...
+✅ Test database ready
+🔴 Checking Redis availability...
+⚠️ Redis not available, tests will use in-memory cache
+✅ Test environment setup complete
+PASS tests/unit/basic.test.ts
+  Basic Testing Framework Verification
+    ✓ should run basic tests successfully (8 ms)
+    ✓ should have access to global test utilities
+    ✓ should validate data formats (2 ms)
+    ✓ should handle async operations
+    ✓ should generate test data (1 ms)
+    ✓ should measure performance (11 ms)
+    Environment Configuration
+      ✓ should be running in test environment
+      ✓ should have test configuration available (1 ms)
+    Mathematical Operations
+      ✓ should correctly add 1 + 2 = 3
+      ✓ should correctly add 10 + 20 = 30
+      ✓ should correctly add -5 + 5 = 0
+      ✓ should correctly add 0.1 + 0.2 = 0.3 (1 ms)
+    String Operations
+      ✓ should handle string transformations
+      ✓ should handle string validation
+    Array Operations
+      ✓ should perform array operations correctly (1 ms)
+      ✓ should handle array transformations
+    Object Operations
+      ✓ should access object properties correctly
+      ✓ should handle object methods (1 ms)
+      ✓ should handle object cloning
+
+Test Suites: 1 passed, 1 total
+Tests:       19 passed, 19 total
+Snapshots:   0 total
+Time:        0.112 s, estimated 1 s
+Ran all test suites matching /tests\/unit\/basic.test.ts/i.
+🧹 Cleaning up test environment...
+📊 Cleaning up test data...
+🔌 Closing connections...
+✅ Test environment cleanup complete
