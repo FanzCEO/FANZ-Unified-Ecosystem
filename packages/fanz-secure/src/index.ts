@@ -203,6 +203,33 @@ export {
   type SecurityEventData
 } from './utils/security.js';
 
+// SQL Safety utilities exports
+export {
+  SQLSafety,
+  createSQLSafety,
+  createStrictSQLSafety,
+  createDevelopmentSQLSafety,
+  sql,
+  validateSQL,
+  type QueryConfig,
+  type SafeQuery,
+  type QueryValidationResult
+} from './utils/sqlSafety.js';
+
+// Audit logging utilities exports
+export {
+  AuditLogger,
+  createAuditLogger,
+  createProductionAuditLogger,
+  createDevelopmentAuditLogger,
+  type AuditConfig,
+  type AuditEvent,
+  type AuditContext,
+  type AuditLevel,
+  type AuditCategory,
+  type AuditQuery
+} from './utils/auditLogger.js';
+
 // =============================================================================
 // MIDDLEWARE CHAINS
 // =============================================================================
@@ -226,30 +253,47 @@ export function createSecurityChain(config: MiddlewareChainConfig = {}) {
   const middleware = [];
   
   // Order matters - this is the recommended sequence
+  
+  // 1. Correlation ID and audit logging (first for tracing)
+  const auditLogger = createAuditLogger();
+  middleware.push(auditLogger.correlationMiddleware());
+  
+  // 2. Rate limiting
   if (config.rateLimiter !== false) {
     middleware.push(createRateLimiter('standard'));
   }
   
-  // Add security headers early in the chain
+  // 3. Security headers early in the chain
   middleware.push(createSecurityHeaders());
   
+  // 4. SQL safety middleware
+  const sqlSafety = createSQLSafety();
+  middleware.push(sqlSafety.middleware());
+  
+  // 5. Input validation
   if (config.validation !== false) {
     middleware.push(createValidator());
   }
   
+  // 6. Authentication
   if (config.authentication !== false) {
     middleware.push(createAuthenticator());
   }
   
+  // 7. Authorization
   if (config.authorization !== false) {
     middleware.push(createAuthorizer());
   }
   
+  // 8. CSRF protection
   if (config.csrf !== false) {
     middleware.push(createCSRFMiddleware());
   }
   
-  // Error handler should be last
+  // 9. Audit middleware for request logging
+  middleware.push(auditLogger.auditMiddleware());
+  
+  // 10. Error handler should be last
   if (config.errorHandler !== false) {
     middleware.push(createErrorHandler());
   }
@@ -260,12 +304,18 @@ export function createSecurityChain(config: MiddlewareChainConfig = {}) {
 /**
  * Authentication route security chain
  */
-export function createAuthChain() {
+export function createAuthChain(redisClient?: any) {
+  const auditLogger = createAuditLogger({}, redisClient);
+  const sqlSafety = createSQLSafety();
+  
   return [
+    auditLogger.correlationMiddleware(),
     createRateLimiter('auth'),
     createSecurityHeaders(),
+    sqlSafety.middleware(),
     createValidator(),
     createCSRFMiddleware(),
+    auditLogger.auditMiddleware(),
     createErrorHandler()
   ];
 }
@@ -273,14 +323,20 @@ export function createAuthChain() {
 /**
  * Payment route security chain (strictest)
  */
-export function createPaymentChain() {
+export function createPaymentChain(allowedTables: string[] = [], redisClient?: any) {
+  const auditLogger = createProductionAuditLogger(redisClient);
+  const sqlSafety = createStrictSQLSafety(allowedTables);
+  
   return [
+    auditLogger.correlationMiddleware(),
     createRateLimiter('payment'),
     createStrictSecurityHeaders(), // Use strictest headers for payments
+    sqlSafety.middleware(), // Strict SQL safety for financial operations
     createValidator(),
     createAuthenticator(),
     createAuthorizer(),
     createCSRFMiddleware(),
+    auditLogger.auditMiddleware(), // Critical audit logging for payments
     createProductionErrorHandler() // Use production error handler for payments
   ];
 }

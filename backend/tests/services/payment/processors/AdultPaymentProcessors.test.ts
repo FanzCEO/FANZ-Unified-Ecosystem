@@ -11,8 +11,8 @@ import {
   PayoutRequest,
   RefundRequest,
   WebhookData,
-  ProcessorHealthCheck
-} from '../../../../src/services/payment/types/PaymentTypes';
+  PaymentMethod
+} from '../../../../src/services/paymentProcessors/interfaces/IPaymentProcessor';
 import crypto from 'crypto';
 import nock from 'nock';
 
@@ -68,23 +68,17 @@ describe('Adult-Friendly Payment Processors', () => {
 
   describe('CCBill Payment Processing', () => {
     const samplePaymentRequest: PaymentRequest = {
-      transactionId: 'test-txn-001',
       amount: 29.99,
       currency: 'USD',
-      transactionType: 'subscription',
-      contentType: 'adult',
-      customerInfo: {
-        email: 'customer@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        country: 'US'
-      },
+      customerId: 'customer-123',
       paymentMethod: {
         id: 'test-payment-method',
         type: 'credit_card',
         details: { token: 'test_token' }
       },
       description: 'Monthly subscription',
+      contentType: 'adult',
+      transactionType: 'subscription',
       successUrl: 'https://fanz.com/payment/success',
       failureUrl: 'https://fanz.com/payment/failure'
     };
@@ -109,7 +103,16 @@ describe('Adult-Friendly Payment Processors', () => {
     });
 
     it('should handle payment processing errors gracefully', async () => {
-      const invalidRequest = { ...samplePaymentRequest, amount: -10 };
+      const invalidRequest: PaymentRequest = { 
+        amount: -10,
+        currency: 'USD',
+        customerId: 'customer-123',
+        paymentMethod: {
+          id: 'test-payment-method',
+          type: 'credit_card',
+          details: { token: 'test_token' }
+        }
+      };
       
       const result = await ccbillProcessor.processPayment(invalidRequest);
 
@@ -161,7 +164,7 @@ describe('Adult-Friendly Payment Processors', () => {
 
     it('should handle webhook processing', async () => {
       const webhookData: WebhookData = {
-        payload: {
+        data: {
           eventType: 'NewSaleSuccess',
           subscriptionId: '12345',
           transactionId: 'test-txn-001'
@@ -191,9 +194,9 @@ describe('Adult-Friendly Payment Processors', () => {
 
       const healthCheck = await ccbillProcessor.healthCheck();
 
-      expect(healthCheck.processor).toBe('ccbill');
       expect(healthCheck.healthy).toBe(true);
-      expect(healthCheck.responseTime).toBeGreaterThan(0);
+      expect(healthCheck.details?.processor).toBe('ccbill');
+      expect(healthCheck.details?.responseTime).toBeGreaterThan(0);
     });
 
     it('should handle refunds', async () => {
@@ -206,7 +209,7 @@ describe('Adult-Friendly Payment Processors', () => {
         });
 
       const refundRequest: RefundRequest = {
-        originalTransactionId: 'test-txn-001',
+        transactionId: 'test-txn-001',
         amount: 29.99,
         reason: 'Customer request'
       };
@@ -319,9 +322,9 @@ describe('Adult-Friendly Payment Processors', () => {
 
   describe('Segpay Payment Processing', () => {
     const samplePaymentRequest: PaymentRequest = {
-      transactionId: 'segpay-txn-001',
       amount: 19.99,
       currency: 'EUR',
+      customerId: 'customer-456',
       transactionType: 'one_time',
       contentType: 'adult',
       customerInfo: {
@@ -332,7 +335,8 @@ describe('Adult-Friendly Payment Processors', () => {
       },
       paymentMethod: {
         id: 'test-payment-method',
-        type: 'credit_card'
+        type: 'credit_card',
+        details: { token: 'test_token' }
       }
     };
 
@@ -413,10 +417,12 @@ describe('Adult-Friendly Payment Processors', () => {
         transactionId: 'compliance-test-001',
         amount: 49.99,
         currency: 'USD',
+        customerId: 'customer-compliance-001',
         contentType: 'adult',
         paymentMethod: {
           id: 'test-card',
-          type: 'credit_card'
+          type: 'credit_card',
+          details: { token: 'test_token' }
         }
       };
 
@@ -440,10 +446,12 @@ describe('Adult-Friendly Payment Processors', () => {
         transactionId: 'compliance-test-002',
         amount: 29.99,
         currency: 'USD',
+        customerId: 'customer-compliance-002',
         contentType: 'adult',
         paymentMethod: {
           id: 'test-card',
-          type: 'credit_card'
+          type: 'credit_card',
+          details: { token: 'test_token' }
         }
       };
 
@@ -474,10 +482,12 @@ describe('Adult-Friendly Payment Processors', () => {
         transactionId: 'risk-test-001',
         amount: 600, // High amount
         currency: 'USD',
+        customerId: 'customer-risk-001',
         contentType: 'adult',
         paymentMethod: {
           id: 'prepaid-card',
-          type: 'prepaid_card'
+          type: 'prepaid_card',
+          details: { card_number: 'xxxx-xxxx-xxxx-1234' }
         }
       };
 
@@ -486,7 +496,7 @@ describe('Adult-Friendly Payment Processors', () => {
         riskUser
       );
 
-      expect(result.riskAssessment.riskLevel).toBeOneOf(['medium', 'high', 'very_high']);
+      expect(['medium', 'high', 'very_high']).toContain(result.riskAssessment.riskLevel);
       expect(result.riskAssessment.factors.length).toBeGreaterThan(0);
     });
 
@@ -535,8 +545,10 @@ describe('Adult-Friendly Payment Processors', () => {
         transactionId: 'routing-us-001',
         amount: 39.99,
         currency: 'USD',
+        customerId: 'customer-routing-us-001',
         transactionType: 'subscription',
         customerInfo: {
+          email: 'us.customer@example.com',
           country: 'US'
         }
       };
@@ -552,8 +564,10 @@ describe('Adult-Friendly Payment Processors', () => {
         transactionId: 'routing-eu-001',
         amount: 29.99,
         currency: 'EUR',
+        customerId: 'customer-routing-eu-001',
         transactionType: 'one_time',
         customerInfo: {
+          email: 'eu.customer@example.com',
           country: 'DE'
         }
       };
@@ -588,7 +602,9 @@ describe('Adult-Friendly Payment Processors', () => {
         transactionId: 'routing-fallback-001',
         amount: 19.99,
         currency: 'USD',
+        customerId: 'customer-routing-fallback-001',
         customerInfo: {
+          email: 'fallback.customer@example.com',
           country: 'US'
         }
       };
@@ -611,8 +627,8 @@ describe('Adult-Friendly Payment Processors', () => {
 
       const healthCheck = await monitoringService.checkProcessorHealth('ccbill');
 
-      expect(healthCheck.processor).toBe('ccbill');
       expect(healthCheck.healthy).toBe(true);
+      expect(healthCheck.details?.processor).toBe('ccbill');
 
       await monitoringService.stopMonitoring();
     });
@@ -663,10 +679,12 @@ describe('Adult-Friendly Payment Processors', () => {
 
       // Simulate an unhealthy processor
       jest.spyOn(ccbillProcessor, 'healthCheck').mockResolvedValue({
-        processor: 'ccbill',
         healthy: false,
         message: 'API timeout',
-        responseTime: Date.now()
+        details: {
+          processor: 'ccbill',
+          responseTime: Date.now()
+        }
       });
 
       await monitoringService.checkProcessorHealth('ccbill');
@@ -686,11 +704,10 @@ describe('Adult-Friendly Payment Processors', () => {
 
   describe('Error Handling and Edge Cases', () => {
     it('should handle network timeouts gracefully', async () => {
-      // Mock network timeout
+      // Mock network timeout by making the request fail
       nock('https://api.ccbill.com')
         .post('/wap-frontflex/flexforms/ping')
-        .socketDelay(35000) // 35 second delay
-        .reply(200, { status: 'ok' });
+        .replyWithError({ code: 'ETIMEDOUT', message: 'timeout' });
 
       const healthCheck = await ccbillProcessor.healthCheck();
 
@@ -743,6 +760,7 @@ describe('Adult-Friendly Payment Processors', () => {
         transactionId: 'integration-001',
         amount: 49.99,
         currency: 'USD',
+        customerId: 'customer-integration-001',
         transactionType: 'subscription',
         contentType: 'adult',
         customerInfo: {
@@ -753,7 +771,13 @@ describe('Adult-Friendly Payment Processors', () => {
         },
         paymentMethod: {
           id: 'test-card',
-          type: 'credit_card'
+          type: 'credit_card',
+          details: {
+            cardNumber: '****-****-****-1234',
+            expiryMonth: '12',
+            expiryYear: '2025',
+            cvv: '***'
+          }
         }
       };
 
