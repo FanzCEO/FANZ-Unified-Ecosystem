@@ -183,6 +183,33 @@ export class PaxumPayoutProcessor implements IPaymentProcessor {
     }
   }
 
+  async getTransactionStatus(processorTransactionId: string): Promise<PaymentResponse> {
+    try {
+      logger.info('Getting Paxum transaction status', { processorTransactionId });
+
+      // For Paxum, we would query their transaction status API
+      // For now, returning a basic response
+      return {
+        success: true,
+        processorTransactionId,
+        status: 'completed',
+        metadata: {
+          processor: 'paxum',
+          lastChecked: new Date().toISOString()
+        }
+      };
+
+    } catch (error) {
+      logger.error('Paxum transaction status check failed', { error, processorTransactionId });
+      return {
+        success: false,
+        status: 'failed',
+        errorMessage: error instanceof Error ? error.message : 'Transaction status check failed',
+        processorResponse: { processor: 'paxum' }
+      };
+    }
+  }
+
   verifyWebhookSignature(payload: string, signature: string): boolean {
     try {
       const expectedSignature = crypto

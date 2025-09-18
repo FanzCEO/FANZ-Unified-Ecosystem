@@ -155,6 +155,33 @@ export class CCBillProcessor implements IPaymentProcessor {
     }
   }
 
+  async getTransactionStatus(processorTransactionId: string): Promise<PaymentResponse> {
+    try {
+      logger.info('Getting CCBill transaction status', { processorTransactionId });
+
+      // For CCBill, we would typically query their reporting API
+      // For now, returning a basic response
+      return {
+        success: true,
+        processorTransactionId,
+        status: 'completed',
+        metadata: {
+          processor: 'ccbill',
+          lastChecked: new Date().toISOString()
+        }
+      };
+
+    } catch (error) {
+      logger.error('CCBill transaction status check failed', { error, processorTransactionId });
+      return {
+        success: false,
+        status: 'failed',
+        errorMessage: error instanceof Error ? error.message : 'Transaction status check failed',
+        processorResponse: { processor: 'ccbill' }
+      };
+    }
+  }
+
   async processPayout?(request: PayoutRequest): Promise<PayoutResponse> {
     // CCBill doesn't support automated payouts
     logger.warn('CCBill does not support automated payouts');

@@ -6,7 +6,8 @@ import {
   RefundResponse,
   PayoutRequest,
   PayoutResponse,
-  WebhookEvent
+  WebhookEvent,
+  WebhookData
 } from './interfaces/IPaymentProcessor';
 import { randomUUID, randomInt } from 'crypto';
 
@@ -159,7 +160,7 @@ export class MockProcessor implements IPaymentProcessor {
     }
 
     // Calculate payout fee (typically $0.25 for bank transfers)
-    const processingFee = request.destination.type === 'bank_account' ? 0.25 : 0;
+    const processingFee = request.destination.type === 'bank_transfer' ? 0.25 : 0;
     
     // Estimate arrival time (1-3 business days for bank transfers)
     const estimatedArrival = new Date();
@@ -214,6 +215,27 @@ export class MockProcessor implements IPaymentProcessor {
   verifyWebhookSignature(payload: string, signature: string): boolean {
     // Mock verification - in real implementation, verify actual signature
     return signature.startsWith('mock_signature_');
+  }
+
+  async handleWebhook(data: WebhookData): Promise<boolean> {
+    try {
+      // Mock webhook processing - always returns success
+      await this.simulateDelay(200);
+      
+      // Simulate webhook event processing
+      const eventType = data.data?.type || 'payment.completed';
+      if (eventType === 'payment.completed') {
+        // Update transaction status or trigger other actions
+        console.log('Mock webhook: Payment completed', data.data);
+      } else if (eventType === 'payment.failed') {
+        console.log('Mock webhook: Payment failed', data.data);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Mock webhook processing failed:', error);
+      return false;
+    }
   }
 
   parseWebhookEvent(payload: string): WebhookEvent {

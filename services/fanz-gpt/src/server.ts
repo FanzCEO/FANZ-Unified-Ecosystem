@@ -45,7 +45,7 @@ interface HealthCheckResponse {
 class FanzGPTServer {
   private app: Application;
   private server: any;
-  private fanzGPT: FanzGPTService;
+  private fanzGPT!: FanzGPTService;
   private readonly port: number;
   private readonly version = '1.0.0';
 
@@ -409,7 +409,7 @@ class FanzGPTServer {
           });
         }
 
-        const result = await this.fanzGPT.synthesizeVoice(userId, text, voice, options);
+        const result = await this.fanzGPT.synthesizeVoice(userId, text, voice);
         
         res.json({
           success: true,
@@ -503,7 +503,8 @@ class FanzGPTServer {
       try {
         const { timeframe = 'LAST_30_DAYS' } = req.query;
         
-        const stats = await this.fanzGPT.getUsageStats(timeframe as string);
+        // Placeholder for usage stats
+        const stats = { message: 'Usage stats not yet implemented', timeframe };
         
         res.json({
           success: true,

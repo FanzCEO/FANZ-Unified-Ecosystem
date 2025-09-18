@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals
 import { CCBillProcessor } from '../../../..REDACTED_AWS_SECRET_KEYrocessor';
 import { PaxumPayoutProcessor } from '../../../..REDACTED_AWS_SECRET_KEYyoutProcessor';
 import { SegpayProcessor } from '../../../..REDACTED_AWS_SECRET_KEYrocessor';
-import { PaymentProcessorFactory } from '../../../..REDACTED_AWS_SECRET_KEYctory';
+import { PaymentProcessorFactory, ProcessorType } from '../../../..REDACTED_AWS_SECRET_KEYctory';
 import { ComplianceValidationService } from '../../../..REDACTED_AWS_SECRET_KEYleware';
 import { GeographicRoutingService } from '../../../..REDACTED_AWS_SECRET_KEYervice';
 import { ProcessorMonitoringService } from '../../../..REDACTED_AWS_SECRET_KEYringService';
@@ -550,6 +550,11 @@ describe('Adult-Friendly Payment Processors', () => {
         customerInfo: {
           email: 'us.customer@example.com',
           country: 'US'
+        },
+        paymentMethod: {
+          id: 'test-card-us',
+          type: 'credit_card',
+          details: { token: 'us_test_token' }
         }
       };
 
@@ -569,6 +574,11 @@ describe('Adult-Friendly Payment Processors', () => {
         customerInfo: {
           email: 'eu.customer@example.com',
           country: 'DE'
+        },
+        paymentMethod: {
+          id: 'test-card-eu',
+          type: 'credit_card',
+          details: { token: 'eu_test_token' }
         }
       };
 
@@ -606,6 +616,11 @@ describe('Adult-Friendly Payment Processors', () => {
         customerInfo: {
           email: 'fallback.customer@example.com',
           country: 'US'
+        },
+        paymentMethod: {
+          id: 'test-card-fallback',
+          type: 'credit_card',
+          details: { token: 'fallback_test_token' }
         }
       };
 
@@ -804,7 +819,7 @@ describe('Adult-Friendly Payment Processors', () => {
       expect(routingDecision.primaryProcessor).toBe('ccbill');
 
       // 3. Process payment
-      const processor = PaymentProcessorFactory.getProcessor(routingDecision.primaryProcessor);
+      const processor = PaymentProcessorFactory.getProcessor(routingDecision.primaryProcessor as ProcessorType);
       const paymentResult = await processor.processPayment(paymentRequest);
 
       expect(paymentResult.success).toBe(true);
@@ -873,7 +888,7 @@ describe('Adult-Friendly Payment Processors', () => {
           payoutId: 'paxum-integration-001'
         });
 
-      const processor = PaymentProcessorFactory.getProcessor(routingDecision.primaryProcessor) as PaxumPayoutProcessor;
+      const processor = PaymentProcessorFactory.getProcessor(routingDecision.primaryProcessor as ProcessorType) as unknown as PaxumPayoutProcessor;
       const payoutResult = await processor.processPayout(payoutRequest);
 
       expect(payoutResult.success).toBe(true);

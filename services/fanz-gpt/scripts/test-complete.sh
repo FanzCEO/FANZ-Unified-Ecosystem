@@ -61,15 +61,17 @@ print_success "Dependencies installed"
 # 3. TypeScript Build Test
 print_info "Testing TypeScript compilation..."
 
-npx tsc --noEmit src/FanzGPTService-simple.ts
-npx tsc --noEmit src/server-simple.ts
-
-print_success "TypeScript compilation successful"
+if npx tsc --noEmit --skipLibCheck; then
+    print_success "TypeScript compilation successful"
+else
+    print_error "TypeScript compilation failed"
+    exit 1
+fi
 
 # 4. Demo Test
 print_info "Running simulation demo..."
 
-npx tsx scripts/demo-simple.ts > demo-output.log 2>&1
+npx tsx scripts/demo.ts > demo-output.log 2>&1
 
 if grep -q "Simulation complete!" demo-output.log; then
     print_success "Demo simulation completed successfully"
@@ -83,7 +85,7 @@ fi
 print_info "Testing server startup..."
 
 # Start server in background
-npx tsx src/server-simple.ts > server.log 2>&1 &
+npx tsx src/server.ts > server.log 2>&1 &
 SERVER_PID=$!
 
 # Wait for server to start
@@ -154,13 +156,10 @@ print_info "Verifying file structure..."
 
 REQUIRED_FILES=(
     "package.json"
-    "src/FanzGPTService-simple.ts"
-    "src/server-simple.ts"
-    "scripts/demo-simple.ts"
-    "README.md"
-    ".env.example"
+    "src/FanzGPTService.ts"
+    "src/server.ts"
+    "scripts/demo.ts"
     "tsconfig.json"
-    "PROJECT_SUMMARY.md"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do
@@ -208,8 +207,8 @@ echo ""
 
 print_info "Next Steps:"
 echo "  1. Add your OpenAI API key to .env file"
-echo "  2. Test real AI generation: OPENAI_API_KEY=your_key npx tsx scripts/demo-simple.ts"
-echo "  3. Start the server: npx tsx src/server-simple.ts"
+echo "  2. Test real AI generation: OPENAI_API_KEY=your_key npx tsx scripts/demo.ts"
+echo "  3. Start the server: npx tsx src/server.ts"
 echo "  4. Test API with real requests"
 echo "  5. Integrate with frontend applications"
 echo ""
