@@ -1,10 +1,7 @@
 import dotenv from 'dotenv';
-import { Logger } from '../utils/logger';
 
 // Load environment variables
 dotenv.config();
-
-const logger = new Logger('Config');
 
 interface Config {
   // Environment
@@ -90,7 +87,7 @@ interface Config {
 function getEnvVar(name: string, defaultValue?: string): string {
   const value = process.env[name];
   if (!value && defaultValue === undefined) {
-    logger.error(`Missing required environment variable: ${name}`);
+    console.error(`Missing required environment variable: ${name}`);
     process.exit(1);
   }
   return value || defaultValue!;
@@ -99,7 +96,7 @@ function getEnvVar(name: string, defaultValue?: string): string {
 function getEnvVarAsNumber(name: string, defaultValue?: number): number {
   const value = process.env[name];
   if (!value && defaultValue === undefined) {
-    logger.error(`Missing required environment variable: ${name}`);
+    console.error(`Missing required environment variable: ${name}`);
     process.exit(1);
   }
   return value ? parseInt(value, 10) : defaultValue!;
@@ -224,24 +221,24 @@ function validateConfig() {
 
   for (const varName of requiredVars) {
     if (!config[varName as keyof Config]) {
-      logger.error(`Missing required configuration: ${varName}`);
+      console.error(`Missing required configuration: ${varName}`);
       process.exit(1);
     }
   }
 
   // Validate JWT secret strength
   if (config.JWT_SECRET.length < 32) {
-    logger.error('JWT_SECRET must be at least 32 characters long');
+    console.error('JWT_SECRET must be at least 32 characters long');
     process.exit(1);
   }
 
   // Validate database URL format
   if (!config.DATABASE_URL.startsWith('postgresql://')) {
-    logger.error('DATABASE_URL must be a valid PostgreSQL connection string');
+    console.error('DATABASE_URL must be a valid PostgreSQL connection string');
     process.exit(1);
   }
 
-  logger.info('Configuration validated successfully', {
+  console.log('Configuration validated successfully', {
     nodeEnv: config.NODE_ENV,
     port: config.PORT,
     enabledFeatures: {

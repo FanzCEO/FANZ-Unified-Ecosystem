@@ -1,5 +1,5 @@
 import { IPaymentProcessor } from '../paymentProcessors/interfaces/IPaymentProcessor';
-import { MockPaymentProcessor } from '../paymentProcessors/MockPaymentProcessor';
+import { MockProcessor } from '../paymentProcessors/MockProcessor';
 import { SegpayProcessor } from './processors/SegpayProcessor';
 import { CCBillProcessor } from './processors/CCBillProcessor';
 import { PaxumPayoutProcessor } from './processors/PaxumPayoutProcessor';
@@ -16,7 +16,7 @@ export class PaymentProcessorFactory {
   static initialize() {
     try {
       // Initialize Mock Processor (for testing)
-      this.processors.set('mock', new MockPaymentProcessor());
+      this.processors.set('mock', new MockProcessor());
 
       // Initialize Segpay Processor
       if (process.env.SEGPAY_PACKAGE_ID && process.env.SEGPAY_BILLER_ID) {

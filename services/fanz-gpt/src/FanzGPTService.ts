@@ -1256,7 +1256,11 @@ export class FanzGPTService extends EventEmitter {
         type: AIProviderType.OPENAI,
         enabled: true,
         priority: this.config.providers.openai.priority,
-        config: this.config.providers.openai,
+        config: {
+          ...this.config.providers.openai,
+          temperature: 0.7,
+          maxTokens: 4096
+        },
         capabilities: [
           AICapability.TEXT_GENERATION,
           AICapability.IMAGE_ANALYSIS,
@@ -1286,7 +1290,11 @@ export class FanzGPTService extends EventEmitter {
         type: AIProviderType.ANTHROPIC,
         enabled: true,
         priority: this.config.providers.anthropic.priority,
-        config: this.config.providers.anthropic,
+        config: {
+          ...this.config.providers.anthropic,
+          temperature: 0.7,
+          maxTokens: 4096
+        },
         capabilities: [
           AICapability.TEXT_GENERATION,
           AICapability.IMAGE_ANALYSIS,
@@ -1712,7 +1720,7 @@ export class FanzGPTService extends EventEmitter {
         model: voice.model || 'tts-1-hd',
         voice: voice.voice || 'alloy',
         input: text,
-        response_format: voice.format || 'mp3',
+        response_format: (voice.format as any) || 'mp3',
         speed: voice.speed || 1.0
       });
 
@@ -2418,7 +2426,7 @@ export class FanzGPTService extends EventEmitter {
         languageUsage: [{ language: 'en', frequency: 1.0, proficiency: LanguageProficiency.NATIVE }]
       },
       personalityType: PersonalityType.CREATIVE,
-      communicationStyle: CommunicationStyle.FRIENDLY,
+      communicationStyle: CommunicationStyle.INFORMAL,
       interests: ['photography', 'fitness', 'travel'],
       goals: ['grow audience', 'increase engagement'],
       restrictions: ['no politics', 'no violence']

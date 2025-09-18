@@ -6,8 +6,8 @@ import crypto from 'crypto';
 // Extended interfaces for compliance validation
 interface PaymentRequest extends BasePaymentRequest {
   transactionId?: string;
-  contentType?: 'adult' | 'general' | 'premium';
-  transactionType?: 'tip' | 'content_purchase' | 'subscription' | 'one_time';
+  contentType?: 'adult' | 'general';
+  transactionType?: 'one_time' | 'subscription' | 'tip';
 }
 
 interface PayoutRequest extends BasePayoutRequest {
@@ -472,7 +472,7 @@ export class ComplianceValidationService {
     const destinationDetails = request.destination.details;
 
     switch (destinationType) {
-      case 'bank_account':
+      case 'bank_transfer':
         // Verify bank account ownership
         if (!destinationDetails?.accountName || 
             !this.namesMatch(destinationDetails.accountName, creatorInfo.fullName)) {

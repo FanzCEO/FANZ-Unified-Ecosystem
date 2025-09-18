@@ -187,7 +187,7 @@ class FanzGPTDemo {
             ],
             languageUsage: [{ language: 'en', frequency: 1.0, proficiency: 'native' as any }]
           },
-          personalityType: PersonalityType.CONFIDENT,
+          personalityType: 'confident' as any, // PersonalityType.CONFIDENT,
           communicationStyle: CommunicationStyle.PERSUASIVE,
           interests: ['photography', 'fitness', 'fashion', 'travel', 'luxury lifestyle'],
           goals: ['grow subscriber base', 'increase engagement', 'maximize revenue', 'build brand'],
@@ -251,7 +251,7 @@ class FanzGPTDemo {
 
   async runDemo(): Promise<void> {
     console.log('\n🤖 Starting FanzGPT Comprehensive Demo...\n');
-    console.log('=' * 60);
+    console.log('='.repeat(60));
 
     try {
       // Demo 1: Content Generation Capabilities
@@ -279,7 +279,7 @@ class FanzGPTDemo {
       await this.demoAnalyticsAndInsights();
 
       console.log('\n✨ FanzGPT Demo completed successfully!');
-      console.log('=' * 60);
+      console.log('='.repeat(60));
       
       await this.displaySummaryStats();
       
@@ -332,7 +332,7 @@ class FanzGPTDemo {
         this.demoContent.push({ type: 'social_post', platform, content: post });
         
       } catch (error) {
-        console.log(`  ${platform.toUpperCase()}: ❌ Generation failed - ${error.message}`);
+        console.log(`  ${platform.toUpperCase()}: ❌ Generation failed - ${(error as Error).message}`);
       }
       
       await this.sleep(500);
