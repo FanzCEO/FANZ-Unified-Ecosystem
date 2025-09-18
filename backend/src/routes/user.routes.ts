@@ -7,11 +7,21 @@ import {
   rateLimitByUser 
 } from '../middleware/auth';
 import { metricsMiddleware } from '../middleware/metrics';
+import {
+  userInteractionRateLimit,
+  adminRateLimit,
+  securityValidation,
+  progressiveSlowdown
+} from '../middleware/enhancedSecurity';
+import { secureRandomMiddleware } from '../middleware/secureRandom';
 
 const router = Router();
 
-// Apply metrics middleware to all user routes
+// Apply security middleware to all user routes
 router.use(metricsMiddleware);
+router.use(secureRandomMiddleware);
+router.use(securityValidation);
+router.use(progressiveSlowdown);
 
 /**
  * @route   GET /api/v1/users/search
@@ -19,7 +29,7 @@ router.use(metricsMiddleware);
  * @access  Public (but authenticated users get more results)
  * @query   { query, role?, verified?, page?, limit? }
  */
-router.get('/search', userController.searchUsers);
+router.get('/search', userInteractionRateLimit, userController.searchUsers);
 
 /**
  * @route   GET /api/v1/users/profile
@@ -35,8 +45,8 @@ router.get('/profile', authenticate, userController.getUserProfile);
  * @body    { display_name?, bio?, location?, website?, social_links?, privacy_settings?, notification_settings? }
  */
 router.put('/profile', 
+  userInteractionRateLimit,
   authenticate,
-  rateLimitByUser(10, 60 * 1000), // 10 updates per minute
   userController.updateProfile
 );
 
@@ -46,7 +56,7 @@ router.put('/profile',
  * @access  Public (some data may be restricted)
  * @params  identifier - User ID (UUID) or username
  */
-router.get('/:identifier', userController.getUserProfile);
+router.get('/:identifier', userInteractionRateLimit, userController.getUserProfile);
 
 /**
  * @route   POST /api/v1/users/:userId/follow
@@ -55,8 +65,8 @@ router.get('/:identifier', userController.getUserProfile);
  * @params  userId - User ID to follow
  */
 router.post('/:userId/follow', 
+  userInteractionRateLimit,
   authenticate,
-  rateLimitByUser(20, 60 * 1000), // 20 follows per minute
   userController.followUser
 );
 
@@ -67,8 +77,8 @@ router.post('/:userId/follow',
  * @params  userId - User ID to unfollow
  */
 router.delete('/:userId/follow', 
+  userInteractionRateLimit,
   authenticate,
-  rateLimitByUser(20, 60 * 1000), // 20 unfollows per minute
   userController.unfollowUser
 );
 
@@ -101,9 +111,9 @@ router.get('/:userId/following', userController.getFollowing);
  * @body    { content_categories?, subscription_price?, tip_minimum?, payout_method?, social_links?, branding?, analytics_enabled? }
  */
 router.put('/creator-profile', 
+  userInteractionRateLimit,
   authenticate,
   requireRole('creator'),
-  rateLimitByUser(5, 60 * 1000), // 5 updates per minute
   userController.updateCreatorProfile
 );
 
@@ -118,6 +128,7 @@ router.put('/creator-profile',
  * @query   { page?, limit?, role?, status? }
  */
 router.get('/admin/all', 
+  adminRateLimit,
   authenticate,
   requireRole('admin', 'moderator'),
   userController.getAllUsers
@@ -131,9 +142,9 @@ router.get('/admin/all',
  * @body    { status: 'active' | 'suspended' | 'banned', reason: string }
  */
 router.put('/admin/:userId/status', 
+  adminRateLimit,
   authenticate,
   requireRole('admin'),
-  rateLimitByUser(10, 60 * 1000), // 10 status changes per minute
   userController.updateUserStatus
 );
 

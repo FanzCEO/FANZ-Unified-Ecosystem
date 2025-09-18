@@ -128,6 +128,21 @@ expect.extend({
         pass: false,
       };
     }
+  },
+  
+  toBeOneOf(received: any, items: any[]) {
+    const pass = items.includes(received);
+    if (pass) {
+      return {
+        message: () => `expected ${received} not to be one of ${items.join(', ')}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () => `expected ${received} to be one of ${items.join(', ')}`,
+        pass: false,
+      };
+    }
   }
 });
 
@@ -139,6 +154,7 @@ declare global {
       toBeValidUUID(): R;
       toBeValidTimestamp(): R;
       toHaveValidationError(field: string): R;
+      toBeOneOf(items: any[]): R;
     }
   }
 }

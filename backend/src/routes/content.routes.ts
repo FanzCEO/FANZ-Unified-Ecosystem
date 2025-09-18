@@ -7,11 +7,21 @@ import {
   rateLimitByUser 
 } from '../middleware/auth';
 import { metricsMiddleware } from '../middleware/metrics';
+import {
+  contentRateLimit,
+  userInteractionRateLimit,
+  securityValidation,
+  progressiveSlowdown
+} from '../middleware/enhancedSecurity';
+import { secureRandomMiddleware } from '../middleware/secureRandom';
 
 const router = Router();
 
-// Apply metrics middleware to all content routes
+// Apply security middleware to all content routes
 router.use(metricsMiddleware);
+router.use(secureRandomMiddleware);
+router.use(securityValidation);
+router.use(progressiveSlowdown);
 
 /**
  * =====================================================
@@ -56,7 +66,7 @@ router.get('/categories', contentController.getCategories);
  * @access  Public
  * @query   { q, content_type?, category?, page?, limit? }
  */
-router.get('/search', contentController.searchContent);
+router.get('/search', userInteractionRateLimit, contentController.searchContent);
 
 /**
  * =====================================================
@@ -71,8 +81,8 @@ router.get('/search', contentController.searchContent);
  * @body    { title?, description?, content_type, content_text?, category_id?, tags?, visibility?, age_restriction?, is_premium?, price?, tip_enabled?, allows_comments?, allows_likes?, allows_sharing?, scheduled_for?, media_urls? }
  */
 router.post('/posts', 
+  contentRateLimit,
   authenticate,
-  rateLimitByUser(10, 60 * 1000), // 10 posts per minute
   contentController.createPost
 );
 
@@ -92,8 +102,8 @@ router.get('/posts/:postId', optionalAuth, contentController.getPost);
  * @body    { title?, description?, content_text?, category_id?, tags?, visibility?, age_restriction?, is_premium?, price?, tip_enabled?, allows_comments?, allows_likes?, allows_sharing?, scheduled_for? }
  */
 router.put('/posts/:postId', 
+  contentRateLimit,
   authenticate,
-  rateLimitByUser(20, 60 * 1000), // 20 updates per minute
   contentController.updatePost
 );
 
@@ -104,8 +114,8 @@ router.put('/posts/:postId',
  * @params  postId - Post UUID
  */
 router.delete('/posts/:postId', 
+  contentRateLimit,
   authenticate,
-  rateLimitByUser(10, 60 * 1000), // 10 deletions per minute
   contentController.deletePost
 );
 
@@ -122,8 +132,8 @@ router.delete('/posts/:postId',
  * @params  postId - Post UUID
  */
 router.post('/posts/:postId/like', 
+  userInteractionRateLimit,
   authenticate,
-  rateLimitByUser(100, 60 * 1000), // 100 likes per minute
   contentController.likePost
 );
 
@@ -134,8 +144,8 @@ router.post('/posts/:postId/like',
  * @params  postId - Post UUID
  */
 router.delete('/posts/:postId/like', 
+  userInteractionRateLimit,
   authenticate,
-  rateLimitByUser(100, 60 * 1000), // 100 unlikes per minute
   contentController.unlikePost
 );
 
@@ -146,8 +156,8 @@ router.delete('/posts/:postId/like',
  * @params  postId - Post UUID
  */
 router.post('/posts/:postId/share', 
+  userInteractionRateLimit,
   authenticate,
-  rateLimitByUser(50, 60 * 1000), // 50 shares per minute
   contentController.sharePost
 );
 
@@ -177,8 +187,8 @@ router.get('/posts/:postId/comments',
  * @body    { comment_text, parent_comment_id? }
  */
 router.post('/posts/:postId/comments', 
+  contentRateLimit,
   authenticate,
-  rateLimitByUser(30, 60 * 1000), // 30 comments per minute
   contentController.addComment
 );
 

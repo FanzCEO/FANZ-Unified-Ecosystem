@@ -11,6 +11,7 @@ import {
   WebhookData
 } from '../../paymentProcessors/interfaces/IPaymentProcessor';
 import { logger } from '../../../utils/logger';
+import { SecureRandom } from '../../../middleware/secureRandom';
 
 interface SegpayConfig {
   packageId: string;
@@ -295,13 +296,22 @@ export class SegpayProcessor implements IPaymentProcessor {
       // Segpay uses auth_key for webhook verification
       const webhookData = JSON.parse(payload) as SegpayWebhookPayload;
       
-      // Generate expected auth key
+      // Generate expected auth key using secure HMAC-SHA256 instead of plain SHA256
       const expectedAuthKey = crypto
-        .createHash('sha256')
-        .update(`${webhookData.transaction_id}${webhookData.amount}${this.config.password}`)
+        .createHmac('sha256', this.config.password)
+        .update(`${webhookData.transaction_id}${webhookData.amount}`)
         .digest('hex');
 
-      return webhookData.auth_key === expectedAuthKey;
+      // Use time-constant comparison to prevent timing attacks
+      try {
+        return crypto.timingSafeEqual(
+          Buffer.from(webhookData.auth_key, 'hex'),
+          Buffer.from(expectedAuthKey, 'hex')
+        );
+      } catch {
+        // If timingSafeEqual fails, the keys are different lengths
+        return false;
+      }
 
     } catch (error) {
       logger.error('Segpay webhook signature verification error', { error });
@@ -359,7 +369,7 @@ export class SegpayProcessor implements IPaymentProcessor {
   }
 
   private generateTransactionId(): string {
-    return `segpay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return SecureRandom.transactionId('segpay');
   }
 
   private mapSegpayStatus(segpayStatus: string): PaymentResponse['status'] {
