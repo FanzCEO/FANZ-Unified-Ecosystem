@@ -1,0 +1,289 @@
+# OWASP ZAP Configuration for FANZ Security Testing
+env:
+  contexts:
+    - name: "FANZ API Context"
+      urls:
+        - "https://staging-api.fanz.com/*"
+        - "https://staging-admin.fanz.com/*"
+      includePaths:
+        - "https://staging-api.fanz.com/api/.*"
+        - "https://staging-admin.fanz.com/admin/.*"
+      excludePaths:
+        - "https://staging-api.fanz.com/api/health"
+        - "https://staging-api.fanz.com/metrics"
+        - ".*logout.*"
+        - ".*static.*"
+        - ".*assets.*"
+      authentication:
+        method: "scriptBasedAuthentication"
+        parameters:
+          scriptName: "fanz-auth-script.js"
+        verification:
+          method: "response"
+          loggedInRegex: '\Q{"authenticated":true}\E'
+          loggedOutRegex: '\Q{"authenticated":false}\E'
+      users:
+        - name: "test-user"
+          credentials:
+            username: "test@fanz.com"
+            password: "TestPassword123!"
+        - name: "admin-user"
+          credentials:
+            username: "admin@fanz.com"
+            password: "AdminPassword123!"
+
+  parameters:
+    globalExcludeUrl:
+      - ".*\\.css"
+      - ".*\\.js"
+      - ".*\\.png"
+      - ".*\\.jpg"
+      - ".*\\.gif"
+      - ".*\\.ico"
+      - ".*\\.svg"
+      - ".*\\.woff.*"
+      - ".*\\.ttf"
+    
+    # Custom headers for testing
+    replacer:
+      rules:
+        - description: "Add API Key header"
+          enabled: true
+          matchType: REQ_HEADER
+          matchString: "X-API-Key"
+          replacement: "test-api-key-for-security-testing"
+        
+        - description: "Add User-Agent"
+          enabled: true
+          matchType: REQ_HEADER
+          matchString: "User-Agent"
+          replacement: "FANZ-Security-Scanner/1.0"
+
+spiders:
+  - name: "ajax"
+    url: "https://staging-api.fanz.com"
+    maxDuration: 10
+    maxDepth: 5
+    numberOfBrowsers: 2
+    browserId: "chrome-headless"
+    
+  - name: "traditional"
+    url: "https://staging-api.fanz.com"
+    maxDuration: 5
+
+ascan:
+  - context: "FANZ API Context"
+    user: "test-user"
+    url: "https://staging-api.fanz.com"
+    maxRuleDuration: 2
+    maxScanDuration: 30
+    maxAlertsPerRule: 10
+    scanOnlyInScope: true
+    
+    # Security scan policies
+    policy: "FANZ-Security-Policy"
+    
+    rules:
+      # Enable critical security tests
+      - id: 40018 # SQL Injection
+        strength: "HIGH"
+        threshold: "LOW"
+      - id: 40019 # SQL Injection (MySQL)
+        strength: "HIGH"
+        threshold: "LOW"
+      - id: 40020 # SQL Injection (PostgreSQL)
+        strength: "HIGH"
+        threshold: "LOW"
+      - id: 40021 # SQL Injection (Oracle)
+        strength: "HIGH"
+        threshold: "LOW"
+      - id: 40022 # SQL Injection (Hypersonic)
+        strength: "HIGH"
+        threshold: "LOW"
+      - id: 40024 # SQL Injection (SQLite)
+        strength: "HIGH"
+        threshold: "LOW"
+      
+      - id: 40012 # Cross Site Scripting (Reflected)
+        strength: "HIGH"
+        threshold: "LOW"
+      - id: 40014 # Cross Site Scripting (Persistent)
+        strength: "HIGH"
+        threshold: "LOW"
+      - id: 40016 # Cross Site Scripting (Persistent - Prime)
+        strength: "HIGH"
+        threshold: "LOW"
+      - id: 40017 # Cross Site Scripting (Persistent - Spider)
+        strength: "HIGH"
+        threshold: "LOW"
+        
+      - id: 90019 # Server Side Code Injection
+        strength: "HIGH"
+        threshold: "LOW"
+      - id: 90020 # Remote OS Command Injection
+        strength: "HIGH"
+        threshold: "LOW"
+        
+      - id: 10095 # Backup File Disclosure
+        strength: "MEDIUM"
+        threshold: "MEDIUM"
+      - id: 10096 # Timestamp Disclosure
+        strength: "LOW"
+        threshold: "HIGH"
+        
+      - id: 90011 # Character Set Mismatch
+        strength: "MEDIUM"
+        threshold: "MEDIUM"
+      - id: 90018 # SQL Injection - Authentication Bypass
+        strength: "HIGH"
+        threshold: "LOW"
+        
+      # Directory traversal
+      - id: 6 # Path Traversal
+        strength: "HIGH"
+        threshold: "LOW"
+        
+      # Authentication/Authorization
+      - id: 10105 # Weak Authentication Method
+        strength: "MEDIUM"
+        threshold: "MEDIUM"
+      - id: 10106 # HTTP Only Site
+        strength: "LOW"
+        threshold: "MEDIUM"
+        
+      # CSRF
+      - id: 10202 # Absence of Anti-CSRF Tokens
+        strength: "MEDIUM"
+        threshold: "LOW"
+        
+      # Headers
+      - id: 10035 # Strict-Transport-Security Header Not Set
+        strength: "LOW"
+        threshold: "LOW"
+      - id: 10036 # Server Leaks Version Information
+        strength: "LOW"
+        threshold: "HIGH"
+      - id: 10037 # Server Leaks Information via "X-Powered-By"
+        strength: "LOW"
+        threshold: "HIGH"
+      - id: 10038 # Content Security Policy (CSP) Header Not Set
+        strength: "LOW"
+        threshold: "MEDIUM"
+      - id: 10039 # X-Backend-Server Header Information Leak
+        strength: "LOW"
+        threshold: "HIGH"
+
+# Custom scanning policies for financial endpoints
+policies:
+  - name: "FANZ-Security-Policy"
+    description: "Custom security policy for FANZ financial platform"
+    scanner:
+      level: "HIGH"
+      strength: "HIGH"
+    
+    # Specific rules for financial endpoints
+    categories:
+      - name: "Authentication"
+        rules:
+          - "Authentication Request Identified"
+          - "Weak Authentication Method"
+          - "Session Management"
+          
+      - name: "Financial"
+        rules:
+          - "SQL Injection"
+          - "NoSQL Injection"
+          - "Command Injection"
+          - "Business Logic"
+          
+      - name: "Input Validation"
+        rules:
+          - "Cross Site Scripting"
+          - "Path Traversal"
+          - "Buffer Overflow"
+          - "Format String Error"
+
+# Reporting configuration
+reporting:
+  format:
+    - "HTML"
+    - "JSON"
+    - "XML"
+    - "SARIF"
+  
+  output:
+    dir: "./tests/dast/reports"
+    filename: "fanz-security-scan-{{timestamp}}"
+  
+  # Risk levels to include
+  riskLevels:
+    - "High"
+    - "Medium"
+    - "Low"
+    - "Informational"
+  
+  # Confidence levels to include  
+  confidenceLevels:
+    - "High"
+    - "Medium"
+    - "Low"
+
+# Integration with FanzDash
+webhook:
+  enabled: true
+  url: "https://staging-dash.fanz.com/api/security/dast-results"
+  headers:
+    "X-API-Key": "{{FANZDASH_API_KEY}}"
+    "Content-Type": "application/json"
+  
+  # Send results to FanzDash
+  events:
+    - "scan-started"
+    - "scan-completed"
+    - "high-risk-found"
+    - "scan-failed"
+
+# Custom authentication script
+scripts:
+  authentication:
+    name: "fanz-auth-script.js"
+    type: "authentication"
+    engine: "Oracle Nashorn"
+    content: |
+      function authenticate(helper, paramsValues, credentials) {
+        var msg = helper.prepareMessage();
+        
+        msg.setRequestHeader("Content-Type", "application/json");
+        msg.setRequestBody(JSON.stringify({
+          email: credentials.getParam("username"),
+          password: credentials.getParam("password")
+        }));
+        
+        helper.sendAndReceive(msg, false);
+        
+        return msg;
+      }
+      
+      function getRequiredParamsNames() {
+        return ["username", "password"];
+      }
+      
+      function getOptionalParamsNames() {
+        return [];
+      }
+      
+      function getCredentialsParamsNames() {
+        return ["username", "password"];
+      }
+
+# Performance tuning
+performance:
+  maxThreadsPerHost: 2
+  maxTotalThreads: 10
+  connectionTimeout: 30000
+  readTimeout: 30000
+  
+# Memory settings
+memory:
+  maxHeapSize: "2g"
+  maxDirectMemory: "512m"
