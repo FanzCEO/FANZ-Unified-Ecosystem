@@ -242,11 +242,18 @@ class ChatSphereServer {
         'http://localhost:3000',
         'http://localhost:3001',
         'http://localhost:3002',
-        'http://127.0.0.1:3000'
+        'http://localhost:8080'
       );
     }
 
-    return origins.length > 0 ? origins : ['*'];
+    // Return specific origins only - never use wildcard for security
+    if (origins.length === 0) {
+      // Default to localhost for development, empty array for production
+      return config.server.environment === 'development' 
+        ? ['http://localhost:3000'] 
+        : [];
+    }
+    return origins;
   }
 
   private async setupServices(): Promise<void> {

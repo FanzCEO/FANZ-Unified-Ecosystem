@@ -174,8 +174,8 @@ export const config: Config = {
   
   // Security
   BCRYPT_ROUNDS: getEnvVarAsNumber('BCRYPT_ROUNDS', 12),
-  SESSION_SECRET: getEnvVar('SESSION_SECRET', 'default-session-secret'),
-  ENCRYPTION_KEY: getEnvVar('ENCRYPTION_KEY', 'default-encryption-key'),
+  SESSION_SECRET: getEnvVar('SESSION_SECRET'), // No default - must be provided
+  ENCRYPTION_KEY: getEnvVar('ENCRYPTION_KEY'), // No default - must be provided
   
   // Rate Limiting
   RATE_LIMIT_WINDOW_MS: getEnvVarAsNumber('RATE_LIMIT_WINDOW_MS', 15 * 60 * 1000),
