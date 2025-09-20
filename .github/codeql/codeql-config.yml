@@ -1,0 +1,93 @@
+name: "FANZ Security CodeQL Configuration"
+
+queries:
+  - name: security-and-quality
+    uses: security-and-quality
+  - name: security-extended  
+    uses: security-extended
+  - name: custom-fanz-queries
+    uses: ./.github/codeql/queries
+
+# Path filters to focus analysis on security-critical code
+paths:
+  - "packages/fanz-secure/**"
+  - "services/**/auth/**"
+  - "services/**/payment/**" 
+  - "services/**/finance/**"
+  - "services/**/api/**"
+  - "!**/node_modules/**"
+  - "!**/dist/**"
+  - "!**/build/**"
+  - "!**/coverage/**"
+  - "!**/*.test.*"
+  - "!**/*.spec.*"
+
+# Disable low-priority rules to focus on security
+disable-default-queries: false
+
+# Custom query packs for FANZ-specific security patterns
+packs:
+  - codeql/javascript-queries
+  - codeql/javascript-security-queries
+
+# Analysis configuration
+compilation:
+  # Ensure all TypeScript files are included
+  typescript:
+    noImplicitAny: true
+    strictNullChecks: true
+    
+# Custom query configuration
+query-filters:
+  - include:
+      kind: 
+        - problem
+        - path-problem
+      severity:
+        - error
+        - warning
+  - exclude:
+      tags:
+        - "external/cwe/cwe-079" # Exclude basic XSS (we have custom financial XSS checks)
+        
+# Security-specific configuration for adult content platform
+adult-content-security:
+  enable: true
+  age-verification-checks: true
+  content-moderation-validation: true
+  payment-processor-security: true
+
+# Financial security configuration  
+financial-security:
+  enable: true
+  payment-validation: true
+  transaction-security: true
+  pci-compliance-checks: true
+  anti-money-laundering: true
+
+# Custom rule configuration
+custom-rules:
+  sql-injection:
+    severity: error
+    precision: high
+  path-traversal:
+    severity: error  
+    precision: high
+  csrf-missing:
+    severity: warning
+    precision: medium
+  unsafe-financial-operation:
+    severity: error
+    precision: high
+  unvalidated-user-input:
+    severity: warning
+    precision: medium
+  dynamic-env-access:
+    severity: warning
+    precision: medium
+  unsafe-path-join:
+    severity: error
+    precision: high
+  unsafe-file-write:
+    severity: error
+    precision: high

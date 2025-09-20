@@ -1,0 +1,57 @@
+# FANZ Custom Security Query Suite
+# This file organizes all FANZ-specific CodeQL queries for comprehensive security analysis
+
+- description: "FANZ Custom Security Queries"
+- queries: .
+- apply:
+    tags contain: security
+- include:
+    id: fanz/unvalidated-request-data
+- include:
+    id: fanz/sql-injection  
+- include:
+    id: fanz/path-traversal
+- include:
+    id: fanz/unsafe-financial-operations
+- include:
+    id: fanz/hardcoded-secrets
+- include:
+    id: fanz/adult-content-security
+
+# Standard JavaScript security queries
+- from: codeql/javascript-queries
+- include:
+    tags contain: security
+- exclude:
+    tags contain: experimental
+    
+# Additional security-focused queries
+- from: codeql/javascript-queries  
+- include:
+    id: 
+      - js/unsafe-jquery-plugin
+      - js/unsafe-html-expansion
+      - js/xss
+      - js/reflected-xss
+      - js/stored-xss
+      - js/code-injection
+      - js/command-line-injection
+      - js/unsafe-deserialization
+      - js/prototype-pollution
+      - js/zip-slip
+      - js/insufficient-key-size
+      - js/jwt-missing-verification
+      - js/clear-text-storage-of-sensitive-data
+      - js/clear-text-logging
+      - js/cors-misconfiguration-for-credentials
+      - js/missing-rate-limiting
+      - js/weak-cryptographic-algorithm
+      - js/insufficient-password-hash
+      - js/timing-attack-against-signature
+      - js/regex-injection
+      - js/incomplete-sanitization
+      - js/unsafe-code-construction
+      - js/useless-regexp-character-escape
+      - js/duplicate-switch-case
+      - js/unreachable-statement
+      - js/unused-local-variable
