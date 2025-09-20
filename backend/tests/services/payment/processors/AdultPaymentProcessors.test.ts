@@ -409,7 +409,8 @@ describe('Adult-Friendly Payment Processors', () => {
       ageVerifiedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
       age: 25,
       country: 'US',
-      verificationLevel: 'premium'
+      verificationLevel: 'premium',
+      createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) // 90 days ago (established account)
     };
 
     it('should validate payment compliance for adult content', async () => {

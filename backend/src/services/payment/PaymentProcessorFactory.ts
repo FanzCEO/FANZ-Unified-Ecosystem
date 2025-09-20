@@ -154,31 +154,31 @@ export class PaymentProcessorFactory {
     recurringPayments?: boolean;
     region?: string;
     contentType?: 'general' | 'adult';
-  }): ProcessorType | null {
+  }): IPaymentProcessor | null {
     // Simple logic for selecting the best processor
     // In production, this would be more sophisticated
 
     if (criteria.contentType === 'adult') {
       // Prefer adult-friendly processors
       if (criteria.payouts && this.isProcessorAvailable('paxum')) {
-        return 'paxum';
+        return this.getProcessor('paxum');
       }
       if (this.isProcessorAvailable('ccbill')) {
-        return 'ccbill';
+        return this.getProcessor('ccbill');
       }
       if (this.isProcessorAvailable('segpay')) {
-        return 'segpay';
+        return this.getProcessor('segpay');
       }
     }
 
     // Default selection logic
     if (criteria.payouts && this.isProcessorAvailable('paxum')) {
-      return 'paxum';
+      return this.getProcessor('paxum');
     }
 
     // Return the first available processor
     const available = this.getAvailableProcessors();
-    return available.length > 0 ? available[0] : null;
+    return available.length > 0 ? this.getProcessor(available[0]) : null;
   }
 }
 

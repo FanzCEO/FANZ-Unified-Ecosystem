@@ -197,7 +197,7 @@ export class GeographicRoutingService {
         minAmount: 1.00,
         maxAmount: 1000.00,
         isEnabled: true,
-        environment: 'production',
+        environment: 'all',
         conditions: {
           currencies: ['USD', 'EUR', 'CAD', 'GBP', 'AUD'],
           adultContentSupport: true,
@@ -409,13 +409,13 @@ export class GeographicRoutingService {
     let reason = `Selected based on priority and region (${context.region})`;
 
     // Adjust for specific scenarios
-    if (context.isSubscription && context.amount > 50) {
-      // Prefer CCBill for high-value subscriptions
+    if (context.isSubscription) {
+      // Prefer CCBill for all subscriptions, especially in North America
       const ccbillRule = processors.find(p => p.processor === 'ccbill');
       if (ccbillRule) {
         primaryProcessor = 'ccbill';
-        confidence = 0.9;
-        reason = 'CCBill preferred for high-value subscriptions';
+        confidence = context.amount > 50 ? 0.9 : 0.85;
+        reason = context.amount > 50 ? 'CCBill preferred for high-value subscriptions' : 'CCBill preferred for subscriptions';
       }
     } else if (context.region === 'EUROPE') {
       // Prefer Segpay for European transactions

@@ -138,6 +138,9 @@ export class PaxumPayoutProcessor implements IPaymentProcessor {
           payoutId: response.data.payoutId || payoutData.transactionId,
           status: 'processing',
           estimatedArrival: 'Instant',
+          metadata: {
+            processor: 'paxum'
+          },
           processorResponse: {
             processor: 'paxum',
             processorPayoutId: response.data.payoutId,
