@@ -827,5 +827,3 @@ export {
   BiometricFeatures,
   DeepfakeAnalysis
 };
-
-export default new FanzContentDNASystem();
