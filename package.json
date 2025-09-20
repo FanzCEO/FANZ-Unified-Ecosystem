@@ -29,7 +29,9 @@
     "k8s:deploy": "kubectl apply -f k8s/",
     "security:scan": "npm audit && snyk test",
     "docs:generate": "typedoc --out docs/api src",
-    "precommit": "npm run lint && npm run test && npm run format:check"
+    "precommit": "npm run lint && npm run test && npm run format:check",
+    "health-check": "curl -f http://localhost:${PORT:-3000}/healthz || exit 1",
+    "system-check": "curl -s http://localhost:${PORT:-3000}/system | jq ."
   },
   "repository": {
     "type": "git",
