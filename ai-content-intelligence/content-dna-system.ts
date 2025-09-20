@@ -453,8 +453,9 @@ class ContentDNASystem {
     const sizeScore = fileSize > 1024 * 1024 * 50 ? 0.3 : 0.8; // Penalty for files > 50MB
     viralScore += sizeScore * 0.1;
 
-    // Add random factor for unpredictability
-    viralScore += Math.random() * 0.2;
+    // Add time-based factor for unpredictability (deterministic)
+    const timeVariation = (new Date().getMinutes() % 10) / 50; // 0-0.2 based on minute
+    viralScore += timeVariation;
 
     return Math.max(0, Math.min(1, viralScore));
   }
@@ -500,7 +501,8 @@ class ContentDNASystem {
       return Math.min(trendScore / tags.length, 1);
     } catch (error) {
       console.error('Trend score calculation failed:', error);
-      return Math.random() * 0.5; // Fallback random score
+      // Fallback deterministic score based on hour of day
+      return (new Date().getHours() % 12) / 24; // 0-0.5 based on time
     }
   }
 
