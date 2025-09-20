@@ -397,7 +397,7 @@ class FanzPersonalizationEngine extends EventEmitter {
     // Apply platform-specific adjustments
     const platformBehavior = this.PLATFORM_BEHAVIORS[creatorProfile.platformId as keyof typeof this.PLATFORM_BEHAVIORS];
     if (platformBehavior) {
-      optimizedPrice *= platformBehavior.pricingSensitivity || 1.0;
+      optimizedPrice *= platformBehavior.dominanceImportance || 1.0;
     }
     
     // Apply fan-specific adjustments based on psychographics
