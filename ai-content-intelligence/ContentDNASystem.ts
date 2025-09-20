@@ -342,14 +342,14 @@ class FanzContentDNASystem {
     };
     
     const baseTrendScore = contentDNA.metadata.contentQuality * 0.4 + 
-                          Math.random() * 0.6; // In production, this would be ML-based
+                          this.secureRandomFloat(0, 0.6); // In production, this would be ML-based
     
     const trendScore = baseTrendScore * (moodTrendMultipliers[contentDNA.metadata.mood] || 1.0);
     
     const viralPotential = trendScore * 
                           (contentDNA.authenticity.confidence * 0.3) +
                           (contentDNA.metadata.contentQuality * 0.4) +
-                          (Math.random() * 0.3); // ML model would replace this
+                          this.secureRandomFloat(0, 0.3); // ML model would replace this
     
     return {
       trendScore: Math.min(1, trendScore),
