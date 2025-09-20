@@ -1,6 +1,6 @@
 // 🎯 FANZ Dynamic Personalization Engine - Quantum Fan Matching System
 // Revolutionary personalization with psychographic profiling, dynamic pricing, and AI-powered recommendations
-// Creates perfect creator-fan matches using advanced behavioral analysis and quantum algorithms
+// Creates perfect creator-fan matches using advanced behavioral analysis and advanced matching algorithms
 
 import { ContentDNA, ContentMood } from './ContentDNASystem';
 import { CreatorProfile, FanInsights } from './CreatorCopilotAI';
