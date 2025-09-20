@@ -861,7 +861,7 @@ class FanzPersonalizationEngine extends EventEmitter {
     
     // Pad to exact feature count
     while (features.length < this.BEHAVIOR_FEATURES) {
-      features.push(Math.random() * 0.1); // Small random values for padding
+      features.push(0); // Zero padding for deterministic behavior
     }
     
     return features.slice(0, this.BEHAVIOR_FEATURES);
