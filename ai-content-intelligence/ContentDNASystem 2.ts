@@ -658,8 +658,8 @@ class FanzContentDNASystem {
       return tensor.div(255.0).expandDims(0);
     } catch (error) {
       console.error('Image preprocessing failed:', error);
-      // Return random tensor as fallback
-      return tf.randomNormal([1, height, width, 3]);
+      // Return zero tensor as deterministic fallback
+      return tf.zeros([1, height, width, 3]);
     }
   }
 
