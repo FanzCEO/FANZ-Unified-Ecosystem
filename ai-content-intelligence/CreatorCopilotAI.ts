@@ -1127,5 +1127,3 @@ export {
   FanInsights,
   ContentPlan
 };
-
-export default new FanzCreatorCopilotAI();
