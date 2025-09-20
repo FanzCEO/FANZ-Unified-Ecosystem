@@ -588,10 +588,10 @@ class FanzContentDNASystem {
       return {
         mood,
         tags: this.generateTags(mood),
-        trendScore: Math.random() * 0.7 + 0.3, // ML model would replace this
-        viralPotential: Math.random() * 0.8 + 0.2,
-        quality: Math.random() * 0.5 + 0.5, // Image quality analysis
-        adultLevel: Math.random() * 0.8 + 0.2 // Adult content detection
+        trendScore: 0.7, // Deterministic placeholder; ML model would replace this
+        viralPotential: 0.8, // Deterministic placeholder
+        quality: 0.75, // Deterministic placeholder for image quality analysis
+        adultLevel: 0.6 // Deterministic placeholder for adult content detection
       };
     }
     
