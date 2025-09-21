@@ -2,12 +2,9 @@
 // Revolutionary content fingerprinting and authenticity verification for adult creator platforms
 // Provides biometric hashing, deepfake detection, and smart content authentication
 
-import crypto from 'crypto';
-import { promises as fs } from 'fs';
 import { createHash } from 'crypto';
 import tf from '@tensorflow/tfjs-node';
 import sharp from 'sharp';
-import ffmpeg from 'fluent-ffmpeg';
 
 interface ContentDNA {
   id: string;
