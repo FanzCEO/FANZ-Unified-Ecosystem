@@ -566,9 +566,9 @@ export class Web3EcosystemCore extends EventEmitter {
         }
       ],
       voting_power_distribution: {
-        '0x' + '1'.repeat(40): 2500000,
-        '0x' + '2'.repeat(40): 1800000,
-        '0x' + '3'.repeat(40): 1200000
+        [`0x${'1'.repeat(40)}`]: 2500000,
+        [`0x${'2'.repeat(40)}`]: 1800000,
+        [`0x${'3'.repeat(40)}`]: 1200000
       },
       execution_timelock: 172800, // 2 days
       proposal_threshold: 1000000, // 1M FANZ tokens

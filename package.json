@@ -31,7 +31,12 @@
     "docs:generate": "typedoc --out docs/api src",
     "precommit": "npm run lint && npm run test && npm run format:check",
     "health-check": "curl -f http://localhost:${PORT:-3000}/healthz || exit 1",
-    "system-check": "curl -s http://localhost:${PORT:-3000}/system | jq ."
+    "system-check": "curl -s http://localhost:${PORT:-3000}/system | jq .",
+    "type-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "docker:dev": "docker-compose up --build",
+    "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
+    "k8s:delete": "kubectl delete -f k8s/"
   },
   "repository": {
     "type": "git",
@@ -59,7 +64,7 @@
   },
   "homepage": "https://github.com/FanzCEO/FANZ-Unified-Ecosystem#readme",
   "dependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.10.2",
     "chalk": "^5.3.0",
     "uuid": "^9.0.1",
     "express": "^4.18.2",
@@ -96,11 +101,15 @@
     "joi": "^17.11.0",
     "zod": "^3.22.4",
     "dotenv": "^16.3.1",
-    "config": "^3.3.9"
+    "config": "^3.3.9",
+    "prom-client": "^14.2.0",
+    "@opentelemetry/sdk-node": "^0.45.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.40.0",
+    "@opentelemetry/exporter-jaeger": "^1.17.0"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
-    "ts-node": "^10.9.1",
+    "typescript": "^5.6.3",
+    "ts-node": "^10.9.2",
     "@types/express": "^4.17.21",
     "@types/cors": "^2.8.17",
     "@types/compression": "^1.7.5",
@@ -123,9 +132,9 @@
     "ts-jest": "^29.1.1",
     "supertest": "^6.3.3",
     "@types/supertest": "^2.0.16",
-    "eslint": "^8.53.0",
-    "@typescript-eslint/parser": "^6.12.0",
-    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "eslint": "^9.18.0",
+    "@typescript-eslint/parser": "^8.19.0",
+    "@typescript-eslint/eslint-plugin": "^8.19.0",
     "prettier": "^3.1.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.1.0",
@@ -133,12 +142,12 @@
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "rimraf": "^5.0.5",
-    "typedoc": "^0.25.4",
+    "typedoc": "^0.26.11",
     "snyk": "^1.1248.0"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
   },
   "lint-staged": {
     "*.{ts,js}": [
