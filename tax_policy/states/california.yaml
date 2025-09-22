@@ -1,0 +1,153 @@
+# California State Tax Configuration
+# FANZ Unified Ecosystem - Major Revenue State
+
+state:
+  code: "CA"
+  name: "California"
+  fips: "06"
+  
+company_registration:
+  home_state: false
+  registration_required: false  # Will be triggered by nexus monitoring
+  registration_number: null
+  filing_frequency: "monthly"  # CA requires monthly filing for large taxpayers
+  next_due_date: null
+  
+digital_goods_policy:
+  # California has complex digital goods taxation
+  digital_downloads: "taxable"
+  digital_streaming: "taxable"
+  digital_subscriptions: "taxable"
+  digital_services: "taxable"
+  
+sales_tax:
+  state_rate: 0.0725  # 7.25% state base rate
+  local_tax_allowed: true
+  max_combined_rate: 0.1075  # Up to 10.75% with local taxes
+  
+product_categories:
+  DIGITAL_DOWNLOAD:
+    taxable: true
+    rate: 0.0725  # Base state rate, local rates added dynamically
+    notes: "Digital downloads are taxable in California"
+    
+  DIGITAL_STREAM:
+    taxable: true 
+    rate: 0.0725
+    notes: "Digital streaming services are taxable"
+    
+  DIGITAL_SUBSCRIPTION:
+    taxable: true
+    rate: 0.0725
+    notes: "Digital subscriptions are taxable"
+    
+  MEMBERSHIP_FEE:
+    taxable: true
+    rate: 0.0725
+    notes: "Digital membership fees are taxable"
+    
+  PLATFORM_FEE:
+    taxable: true
+    rate: 0.0725
+    notes: "Platform service fees are taxable"
+    
+  CREATOR_SERVICE:
+    taxable: true
+    rate: 0.0725
+    notes: "Creator services may be taxable depending on nature"
+    
+  VOLUNTARY_TIP:
+    taxable: false
+    rate: 0.0000
+    notes: "Voluntary tips are generally not taxable if truly voluntary"
+    
+  DONATION:
+    taxable: false
+    rate: 0.0000
+    notes: "Charitable donations are not taxable"
+    
+  GIFT_CARD:
+    taxable: false
+    rate: 0.0000
+    notes: "Tax on redemption, not sale"
+    
+  PHYSICAL_GOODS:
+    taxable: true
+    rate: 0.0725
+    notes: "Physical goods subject to sales tax"
+    
+  SHIPPING:
+    taxable: false
+    rate: 0.0000
+    notes: "Shipping charges separately stated are not taxable"
+
+marketplace_facilitator:
+  # California marketplace facilitator law
+  law_effective_date: "2019-10-01"
+  threshold_revenue: 500000  # $500k
+  threshold_transactions: null  # No transaction threshold
+  lookback_period_months: 12
+  facilitator_collects: true
+  facilitator_remits: true
+  
+sourcing_rules:
+  digital_goods: "destination"
+  services: "destination"
+  physical_goods: "destination"
+  
+# California has complex local tax districts
+special_jurisdictions:
+  - name: "Los Angeles County"
+    type: "county"
+    additional_rate: 0.0025
+    fips: "06037"
+    
+  - name: "San Francisco"
+    type: "city_county"
+    additional_rate: 0.0125
+    fips: "06075"
+    
+  - name: "Orange County"
+    type: "county" 
+    additional_rate: 0.0050
+    fips: "06059"
+    
+  - name: "Santa Clara County"
+    type: "county"
+    additional_rate: 0.0125
+    fips: "06085"
+
+exemptions:
+  resale_certificate: true
+  nonprofit_exemption: true
+  government_exemption: true
+  disabled_veteran_exemption: true
+  
+filing_requirements:
+  frequency: "monthly"  # For large taxpayers
+  due_dates: ["last_day_of_month_plus_30"]
+  electronic_filing_required: true
+  electronic_payment_required: true
+  prepayment_required: false
+  
+special_rules:
+  # California-specific tax rules
+  - rule: "digital_goods_bundling"
+    description: "When digital and non-digital items bundled, allocate tax based on fair market value"
+    
+  - rule: "subscription_proration"
+    description: "Partial month subscriptions must be prorated for tax calculation"
+    
+  - rule: "local_tax_districts"
+    description: "Must use district-level rates, not just city/county"
+    
+compliance_notes:
+  - "California has the most complex local tax structure in the US"
+  - "Digital goods are fully taxable unlike many states"  
+  - "Requires use of CDTFA district tax rates"
+  - "Monthly filing required for taxpayers over $17k annually"
+  - "Strict penalties for late filing/payment"
+  
+last_updated: "2025-09-16"
+updated_by: "tax_compliance_system"
+version: "1.0"

@@ -1,0 +1,130 @@
+# Wyoming State Tax Configuration
+# FANZ Unified Ecosystem - Home State Registration
+
+state:
+  code: "WY"
+  name: "Wyoming"
+  fips: "56"
+  
+company_registration:
+  # FANZ is incorporated/based in Sheridan, WY
+  home_state: true
+  registration_required: true
+  registration_number: "WY-REG-PENDING" # To be updated when registered
+  filing_frequency: "quarterly"
+  next_due_date: "2025-01-31"
+  
+digital_goods_policy:
+  # Wyoming does not tax most digital goods/services
+  digital_downloads: "exempt"
+  digital_streaming: "exempt"
+  digital_subscriptions: "exempt"
+  digital_services: "exempt"
+  
+sales_tax:
+  state_rate: 0.04  # 4% state sales tax
+  local_tax_allowed: true
+  max_combined_rate: 0.08  # Approximately 8% max with local
+  
+product_categories:
+  DIGITAL_DOWNLOAD:
+    taxable: false
+    rate: 0.0000
+    notes: "Wyoming does not tax digital downloads"
+    
+  DIGITAL_STREAM:
+    taxable: false 
+    rate: 0.0000
+    notes: "Digital streaming services are not taxed"
+    
+  DIGITAL_SUBSCRIPTION:
+    taxable: false
+    rate: 0.0000
+    notes: "Digital subscriptions are not taxed in Wyoming"
+    
+  MEMBERSHIP_FEE:
+    taxable: false
+    rate: 0.0000
+    notes: "Digital membership fees are not taxed"
+    
+  PLATFORM_FEE:
+    taxable: true
+    rate: 0.04
+    notes: "Service fees may be taxable if considered business services"
+    
+  CREATOR_SERVICE:
+    taxable: false
+    rate: 0.0000
+    notes: "Creator services are generally not taxed"
+    
+  VOLUNTARY_TIP:
+    taxable: false
+    rate: 0.0000
+    notes: "Voluntary tips/donations are not taxable"
+    
+  DONATION:
+    taxable: false
+    rate: 0.0000
+    notes: "Charitable donations are not taxable"
+    
+  GIFT_CARD:
+    taxable: false
+    rate: 0.0000
+    notes: "Tax on redemption, not sale"
+    
+  PHYSICAL_GOODS:
+    taxable: true
+    rate: 0.04
+    notes: "Physical goods subject to sales tax"
+    
+  SHIPPING:
+    taxable: true
+    rate: 0.04
+    notes: "Shipping charges are taxable if goods are taxable"
+
+marketplace_facilitator:
+  # Wyoming marketplace facilitator law
+  law_effective_date: "2021-07-01"
+  threshold_revenue: 100000  # $100k
+  threshold_transactions: 200
+  lookback_period_months: 12
+  facilitator_collects: true
+  facilitator_remits: true
+  
+sourcing_rules:
+  digital_goods: "destination"  # Destination-based sourcing
+  services: "destination"
+  physical_goods: "destination"
+  
+special_jurisdictions:
+  # Wyoming has minimal local tax complexity
+  - name: "Cheyenne"
+    type: "city"
+    additional_rate: 0.01
+    fips: "5607400"
+    
+  - name: "Casper" 
+    type: "city"
+    additional_rate: 0.01
+    fips: "5613150"
+
+exemptions:
+  resale_certificate: true
+  nonprofit_exemption: true
+  government_exemption: true
+  
+filing_requirements:
+  frequency: "quarterly" 
+  due_dates: ["01-31", "04-30", "07-31", "10-31"]
+  electronic_filing_required: true
+  electronic_payment_required: true
+  
+compliance_notes:
+  - "Wyoming has no state income tax"
+  - "Business-friendly state with minimal tax complexity"
+  - "Digital goods generally not taxed"
+  - "Home state registration provides operational advantages"
+  
+last_updated: "2025-09-16"
+updated_by: "tax_compliance_system"
+version: "1.0"

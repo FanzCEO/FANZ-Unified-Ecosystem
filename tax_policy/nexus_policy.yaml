@@ -1,0 +1,321 @@
+# Economic Nexus Monitoring Policy
+# FANZ Unified Ecosystem - State Tax Registration Thresholds
+
+policy:
+  name: "FANZ Economic Nexus Monitoring"
+  version: "1.0"
+  effective_date: "2025-09-16"
+  
+monitoring:
+  calculation_frequency: "daily"
+  lookback_period_months: 12
+  near_threshold_alert_percentage: 0.80  # Alert at 80% of threshold
+  alert_channels: ["fanzdash", "email", "slack"]
+  
+registration_workflow:
+  auto_register: false  # Manual approval required
+  pause_sales_before_registration: false  # Continue sales, retroactive compliance
+  grace_period_days: 30
+  required_approvals: ["finance_director", "legal_counsel"]
+
+# State-by-state thresholds (2025 current rules)
+thresholds:
+  AL:  # Alabama
+    revenue: 250000
+    transactions: null
+    effective_date: "2018-10-01"
+    
+  AK:  # Alaska - No state sales tax
+    revenue: null
+    transactions: null
+    effective_date: null
+    notes: "No state sales tax, local taxes may apply"
+    
+  AZ:  # Arizona
+    revenue: 200000
+    transactions: null
+    effective_date: "2019-10-01"
+    
+  AR:  # Arkansas
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-07-01"
+    
+  CA:  # California
+    revenue: 500000
+    transactions: null
+    effective_date: "2019-04-01"
+    
+  CO:  # Colorado
+    revenue: 100000
+    transactions: null
+    effective_date: "2019-06-01"
+    
+  CT:  # Connecticut
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-12-01"
+    
+  DE:  # Delaware - No sales tax
+    revenue: null
+    transactions: null
+    effective_date: null
+    notes: "No state sales tax"
+    
+  FL:  # Florida
+    revenue: 100000
+    transactions: null
+    effective_date: "2021-07-01"
+    
+  GA:  # Georgia
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-01-01"
+    
+  HI:  # Hawaii
+    revenue: 100000
+    transactions: 200
+    effective_date: "2020-07-01"
+    
+  ID:  # Idaho
+    revenue: 100000
+    transactions: null
+    effective_date: "2019-06-01"
+    
+  IL:  # Illinois
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-10-01"
+    
+  IN:  # Indiana
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-10-01"
+    
+  IA:  # Iowa
+    revenue: 100000
+    transactions: null
+    effective_date: "2019-01-01"
+    
+  KS:  # Kansas
+    revenue: 100000
+    transactions: null
+    effective_date: "2019-07-01"
+    
+  KY:  # Kentucky
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-10-01"
+    
+  LA:  # Louisiana
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-01-01"
+    
+  ME:  # Maine
+    revenue: 100000
+    transactions: null
+    effective_date: "2018-07-01"
+    
+  MD:  # Maryland
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-10-01"
+    
+  MA:  # Massachusetts
+    revenue: 100000
+    transactions: null
+    effective_date: "2019-10-01"
+    
+  MI:  # Michigan
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-10-01"
+    
+  MN:  # Minnesota
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-10-01"
+    
+  MS:  # Mississippi
+    revenue: 250000
+    transactions: null
+    effective_date: "2019-09-01"
+    
+  MO:  # Missouri
+    revenue: 100000
+    transactions: null
+    effective_date: "2023-01-01"
+    
+  MT:  # Montana - No state sales tax
+    revenue: null
+    transactions: null
+    effective_date: null
+    notes: "No state sales tax, local taxes may apply"
+    
+  NE:  # Nebraska
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-01-01"
+    
+  NV:  # Nevada
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-10-01"
+    
+  NH:  # New Hampshire - No sales tax
+    revenue: null
+    transactions: null
+    effective_date: null
+    notes: "No state sales tax"
+    
+  NJ:  # New Jersey
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-11-01"
+    
+  NM:  # New Mexico
+    revenue: 100000
+    transactions: null
+    effective_date: "2019-07-01"
+    
+  NY:  # New York
+    revenue: 500000
+    transactions: 100
+    effective_date: "2019-06-21"
+    
+  NC:  # North Carolina
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-11-01"
+    
+  ND:  # North Dakota
+    revenue: 100000
+    transactions: null
+    effective_date: "2018-10-01"
+    
+  OH:  # Ohio
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-08-01"
+    
+  OK:  # Oklahoma
+    revenue: 100000
+    transactions: null
+    effective_date: "2018-07-01"
+    
+  OR:  # Oregon - No sales tax
+    revenue: null
+    transactions: null
+    effective_date: null
+    notes: "No state sales tax"
+    
+  PA:  # Pennsylvania
+    revenue: 100000
+    transactions: null
+    effective_date: "2018-07-01"
+    
+  RI:  # Rhode Island
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-07-01"
+    
+  SC:  # South Carolina
+    revenue: 100000
+    transactions: null
+    effective_date: "2018-11-01"
+    
+  SD:  # South Dakota
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-11-01"
+    notes: "Original Wayfair case state"
+    
+  TN:  # Tennessee
+    revenue: 100000
+    transactions: null
+    effective_date: "2019-10-01"
+    
+  TX:  # Texas
+    revenue: 500000
+    transactions: null
+    effective_date: "2019-10-01"
+    
+  UT:  # Utah
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-01-01"
+    
+  VT:  # Vermont
+    revenue: 100000
+    transactions: 200
+    effective_date: "2018-07-01"
+    
+  VA:  # Virginia
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-07-01"
+    
+  WA:  # Washington
+    revenue: 100000
+    transactions: null
+    effective_date: "2018-10-01"
+    
+  WV:  # West Virginia
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-01-01"
+    
+  WI:  # Wisconsin
+    revenue: 100000
+    transactions: null
+    effective_date: "2018-10-01"
+    
+  WY:  # Wyoming - Home State
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-02-01"
+    notes: "Home state - already registered"
+    home_state: true
+    
+  DC:  # District of Columbia
+    revenue: 100000
+    transactions: 200
+    effective_date: "2019-01-01"
+
+# Digital goods specific considerations
+digital_goods_notes:
+  - "Some states exempt digital goods entirely"
+  - "Subscription services may have different thresholds"
+  - "Marketplace facilitator laws may override nexus requirements"
+  - "B2B digital services often have different rules than B2C"
+
+# Alert configurations
+alerts:
+  approaching_threshold:
+    trigger_percentage: 0.80
+    message: "Approaching economic nexus threshold in {state}"
+    severity: "warning"
+    
+  threshold_reached:
+    trigger_percentage: 1.00
+    message: "Economic nexus threshold reached in {state} - registration required"
+    severity: "critical"
+    
+  registration_required:
+    message: "State registration workflow initiated for {state}"
+    severity: "info"
+
+# Compliance workflow
+compliance_steps:
+  1: "Monitor daily transaction aggregations"
+  2: "Alert at 80% threshold approach"
+  3: "Prepare registration materials"
+  4: "Submit registration application"
+  5: "Obtain permit/license"
+  6: "Enable tax collection"
+  7: "Begin filing obligations"
+
+last_updated: "2025-09-16"
+updated_by: "tax_compliance_system"
+notes: "Thresholds current as of 2025 - laws change frequently"

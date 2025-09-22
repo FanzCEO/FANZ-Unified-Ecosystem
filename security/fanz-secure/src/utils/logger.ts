@@ -1,19 +1,62 @@
 /**
- * @fanz/secure - Security Logger
- * Structured logging with PII redaction and correlation IDs
+ * @fanz/secure - Advanced Security Logging with Audit Trail
+ * Production-ready logging with security event tracking
  */
 
 import pino from 'pino';
 import pinoHttp from 'pino-http';
-import { Request, Response } from 'express';
 import { config } from '../config.js';
-import { SecurityEvent } from '../types.js';
+import type { Request, Response } from 'express';
 
 // ===============================
-// REDACTION CONFIGURATION
+// TYPES
 // ===============================
 
-const DEFAULT_REDACTED_PATHS = [
+export interface SecurityEvent {
+  type: SecurityEventType;
+  severity: SecuritySeverity;
+  context: SecurityContext;
+  details: Record<string, any>;
+  timestamp: Date;
+}
+
+export type SecurityEventType =
+  | 'AUTH_ATTEMPT'
+  | 'AUTH_SUCCESS'
+  | 'AUTH_FAILURE'
+  | 'PERMISSION_DENIED'
+  | 'RATE_LIMIT_EXCEEDED'
+  | 'SUSPICIOUS_ACTIVITY'
+  | 'DATA_BREACH_ATTEMPT'
+  | 'SYSTEM_COMPROMISE'
+  | 'CSRF_ATTACK'
+  | 'XSS_ATTEMPT'
+  | 'SQL_INJECTION'
+  | 'MALICIOUS_INPUT'
+  | 'ACCOUNT_LOCKOUT'
+  | 'PASSWORD_CHANGE'
+  | 'SESSION_HIJACK'
+  | 'API_ABUSE'
+  | 'COMPLIANCE_VIOLATION';
+
+export type SecuritySeverity = 'low' | 'medium' | 'high' | 'critical';
+
+export interface SecurityContext {
+  requestId: string;
+  userId?: string;
+  sessionId?: string;
+  ipAddress: string;
+  userAgent: string;
+  timestamp: Date;
+  path: string;
+  method: string;
+}
+
+// ===============================
+// CONSTANTS
+// ===============================
+
+const SECURITY_REDACTED_PATHS = [
   'password',
   'token',
   'secret',
@@ -25,80 +68,346 @@ const DEFAULT_REDACTED_PATHS = [
   'ssn',
   'creditCard',
   'email',
-  'phone',
-  'req.headers.authorization',
-  'req.headers.cookie',
-  'req.body.password',
-  'req.body.token',
-  'req.body.secret',
-  'res.headers.authorization',
-  'res.headers.cookie'
-];
-
-const SECURITY_REDACTED_PATHS = [
-  ...DEFAULT_REDACTED_PATHS,
-  'JWT_SECRET',
-  'CSRF_SECRET',
-  'ENCRYPTION_KEY',
-  'REDIS_PASSWORD',
-  'CCBILL_SALT',
-  'PAXUM_API_SECRET',
-  'FANZDASH_SECRET_TOKEN',
-  'apiKey',
-  'apiSecret',
-  'privateKey',
-  'accessToken',
-  'refreshToken'
+  'phone'
 ];
 
 // ===============================
-// LOGGER CONFIGURATION
+// BASE LOGGER FACTORY
 // ===============================
 
-const createBaseLogger = (name: string) => {
-  return pino({
-    name: `fanz-secure:${name}`,
+function createBaseLogger(component: string): pino.Logger {
+  const logConfig: pino.LoggerOptions = {
+    name: `fanz-secure:${component}`,
     level: config.security.logging.level,
     
-    // Redact sensitive fields
+    // Production formatting
+    ...(config.isProduction ? {
+      // Structured JSON for production
+      formatters: {
+        level: (label: string) => ({ level: label }),
+        log: (object: Record<string, any>) => {
+          // Redact sensitive fields automatically
+          return sanitizeForLogging(object);
+        }
+      }
+    } : {
+      // Human-readable for development
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
+          singleLine: false,
+          translateTime: 'SYS:yyyy-mm-dd HH:MM:ss',
+          ignore: 'pid,hostname',
+          messageFormat: '{component} | {msg}'
+        }
+      }
+    }),
+    
+    // Base fields
+    base: {
+      service: 'fanz-unified-ecosystem',
+      version: process.env.npm_package_version || '1.0.0',
+      environment: config.nodeEnv,
+      pid: process.pid
+    },
+    
+    // Redaction configuration
     redact: {
-      paths: config.security.logging.redactedFields.length > 0 
-        ? config.security.logging.redactedFields 
-        : SECURITY_REDACTED_PATHS,
+      paths: SECURITY_REDACTED_PATHS.map(path => `*.${path}`),
+      censor: '[REDACTED]'
+    }
+  };
+  
+  return pino(logConfig);
+}
+
+// ===============================
+// SECURITY EVENT LOGGER
+// ===============================
+
+class SecurityLogger {
+  private logger: pino.Logger;
+  private component: string;
+
+  constructor(component: string) {
+    this.component = component;
+    this.logger = createBaseLogger(component);
+  }
+
+  // Standard logging methods
+  trace(message: string, context?: Record<string, any>) {
+    this.logger.trace({ component: this.component, ...context }, message);
+  }
+
+  debug(message: string, context?: Record<string, any>) {
+    this.logger.debug({ component: this.component, ...context }, message);
+  }
+
+  info(message: string, context?: Record<string, any>) {
+    this.logger.info({ component: this.component, ...context }, message);
+  }
+
+  warn(message: string, context?: Record<string, any>) {
+    this.logger.warn({ component: this.component, ...context }, message);
+  }
+
+  error(message: string, context?: Record<string, any>) {
+    this.logger.error({ component: this.component, ...context }, message);
+  }
+
+  fatal(message: string, context?: Record<string, any>) {
+    this.logger.fatal({ component: this.component, ...context }, message);
+  }
+
+  // Security-specific logging methods
+  security(event: SecurityEvent) {
+    this.logger.warn(
+      {
+        component: this.component,
+        securityEvent: true,
+        eventType: event.type,
+        severity: event.severity,
+        context: event.context,
+        details: event.details
+      },
+      `Security Event: ${event.type}`
+    );
+  }
+
+  audit(action: string, context: Record<string, any>) {
+    if (!config.security.logging.auditLog) {
+      return;
+    }
+
+    this.logger.info(
+      {
+        component: this.component,
+        auditLog: true,
+        action,
+        ...context
+      },
+      `Audit: ${action}`
+    );
+  }
+
+  performance(operation: string, duration: number, context?: Record<string, any>) {
+    this.logger.info(
+      {
+        component: this.component,
+        performanceLog: true,
+        operation,
+        duration,
+        ...context
+      },
+      `Performance: ${operation} took ${duration}ms`
+    );
+  }
+
+  // Create child logger with additional context
+  child(context: Record<string, any>): SecurityLogger {
+    const childLogger = new SecurityLogger(this.component);
+    childLogger.logger = this.logger.child(context);
+    return childLogger;
+  }
+}
+
+// ===============================
+// HTTP MIDDLEWARE LOGGER
+// ===============================
+
+export const createHttpLogger = () => {
+  return pinoHttp({
+    logger: createBaseLogger('http'),
+    
+    // Generate or extract correlation ID
+    genReqId: (req: Request) => {
+      const correlationHeader = config.security.logging.correlationIdHeader;
+      return req.headers[correlationHeader] as string || 
+             req.headers['x-request-id'] as string ||
+             generateCorrelationId();
+    },
+    
+    // Redact sensitive request data
+    redact: {
+      paths: [
+        'req.headers.authorization',
+        'req.headers.cookie',
+        'req.body.password',
+        'req.body.token',
+        'req.body.secret',
+        'res.headers.authorization',
+        'res.headers.cookie'
+      ],
       censor: '[REDACTED]'
     },
     
-    // Structured logging format
-    formatters: {
-      level: (label) => ({ level: label }),
-      log: (object) => {
-        // Add timestamp and environment info
-        return {
-          ...object,
-          environment: config.nodeEnv,
-          service: 'fanz-secure',
-          version: '1.0.0'
-        };
-      }
+    // Custom request/response serializers
+    serializers: {
+      req: (req: Request) => ({
+        id: req.id,
+        method: req.method,
+        url: req.url,
+        path: req.path,
+        query: req.query,
+        params: req.params,
+        headers: {
+          ...req.headers,
+          authorization: req.headers.authorization ? '[REDACTED]' : undefined,
+          cookie: req.headers.cookie ? '[REDACTED]' : undefined
+        },
+        remoteAddress: req.ip,
+        userAgent: req.headers['user-agent']
+      }),
+      
+      res: (res: Response) => ({
+        statusCode: res.statusCode,
+        headers: {
+          ...res.getHeaders(),
+          authorization: res.getHeader('authorization') ? '[REDACTED]' : undefined,
+          cookie: res.getHeader('cookie') ? '[REDACTED]' : undefined
+        }
+      })
     },
     
-    // Development pretty printing
-    transport: config.isDevelopment ? {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-        translateTime: 'SYS:standard',
-        ignore: 'hostname,pid'
+    // Custom log level based on status code
+    customLogLevel: (req: Request, res: Response, err: Error | undefined) => {
+      if (res.statusCode >= 400 && res.statusCode < 500) {
+        return 'warn';
+      } else if (res.statusCode >= 500 || err) {
+        return 'error';
       }
-    } : undefined,
+      return 'info';
+    },
     
-    // Production JSON logging
-    timestamp: pino.stdTimeFunctions.isoTime,
+    // Custom success message
+    customSuccessMessage: (req: Request, res: Response) => {
+      return `${req.method} ${req.url} ${res.statusCode}`;
+    },
     
-    // Base context
-    base: {
-      pid: process.pid,
-      hostname: require('os').hostname()
+    // Custom error message
+    customErrorMessage: (req: Request, res: Response, err: Error) => {
+      return `${req.method} ${req.url} ${res.statusCode} - ${err.message}`;
     }
   });
-};\n\n// ===============================\n// SECURITY EVENT LOGGER\n// ===============================\n\nclass SecurityLogger {\n  private logger: pino.Logger;\n  private component: string;\n\n  constructor(component: string) {\n    this.component = component;\n    this.logger = createBaseLogger(component);\n  }\n\n  // Standard logging methods\n  trace(message: string, context?: Record<string, any>) {\n    this.logger.trace({ component: this.component, ...context }, message);\n  }\n\n  debug(message: string, context?: Record<string, any>) {\n    this.logger.debug({ component: this.component, ...context }, message);\n  }\n\n  info(message: string, context?: Record<string, any>) {\n    this.logger.info({ component: this.component, ...context }, message);\n  }\n\n  warn(message: string, context?: Record<string, any>) {\n    this.logger.warn({ component: this.component, ...context }, message);\n  }\n\n  error(message: string, context?: Record<string, any>) {\n    this.logger.error({ component: this.component, ...context }, message);\n  }\n\n  fatal(message: string, context?: Record<string, any>) {\n    this.logger.fatal({ component: this.component, ...context }, message);\n  }\n\n  // Security-specific logging methods\n  security(event: SecurityEvent) {\n    this.logger.warn(\n      {\n        component: this.component,\n        securityEvent: true,\n        eventType: event.type,\n        severity: event.severity,\n        context: event.context,\n        details: event.details\n      },\n      `Security Event: ${event.type}`\n    );\n  }\n\n  audit(action: string, context: Record<string, any>) {\n    if (!config.security.logging.auditLog) {\n      return;\n    }\n\n    this.logger.info(\n      {\n        component: this.component,\n        auditLog: true,\n        action,\n        ...context\n      },\n      `Audit: ${action}`\n    );\n  }\n\n  performance(operation: string, duration: number, context?: Record<string, any>) {\n    this.logger.info(\n      {\n        component: this.component,\n        performanceLog: true,\n        operation,\n        duration,\n        ...context\n      },\n      `Performance: ${operation} took ${duration}ms`\n    );\n  }\n\n  // Create child logger with additional context\n  child(context: Record<string, any>): SecurityLogger {\n    const childLogger = new SecurityLogger(this.component);\n    childLogger.logger = this.logger.child(context);\n    return childLogger;\n  }\n}\n\n// ===============================\n// HTTP MIDDLEWARE LOGGER\n// ===============================\n\nexport const createHttpLogger = () => {\n  return pinoHttp({\n    logger: createBaseLogger('http'),\n    \n    // Generate or extract correlation ID\n    genReqId: (req: Request) => {\n      const correlationHeader = config.security.logging.correlationIdHeader;\n      return req.headers[correlationHeader] as string || \n             req.headers['x-request-id'] as string ||\n             generateCorrelationId();\n    },\n    \n    // Redact sensitive request data\n    redact: {\n      paths: [\n        'req.headers.authorization',\n        'req.headers.cookie',\n        'req.body.password',\n        'req.body.token',\n        'req.body.secret',\n        'res.headers.authorization',\n        'res.headers.cookie'\n      ],\n      censor: '[REDACTED]'\n    },\n    \n    // Custom request/response serializers\n    serializers: {\n      req: (req: Request) => ({\n        id: req.id,\n        method: req.method,\n        url: req.url,\n        path: req.path,\n        query: req.query,\n        params: req.params,\n        headers: {\n          ...req.headers,\n          authorization: req.headers.authorization ? '[REDACTED]' : undefined,\n          cookie: req.headers.cookie ? '[REDACTED]' : undefined\n        },\n        remoteAddress: req.ip,\n        userAgent: req.headers['user-agent']\n      }),\n      \n      res: (res: Response) => ({\n        statusCode: res.statusCode,\n        headers: {\n          ...res.getHeaders(),\n          authorization: res.getHeader('authorization') ? '[REDACTED]' : undefined,\n          cookie: res.getHeader('cookie') ? '[REDACTED]' : undefined\n        }\n      })\n    },\n    \n    // Custom log level based on status code\n    customLogLevel: (req: Request, res: Response, err: Error | undefined) => {\n      if (res.statusCode >= 400 && res.statusCode < 500) {\n        return 'warn';\n      } else if (res.statusCode >= 500 || err) {\n        return 'error';\n      }\n      return 'info';\n    },\n    \n    // Custom success message\n    customSuccessMessage: (req: Request, res: Response) => {\n      return `${req.method} ${req.url} ${res.statusCode}`;\n    },\n    \n    // Custom error message\n    customErrorMessage: (req: Request, res: Response, err: Error) => {\n      return `${req.method} ${req.url} ${res.statusCode} - ${err.message}`;\n    }\n  });\n};\n\n// ===============================\n// UTILITY FUNCTIONS\n// ===============================\n\nfunction generateCorrelationId(): string {\n  return `fanz-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;\n}\n\n/**\n * Sanitize object for logging (remove/redact sensitive fields)\n */\nexport function sanitizeForLogging(obj: any): any {\n  if (!obj || typeof obj !== 'object') {\n    return obj;\n  }\n\n  const sanitized = Array.isArray(obj) ? [] : {};\n  \n  for (const [key, value] of Object.entries(obj)) {\n    const lowerKey = key.toLowerCase();\n    \n    // Check if key contains sensitive information\n    const isSensitive = SECURITY_REDACTED_PATHS.some(path => \n      lowerKey.includes(path.toLowerCase())\n    );\n    \n    if (isSensitive) {\n      sanitized[key] = '[REDACTED]';\n    } else if (typeof value === 'object' && value !== null) {\n      sanitized[key] = sanitizeForLogging(value);\n    } else {\n      sanitized[key] = value;\n    }\n  }\n  \n  return sanitized;\n}\n\n/**\n * Create performance timing wrapper\n */\nexport function createPerformanceTimer(logger: SecurityLogger, operation: string) {\n  const start = Date.now();\n  \n  return {\n    end: (context?: Record<string, any>) => {\n      const duration = Date.now() - start;\n      logger.performance(operation, duration, context);\n      return duration;\n    }\n  };\n}\n\n/**\n * Log security event with correlation\n */\nexport function logSecurityEvent(\n  logger: SecurityLogger,\n  event: SecurityEvent,\n  correlationId?: string\n) {\n  const contextWithCorrelation = {\n    ...event.context,\n    correlationId: correlationId || generateCorrelationId()\n  };\n  \n  logger.security({\n    ...event,\n    context: contextWithCorrelation\n  });\n}\n\n// ===============================\n// FACTORY FUNCTIONS\n// ===============================\n\n/**\n * Create security logger for a specific component\n */\nexport function createSecurityLogger(component: string): SecurityLogger {\n  return new SecurityLogger(component);\n}\n\n/**\n * Create audit logger (alias for security logger with audit focus)\n */\nexport function createAuditLogger(component: string): SecurityLogger {\n  const logger = new SecurityLogger(`audit:${component}`);\n  return logger;\n}\n\n/**\n * Create correlation ID middleware\n */\nexport function correlationIdMiddleware() {\n  const header = config.security.logging.correlationIdHeader;\n  \n  return (req: Request, res: Response, next: any) => {\n    const correlationId = req.headers[header] as string || generateCorrelationId();\n    \n    // Set correlation ID in request\n    (req as any).correlationId = correlationId;\n    \n    // Set in response header\n    res.setHeader(header, correlationId);\n    \n    // Add to response locals for templates\n    res.locals.correlationId = correlationId;\n    \n    next();\n  };\n}\n\n// ===============================\n// DEFAULT EXPORT\n// ===============================\n\nexport const logger = createSecurityLogger('main');\nexport default logger;
+};
+
+// ===============================
+// UTILITY FUNCTIONS
+// ===============================
+
+function generateCorrelationId(): string {
+  return `fanz-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+/**
+ * Sanitize object for logging (remove/redact sensitive fields)
+ */
+export function sanitizeForLogging(obj: any): any {
+  if (!obj || typeof obj !== 'object') {
+    return obj;
+  }
+
+  const sanitized = Array.isArray(obj) ? [] : {};
+  
+  for (const [key, value] of Object.entries(obj)) {
+    const lowerKey = key.toLowerCase();
+    
+    // Check if key contains sensitive information
+    const isSensitive = SECURITY_REDACTED_PATHS.some(path => 
+      lowerKey.includes(path.toLowerCase())
+    );
+    
+    if (isSensitive) {
+      sanitized[key] = '[REDACTED]';
+    } else if (typeof value === 'object' && value !== null) {
+      sanitized[key] = sanitizeForLogging(value);
+    } else {
+      sanitized[key] = value;
+    }
+  }
+  
+  return sanitized;
+}
+
+/**
+ * Create performance timing wrapper
+ */
+export function createPerformanceTimer(logger: SecurityLogger, operation: string) {
+  const start = Date.now();
+  
+  return {
+    end: (context?: Record<string, any>) => {
+      const duration = Date.now() - start;
+      logger.performance(operation, duration, context);
+      return duration;
+    }
+  };
+}
+
+/**
+ * Log security event with correlation
+ */
+export function logSecurityEvent(
+  logger: SecurityLogger,
+  event: SecurityEvent,
+  correlationId?: string
+) {
+  const contextWithCorrelation = {
+    ...event.context,
+    correlationId: correlationId || generateCorrelationId()
+  };
+  
+  logger.security({
+    ...event,
+    context: contextWithCorrelation
+  });
+}
+
+// ===============================
+// FACTORY FUNCTIONS
+// ===============================
+
+/**
+ * Create security logger for a specific component
+ */
+export function createSecurityLogger(component: string): SecurityLogger {
+  return new SecurityLogger(component);
+}
+
+/**
+ * Create audit logger (alias for security logger with audit focus)
+ */
+export function createAuditLogger(component: string): SecurityLogger {
+  const logger = new SecurityLogger(`audit:${component}`);
+  return logger;
+}
+
+/**
+ * Create correlation ID middleware
+ */
+export function correlationIdMiddleware() {
+  const header = config.security.logging.correlationIdHeader;
+  
+  return (req: Request, res: Response, next: any) => {
+    const correlationId = req.headers[header] as string || generateCorrelationId();
+    
+    // Set correlation ID in request
+    (req as any).correlationId = correlationId;
+    
+    // Set in response header
+    res.setHeader(header, correlationId);
+    
+    // Add to response locals for templates
+    res.locals.correlationId = correlationId;
+    
+    next();
+  };
+}
+
+// ===============================
+// DEFAULT EXPORT
+// ===============================
+
+export const logger = createSecurityLogger('main');
+export default logger;
