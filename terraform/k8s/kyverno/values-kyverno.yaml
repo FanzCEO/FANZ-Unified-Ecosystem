@@ -1,0 +1,53 @@
+replicaCount: 2
+webhooksCleanup:
+  enabled: true
+
+admissionController:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  replicas: 2
+
+backgroundController:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+cleanupController:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+reportsController:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+config:
+  excludeKyvernoNamespace: true
+
+features:
+  logging:
+    format: json
+    verbosity: 2
+  
+  # Enable policy exceptions
+  policyExceptions:
+    enabled: true
+    namespace: kyverno

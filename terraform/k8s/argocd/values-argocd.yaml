@@ -1,0 +1,54 @@
+global:
+  image:
+    tag: v2.12.3
+
+server:
+  extraArgs: ["--insecure"]
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  ingress:
+    enabled: false
+
+configs:
+  cm:
+    accounts.admin: apiKey, login
+    # Enable exec and oidc support
+    exec.enabled: "true"
+    oidc.config: |
+      name: FANZ OIDC
+      issuer: https://oauth.fanz.network
+      clientId: $oidc.fanz.clientId
+      clientSecret: $oidc.fanz.clientSecret
+      requestedScopes: ["openid", "profile", "email", "groups"]
+    # Repository configurations for FANZ repos
+    repositories: |
+      - type: git
+        url: https://github.com/FANZ-YourOrg/FANZ-Unified-Ecosystem
+      - type: helm
+        url: https://argoproj.github.io/argo-helm
+        name: argo
+      - type: helm  
+        url: https://kyverno.github.io/kyverno/
+        name: kyverno
+    url: https://argocd.fanz.network
+
+controller:
+  replicas: 2
+  env:
+    - name: ARGOCD_CONTROLLER_REPLICAS
+      value: "2"
+  
+dex:
+  enabled: false
+
+redis:
+  enabled: true
+
+repoServer:
+  replicas: 2
+  env:
+    - name: ARGOCD_EXEC_TIMEOUT
+      value: "300s"

@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fanz-demo
+  labels:
+    fun.autofix: "safe"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fanz-api-demo
+  namespace: fanz-demo
+  labels:
+    app: fanz-api-demo
+    fun.autofix: "safe"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fanz-api-demo
+  template:
+    metadata:
+      labels:
+        app: fanz-api-demo
+        fun.autofix: "safe"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: api
+        image: nginx:1.25-alpine
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        env:
+        - name: ENVIRONMENT
+          value: "demo"
+        - name: SERVICE_NAME  
+          value: "fanz-api-demo"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-api-demo
+  namespace: fanz-demo
+  labels:
+    app: fanz-api-demo
+spec:
+  selector:
+    app: fanz-api-demo
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-api-demo-canary
+  namespace: fanz-demo
+  labels:
+    app: fanz-api-demo
+spec:
+  selector:
+    app: fanz-api-demo
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  type: ClusterIP

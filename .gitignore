@@ -88,3 +88,8 @@ monitoring/elasticsearch_data/
 # Temporary files
 tmp/
 temp/
+terraform/.terraform.lock.hcl
+terraform/tfplan
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
