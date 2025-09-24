@@ -1,0 +1,196 @@
+name: hourly-health
+
+on:
+  schedule: 
+    - cron: "0 * * * *"  # Every hour
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::500501924139:role/gh-oidc-observability
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+      - name: EKS kubeconfig
+        run: |
+          aws eks update-kubeconfig --name fz-prod-60a56503 --region us-east-1
+
+      - name: Collect infrastructure signals
+        id: infra
+        run: |
+          echo "🏗️ Infrastructure Health Check" | tee -a health.log
+          
+          # EKS Cluster Health
+          echo "nodes=$(kubectl get nodes --no-headers 2>/dev/null | wc -l | tr -d ' ')" >> $GITHUB_OUTPUT
+          echo "ready_nodes=$(kubectl get nodes --no-headers 2>/dev/null | grep -c Ready || echo 0)" >> $GITHUB_OUTPUT
+          
+          # Pod Health
+          echo "total_pods=$(kubectl get pods -A --no-headers 2>/dev/null | wc -l | tr -d ' ')" >> $GITHUB_OUTPUT  
+          echo "running_pods=$(kubectl get pods -A --no-headers 2>/dev/null | grep -c Running || echo 0)" >> $GITHUB_OUTPUT
+          echo "failed_pods=$(kubectl get pods -A --no-headers --field-selector=status.phase!=Running 2>/dev/null | wc -l | tr -d ' ')" >> $GITHUB_OUTPUT
+          
+          # Critical system pods
+          echo "system_pods_ready=$(kubectl get pods -n kube-system --no-headers 2>/dev/null | grep -c Running || echo 0)" >> $GITHUB_OUTPUT
+          echo "argocd_pods_ready=$(kubectl get pods -n argocd --no-headers 2>/dev/null | grep -c Running || echo 0)" >> $GITHUB_OUTPUT
+
+      - name: Collect security signals
+        id: security
+        run: |
+          echo "🛡️ Security Health Check" | tee -a health.log
+          
+          # AWS Inspector findings
+          echo "inspector_critical=$(aws inspector2 list-findings --severity CRITICAL --max-results 10 2>/dev/null | jq '.findings | length' || echo 0)" >> $GITHUB_OUTPUT
+          echo "inspector_high=$(aws inspector2 list-findings --severity HIGH --max-results 20 2>/dev/null | jq '.findings | length' || echo 0)" >> $GITHUB_OUTPUT
+          
+          # GuardDuty findings
+          echo "guardduty_findings=$(aws guardduty list-findings --detector-ids $(aws guardduty list-detectors --query 'DetectorIds[0]' --output text) --max-results 10 2>/dev/null | jq '.FindingIds | length' || echo 0)" >> $GITHUB_OUTPUT
+
+      - name: Check Kyverno policy violations
+        id: policies
+        run: |
+          echo "📋 Policy Compliance Check" | tee -a health.log
+          echo "policy_violations=$(kubectl get cpol -o json 2>/dev/null | jq '.items[] | select(.status.violationCount > 0) | .status.violationCount' | paste -sd+ | bc || echo 0)" >> $GITHUB_OUTPUT
+
+      - name: Check Rollout Status
+        id: rollouts
+        run: |
+          echo "🚀 Deployment Health Check" | tee -a health.log
+          echo "active_rollouts=$(kubectl get rollouts -A --no-headers 2>/dev/null | grep -v Healthy | wc -l | tr -d ' ')" >> $GITHUB_OUTPUT
+          echo "degraded_rollouts=$(kubectl get rollouts -A --no-headers 2>/dev/null | grep -c Degraded || echo 0)" >> $GITHUB_OUTPUT
+
+      - name: Calculate health score
+        id: score
+        run: |
+          nodes_health=$(echo "scale=2; ${{ steps.infra.outputs.ready_nodes }} / ${{ steps.infra.outputs.nodes }} * 100" | bc -l 2>/dev/null || echo 0)
+          pods_health=$(echo "scale=2; ${{ steps.infra.outputs.running_pods }} / ${{ steps.infra.outputs.total_pods }} * 100" | bc -l 2>/dev/null || echo 100)
+          
+          # Deduct points for security issues
+          security_penalty=$(((${{ steps.security.outputs.inspector_critical }} * 10) + (${{ steps.security.outputs.inspector_high }} * 5)))
+          policy_penalty=$((${{ steps.policies.outputs.policy_violations }} * 2))
+          rollout_penalty=$((${{ steps.rollouts.outputs.degraded_rollouts }} * 15))
+          
+          total_penalty=$((security_penalty + policy_penalty + rollout_penalty))
+          base_score=$(echo "scale=2; ($nodes_health + $pods_health) / 2" | bc -l)
+          final_score=$(echo "scale=0; $base_score - $total_penalty" | bc -l)
+          
+          # Ensure score doesn't go below 0
+          if [ $(echo "$final_score < 0" | bc -l) -eq 1 ]; then
+            final_score=0
+          fi
+          
+          echo "health_score=$final_score" >> $GITHUB_OUTPUT
+          echo "nodes_health=$nodes_health" >> $GITHUB_OUTPUT  
+          echo "pods_health=$pods_health" >> $GITHUB_OUTPUT
+
+      - name: Generate health emoji
+        id: emoji
+        run: |
+          score=${{ steps.score.outputs.health_score }}
+          if [ $score -ge 90 ]; then
+            echo "status_emoji=🟢" >> $GITHUB_OUTPUT
+            echo "status_text=Excellent" >> $GITHUB_OUTPUT
+          elif [ $score -ge 75 ]; then
+            echo "status_emoji=🟡" >> $GITHUB_OUTPUT  
+            echo "status_text=Good" >> $GITHUB_OUTPUT
+          elif [ $score -ge 50 ]; then
+            echo "status_emoji=🟠" >> $GITHUB_OUTPUT
+            echo "status_text=Warning" >> $GITHUB_OUTPUT
+          else
+            echo "status_emoji=🔴" >> $GITHUB_OUTPUT
+            echo "status_text=Critical" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Post Slack digest
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          cat << EOF > slack_message.json
+          {
+            "text": "${{ steps.emoji.outputs.status_emoji }} FANZ Platform Hourly Health (${{ steps.score.outputs.health_score }}/100 - ${{ steps.emoji.outputs.status_text }})",
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "${{ steps.emoji.outputs.status_emoji }} FANZ Warp Directive Health Report"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Overall Score:* ${{ steps.score.outputs.health_score }}/100"
+                  },
+                  {
+                    "type": "mrkdwn", 
+                    "text": "*Status:* ${{ steps.emoji.outputs.status_text }}"
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*🏗️ Infrastructure*\n• Nodes: ${{ steps.infra.outputs.ready_nodes }}/${{ steps.infra.outputs.nodes }} ready (${{ steps.score.outputs.nodes_health }}%)\n• Pods: ${{ steps.infra.outputs.running_pods }}/${{ steps.infra.outputs.total_pods }} running (${{ steps.score.outputs.pods_health }}%)\n• System Pods: ${{ steps.infra.outputs.system_pods_ready }} ready\n• ArgoCD Pods: ${{ steps.infra.outputs.argocd_pods_ready }} ready"
+                }
+              },
+              {
+                "type": "section", 
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*🛡️ Security*\n• Inspector Critical: ${{ steps.security.outputs.inspector_critical }}\n• Inspector High: ${{ steps.security.outputs.inspector_high }}\n• GuardDuty Findings: ${{ steps.security.outputs.guardduty_findings }}"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn", 
+                  "text": "*🚀 Deployments*\n• Policy Violations: ${{ steps.policies.outputs.policy_violations }}\n• Active Rollouts: ${{ steps.rollouts.outputs.active_rollouts }}\n• Degraded Rollouts: ${{ steps.rollouts.outputs.degraded_rollouts }}"
+                }
+              },
+              {
+                "type": "context",
+                "elements": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "Generated at $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC) | Cluster: fz-prod-60a56503"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          
+          curl -X POST -H 'Content-type: application/json' \
+            --data @slack_message.json \
+            "$SLACK_WEBHOOK_URL"
+
+      - name: Create GitHub deployment status
+        if: always()
+        run: |
+          # Create a deployment status for tracking
+          score=${{ steps.score.outputs.health_score }}
+          if [ $score -ge 75 ]; then
+            state="success"
+          elif [ $score -ge 50 ]; then
+            state="pending"
+          else
+            state="failure"
+          fi
+          
+          echo "Platform health score: $score/100 (${{ steps.emoji.outputs.status_text }})" >> $GITHUB_STEP_SUMMARY

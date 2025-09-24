@@ -1,0 +1,61 @@
+controller:
+  replicas: 2
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+      
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false
+      additionalLabels:
+        prometheus.io/scrape: "true"
+    
+  # Enable notifications for rollout events  
+  notifications:
+    enabled: true
+    secret:
+      items:
+        slack-token: <YOUR_SLACK_TOKEN>
+    templates:
+      template.rollout-success: |
+        message: |
+          🚀 Rollout {{.rollout.metadata.name}} in {{.rollout.metadata.namespace}} completed successfully!
+      template.rollout-failure: |
+        message: |
+          ❌ Rollout {{.rollout.metadata.name}} in {{.rollout.metadata.namespace}} failed!
+      template.rollout-aborted: |
+        message: |
+          ⚠️ Rollout {{.rollout.metadata.name}} in {{.rollout.metadata.namespace}} was aborted!
+    triggers:
+      trigger.on-rollout-completed: |
+        - when: rollout.spec.replicas == rollout.status.replicas
+          send: [rollout-success]
+      trigger.on-rollout-failed: |
+        - when: rollout.status.conditions[?@.type == 'InvalidSpec'].status == 'True'
+          send: [rollout-failure]
+      trigger.on-rollout-aborted: |  
+        - when: rollout.status.conditions[?@.type == 'Progressing'].reason == 'RolloutAborted'
+          send: [rollout-aborted]
+          
+dashboard:
+  enabled: false  # We'll use ArgoCD UI instead
+  
+# RBAC for service accounts
+serviceAccount:
+  create: true
+  name: argo-rollouts
+
+# Traffic management
+istio:
+  enabled: false  # Using AWS ALB instead
+  
+nginx:
+  enabled: false  # Using AWS ALB instead
+  
+alb:
+  enabled: true  # Enable AWS ALB integration
