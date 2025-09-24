@@ -45,22 +45,18 @@ interface Web3ProviderShimProps {
  */
 export function Web3ProviderShim({ children }: Web3ProviderShimProps) {
   if (WEB3_ENABLED) {
-    // Future: Lazy-load actual Web3 provider when security issues are resolved
-    console.warn('WEB3_ENABLED is true but secure Web3 provider not yet implemented');
+    // Throw an error to prevent confusion when WEB3_ENABLED is true but no provider is available
+    throw new Error('WEB3_ENABLED is true, but no secure Web3 provider is implemented. Please disable WEB3_ENABLED or implement a secure provider.');
   }
 
-  // Always return shim for now (security-first approach)
+  // Return shim when Web3 is disabled (security-first approach)
   return (
     <Web3Context.Provider value={{
       isConnected: false,
       address: null,
       chainId: null,
       connect: async () => {
-        if (WEB3_ENABLED) {
-          console.log('Web3 connection requested but secure provider not available');
-        } else {
-          console.warn('Web3 features are disabled for security. Payment processing uses CCBill/Paxum/Segpay.');
-        }
+        console.warn('Web3 features are disabled for security. Payment processing uses CCBill/Paxum/Segpay.');
       },
       disconnect: async () => {
         // No-op

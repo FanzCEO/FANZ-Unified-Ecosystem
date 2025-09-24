@@ -153,6 +153,6 @@
   "author": "FANZ Development Team",
   "license": "PROPRIETARY",
   "overrides": {
-    "@babel/runtime": "^7.26.10"
+    "@babel/runtime": "7.26.10"
   }
 }
