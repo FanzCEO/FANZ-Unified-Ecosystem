@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "golden-api.fullname" . }}
+  labels:
+    {{- include "golden-api.labels" . | nindent 4 }}
+    service-type: stable
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "golden-api.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service  
+metadata:
+  name: {{ include "golden-api.fullname" . }}-canary
+  labels:
+    {{- include "golden-api.labels" . | nindent 4 }}
+    service-type: canary
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "golden-api.selectorLabels" . | nindent 4 }}

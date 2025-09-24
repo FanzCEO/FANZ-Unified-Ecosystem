@@ -1,0 +1,21 @@
+apiVersion: v2
+name: golden-api
+description: FANZ Golden API - Self-healing microservice template with canary deployments
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - fanz
+  - microservice
+  - api
+  - canary
+  - self-healing
+home: https://github.com/FANZ-YourOrg/FANZ-Unified-Ecosystem
+sources:
+  - https://github.com/FANZ-YourOrg/FANZ-Unified-Ecosystem/tree/main/services/golden-api
+maintainers:
+  - name: FANZ DevOps
+    email: devops@fanz.network
+annotations:
+  category: Application
+  licenses: MIT

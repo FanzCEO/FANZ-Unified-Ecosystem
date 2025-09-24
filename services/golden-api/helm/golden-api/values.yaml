@@ -1,0 +1,162 @@
+nameOverride: golden-api
+fullnameOverride: ""
+
+# Image configuration
+image:
+  repository: 500501924139.dkr.ecr.us-east-1.amazonaws.com/golden-api
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+# Application configuration
+replicaCount: 3
+port: 8080
+
+# Environment variables
+env:
+  VERSION: "v0.1.0"
+  FEATURE_BANNER: "false"
+  SERVICE_NAME: "golden-api"
+  NODE_ENV: "production"
+
+# Resource limits and requests
+resources:
+  requests: 
+    cpu: "100m"
+    memory: "128Mi"
+  limits:   
+    cpu: "500m"
+    memory: "512Mi"
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "alb"
+  host: api.myfanz.network
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '30'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '3'
+
+# Prometheus monitoring
+prometheus:
+  scrape: true
+  path: /metrics
+  port: 8080
+
+# Horizontal Pod Autoscaler
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 15
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 70
+
+# Pod Disruption Budget
+pdb:
+  enabled: true
+  minAvailable: 2
+
+# Network Policy
+networkPolicy:
+  enabled: true
+  ingress:
+    enabled: true
+  egress:
+    enabled: true
+
+# Security Context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  fsGroup: 2000
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# Container security context
+containerSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# Probes
+probes:
+  liveness:
+    enabled: true
+    path: /healthz
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+  readiness:
+    enabled: true
+    path: /readyz
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 1
+    failureThreshold: 3
+
+# Argo Rollouts configuration
+rollouts:
+  enabled: true
+  strategy: canary
+  canarySteps:
+    - setWeight: 5
+    - pause: 
+        duration: 60
+    - analysis:
+        templateName: amp-error-rate
+        args:
+          - name: svc
+            value: "golden-api"
+    - setWeight: 25
+    - pause: 
+        duration: 120
+    - setWeight: 50
+    - pause: 
+        duration: 180
+    - setWeight: 100
+
+# Labels and annotations
+labels:
+  app.kubernetes.io/name: golden-api
+  app.kubernetes.io/component: api
+  app.kubernetes.io/part-of: fanz-platform
+  fun.autofix: "safe"
+
+annotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/metrics"
+  prometheus.io/port: "8080"
+
+# Node selector and tolerations
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Service Account
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""

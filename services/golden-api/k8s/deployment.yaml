@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golden-api
+  labels: { app: golden-api }
+spec:
+  replicas: 3
+  selector: { matchLabels: { app: golden-api } }
+  template:
+    metadata:
+      labels:
+        app: golden-api
+        fun.autofix: "safe"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+      - name: golden-api
+        image: 500501924139.dkr.ecr.us-east-1.amazonaws.com/golden-api:v0.1.0
+        ports: [{ containerPort: 8080 }]
+        readinessProbe: { httpGet: { path: /readyz, port: 8080 }, initialDelaySeconds: 5, periodSeconds: 5 }
+        livenessProbe:  { httpGet: { path: /healthz, port: 8080 }, initialDelaySeconds: 10, periodSeconds: 10 }
