@@ -1,0 +1,36 @@
+{
+  "name": "golden-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "FANZ Golden API - Template microservice with Fastify",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"Test suite coming soon\" && exit 0",
+    "lint": "echo \"Linting coming soon\" && exit 0"
+  },
+  "dependencies": {
+    "@fastify/under-pressure": "^8.4.0",
+    "fastify": "^5.0.0",
+    "prom-client": "^15.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "fastify",
+    "typescript",
+    "microservice",
+    "prometheus",
+    "kubernetes",
+    "fanz"
+  ]
+}
