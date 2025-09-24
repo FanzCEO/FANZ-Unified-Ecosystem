@@ -271,7 +271,7 @@ export class AdvancedContentModerationService extends EventEmitter {
       return { error: 'No response from GPT-4 Vision' };
     } catch (error) {
       console.error('GPT-4 Vision analysis failed:', error);
-      return { error: error.message };
+      return { error: 'GPT-4 Vision analysis failed' };
     }
   }
 

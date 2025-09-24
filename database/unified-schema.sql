@@ -863,4 +863,4 @@ FROM transactions t
 WHERE t.status = 'completed'
 GROUP BY DATE_TRUNC('day', t.created_at);
 
-COMMENT ON DATABASE postgres IS 'FANZ Unified Ecosystem Database - Supporting 9 platform clusters, 100+ microservices, and 20+ million users with enterprise compliance and real-time financial management';
+COMMENT ON DATABASE fanz_unified_ecosystem IS 'FANZ Unified Ecosystem Database - Supporting 9 platform clusters, 100+ microservices, and 20+ million users with enterprise compliance and real-time financial management';
