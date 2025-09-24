@@ -431,6 +431,9 @@ importers:
         specifier: ^3.17.0
         version: 3.17.0
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.35.0
+        version: 9.35.0
       '@types/bcrypt':
         specifier: ^5.0.2
         version: 5.0.2
@@ -452,6 +455,9 @@ importers:
       '@types/multer':
         specifier: ^1.4.12
         version: 1.4.13
+      '@types/nock':
+        specifier: ^10.0.3
+        version: 10.0.3
       '@types/node':
         specifier: ^22.10.2
         version: 22.18.4
@@ -494,6 +500,9 @@ importers:
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.18.4)(ts-node@10.9.2(@types/node@22.18.4)(typescript@5.9.2))
+      nock:
+        specifier: ^14.0.10
+        version: 14.0.10
       node-pg-migrate:
         specifier: ^7.9.0
         version: 7.9.1(@types/pg@8.15.5)(pg@8.16.3)
@@ -880,6 +889,140 @@ importers:
       vite-plugin-pwa:
         specifier: ^0.21.2
         version: 0.21.2(vite@6.3.6(@types/node@20.19.15)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.44.0)(yaml@2.8.1))(workbox-build@7.3.0(@types/babel__core@7.20.5))(workbox-window@7.3.0)
+
+  security:
+    dependencies:
+      crypto:
+        specifier: ^1.0.1
+        version: 1.0.1
+      express-rate-limit:
+        specifier: ^7.1.5
+        version: 7.5.1(express@5.1.0)
+      express-validator:
+        specifier: ^7.0.1
+        version: 7.2.1
+      helmet:
+        specifier: ^7.1.0
+        version: 7.2.0
+      ioredis:
+        specifier: ^5.3.2
+        version: 5.7.0
+      joi:
+        specifier: ^17.11.0
+        version: 17.13.3
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
+      qrcode:
+        specifier: ^1.5.3
+        version: 1.5.4
+      speakeasy:
+        specifier: ^2.0.0
+        version: 2.0.0
+      ws:
+        specifier: ^8.14.2
+        version: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+    devDependencies:
+      '@types/jsonwebtoken':
+        specifier: ^9.0.5
+        version: 9.0.10
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.15
+      '@types/qrcode':
+        specifier: ^1.5.5
+        version: 1.5.5
+      '@types/speakeasy':
+        specifier: ^2.0.10
+        version: 2.0.10
+      '@types/ws':
+        specifier: ^8.5.9
+        version: 8.18.1
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.2
+
+  security/fanz-secure:
+    dependencies:
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.23
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
+      express:
+        specifier: ^4.18.0
+        version: 4.21.2
+      helmet:
+        specifier: ^7.1.0
+        version: 7.2.0
+      hpp:
+        specifier: ^0.2.3
+        version: 0.2.3
+      pino:
+        specifier: ^8.16.1
+        version: 8.21.0
+      pino-http:
+        specifier: ^8.5.0
+        version: 8.6.1
+      rate-limiter-flexible:
+        specifier: ^3.0.1
+        version: 3.0.6
+      redis:
+        specifier: ^4.6.0
+        version: 4.7.1
+      safe-regex:
+        specifier: ^2.1.1
+        version: 2.1.1
+      sanitize-html:
+        specifier: ^2.11.0
+        version: 2.17.0
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.76
+    devDependencies:
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.19
+      '@types/crypto-js':
+        specifier: ^4.2.1
+        version: 4.2.2
+      '@types/jest':
+        specifier: ^29.5.8
+        version: 29.5.14
+      '@types/sanitize-html':
+        specifier: ^2.9.5
+        version: 2.16.0
+      '@types/supertest':
+        specifier: ^2.0.16
+        version: 2.0.16
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.12.0
+        version: 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.9.2))(eslint@8.57.1)(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^6.12.0
+        version: 6.21.0(eslint@8.57.1)(typescript@5.9.2)
+      eslint:
+        specifier: ^8.53.0
+        version: 8.57.1
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.9.2))
+      supertest:
+        specifier: ^6.3.3
+        version: 6.3.4
+      ts-jest:
+        specifier: ^29.1.1
+        version: 29.4.2(@babel/core@7.28.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.28.4))(jest-util@29.7.0)(jest@29.7.0(@types/node@20.19.15)(ts-node@10.9.2(@types/node@20.19.15)(typescript@5.9.2)))(typescript@5.9.2)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.2
 
 packages:
 
@@ -4136,6 +4279,9 @@ packages:
   '@types/mysql@2.15.26':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYOEg6YQ==}
 
+  '@types/nock@10.0.3':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8ft/Ow==}
+
   '@types/node-cron@3.0.11':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY+nxIAg==}
 
@@ -4226,6 +4372,9 @@ packages:
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYNb/a4Q==}
+
+  '@types/sanitize-html@2.16.0':
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYXCxBtw==}
 
   '@types/secp256k1@4.0.6':
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYJ3UoYQ==}
@@ -5411,6 +5560,10 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYbuG8KA==}
     engines: {node: '>=8'}
 
+  crypto@1.0.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYY8G0Ig==}
+    deprecated: This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in.
+
   css-box-model@1.2.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYa+flJw==}
 
@@ -5699,10 +5852,23 @@ packages:
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYCGIWQA==}
 
+  dom-serializer@2.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYXeLyJg==}
+
+  domelementtype@2.3.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY56gmHw==}
+
   domexception@4.0.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYUZKYBw==}
     engines: {node: '>=12'}
     deprecated: Use your platform's native DOMException instead
+
+  domhandler@5.0.3:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYqDJB5w==}
+    engines: {node: '>= 4'}
+
+  domutils@3.2.2:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYhASLaw==}
 
   dotenv@16.6.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYwd8bow==}
@@ -5786,6 +5952,10 @@ packages:
   enquirer@2.4.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYMwp2pQ==}
     engines: {node: '>=8.6'}
+
+  entities@4.5.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8fPxhw==}
+    engines: {node: '>=0.12'}
 
   entities@6.0.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY7Ven3g==}
@@ -6621,6 +6791,10 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY10SfBw==}
 
+  hpp@0.2.3:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYUI3Ryw==}
+    engines: {node: '>=0.10.0'}
+
   html-encoding-sniffer@3.0.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY3UeskA==}
     engines: {node: '>=12'}
@@ -6631,6 +6805,9 @@ packages:
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYSmlLfg==}
+
+  htmlparser2@8.0.2:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYD6NCFA==}
 
   http-basic@8.1.3:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYlqlmCw==}
@@ -6909,6 +7086,10 @@ packages:
   is-plain-obj@2.1.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYNfT1eA==}
     engines: {node: '>=8'}
+
+  is-plain-object@5.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYCIEP5Q==}
+    engines: {node: '>=0.10.0'}
 
   is-potential-custom-element-name@1.0.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYEKOUiQ==}
@@ -7934,6 +8115,10 @@ packages:
   neo-async@2.6.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYdLpOuw==}
 
+  nock@14.0.10:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY6D8VMw==}
+    engines: {node: '>=18.20.0 <20 || >=20.12.1'}
+
   node-abi@3.77.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYfyH0cQ==}
     engines: {node: '>=10'}
@@ -8195,6 +8380,9 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYifC8Rg==}
     engines: {node: '>=8'}
 
+  parse-srcset@1.0.2:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYNlfR6Q==}
+
   parse5@7.3.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYL5BZgw==}
 
@@ -8307,14 +8495,27 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY+geV2g==}
     engines: {node: '>=6'}
 
+  pino-abstract-transport@1.2.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYQKUR1Q==}
+
   pino-abstract-transport@2.0.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYOaivMw==}
 
   pino-http@10.5.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYek9dRA==}
 
+  pino-http@8.6.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYkntBPA==}
+
+  pino-std-serializers@6.2.2:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYU03OiA==}
+
   pino-std-serializers@7.0.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYmjkiFA==}
+
+  pino@8.21.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYzQCE0Q==}
+    hasBin: true
 
   pino@9.9.5:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYd93dVg==}
@@ -8510,6 +8711,9 @@ packages:
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYFFn1ag==}
 
+  process-warning@3.0.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYGwvtzQ==}
+
   process-warning@5.0.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYvEshkA==}
 
@@ -8537,6 +8741,10 @@ packages:
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYqDH5cg==}
+
+  propagate@2.0.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYfRbbag==}
+    engines: {node: '>= 8'}
 
   proto-list@1.2.4:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYBwn2vA==}
@@ -8905,6 +9113,10 @@ packages:
   regenerator-runtime@0.13.11:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY8Fpggg==}
 
+  regexp-tree@0.1.27:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYlQarfA==}
+    hasBin: true
+
   regexp.prototype.flags@1.5.4:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYANm7IA==}
     engines: {node: '>= 0.4'}
@@ -9091,12 +9303,18 @@ packages:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYslUlaw==}
     engines: {node: '>= 0.4'}
 
+  safe-regex@2.1.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYrsGu9A==}
+
   safe-stable-stringify@2.5.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEY2e0RHA==}
     engines: {node: '>=10'}
 
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYQriUtg==}
+
+  sanitize-html@2.17.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYx8VdxA==}
 
   sax@1.4.1:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYFAX4Jg==}
@@ -9330,6 +9548,9 @@ packages:
     hasBin: true
     peerDependencies:
       hardhat: ^2.11.0
+
+  sonic-boom@3.8.1:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYnOCaxg==}
 
   sonic-boom@4.2.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYswwEww==}
@@ -9701,6 +9922,9 @@ packages:
   then-request@6.0.2:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYLrqruA==}
     engines: {node: '>=6.0.0'}
+
+  thread-stream@2.7.0:
+    resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYW021vw==}
 
   thread-stream@3.1.0:
     resolution: {integrity: sha512-REDACTED_AWS_SECRET_KEYREDACTED_AWS_SECRET_KEYB2J86A==}
@@ -15036,6 +15260,10 @@ snapshots:
     dependencies:
       '@types/node': 20.19.15
 
+  '@types/nock@10.0.3':
+    dependencies:
+      '@types/node': 20.19.15
+
   '@types/node-cron@3.0.11': {}
 
   '@types/node-fetch@2.6.13':
@@ -15141,6 +15369,10 @@ snapshots:
       csstype: 3.1.3
 
   '@types/resolve@1.20.2': {}
+
+  '@types/sanitize-html@2.16.0':
+    dependencies:
+      htmlparser2: 8.0.2
 
   '@types/secp256k1@4.0.6':
     dependencies:
@@ -16498,6 +16730,8 @@ snapshots:
 
   crypto-random-string@2.0.0: {}
 
+  crypto@1.0.1: {}
+
   css-box-model@1.2.1:
     dependencies:
       tiny-invariant: 1.3.3
@@ -16734,9 +16968,27 @@ snapshots:
       '@babel/runtime': 7.28.4
       csstype: 3.1.3
 
+  dom-serializer@2.0.0:
+    dependencies:
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
+      entities: 4.5.0
+
+  domelementtype@2.3.0: {}
+
   domexception@4.0.0:
     dependencies:
       webidl-conversions: 7.0.0
+
+  domhandler@5.0.3:
+    dependencies:
+      domelementtype: 2.3.0
+
+  domutils@3.2.2:
+    dependencies:
+      dom-serializer: 2.0.0
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
 
   dotenv@16.6.1: {}
 
@@ -16834,6 +17086,8 @@ snapshots:
     dependencies:
       ansi-colors: 4.1.3
       strip-ansi: 6.0.1
+
+  entities@4.5.0: {}
 
   entities@6.0.1: {}
 
@@ -18029,6 +18283,11 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
+  hpp@0.2.3:
+    dependencies:
+      lodash: 4.17.21
+      type-is: 1.6.18
+
   html-encoding-sniffer@3.0.0:
     dependencies:
       whatwg-encoding: 2.0.0
@@ -18038,6 +18297,13 @@ snapshots:
       whatwg-encoding: 3.1.1
 
   html-escaper@2.0.2: {}
+
+  htmlparser2@8.0.2:
+    dependencies:
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
+      domutils: 3.2.2
+      entities: 4.5.0
 
   http-basic@8.1.3:
     dependencies:
@@ -18311,6 +18577,8 @@ snapshots:
   is-path-inside@3.0.3: {}
 
   is-plain-obj@2.1.0: {}
+
+  is-plain-object@5.0.0: {}
 
   is-potential-custom-element-name@1.0.1: {}
 
@@ -19620,6 +19888,12 @@ snapshots:
 
   neo-async@2.6.2: {}
 
+  nock@14.0.10:
+    dependencies:
+      '@mswjs/interceptors': 0.39.6
+      json-stringify-safe: 5.0.1
+      propagate: 2.0.1
+
   node-abi@3.77.0:
     dependencies:
       semver: 7.7.2
@@ -19880,6 +20154,8 @@ snapshots:
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
 
+  parse-srcset@1.0.2: {}
+
   parse5@7.3.0:
     dependencies:
       entities: 6.0.1
@@ -19972,6 +20248,11 @@ snapshots:
 
   pify@4.0.1: {}
 
+  pino-abstract-transport@1.2.0:
+    dependencies:
+      readable-stream: 4.7.0
+      split2: 4.2.0
+
   pino-abstract-transport@2.0.0:
     dependencies:
       split2: 4.2.0
@@ -19983,7 +20264,30 @@ snapshots:
       pino-std-serializers: 7.0.0
       process-warning: 5.0.0
 
+  pino-http@8.6.1:
+    dependencies:
+      get-caller-file: 2.0.5
+      pino: 8.21.0
+      pino-std-serializers: 6.2.2
+      process-warning: 3.0.0
+
+  pino-std-serializers@6.2.2: {}
+
   pino-std-serializers@7.0.0: {}
+
+  pino@8.21.0:
+    dependencies:
+      atomic-sleep: 1.0.0
+      fast-redact: 3.5.0
+      on-exit-leak-free: 2.1.2
+      pino-abstract-transport: 1.2.0
+      pino-std-serializers: 6.2.2
+      process-warning: 3.0.0
+      quick-format-unescaped: 4.0.4
+      real-require: 0.2.0
+      safe-stable-stringify: 2.5.0
+      sonic-boom: 3.8.1
+      thread-stream: 2.7.0
 
   pino@9.9.5:
     dependencies:
@@ -20118,6 +20422,8 @@ snapshots:
 
   process-nextick-args@2.0.1: {}
 
+  process-warning@3.0.0: {}
+
   process-warning@5.0.0: {}
 
   process@0.11.10: {}
@@ -20148,6 +20454,8 @@ snapshots:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
+
+  propagate@2.0.1: {}
 
   proto-list@1.2.4: {}
 
@@ -20549,6 +20857,8 @@ snapshots:
 
   regenerator-runtime@0.13.11: {}
 
+  regexp-tree@0.1.27: {}
+
   regexp.prototype.flags@1.5.4:
     dependencies:
       call-bind: 1.0.8
@@ -20778,9 +21088,22 @@ snapshots:
       es-errors: 1.3.0
       is-regex: 1.2.1
 
+  safe-regex@2.1.1:
+    dependencies:
+      regexp-tree: 0.1.27
+
   safe-stable-stringify@2.5.0: {}
 
   safer-buffer@2.1.2: {}
+
+  sanitize-html@2.17.0:
+    dependencies:
+      deepmerge: 4.3.1
+      escape-string-regexp: 4.0.0
+      htmlparser2: 8.0.2
+      is-plain-object: 5.0.0
+      parse-srcset: 1.0.2
+      postcss: 8.5.6
 
   sax@1.4.1: {}
 
@@ -21182,6 +21505,10 @@ snapshots:
       semver: 7.7.2
       shelljs: 0.8.5
       web3-utils: 1.10.4
+
+  sonic-boom@3.8.1:
+    dependencies:
+      atomic-sleep: 1.0.0
 
   sonic-boom@4.2.0:
     dependencies:
@@ -21648,6 +21975,10 @@ snapshots:
       http-response-object: 3.0.2
       promise: 8.3.0
       qs: 6.14.0
+
+  thread-stream@2.7.0:
+    dependencies:
+      real-require: 0.2.0
 
   thread-stream@3.1.0:
     dependencies:

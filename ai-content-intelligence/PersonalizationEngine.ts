@@ -1,6 +1,6 @@
 // 🎯 FANZ Dynamic Personalization Engine - Quantum Fan Matching System
 // Revolutionary personalization with psychographic profiling, dynamic pricing, and AI-powered recommendations
-// Creates perfect creator-fan matches using advanced behavioral analysis and quantum algorithms
+// Creates perfect creator-fan matches using advanced behavioral analysis and advanced matching algorithms
 
 import { ContentDNA, ContentMood } from './ContentDNASystem';
 import { CreatorProfile, FanInsights } from './CreatorCopilotAI';
@@ -397,7 +397,7 @@ class FanzPersonalizationEngine extends EventEmitter {
     // Apply platform-specific adjustments
     const platformBehavior = this.PLATFORM_BEHAVIORS[creatorProfile.platformId as keyof typeof this.PLATFORM_BEHAVIORS];
     if (platformBehavior) {
-      optimizedPrice *= platformBehavior.pricingSensitivity || 1.0;
+      optimizedPrice *= platformBehavior.dominanceImportance || 1.0;
     }
     
     // Apply fan-specific adjustments based on psychographics
@@ -861,7 +861,7 @@ class FanzPersonalizationEngine extends EventEmitter {
     
     // Pad to exact feature count
     while (features.length < this.BEHAVIOR_FEATURES) {
-      features.push(Math.random() * 0.1); // Small random values for padding
+      features.push(0); // Zero padding for deterministic behavior
     }
     
     return features.slice(0, this.BEHAVIOR_FEATURES);
