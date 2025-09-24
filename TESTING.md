@@ -1036,8 +1036,14 @@ class PerformanceTestRunner {
   private async runScenario(scenario: string): Promise<LoadTestResult> {
     const startTime = performance.now();
 
-    const testResult = await artillery.run({
-      config: `./tests/performance/${scenario}.yml`,
+    // Load YAML config for the scenario
+    const fs = require('fs');
+    const yaml = require('js-yaml');
+    const configPath = `./tests/performance/${scenario}.yml`;
+    const config = yaml.load(fs.readFileSync(configPath, 'utf8'));
+
+    // Run Artillery with the loaded config and output option
+    const testResult = await artillery.run(config, {
       output: `./test-results/performance/${scenario}-results.json`
     });
 

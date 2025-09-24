@@ -2,12 +2,9 @@
 // Revolutionary content fingerprinting and authenticity verification for adult creator platforms
 // Provides biometric hashing, deepfake detection, and smart content authentication
 
-import crypto from 'crypto';
-import { promises as fs } from 'fs';
 import { createHash } from 'crypto';
 import tf from '@tensorflow/tfjs-node';
 import sharp from 'sharp';
-import ffmpeg from 'fluent-ffmpeg';
 
 interface ContentDNA {
   id: string;
@@ -342,14 +339,14 @@ class FanzContentDNASystem {
     };
     
     const baseTrendScore = contentDNA.metadata.contentQuality * 0.4 + 
-                          Math.random() * 0.6; // In production, this would be ML-based
+                          this.secureRandomFloat(0, 0.6); // In production, this would be ML-based
     
     const trendScore = baseTrendScore * (moodTrendMultipliers[contentDNA.metadata.mood] || 1.0);
     
     const viralPotential = trendScore * 
                           (contentDNA.authenticity.confidence * 0.3) +
                           (contentDNA.metadata.contentQuality * 0.4) +
-                          (Math.random() * 0.3); // ML model would replace this
+                          this.secureRandomFloat(0, 0.3); // ML model would replace this
     
     return {
       trendScore: Math.min(1, trendScore),
@@ -588,10 +585,10 @@ class FanzContentDNASystem {
       return {
         mood,
         tags: this.generateTags(mood),
-        trendScore: Math.random() * 0.7 + 0.3, // ML model would replace this
-        viralPotential: Math.random() * 0.8 + 0.2,
-        quality: Math.random() * 0.5 + 0.5, // Image quality analysis
-        adultLevel: Math.random() * 0.8 + 0.2 // Adult content detection
+        trendScore: 0.7, // Deterministic placeholder; ML model would replace this
+        viralPotential: 0.8, // Deterministic placeholder
+        quality: 0.75, // Deterministic placeholder for image quality analysis
+        adultLevel: 0.6 // Deterministic placeholder for adult content detection
       };
     }
     
@@ -827,5 +824,3 @@ export {
   BiometricFeatures,
   DeepfakeAnalysis
 };
-
-export default new FanzContentDNASystem();
