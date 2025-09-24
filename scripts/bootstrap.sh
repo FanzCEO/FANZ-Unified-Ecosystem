@@ -98,7 +98,7 @@ deploy_core_components() {
     log_info "Deploying ArgoCD..."
     helm upgrade --install argocd argo/argo-cd \
         --namespace argocd \
-        --values k8s/argocd/values-argocd.yaml \
+        --values terraform/k8s/argocd/values-argocd.yaml \
         --wait --timeout=10m
     log_success "ArgoCD deployed"
     
@@ -106,25 +106,25 @@ deploy_core_components() {
     log_info "Deploying Kyverno..."
     helm upgrade --install kyverno kyverno/kyverno \
         --namespace kyverno \
-        --values k8s/kyverno/values-kyverno.yaml \
+        --values terraform/k8s/kyverno/values-kyverno.yaml \
         --wait --timeout=10m
     log_success "Kyverno deployed"
     
     # Apply Kyverno policies
-    kubectl apply -f k8s/kyverno/policies/fun-autofix-safe.yaml
+    kubectl apply -f terraform/k8s/kyverno/policies/fun-autofix-safe.yaml
     log_success "Auto-fix policies applied"
     
     # Deploy Argo Rollouts
     log_info "Deploying Argo Rollouts..."
     helm upgrade --install argo-rollouts argo/argo-rollouts \
         --namespace argocd \
-        --values k8s/rollouts/values-rollouts.yaml \
+        --values terraform/k8s/rollouts/values-rollouts.yaml \
         --wait --timeout=5m
     log_success "Argo Rollouts deployed"
     
-    # Apply analysis template
-    kubectl apply -f k8s/rollouts/analysis-template-amp.yaml
-    log_success "Rollout analysis template applied"
+    # Apply sample app
+    kubectl apply -f terraform/k8s/sample-fanz-app.yaml
+    log_success "Sample FANZ app deployed"
 }
 
 # Deploy golden API
