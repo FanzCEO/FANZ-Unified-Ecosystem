@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: golden-api
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: golden-api
+    app.kubernetes.io/part-of: fanz-warp-directive
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/FanzCEO/FANZ-Unified-Ecosystem.git
+    targetRevision: HEAD
+    path: services/golden-api/helm/golden-api
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: image.repository
+          value: "500501924139.dkr.ecr.us-east-1.amazonaws.com/golden-api"
+        - name: image.tag
+          value: "v0.1.1"
+        - name: ingress.enabled
+          value: "true"
+        - name: ingress.host
+          value: "api.myfanz.network"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  revisionHistoryLimit: 3
