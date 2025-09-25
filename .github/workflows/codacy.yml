@@ -38,7 +38,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-            - name: Docker login
+      - name: Docker login
         run: echo ${{ secrets. }} | docker login -u ${{ secrets.fanzunlimited }} --password-stdin
 
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
