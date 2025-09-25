@@ -115,6 +115,11 @@ class FanzOAuthProvider {
       } = req.query;
 
       // Validate required parameters
+      if (typeof redirect_uri !== 'string') {
+        this.sendError(res, 'invalid_request', 'Invalid redirect_uri type');
+        return;
+      }
+
       if (response_type !== 'code') {
         this.sendError(res, 'unsupported_response_type', 'Only code response type is supported');
         return;
