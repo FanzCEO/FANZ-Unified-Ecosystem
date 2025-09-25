@@ -1,0 +1,201 @@
+services:
+  # Core Infrastructure
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: fanz_ecosystem
+      POSTGRES_USER: fanz_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password_123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fanz_user -d fanz_ecosystem"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fanz-net
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - fanz-net
+
+  # REAL FANZ PLATFORM APPLICATIONS
+
+  # Real FanzLanding Platform (Node.js/React App)
+  fanz-landing:
+    build:
+      context: REDACTED_AWS_SECRET_KEYLanding
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=postgresql://fanz_user:${DB_PASSWORD:-dev_password_123}@postgres:5432/fanz_ecosystem
+      - REDIS_URL=redis://redis:6379
+      - SESSION_SECRET=${SESSION_SECRET:-fanz_session_secret_dev_2024}
+      - JWT_SECRET=${JWT_SECRET:-fanz_jwt_secret_dev_2024}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-fanz_encryption_dev_key_32bytes}
+      - APP_NAME=FanzLanding
+      - APP_URL=http://localhost:3000
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3030,http://localhost:8090
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - fanz-net
+    volumes:
+      - REDACTED_AWS_SECRET_KEYLanding:/app
+      - /app/node_modules
+    working_dir: /app
+    command: ["npm", "run", "dev"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Real FanzDash Platform (Admin Control Center)
+  fanzdash:
+    build:
+      context: REDACTED_AWS_SECRET_KEYDash
+      dockerfile: Dockerfile
+    ports:
+      - "3030:3030"
+    environment:
+      - NODE_ENV=development
+      - PORT=3030
+      - DATABASE_URL=postgresql://fanz_user:${DB_PASSWORD:-dev_password_123}@postgres:5432/fanz_ecosystem
+      - REDIS_URL=redis://redis:6379
+      - SESSION_SECRET=${SESSION_SECRET:-fanz_session_secret_dev_2024}
+      - JWT_SECRET=${JWT_SECRET:-fanz_jwt_secret_dev_2024}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-fanz_encryption_dev_key_32bytes}
+      - APP_NAME=FanzDash
+      - APP_URL=http://localhost:3030
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3030,http://localhost:8090
+      - ADMIN_MODE=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      fanz-landing:
+        condition: service_healthy
+    networks:
+      - fanz-net
+    volumes:
+      - REDACTED_AWS_SECRET_KEYDash:/app
+      - /app/node_modules
+    working_dir: /app
+    command: ["npm", "run", "dev"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3030/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # API Gateway (Enhanced with Security Fixes)
+  api-gateway:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM node:20-alpine
+        WORKDIR /app
+        COPY api-gateway/ ./
+        RUN npm install
+        EXPOSE 8090
+        CMD ["npm", "start"]
+    ports:
+      - "8090:8090"
+    environment:
+      - NODE_ENV=development
+      - PORT=8090
+      - DATABASE_URL=postgresql://fanz_user:${DB_PASSWORD:-dev_password_123}@postgres:5432/fanz_ecosystem
+      - REDIS_URL=redis://redis:6379
+      - FANZ_LANDING_URL=http://fanz-landing:3000
+      - FANZ_DASH_URL=http://fanzdash:3030
+    depends_on:
+      - postgres
+      - redis
+      - fanz-landing
+      - fanzdash
+    networks:
+      - fanz-net
+    restart: unless-stopped
+
+  # Real Platform Applications (to be built)
+  # These will be actual platforms once created
+  boyfanz:
+    image: nginx:alpine
+    ports:
+      - "3001:80"
+    volumes:
+      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/boyfanz.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+    labels:
+      - "platform.status=placeholder"
+      - "platform.upgrade=needed"
+
+  girlfanz:
+    image: nginx:alpine
+    ports:
+      - "3002:80"
+    volumes:
+      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/girlfanz.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+    labels:
+      - "platform.status=placeholder"
+      - "platform.upgrade=needed"
+
+  pupfanz:
+    image: nginx:alpine
+    ports:
+      - "3003:80"
+    volumes:
+      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/pupfanz.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+    labels:
+      - "platform.status=placeholder"
+      - "platform.upgrade=needed"
+
+networks:
+  fanz-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+volumes:
+  postgres_data:
+  redis_data:
