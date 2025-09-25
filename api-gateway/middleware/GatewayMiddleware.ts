@@ -1,3 +1,56 @@
+
+// Security: HTML escaping utility
+const escapeHtml = (text) => {
+  if (!text || typeof text !== 'string') return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/\//g, '&#x2F;');
+};
+
+// Security: Safe logging utility
+const safeLog = (message, data = null) => {
+  const sensitiveFields = ['password', 'token', 'key', 'secret', 'auth', 'session'];
+  
+  if (data && typeof data === 'object') {
+    const sanitized = JSON.parse(JSON.stringify(data));
+    
+    const redactSensitive = (obj) => {
+      for (const key in obj) {
+        if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
+          obj[key] = '[REDACTED]';
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+          redactSensitive(obj[key]);
+        }
+      }
+    };
+    
+    redactSensitive(sanitized);
+    safeLog(message, sanitized);
+  } else {
+    safeLog(message);
+  }
+};
+
+// Security: URL sanitization utility
+const sanitizeUrl = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  
+  const dangerousProtocols = /^(javascript|data|vbscript|file|ftp):/i;
+  if (dangerousProtocols.test(url)) return '';
+  
+  if (!/^https?:\/\//.test(url)) return '';
+  
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.href;
+  } catch {
+    return '';
+  }
+};
 /**
  * 🛡️ Advanced Middleware Stack for FANZ API Gateway
  * 

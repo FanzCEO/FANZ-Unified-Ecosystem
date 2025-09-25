@@ -38,7 +38,7 @@ services:
     ports:
       - "3000:80"
     volumes:
-      - ./stubs/fanz-landing.html:/usr/share/nginx/html/index.html:ro
+      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/fanz-landing.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
@@ -50,7 +50,7 @@ services:
     ports:
       - "3030:80"
     volumes:
-      - ./stubs/fanzdash.html:/usr/share/nginx/html/index.html:ro
+      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/fanzdash.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
@@ -62,7 +62,7 @@ services:
     ports:
       - "8090:80"
     volumes:
-      - ./stubs/api-gateway.html:/usr/share/nginx/html/index.html:ro
+      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/api-gateway.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
@@ -74,7 +74,7 @@ services:
     ports:
       - "3001:80"
     volumes:
-      - ./stubs/boyfanz.html:/usr/share/nginx/html/index.html:ro
+      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/boyfanz.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
@@ -86,7 +86,7 @@ services:
     ports:
       - "3002:80"
     volumes:
-      - ./stubs/girlfanz.html:/usr/share/nginx/html/index.html:ro
+      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/girlfanz.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
@@ -98,7 +98,7 @@ services:
     ports:
       - "3003:80"
     volumes:
-      - ./stubs/pupfanz.html:/usr/share/nginx/html/index.html:ro
+      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/pupfanz.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
