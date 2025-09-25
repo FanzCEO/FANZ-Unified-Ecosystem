@@ -1,0 +1,32 @@
+%% FANZ — Creator Upload & Publish
+sequenceDiagram
+    autonumber
+    participant C as Creatorz
+    participant G as API Gateway
+    participant P as Platform (BoyFanz/GirlFanz/PupFanz)
+    participant MH as Media Hub (Ingest/Transcode/Moderation)
+    participant V as FanzHubVault (Object Store + CDN)
+    participant DB as Core DB
+    participant BUS as Event Bus
+    participant IDX as Search/Indexing
+    participant N as Notify
+
+    C->>P: Start upload
+    P->>G: Request signed upload URL
+    G->>MH: Create ingest job
+    MH-->>P: Pre-signed URL
+    P->>V: PUT chunks (multipart)
+    MH->>MH: Transcode + thumbnails + captions
+    MH->>MH: AI moderation (NSFW/CSAM/Violence)
+    alt Passes moderation
+        MH->>DB: Write content metadata
+        MH->>V: Store final renditions
+        MH->>BUS: Publish content_ready
+        BUS->>IDX: Index document/vector
+        BUS->>N: Notify followers
+        N-->>C: "Your content is live"
+    else Fails moderation
+        MH->>BUS: Publish content_blocked
+        BUS->>N: Send rejection + appeal link
+        N-->>C: "Blocked by policy"
+    end
