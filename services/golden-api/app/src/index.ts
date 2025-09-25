@@ -82,8 +82,18 @@ app.get('/v1/info', async () => ({
 }));
 
 // Simulate some load for demo purposes
-app.get('/v1/load/:ms', async (request) => {
-  const ms = Math.min(Number(request.params.ms) || 100, 5000); // Max 5s
+app.get('/v1/load/:ms', async (request, reply) => {
+  const rawMs = request.params.ms;
+  const ms = parseInt(rawMs, 10);
+  if (
+    isNaN(ms) ||
+    !isFinite(ms) ||
+    ms < 1 ||
+    ms > 5000
+  ) {
+    reply.code(400);
+    return { error: 'Bad request: ms must be an integer between 1 and 5000.' };
+  }
   await new Promise(resolve => setTimeout(resolve, ms));
   return { delayed: ms, service: serviceName };
 });
