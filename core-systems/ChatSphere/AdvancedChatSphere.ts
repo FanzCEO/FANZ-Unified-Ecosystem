@@ -531,7 +531,7 @@ class AdvancedChatSphere extends EventEmitter {
 
     // Create message
     const message: BaseMessage = {
-      messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      messageId: `msg_${Date.now()}_${require('crypto').randomBytes(5).toString('hex').slice(0, 9)}`,
       roomId,
       senderId,
       senderUsername: participant.username,
@@ -612,7 +612,7 @@ class AdvancedChatSphere extends EventEmitter {
 
     // Create tip message
     const tipMessage: TipMessage = {
-      messageId: `tip_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      messageId: `tip_${Date.now()}_${require('crypto').randomBytes(5).toString('hex').slice(0, 9)}`,
       roomId,
       senderId: fromUserId,
       senderUsername: participant.username,
@@ -694,7 +694,7 @@ class AdvancedChatSphere extends EventEmitter {
       return { success: false, error: 'Insufficient permissions' };
     }
 
-    const sessionId = `rtc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const sessionId = `rtc_${Date.now()}_${require('crypto').randomBytes(5).toString('hex').slice(0, 9)}`;
     
     const session: WebRTCSession = {
       sessionId,
@@ -1113,7 +1113,7 @@ class AdvancedChatSphere extends EventEmitter {
 
   private async processPayment(tipMessage: TipMessage): Promise<{ success: boolean; error?: string }> {
     // Mock payment processing (integrate with actual payment processors)
-    const success = Math.random() > 0.05; // 95% success rate
+    const success = (require('crypto').randomInt(0, 1000000) / 1000000) > 0.05; // 95% success rate
     
     if (success) {
       console.log(`💳 Payment processed: $${tipMessage.content.amount}`);

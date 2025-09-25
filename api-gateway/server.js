@@ -1,11 +1,11 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import compression from 'compression';
-import rateLimit from 'express-rate-limit';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const app: Express = express();
+const app = express();
 const PORT = parseInt(process.env.PORT || '8090', 10);
 
 // Security middleware
@@ -43,7 +43,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Health check endpoint
-app.get('/api/health', (req: Request, res: Response) => {
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
@@ -54,7 +54,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 });
 
 // Gateway status endpoint
-app.get('/gateway/status', (req: Request, res: Response) => {
+app.get('/gateway/status', (req, res) => {
   res.json({
     gateway: 'FANZ Unified API Gateway',
     version: '1.0.0',
@@ -100,7 +100,7 @@ app.use('/api/dash', createProxyMiddleware({
 }));
 
 // Default route
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (req, res) => {
   res.json({
     message: '🚀 FANZ Unified API Gateway',
     version: '1.0.0',
@@ -115,7 +115,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // 404 handler
-app.use('*', (req: Request, res: Response) => {
+app.use('*', (req, res) => {
   res.status(404).json({
     error: 'Not Found',
     message: 'The requested endpoint does not exist',
@@ -125,7 +125,7 @@ app.use('*', (req: Request, res: Response) => {
 });
 
 // Error handler
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+app.use((error, req, res, next) => {
   console.error('Unhandled error:', error);
   res.status(error.status || 500).json({
     error: 'Internal Server Error',
@@ -141,4 +141,4 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
 });
 
-export default app;
+module.exports = app;

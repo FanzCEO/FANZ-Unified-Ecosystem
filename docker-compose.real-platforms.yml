@@ -36,9 +36,7 @@ services:
 
   # Real FanzLanding Platform (Node.js/React App)
   fanz-landing:
-    build:
-      context: /Users/joshuastone/Documents/GitHub/FanzLanding
-      dockerfile: Dockerfile
+    image: node:20-alpine
     ports:
       - "3000:3000"
     environment:
@@ -63,20 +61,12 @@ services:
       - /Users/joshuastone/Documents/GitHub/FanzLanding:/app
       - /app/node_modules
     working_dir: /app
-    command: ["npm", "run", "dev"]
+    command: ["sh", "-c", "npm install --legacy-peer-deps && npm run dev"]
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   # Real FanzDash Platform (Admin Control Center)
   fanzdash:
-    build:
-      context: /Users/joshuastone/Documents/GitHub/FanzDash
-      dockerfile: Dockerfile
+    image: node:20-alpine
     ports:
       - "3030:3030"
     environment:
@@ -96,22 +86,14 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      fanz-landing:
-        condition: service_healthy
     networks:
       - fanz-net
     volumes:
       - /Users/joshuastone/Documents/GitHub/FanzDash:/app
       - /app/node_modules
     working_dir: /app
-    command: ["npm", "run", "dev"]
+    command: ["sh", "-c", "npm install --legacy-peer-deps && npm run dev"]
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3030/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   # API Gateway (Enhanced with Security Fixes)
   api-gateway:
@@ -119,11 +101,12 @@ services:
       context: .
       dockerfile_inline: |
         FROM node:20-alpine
+        RUN apk add --no-cache python3 make g++
         WORKDIR /app
         COPY api-gateway/ ./
-        RUN npm install
+        RUN npm install --legacy-peer-deps
         EXPOSE 8090
-        CMD ["npm", "start"]
+        CMD ["npm", "run", "dev"]
     ports:
       - "8090:8090"
     environment:
