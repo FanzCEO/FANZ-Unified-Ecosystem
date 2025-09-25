@@ -1,0 +1,117 @@
+services:
+  # Core Infrastructure
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: fanz_ecosystem
+      POSTGRES_USER: fanz_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password_123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fanz_user -d fanz_ecosystem"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fanz-net
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - fanz-net
+
+  # Platform Services
+  fanz-landing:
+    image: nginx:alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./stubs/fanz-landing.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+
+  fanzdash:
+    image: nginx:alpine
+    ports:
+      - "3030:80"
+    volumes:
+      - ./stubs/fanzdash.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+
+  api-gateway:
+    image: nginx:alpine
+    ports:
+      - "8090:80"
+    volumes:
+      - ./stubs/api-gateway.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+
+  boyfanz:
+    image: nginx:alpine
+    ports:
+      - "3001:80"
+    volumes:
+      - ./stubs/boyfanz.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+
+  girlfanz:
+    image: nginx:alpine
+    ports:
+      - "3002:80"
+    volumes:
+      - ./stubs/girlfanz.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+
+  pupfanz:
+    image: nginx:alpine
+    ports:
+      - "3003:80"
+    volumes:
+      - ./stubs/pupfanz.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+
+networks:
+  fanz-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+volumes:
+  postgres_data:
+  redis_data:
