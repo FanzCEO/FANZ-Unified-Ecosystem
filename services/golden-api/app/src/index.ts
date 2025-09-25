@@ -8,6 +8,10 @@ const version = process.env.VERSION || 'dev';
 const featureBanner = process.env.FEATURE_BANNER === 'true';
 const serviceName = process.env.SERVICE_NAME || 'golden-api';
 
+// Limit for concurrent /v1/load/:ms requests to prevent resource exhaustion
+const MAX_CONCURRENT_LOAD_REQUESTS = 10;
+let activeLoadRequests = 0;
+
 // Prometheus metrics setup
 const registry = new client.Registry();
 client.collectDefaultMetrics({ register: registry });
@@ -83,19 +87,28 @@ app.get('/v1/info', async () => ({
 
 // Simulate some load for demo purposes
 app.get('/v1/load/:ms', async (request, reply) => {
-  const rawMs = request.params.ms;
-  const ms = parseInt(rawMs, 10);
-  if (
-    isNaN(ms) ||
-    !isFinite(ms) ||
-    ms < 1 ||
-    ms > 5000
-  ) {
-    reply.code(400);
-    return { error: 'Bad request: ms must be an integer between 1 and 5000.' };
+  if (activeLoadRequests >= MAX_CONCURRENT_LOAD_REQUESTS) {
+    reply.code(503);
+    return { error: 'Service unavailable: too many concurrent load requests.' };
   }
-  await new Promise(resolve => setTimeout(resolve, ms));
-  return { delayed: ms, service: serviceName };
+  activeLoadRequests += 1;
+  try {
+    const rawMs = request.params.ms;
+    const ms = parseInt(rawMs, 10);
+    if (
+      isNaN(ms) ||
+      !isFinite(ms) ||
+      ms < 1 ||
+      ms > 5000
+    ) {
+      reply.code(400);
+      return { error: 'Bad request: ms must be an integer between 1 and 5000.' };
+    }
+    await new Promise(resolve => setTimeout(resolve, ms));
+    return { delayed: ms, service: serviceName };
+  } finally {
+    activeLoadRequests -= 1;
+  }
 });
 
 // Error endpoint for testing error rates
