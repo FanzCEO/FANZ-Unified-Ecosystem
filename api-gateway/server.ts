@@ -1,3 +1,56 @@
+
+// Security: HTML escaping utility
+const escapeHtml = (text) => {
+  if (!text || typeof text !== 'string') return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/\//g, '&#x2F;');
+};
+
+// Security: Safe logging utility
+const safeLog = (message, data = null) => {
+  const sensitiveFields = ['password', 'token', 'key', 'secret', 'auth', 'session'];
+  
+  if (data && typeof data === 'object') {
+    const sanitized = JSON.parse(JSON.stringify(data));
+    
+    const redactSensitive = (obj) => {
+      for (const key in obj) {
+        if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
+          obj[key] = '[REDACTED]';
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+          redactSensitive(obj[key]);
+        }
+      }
+    };
+    
+    redactSensitive(sanitized);
+    safeLog(message, sanitized);
+  } else {
+    safeLog(message);
+  }
+};
+
+// Security: URL sanitization utility
+const sanitizeUrl = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  
+  const dangerousProtocols = /^(javascript|data|vbscript|file|ftp):/i;
+  if (dangerousProtocols.test(url)) return '';
+  
+  if (!/^https?:\/\//.test(url)) return '';
+  
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.href;
+  } catch {
+    return '';
+  }
+};
 /**
  * 🚀 FANZ Unified API Gateway - Main Server
  * 
@@ -51,7 +104,7 @@ export class FanzGatewayServer {
   }
 
   private initializeComponents(): void {
-    console.log('🔧 Initializing Gateway Components...');
+    safeLog('🔧 Initializing Gateway Components...');
     
     // Initialize Service Discovery
     this.serviceDiscovery = new ServiceDiscovery(configManager.getDiscoveryConfig());
@@ -62,11 +115,11 @@ export class FanzGatewayServer {
     // Initialize Middleware Stack
     this.middleware = new GatewayMiddleware(configManager.getMiddlewareConfig());
     
-    console.log('✅ Gateway components initialized');
+    safeLog('✅ Gateway components initialized');
   }
 
   private setupMiddleware(): void {
-    console.log('🛡️ Setting up middleware stack...');
+    safeLog('🛡️ Setting up middleware stack...');
     
     // Security middleware
     this.app.use(helmet({
@@ -96,11 +149,11 @@ export class FanzGatewayServer {
     this.app.use(this.middleware.requestLogger);
     this.app.use(this.middleware.rateLimit);
 
-    console.log('✅ Middleware stack configured');
+    safeLog('✅ Middleware stack configured');
   }
 
   private setupRoutes(): void {
-    console.log('🛣️ Setting up API routes...');
+    safeLog('🛣️ Setting up API routes...');
 
     // Gateway status endpoints
     this.setupGatewayRoutes();
@@ -109,14 +162,30 @@ export class FanzGatewayServer {
     this.setupServiceRoutes();
     
     // Health check endpoint
-    this.app.get('/health', this.healthCheckHandler.bind(this));
+    this.
+// Security: Rate limiting middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    resetTime: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req, res) => req.path === '/api/health'
+});
+
+app.use(limiter);
+
+app.get('/health', this.healthCheckHandler.bind(this));
     
     // Metrics endpoint for Prometheus
     if (this.config.monitoring.prometheus.enabled) {
       this.app.get(this.config.monitoring.prometheus.endpoint, this.metricsHandler.bind(this));
     }
 
-    console.log('✅ Routes configured');
+    safeLog('✅ Routes configured');
   }
 
   private setupGatewayRoutes(): void {
@@ -135,7 +204,7 @@ export class FanzGatewayServer {
     const services = this.config.services;
     
     for (const [serviceName, serviceConfig] of Object.entries(services)) {
-      console.log(`🔗 Setting up routes for ${serviceConfig.name} at ${serviceConfig.base_path}`);
+      safeLog(`🔗 Setting up routes for ${serviceConfig.name} at ${serviceConfig.base_path}`);
       
       // Create service-specific middleware stack
       const serviceMiddleware = [
@@ -398,10 +467,10 @@ export class FanzGatewayServer {
       const port = this.config.server.ssl.enabled ? this.config.server.ssl.port : this.config.server.port;
       await new Promise<void>((resolve) => {
         this.server.listen(port, this.config.server.host, () => {
-          console.log(`🚀 FANZ API Gateway started`);
-          console.log(`📡 Server: ${this.config.server.ssl.enabled ? 'https' : 'http'}://${this.config.server.host}:${port}`);
-          console.log(`🌐 Environment: ${process.env.NODE_ENV || 'production'}`);
-          console.log(`🏗️ Services: ${Object.keys(this.config.services).length} configured`);
+          safeLog(`🚀 FANZ API Gateway started`);
+          safeLog(`📡 Server: ${this.config.server.ssl.enabled ? 'https' : 'http'}://${this.config.server.host}:${port}`);
+          safeLog(`🌐 Environment: ${process.env.NODE_ENV || 'production'}`);
+          safeLog(`🏗️ Services: ${Object.keys(this.config.services).length} configured`);
           resolve();
         });
       });
@@ -416,7 +485,7 @@ export class FanzGatewayServer {
   }
 
   public async stop(): Promise<void> {
-    console.log('🛑 Shutting down FANZ API Gateway...');
+    safeLog('🛑 Shutting down FANZ API Gateway...');
 
     // Close server
     if (this.server) {
@@ -429,7 +498,7 @@ export class FanzGatewayServer {
     await this.serviceDiscovery.shutdown();
     await this.middleware.shutdown();
 
-    console.log('✅ Gateway shutdown complete');
+    safeLog('✅ Gateway shutdown complete');
   }
 
   private setupGracefulShutdown(): void {
@@ -437,7 +506,7 @@ export class FanzGatewayServer {
     
     signals.forEach(signal => {
       process.on(signal, async () => {
-        console.log(`\n🔄 Received ${signal}, shutting down gracefully...`);
+        safeLog(`\n🔄 Received ${signal}, shutting down gracefully...`);
         await this.stop();
         process.exit(0);
       });
@@ -465,7 +534,7 @@ export function startGatewayCluster(): void {
   if (config.server.cluster.enabled && cluster.isPrimary) {
     const numWorkers = config.server.cluster.workers || os.cpus().length;
     
-    console.log(`🚀 Starting FANZ Gateway cluster with ${numWorkers} workers`);
+    safeLog(`🚀 Starting FANZ Gateway cluster with ${numWorkers} workers`);
     
     // Fork workers
     for (let i = 0; i < numWorkers; i++) {
@@ -474,12 +543,12 @@ export function startGatewayCluster(): void {
 
     // Handle worker events
     cluster.on('exit', (worker, code, signal) => {
-      console.log(`⚰️ Worker ${worker.process.pid} died (${signal || code}). Restarting...`);
+      safeLog(`⚰️ Worker ${worker.process.pid} died (${signal || code}). Restarting...`);
       cluster.fork();
     });
 
     cluster.on('online', (worker) => {
-      console.log(`👷 Worker ${worker.process.pid} is online`);
+      safeLog(`👷 Worker ${worker.process.pid} is online`);
     });
 
   } else {
@@ -494,8 +563,8 @@ export function startGatewayCluster(): void {
 // =============================================================================
 
 if (require.main === module) {
-  console.log('🌟 FANZ Unified API Gateway');
-  console.log('===========================');
+  safeLog('🌟 FANZ Unified API Gateway');
+  safeLog('===========================');
   startGatewayCluster();
 }
 
