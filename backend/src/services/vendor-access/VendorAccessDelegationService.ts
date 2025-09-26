@@ -421,7 +421,25 @@ export class VendorAccessDelegationService {
     if (!process.env.VENDOR_JWT_SECRET) {
       throw new Error('VENDOR_JWT_SECRET environment variable is not set');
     }
-    const token = jwt.sign(tokenPayload, process.env.VENDOR_JWT_SECRET, {
+    // Enforce minimum secret strength: at least 32 chars, must include upper, lower, digit, and symbol
+    const secret = process.env.VENDOR_JWT_SECRET;
+    const minLength = 32;
+    const hasUpper = /[A-Z]/.test(secret);
+    const hasLower = /[a-z]/.test(secret);
+    const hasDigit = /\d/.test(secret);
+    const hasSymbol = /[^A-Za-z0-9]/.test(secret);
+    if (
+      secret.length < minLength ||
+      !hasUpper ||
+      !hasLower ||
+      !hasDigit ||
+      !hasSymbol
+    ) {
+      throw new Error(
+        'VENDOR_JWT_SECRET is too weak. It must be at least 32 characters long and include uppercase, lowercase, digit, and symbol characters.'
+      );
+    }
+    const token = jwt.sign(tokenPayload, secret, {
       issuer: 'fanz-security',
       audience: 'fanz-vendor-access'
     });
