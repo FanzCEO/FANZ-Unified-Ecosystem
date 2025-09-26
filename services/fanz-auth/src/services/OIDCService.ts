@@ -6,7 +6,7 @@
  */
 
 import jwt from 'jsonwebtoken';
-import { randomBytes, generateKeyPairSync } from 'crypto';
+import { randomBytes, generateKeyPairSync, KeyObject } from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from './AuthService';
 import { logger } from '../utils/logger';
