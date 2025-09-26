@@ -285,7 +285,9 @@ export class DatabaseService {
 
     for (const cluster of clusters) {
       try {
-        const clientSecret = await bcrypt.hash(`${cluster.id}_secret_${Date.now()}`, 12);
+        const randomBytes = (await import('crypto')).randomBytes;
+        const rawSecret = randomBytes(32).toString('hex');
+        const clientSecret = await bcrypt.hash(rawSecret, 12);
         
         await client.query(`
           INSERT INTO oauth_clients (client_id, client_secret, name, redirect_uris, scopes, grant_types)
