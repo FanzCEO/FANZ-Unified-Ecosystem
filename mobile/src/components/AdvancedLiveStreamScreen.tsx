@@ -131,11 +131,11 @@ export const AdvancedLiveStreamScreen: React.FC<{ streamId?: string }> = ({ stre
         title: 'Live Streaming Session 🔥',
         description: 'Welcome to my amazing live stream! Come chat and have fun!',
         category: 'Entertainment',
-        viewerCount: Math.floor(Math.random() * 5000) + 100,
+        viewerCount: 1234, // Fixed value for deterministic mock data
         isLive: true,
         startedAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
-        price: Math.random() > 0.5 ? Math.floor(Math.random() * 50) + 10 : undefined,
-        isSubscriptionRequired: Math.random() > 0.6,
+        price: 29, // Fixed value for deterministic mock data
+        isSubscriptionRequired: false, // Fixed value for deterministic mock data
         platform: 'FanzLab',
         tags: ['live', 'entertainment', 'creator'],
         chatEnabled: true,
