@@ -68,8 +68,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan('combined', { stream: logger.stream }));
 
 // Initialize services
-const oidcService = new OIDCService();
+const oidcService = new OIDCService(config, null);
 const authService = new AuthService(oidcService);
+oidcService.authService = authService;
 
 // Routes
 app.use('/auth', createAuthRoutes(authService, oidcService));
