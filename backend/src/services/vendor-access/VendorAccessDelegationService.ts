@@ -418,7 +418,10 @@ export class VendorAccessDelegationService {
       exp: Math.floor(grant.validity.endTime.getTime() / 1000)
     };
 
-    const token = jwt.sign(tokenPayload, process.env.VENDOR_JWT_SECRET!, {
+    if (!process.env.VENDOR_JWT_SECRET) {
+      throw new Error('VENDOR_JWT_SECRET environment variable is not set');
+    }
+    const token = jwt.sign(tokenPayload, process.env.VENDOR_JWT_SECRET, {
       issuer: 'fanz-security',
       audience: 'fanz-vendor-access'
     });
