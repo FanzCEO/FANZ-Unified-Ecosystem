@@ -59,6 +59,9 @@ jspm_packages/
 
 # dotenv environment variables file
 .env
+.env.*
+!.env.example
+!.env.*.example
 
 # IDE files
 .vscode/
@@ -95,3 +98,29 @@ terraform/.terraform/
 *.tfstate.*
 package-lock.json
 yarn.lock
+
+# Security and sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+keys/
+credentials/
+config/secrets/
+*.secret
+*.secrets
+*_secret*
+*_key*
+*.api_key
+api_keys/
+auth_keys/
+
+# Backup files that may contain secrets
+*.backup
+*~
+*.bak
+*_backup*
+* 2
+* 3
+* 4
