@@ -124,3 +124,14 @@ auth_keys/
 * 2
 * 3
 * 4
+
+# Additional cleanup patterns
+*.tmp
+.venv/
+.pytest_cache/
+*.iml
+
+# Test artifacts  
+test-results/
+.coverage
+.nyc_output
