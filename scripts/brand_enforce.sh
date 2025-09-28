@@ -43,24 +43,26 @@ safe_replace() {
         # Use ripgrep for more precise matching
         if rg -l --hidden --no-ignore -g '!node_modules' -g '!*lock*' -g '!.git' "$from" . >/dev/null 2>&1; then
             local files=$(rg -l --hidden --no-ignore -g '!node_modules' -g '!*lock*' -g '!.git' "$from" .)
-            echo "  🔄 Replacing '$from' → '$to' in $(echo "$files" | wc -l) files"
+            local file_count=$(echo "$files" | wc -l | tr -d ' ')
+            echo "  🔄 Replacing '$from' → '$to' in $file_count files" >&2
             
             # Use sed for actual replacement
             echo "$files" | xargs sed -i '' -e "s/$from/$to/g"
-            count=$(echo "$files" | wc -l)
+            count=$file_count
         fi
     else
         # Fallback to grep
         if grep -r -l "$from" . --exclude-dir=node_modules --exclude-dir=.git --exclude="*lock*" 2>/dev/null; then
             local files=$(grep -r -l "$from" . --exclude-dir=node_modules --exclude-dir=.git --exclude="*lock*" 2>/dev/null)
-            echo "  🔄 Replacing '$from' → '$to' in $(echo "$files" | wc -l) files"
+            local file_count=$(echo "$files" | wc -l | tr -d ' ')
+            echo "  🔄 Replacing '$from' → '$to' in $file_count files" >&2
             
             echo "$files" | xargs sed -i '' -e "s/$from/$to/g"
-            count=$(echo "$files" | wc -l)
+            count=$file_count
         fi
     fi
     
-    return $count
+    echo $count
 }
 
 # 1. FUN Module Replacements
@@ -72,8 +74,8 @@ for pair in "${FUN_TO_FANZ[@]}"; do
     TO="${pair##*:}"
     
     echo "  🏷️  Checking for: $FROM"
-    safe_replace "$FROM" "$TO"
-    total_fun_changes=$((total_fun_changes + $?))
+    changes=$(safe_replace "$FROM" "$TO")
+    total_fun_changes=$((total_fun_changes + changes))
 done
 
 if [ $total_fun_changes -gt 0 ]; then
@@ -84,8 +86,7 @@ fi
 
 # 2. FusionGenius → FanzSocial
 echo "📱 Processing FusionGenius → FanzSocial rename..."
-safe_replace "FusionGenius" "FanzSocial"
-fusion_changes=$?
+fusion_changes=$(safe_replace "FusionGenius" "FanzSocial")
 
 if [ $fusion_changes -gt 0 ]; then
     echo "✅ Updated $fusion_changes FusionGenius references to FanzSocial"
@@ -95,8 +96,7 @@ fi
 
 # 3. Domain Updates: TabooFanz.com → TabooFanz.com
 echo "🌐 Processing domain updates..."
-safe_replace "ebonyfanz\.com" "TabooFanz.com"
-domain_changes=$?
+domain_changes=$(safe_replace "ebonyfanz\\.com" "TabooFanz.com")
 
 if [ $domain_changes -gt 0 ]; then
     echo "✅ Updated $domain_changes domain references"
@@ -107,9 +107,9 @@ fi
 # 4. Additional cleanup: ensure Fanz Unlimited Network consistency
 echo "🔧 Ensuring Fanz Unlimited Network (FANZ) consistency..."
 
-# Replace any remaining "FUN Network" or "Fun Network" with "FANZ"
-safe_replace "FUN Network" "FANZ"
-safe_replace "Fun Network" "FANZ"
+# Replace any remaining "FANZ" or "FANZ" with "FANZ"
+safe_replace "FANZ" "FANZ"
+safe_replace "FANZ" "FANZ"
 
 # Update any package.json names that might still reference old branding
 if [ -f "package.json" ]; then
@@ -148,8 +148,17 @@ if [ "$USE_GREP" = false ]; then
     fi
 fi
 
-# Summary
-total_changes=$((total_fun_changes + fusion_changes + domain_changes))
+# Summary  
+total_changes=0
+if [[ "$total_fun_changes" =~ ^[0-9]+$ ]]; then
+    total_changes=$((total_changes + total_fun_changes))
+fi
+if [[ "$fusion_changes" =~ ^[0-9]+$ ]]; then
+    total_changes=$((total_changes + fusion_changes))
+fi
+if [[ "$domain_changes" =~ ^[0-9]+$ ]]; then
+    total_changes=$((total_changes + domain_changes))
+fi
 
 echo ""
 echo "🏆 FANZ Branding Enforcement Complete!"
