@@ -1,9 +1,9 @@
 version: 1
 meta:
-  org: Fanz Unlimited Network
+  org: FANZ
   owners:
-    - platform: fun-platform@fanzunlimited.com
-    - infra: fun-infra@fanzunlimited.com
+    - platform: fanz-platform@fanzunlimited.com
+    - infra: fanz-infra@fanzunlimited.com
   compliance: ["PII", "PCI-DSS SAQ A-EP", "FanzDash Security Controls"]
 environments:
   - name: dev

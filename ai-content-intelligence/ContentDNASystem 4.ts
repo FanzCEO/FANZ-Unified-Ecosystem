@@ -769,7 +769,7 @@ class FanzContentDNASystem {
         audiences.push('sensual_lovers', 'intimate_seekers');
         break;
       case ContentMood.PLAYFUL:
-        audiences.push('playful_fans', 'fun_seekers');
+        audiences.push('playful_fans', 'fanz_seekers');
         break;
       case ContentMood.DOMINANT:
         audiences.push('dom_admirers', 'power_dynamic_fans');

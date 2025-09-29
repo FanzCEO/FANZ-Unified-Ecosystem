@@ -3,7 +3,7 @@ info:
   title: FANZ API Gateway
   version: 0.1.0
   description: |
-    Unified REST edges for the FUN ecosystem. GraphQL is also exposed at /graphql.
+    Unified REST edges for the FANZ ecosystem. GraphQL is also exposed at /graphql.
     This spec covers operational REST endpoints & webhooks used by platforms and back-office.
 servers:
   - url: https://api.fanzunlimited.com

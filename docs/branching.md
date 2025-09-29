@@ -81,7 +81,7 @@ git checkout -b chore/security-patches
 ## Compliance Notes
 
 This branching strategy supports:
-- ✅ FANZ branding compliance (no FUN prefixes)
+- ✅ FANZ branding compliance (no FANZ prefixes)
 - ✅ Adult-friendly payment processor requirements
 - ✅ ADA and accessibility standards
 - ✅ GDPR compliance workflows

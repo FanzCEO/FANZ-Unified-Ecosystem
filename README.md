@@ -1,4 +1,4 @@
-# FUN Bootstrap Pack
+# FANZ Bootstrap Pack
 
 This bundle gives you:
 - **OpenAPI specs** for the API Gateway and Finance services

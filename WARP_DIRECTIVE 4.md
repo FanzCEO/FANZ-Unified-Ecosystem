@@ -145,7 +145,7 @@ services/my-service/
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: fun-autofix-safe
+  name: fanz-autofix-safe
 spec:
   rules:
   - name: restart-crashloop-pods
