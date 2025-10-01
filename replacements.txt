@@ -1,0 +1,29 @@
+# FANZ Repository Secret Replacement Rules
+# Format: regex:pattern==>REPLACEMENT
+
+# Demo tokens and auth headers (common patterns)
+regex:demo-token==>REDACTED_DEMO_TOKEN
+regex:Bearer demo-token==>Bearer REDACTED_DEMO_TOKEN
+regex:Authorization: Bearer [a-zA-Z0-9_\-\.]{20,}==>Authorization: Bearer REDACTED_TOKEN
+
+# Generic API keys (exclude package integrity hashes)
+regex:"token":\s*"[a-zA-Z0-9_\-\.]{20,}"==>"token": "REDACTED_TOKEN"
+regex:"api_key":\s*"[a-zA-Z0-9_\-\.]{20,}"==>"api_key": "REDACTED_API_KEY"
+
+# Terraform password examples (common test passwords)
+regex:password\s*=\s*"[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{}|;':\",./<>?]{8,}"==>password = "REDACTED_PASSWORD"
+
+# JWT tokens in examples
+regex:eyJhbGciOiJIUzI1NiIs[a-zA-Z0-9_\-\.]+==>[REDACTED_JWT_TOKEN]
+
+# Remove specific patterns found in the scan
+regex:sk_test_[a-zA-Z0-9]{24}==>REDACTED_STRIPE_TEST_KEY
+regex:pk_test_[a-zA-Z0-9]{24}==>REDACTED_STRIPE_PUBLIC_KEY
+
+# Database connection strings with credentials
+regex:postgres://[^:]+:[^@]+@==>postgres://REDACTED_USER:REDACTED_PASS@
+regex:mysql://[^:]+:[^@]+@==>mysql://REDACTED_USER:REDACTED_PASS@
+
+# AWS keys (if any exist)
+regex:AKIA[0-9A-Z]{16}==>REDACTED_AWS_ACCESS_KEY
+regex:[0-9a-zA-Z/+]{40}==>REDACTED_AWS_SECRET_KEY
