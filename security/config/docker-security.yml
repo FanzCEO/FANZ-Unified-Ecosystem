@@ -1,0 +1,41 @@
+# FANZ Docker Security Configuration
+# Use these security practices for all FANZ containers
+
+version: '3.8'
+services:
+  fanz-app:
+    build: .
+    user: "1001:1001"           # Non-root user
+    read_only: true             # Read-only filesystem
+    cap_drop:                   # Drop all capabilities
+      - ALL
+    cap_add:                    # Add only required capabilities
+      - CAP_NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true  # Prevent privilege escalation
+    tmpfs:                      # Secure temporary storage
+      - /tmp:noexec,nosuid,size=100m
+      - /var/tmp:noexec,nosuid,size=50m
+    networks:
+      - fanz-internal           # Internal network only
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  fanz-internal:
+    driver: bridge
+    internal: true              # No external access
+    
+volumes:
+  fanz-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind,rw
+      device: /opt/fanz/data
