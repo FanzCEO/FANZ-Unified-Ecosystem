@@ -1,137 +1,80 @@
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Production builds
-build/
-dist/
-*.tgz
-*.tar.gz
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-postgres_data/
-redis_data/
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Runtime data
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# Dependency directories
-node_modules/
-jspm_packages/
-
-# Optional npm cache directory
-.npm
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
-.env.*
-!.env.example
-!.env.*.example
-
-# IDE files
-.vscode/
+# OS / Editor
+.DS_Store
 .idea/
+.vscode/
 *.swp
 *.swo
 *~
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+dist/
+build/
+.coverage/
 
-# Docker
-docker-compose.override.yml
-.docker/
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.tox/
 
-# Monitoring data
-monitoring/prometheus_data/
-monitoring/grafana_data/
-monitoring/elasticsearch_data/
+# Rust
+/target/
+Cargo.lock
 
-# Temporary files
-tmp/
-temp/
-terraform/.terraform.lock.hcl
-terraform/tfplan
-terraform/.terraform/
-*.tfstate
-*.tfstate.*
-package-lock.json
-yarn.lock
+# Go
+/bin/
+/pkg/
+go.work.sum
 
-# Security and sensitive files
-*.key
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Development tools
+.direnv/
+.mise.local.toml
+
+# FANZ-specific
+fanz-uploads/
+temp-media/
+forensic-logs/
+
+# Replit artifacts (cleanup)
+.replit
+replit.nix
+.replitignore
+
+# Logs
+*.log
+logs/
+.logs/
+
+# Security - Environment Variables
+.env
+.env.*
+!.env.example
+
+# Security - Keys and Certificates
 *.pem
+*.key
 *.p12
 *.pfx
-secrets/
-keys/
-credentials/
-config/secrets/
-*.secret
-*.secrets
-*_secret*
-*_key*
-*.api_key
-api_keys/
-auth_keys/
+id_rsa*
+*.ppk
 
-# Backup files that may contain secrets
-*.backup
-*~
-*.bak
-*_backup*
-* 2
-* 3
-* 4
+# Security - Logs and Reports
+*.log
+security-reports/
 
-# Additional cleanup patterns
-*.tmp
-.venv/
-.pytest_cache/
-*.iml
-
-# Test artifacts  
-test-results/
-.coverage
-.nyc_output

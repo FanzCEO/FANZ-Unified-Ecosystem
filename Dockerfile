@@ -1,55 +1,47 @@
-# Multi-stage build for FANZ-Unified-Ecosystem
-FROM node:20-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+# syntax=docker/dockerfile:1
+ARG BASE_IMAGE=node:20-slim
+FROM ${BASE_IMAGE} AS base
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml* ./
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    git \
+    python3 \
+    python3-pip \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm i --frozen-lockfile; \
-  else npm install; \
-  fi
+# Node.js build stage
+FROM base AS node-build
+COPY package*.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+RUN corepack enable pnpm
+RUN if [ -f pnpm-lock.yaml ]; then pnpm fetch --frozen-lockfile; fi
+COPY . .
+RUN if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile && pnpm build; fi
 
-# Build stage
-FROM base AS builder
+# Python build stage
+FROM python:3.12-slim AS py-build
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+COPY pyproject.toml requirements*.txt ./
+RUN pip install --no-cache-dir uv
+RUN if [ -f pyproject.toml ]; then uv sync; elif [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 COPY . .
 
-# Build if build script exists
-RUN pnpm run build
-
-# Production stage
+# Production runtime
 FROM base AS runner
-WORKDIR /app
-
 ENV NODE_ENV=production
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV FANZ_ENV=production
 
-# Create non-root user
-RUN addgroup --system --gid 1001 appgroup
-RUN adduser --system --uid 1001 appuser
+COPY --from=node-build /app/dist ./dist
+COPY --from=py-build /usr/local /usr/local
+COPY . .
 
-# Copy application
-COPY --from=builder --chown=appuser:appgroup /app/dist ./dist
-COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
-
-COPY --chown=appuser:appgroup package*.json ./
-
-USER appuser
-
-EXPOSE 8080
-
-ENV PORT=8080
-
-# Health check
+EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8080/health || exit 1
+  CMD curl -f http://localhost:3000/health || exit 1
 
-CMD ["node --loader ts-node/esm scripts/deploy-ecosystem.ts"]
+CMD ["sh", "-c", "if [ -f package.json ]; then node dist/server.js; else python -m app; fi"]
