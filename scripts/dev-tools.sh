@@ -403,7 +403,7 @@ cmd_platform_list() {
     echo "  • BioLinkHub"
     echo "  • ChatSphere"
     echo "  • MediaCore"
-    echo "  • FusionGeniusFanzSocial"
+    echo "  • FanzSocial"
     echo "  • FanzGPT"
     echo "  • FanzShield"
 }
