@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${NAMESPACE:-fanz-ai-ecosystem}
+  labels:
+    name: fanz-ai-ecosystem
+    version: v1
+    component: namespace
+    part-of: fanz-ecosystem
+    managed-by: kubectl
+  annotations:
+    description: "FANZ AI Ecosystem - Adult Creator Platform Intelligence"
+    contact: "joshua@fanz.network"
+    created-by: "FANZ Platform Team"

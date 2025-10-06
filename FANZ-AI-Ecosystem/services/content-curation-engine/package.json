@@ -1,0 +1,178 @@
+{
+  "name": "@fanz/content-curation-engine",
+  "version": "1.0.0",
+  "description": "Intelligent Content Curation Engine - Advanced AI-powered content discovery, recommendation, and curation system",
+  "main": "dist/server.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:recommendations": "jest tests/services/recommendations.test.ts",
+    "test:trends": "jest tests/services/trends.test.ts",
+    "test:quality": "jest tests/services/quality.test.ts",
+    "test:load": "artillery run tests/load/recommendations.yml",
+    "test:ab": "npm run test:ab:recommendations && npm run test:ab:trends",
+    "test:ab:recommendations": "jest tests/ab/recommendations.test.ts",
+    "test:ab:trends": "jest tests/ab/trends.test.ts",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "type-check": "tsc --noEmit",
+    "docker:build": "docker build -t fanz/content-curation-engine .",
+    "docker:run": "docker run -p 3012:3012 fanz/content-curation-engine",
+    "train:models": "npm run train:recommendations && npm run train:trends && npm run train:quality",
+    "train:recommendations": "tsx scripts/train-recommendations.ts",
+    "train:trends": "tsx scripts/train-trends.ts",
+    "train:quality": "tsx scripts/train-quality.ts",
+    "evaluate:models": "tsx scripts/evaluate-models.ts",
+    "precommit": "npm run lint && npm run type-check && npm test",
+    "prepare": "npm run build",
+    "clean": "rm -rf dist coverage",
+    "health-check": "curl -f http://localhost:3012/api/health || exit 1"
+  },
+  "keywords": [
+    "content-curation",
+    "recommendation-system",
+    "machine-learning",
+    "artificial-intelligence",
+    "trend-detection",
+    "personalization",
+    "engagement-prediction",
+    "quality-scoring",
+    "audience-matching",
+    "content-discovery",
+    "fanz-ecosystem"
+  ],
+  "author": "FANZ Development Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0",
+    "dotenv": "^16.3.1",
+    "joi": "^17.11.0",
+    "winston": "^3.11.0",
+    "redis": "^4.6.10",
+    "pg": "^8.11.3",
+    "@elastic/elasticsearch": "^8.10.0",
+    "axios": "^1.6.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "uuid": "^9.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "rate-limiter-flexible": "^4.0.1",
+    "@tensorflow/tfjs-node": "^4.14.0",
+    "pytorch": "^0.0.1",
+    "@huggingface/transformers": "^1.12.0",
+    "ml-matrix": "^6.10.4",
+    "ml-kmeans": "^6.0.0",
+    "natural": "^6.7.0",
+    "node-nlp": "^4.27.0",
+    "sharp": "^0.32.6",
+    "ffmpeg": "^0.0.4",
+    "node-cron": "^3.0.3",
+    "socket.io": "^4.7.4",
+    "socket.io-client": "^4.7.4",
+    "amqplib": "^0.10.3",
+    "kafkajs": "^2.2.4",
+    "prometheus-client": "^1.0.0",
+    "opentelemetry-api": "^1.7.0",
+    "node-cache": "^5.1.2",
+    "lru-cache": "^10.0.1",
+    "bull": "^4.12.0",
+    "csv-parser": "^3.0.0",
+    "json2csv": "^6.1.0",
+    "multer": "^1.4.5-lts.1",
+    "express-validator": "^7.0.1",
+    "swagger-ui-express": "^5.0.0",
+    "swagger-jsdoc": "^6.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.10",
+    "@types/express": "^4.17.20",
+    "@types/cors": "^2.8.15",
+    "@types/compression": "^1.7.4",
+    "@types/morgan": "^1.9.7",
+    "@types/lodash": "^4.14.200",
+    "@types/moment": "^2.13.0",
+    "@types/uuid": "^9.0.6",
+    "@types/jsonwebtoken": "^9.0.4",
+    "@types/bcryptjs": "^2.4.5",
+    "@types/multer": "^1.4.9",
+    "@types/swagger-ui-express": "^4.1.6",
+    "@types/swagger-jsdoc": "^6.0.2",
+    "@types/jest": "^29.5.7",
+    "@types/supertest": "^2.0.15",
+    "typescript": "^5.2.2",
+    "tsx": "^4.1.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.1",
+    "eslint": "^8.52.0",
+    "@typescript-eslint/parser": "^6.9.1",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "prettier": "^3.0.3",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.2",
+    "artillery": "^2.0.1",
+    "artillery-plugin-metrics-by-endpoint": "^1.4.0",
+    "@faker-js/faker": "^8.2.0",
+    "cross-env": "^7.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fanz-ai/content-curation-engine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fanz-ai/content-curation-engine/issues"
+  },
+  "homepage": "https://github.com/fanz-ai/content-curation-engine#readme",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": ["<rootDir>/src", "<rootDir>/tests"],
+    "testMatch": ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/server.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  }
+}
