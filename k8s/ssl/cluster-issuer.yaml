@@ -1,0 +1,133 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  labels:
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/component: cluster-issuer
+spec:
+  acme:
+    # The ACME server URL for Let's Encrypt production
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: devops@fanz.network
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    # Enable the HTTP-01 challenge provider
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+    # Enable DNS-01 challenge provider for wildcard certificates
+    - dns01:
+        cloudflare:
+          email: devops@fanz.network
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
+      selector:
+        dnsNames:
+        - "*.fanz.network"
+        - "*.boyfanz.com"
+        - "*.girlfanz.com"
+        - "*.pupfanz.com"
+        - "*.taboofanz.com"
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+  labels:
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/component: cluster-issuer
+spec:
+  acme:
+    # The ACME server URL for Let's Encrypt staging (for testing)
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: devops@fanz.network
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    # Enable the HTTP-01 challenge provider
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+    # Enable DNS-01 challenge provider for wildcard certificates
+    - dns01:
+        cloudflare:
+          email: devops@fanz.network
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
+      selector:
+        dnsNames:
+        - "*.fanz.network"
+        - "*.boyfanz.com"
+        - "*.girlfanz.com"
+        - "*.pupfanz.com"
+        - "*.taboofanz.com"
+---
+# CloudFlare API Token Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-token-secret
+  namespace: cert-manager
+type: Opaque
+stringData:
+  api-token: # SET IN PRODUCTION - CloudFlare API Token with Zone:Read, DNS:Edit permissions
+---
+# Certificate for main API domains
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: fanz-api-cert
+  namespace: fanz-production
+spec:
+  secretName: fanz-tls-secret
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - api.fanz.network
+  - ai.fanz.network
+  - monitoring.fanz.network
+---
+# Certificate for frontend domains
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: fanz-frontend-cert
+  namespace: fanz-production
+spec:
+  secretName: fanz-frontend-tls-secret
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - fanz.network
+  - boyfanz.com
+  - girlfanz.com
+  - pupfanz.com
+  - taboofanz.com
+---
+# Wildcard certificate for subdomains
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: fanz-wildcard-cert
+  namespace: fanz-production
+spec:
+  secretName: fanz-wildcard-tls-secret
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - "*.fanz.network"
+  - "*.boyfanz.com"
+  - "*.girlfanz.com"
+  - "*.pupfanz.com"
+  - "*.taboofanz.com"
