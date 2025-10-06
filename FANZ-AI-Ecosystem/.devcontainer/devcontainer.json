@@ -1,0 +1,134 @@
+{
+  "name": "FANZ AI Ecosystem Development",
+  "dockerComposeFile": ["../docker-compose.dev.yml"],
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "configureZshAsDefaultShell": true,
+      "username": "vscode"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "nodeGypDependencies": true,
+      "version": "20.10.0"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    },
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.21"
+    },
+    "ghcr.io/devcontainers/features/rust:1": {
+      "version": "1.74",
+      "profile": "minimal"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
+    },
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "version": "latest",
+      "helm": "latest",
+      "minikube": "none"
+    },
+    "ghcr.io/jdx/mise/mise:latest": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "typescript.preferences.includePackageJsonAutoImports": "auto",
+        "eslint.workingDirectories": [".", "services/*", "packages/*", "apps/*"],
+        "prettier.configPath": ".prettierrc.json",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true,
+          "source.organizeImports": true
+        },
+        "files.associations": {
+          "*.mdx": "markdown",
+          "Dockerfile*": "dockerfile"
+        },
+        "emmet.includeLanguages": {
+          "typescript": "html",
+          "typescriptreact": "html"
+        }
+      },
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "ms-azuretools.vscode-docker",
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-vscode.vscode-json",
+        "yzhang.markdown-all-in-one",
+        "shd101wyy.markdown-preview-enhanced",
+        "humao.rest-client",
+        "ms-python.python",
+        "golang.go",
+        "rust-lang.rust-analyzer",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.path-intellisense",
+        "oderwat.indent-rainbow",
+        "streetsidesoftware.code-spell-checker",
+        "ms-vscode.vscode-github-issue-notebooks",
+        "github.vscode-github-actions"
+      ]
+    }
+  },
+
+  "forwardPorts": [
+    3000, 3001, 3002, 3003, 3004, 3005, 
+    8080, 8081, 8082, 8083, 8084, 8085,
+    5432, 6379, 9090, 3000
+  ],
+
+  "portsAttributes": {
+    "3000": {
+      "label": "Web App",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "API Gateway", 
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "ignore"
+    },
+    "6379": {
+      "label": "Redis",
+      "onAutoForward": "ignore"
+    },
+    "9090": {
+      "label": "Prometheus",
+      "onAutoForward": "ignore"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  
+  "remoteEnv": {
+    "FANZ_ENVIRONMENT": "development",
+    "NODE_ENV": "development",
+    "ADULT_CONTENT_PLATFORM": "true",
+    "PAYMENT_PROCESSOR": "ccbill",
+    "COMPLIANCE_MODE": "strict",
+    "TLS_VERSION": "1.3",
+    "ENCRYPTION_STANDARD": "aes-256",
+    "PATH": "${containerEnv:PATH}:/workspace/node_modules/.bin"
+  },
+
+  "remoteUser": "vscode",
+  "overrideCommand": false
+}

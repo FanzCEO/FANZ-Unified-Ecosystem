@@ -1,0 +1,93 @@
+# FANZ AI Ecosystem Monorepo Workspace Configuration
+# Modern pnpm workspace with strict dependency management
+
+packages:
+  # Applications (user-facing)
+  - "apps/*"
+  
+  # Core Services (AI/ML microservices)
+  - "services/*"
+  
+  # Shared Libraries (reusable components)
+  - "packages/*"
+  
+  # Infrastructure (deployment, monitoring)
+  - "infrastructure/*"
+  
+  # Exclude build and temporary directories
+  - "!**/node_modules"
+  - "!**/dist"
+  - "!**/build"
+  - "!**/.next"
+  - "!**/.turbo"
+  - "!**/coverage"
+
+# Catalog configuration for dependency management
+catalog:
+  # Core runtime dependencies (pinned versions)
+  "@types/node": "^20.10.0"
+  "typescript": "^5.3.0"
+  "tsx": "^4.6.0"
+  
+  # Web framework dependencies
+  "express": "^4.18.2"
+  "fastify": "^4.24.3"
+  "next": "^14.0.4"
+  "react": "^18.2.0"
+  "react-dom": "^18.2.0"
+  
+  # AI/ML dependencies
+  "openai": "^4.20.1"
+  "@anthropic-ai/sdk": "^0.9.1"
+  "langchain": "^0.0.212"
+  
+  # Database and caching
+  "prisma": "^5.7.1"
+  "@prisma/client": "^5.7.1"
+  "redis": "^4.6.11"
+  "pg": "^8.11.3"
+  
+  # Monitoring and observability  
+  "@opentelemetry/api": "^1.7.0"
+  "@opentelemetry/auto-instrumentations-node": "^0.40.3"
+  "winston": "^3.11.0"
+  "pino": "^8.17.0"
+  
+  # Security and compliance
+  "helmet": "^7.1.0"
+  "bcrypt": "^5.1.1"
+  "jsonwebtoken": "^9.0.2"
+  "rate-limiter-flexible": "^3.0.8"
+  
+  # Testing framework
+  "jest": "^29.7.0"
+  "@testing-library/react": "^14.1.2"
+  "@testing-library/jest-dom": "^6.1.5"
+  "supertest": "^6.3.3"
+  
+  # Development tools
+  "eslint": "^8.56.0"
+  "prettier": "^3.1.1"
+  "husky": "^8.0.3"
+  "lint-staged": "^15.2.0"
+
+# pnpm configuration
+settings:
+  # Use strict peer dependencies
+  strict-peer-dependencies: true
+  
+  # Auto install peers
+  auto-install-peers: true
+  
+  # Dedupe dependencies
+  dedupe-peer-dependents: true
+  
+  # Save exact versions
+  save-exact: true
+  
+  # Hoist patterns for better performance
+  hoist-pattern:
+    - "*eslint*"
+    - "*prettier*" 
+    - "*typescript*"
+    - "@types/*"
