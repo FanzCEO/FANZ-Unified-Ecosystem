@@ -1,0 +1,27 @@
+# Kubernetes secrets (use templates instead)
+secrets.yaml
+*.secret.yaml
+*-secrets.yaml
+
+# Environment-specific configurations
+*.local.yaml
+*.dev.yaml
+*.staging.yaml
+*.prod.yaml
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Backup files
+*.bak
+*.backup
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db

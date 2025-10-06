@@ -17,6 +17,7 @@ VERSION="${VERSION:-latest}"
 BUILD_ARGS="${BUILD_ARGS:-}"
 PUSH="${PUSH:-true}"
 SERVICES=(
+    "api-gateway"
     "ai-intelligence-hub"
     "ai-creator-assistant"
     "content-curation-engine"
