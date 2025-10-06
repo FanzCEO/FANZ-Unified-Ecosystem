@@ -21,7 +21,10 @@
     "clean": "rm -rf dist",
     "prepublish": "npm run clean && npm run build",
     "demo": "tsx scripts/demo.ts",
-    "seed": "tsx scripts/seed-data.ts"
+    "seed": "tsx scripts/seed-data.ts",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "keywords": [
     "fanz",

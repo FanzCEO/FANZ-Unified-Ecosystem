@@ -14,7 +14,10 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "clean": "rm -rf dist",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "keywords": [
     "chat",
