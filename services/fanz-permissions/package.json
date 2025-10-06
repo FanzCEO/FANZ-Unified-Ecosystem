@@ -23,7 +23,10 @@
     "migrate:up": "npx knex migrate:latest",
     "migrate:down": "npx knex migrate:rollback",
     "seed": "npx knex seed:run",
-    "docs:generate": "typedoc --out docs src/index.ts"
+    "docs:generate": "typedoc --out docs src/index.ts",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "keywords": [
     "authorization",

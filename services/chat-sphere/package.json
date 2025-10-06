@@ -50,7 +50,10 @@
     "analytics": "tsx scripts/generate-analytics.ts",
     "monitor": "tsx scripts/monitor-performance.ts",
     "backup": "tsx scripts/backup-redis.ts",
-    "restore": "tsx scripts/restore-redis.ts"
+    "restore": "tsx scripts/restore-redis.ts",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "dependencies": {
     "@types/node": "^20.10.0",

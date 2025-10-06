@@ -22,7 +22,10 @@
     "clean:ios": "cd ios && rm -rf build && xcodebuild clean -workspace FanzMobile.xcworkspace -scheme FanzMobile",
     "postinstall": "react-native setup-ios-permissions && cd ios && pod install",
     "bundle:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
-    "bundle:ios": "react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/main.jsbundle --assets-dest ios"
+    "bundle:ios": "react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/main.jsbundle --assets-dest ios",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "dependencies": {
     "react": "18.3.1",

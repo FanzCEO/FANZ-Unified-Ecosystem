@@ -21,7 +21,10 @@
     "db:seed": "node -r ts-node/register scripts/seed.ts",
     "analytics:update": "node -r ts-node/register scripts/update-analytics.ts",
     "compliance:check": "node -r ts-node/register scripts/check-compliance.ts",
-    "campaigns:process": "node -r ts-node/register scripts/process-campaigns.ts"
+    "campaigns:process": "node -r ts-node/register scripts/process-campaigns.ts",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "keywords": [
     "crm",

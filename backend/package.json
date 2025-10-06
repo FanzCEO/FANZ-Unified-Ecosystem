@@ -35,7 +35,10 @@
     "docker:dev": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "logs": "docker-compose logs -f api",
-    "health": "curl -f http://localhost:3000/health || exit 1"
+    "health": "curl -f http://localhost:3000/health || exit 1",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "keywords": [
     "creator-economy",

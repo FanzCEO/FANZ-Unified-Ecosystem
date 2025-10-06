@@ -18,7 +18,7 @@
     "deploy:polygon": "hardhat run scripts/deploy.js --network polygon",
     "deploy:mainnet": "hardhat run scripts/deploy.js --network mainnet",
     "verify:goerli": "hardhat verify --network goerli",
-    "verify:sepolia": "hardhat verify --network sepolia", 
+    "verify:sepolia": "hardhat verify --network sepolia",
     "verify:mumbai": "hardhat verify --network mumbai",
     "verify:polygon": "hardhat verify --network polygon",
     "verify:mainnet": "hardhat verify --network mainnet",
@@ -31,7 +31,10 @@
     "mythril": "mythril analyze contracts/FanzNFTMarketplace.sol",
     "setup:dev": "npm run compile && npm run deploy:local",
     "setup:testnet": "npm run compile && npm run deploy:sepolia",
-    "setup:mainnet": "npm run compile && npm run deploy:mainnet && npm run verify:mainnet"
+    "setup:mainnet": "npm run compile && npm run deploy:mainnet && npm run verify:mainnet",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.2.0",

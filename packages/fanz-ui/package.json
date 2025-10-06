@@ -29,7 +29,10 @@
     "a11y-check": "axe-core src/components/**/*.tsx",
     "chromatic": "chromatic --project-token=$CHROMATIC_PROJECT_TOKEN",
     "tokens:sync": "node scripts/sync-figma-tokens.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "keywords": [
     "design-system",

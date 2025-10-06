@@ -23,7 +23,7 @@ spec:
               kinds: ["Pod"]
               selector:
                 matchLabels:
-                  fun.autofix: "safe"
+                  FANZ.autofix: "safe"
       preconditions:
         all:
           - key: "{{ request.object.status.containerStatuses[].restartCount || [] | sum(@) }}"
@@ -43,8 +43,8 @@ spec:
             template:
               metadata:
                 annotations:
-                  fun/last-autofix: "{{ time.now_utc() }}"
-                  fun/restart-reason: "crashloop-detected"
+                  FANZ/last-autofix: "{{ time.now_utc() }}"
+                  FANZ/restart-reason: "crashloop-detected"
     - name: enforce-resource-limits
       match:
         any:
@@ -73,7 +73,7 @@ spec:
               kinds: ["Pod"]
               selector:
                 matchLabels:
-                  fun.autofix: "safe"
+                  FANZ.autofix: "safe"
       mutate:
         patchStrategicMerge:
           spec:

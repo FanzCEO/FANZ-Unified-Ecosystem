@@ -22,7 +22,9 @@
     "analyze": "ANALYZE=true vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "security:scan": "npm audit --production && npx osv-scanner -r ."
+    "security:scan": "npm audit --production && npx osv-scanner -r .",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix"
   },
   "dependencies": {
     "@babylonjs/core": "^8.27.0",

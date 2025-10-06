@@ -42,7 +42,9 @@
     "start:revenue-ultra": "node --loader ts-node/esm revolutionary-systems/FanzRevenueUltra.ts",
     "deploy:revolutionary": "npm run start:creator-studio & npm run start:shield-ultra & npm run start:revenue-ultra",
     "ecosystem:complete": "npm run deploy:revolutionary && npm run deploy:production",
-    "final:deploy": "npm run ecosystem:complete"
+    "final:deploy": "npm run ecosystem:complete",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix"
   },
   "repository": {
     "type": "git",

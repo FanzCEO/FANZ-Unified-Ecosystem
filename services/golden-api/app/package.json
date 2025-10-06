@@ -10,7 +10,10 @@
     "start": "node dist/index.js",
     "build": "tsc -p tsconfig.json",
     "test": "echo \"Test suite coming soon\" && exit 0",
-    "lint": "echo \"Linting coming soon\" && exit 0"
+    "lint": "echo \"Linting coming soon\" && exit 0",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
   },
   "dependencies": {
     "@fastify/under-pressure": "^8.4.0",

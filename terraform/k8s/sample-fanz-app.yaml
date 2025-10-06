@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: fanz-demo
   labels:
-    fun.autofix: "safe"
+    FANZ.autofix: "safe"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -12,7 +12,7 @@ metadata:
   namespace: fanz-demo
   labels:
     app: fanz-api-demo
-    fun.autofix: "safe"
+    FANZ.autofix: "safe"
 spec:
   replicas: 3
   selector:
@@ -22,7 +22,7 @@ spec:
     metadata:
       labels:
         app: fanz-api-demo
-        fun.autofix: "safe"
+        FANZ.autofix: "safe"
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8080"
