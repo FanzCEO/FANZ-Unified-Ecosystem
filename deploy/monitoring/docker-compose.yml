@@ -1,0 +1,58 @@
+version: "3.9"
+name: fanz-monitoring
+
+networks:
+  edge: {}
+  internal: {}
+
+services:
+  app:
+    image: registry.digitalocean.com/fanz/fanz-ecosystem:latest
+    env_file:
+      - ./env/.env.prod
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - OTEL_SERVICE_NAME=fanz-unified-ecosystem
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+    networks: [internal]
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz", "||", "curl", "-f", "http://localhost:3000/health", "||", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  caddy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [edge, internal]
+    depends_on: [app]
+    restart: always
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.104.0
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"   # gRPC
+      - "4318:4318"   # HTTP
+    networks: [internal]
+    restart: always
+
+volumes:
+  caddy_data: {}
+  caddy_config: {}

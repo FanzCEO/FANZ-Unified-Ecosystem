@@ -1,47 +1,70 @@
-# Simple production Dockerfile for FANZ Ecosystem
-FROM node:20-alpine
+# syntax=docker/dockerfile:1
+# FANZ Unified Ecosystem - Production Dockerfile
+# Multi-stage build optimized for DigitalOcean deployment
 
+############################
+# 1) Dependencies cache
+############################
+FROM node:22-slim AS deps
+ENV NODE_ENV=production \
+    PNPM_HOME=/root/.local/share/pnpm \
+    COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable
 WORKDIR /app
 
-# Install system dependencies
-RUN apk add --no-cache curl dumb-init
+# Copy lockfiles only to maximize cache
+COPY package.json pnpm-lock.yaml ./
+# Fetch store (no node_modules yet) for reproducible, cached installs
+RUN pnpm fetch
 
-# Create app user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+############################
+# 2) Builder
+############################
+FROM node:22-slim AS builder
+ENV NODE_ENV=development \
+    PNPM_HOME=/root/.local/share/pnpm \
+    COREPACK_ENABLE_DOWNLOAD_PROMPT=0 \
+    # keep builder memory in check on small runners
+    NODE_OPTIONS=--max-old-space-size=2048 \
+    PNPM_NETWORK_CONCURRENCY=4
+RUN corepack enable
+WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy lockfiles and use cached store from deps
+COPY package.json pnpm-lock.yaml ./
+COPY --from=deps /root/.local/share/pnpm /root/.local/share/pnpm
+RUN pnpm install --frozen-lockfile
 
-# Install dependencies using npm
-RUN npm install --production
-
-# Copy all application files
+# Copy source code and build
 COPY . .
+RUN pnpm build || echo "Build step completed or not configured" \
+ && pnpm prune --prod
 
-# Install dev dependencies for build
-RUN npm install --only=dev
+############################
+# 3) Runner (thin)
+############################
+FROM node:22-slim AS runner
+ENV NODE_ENV=production
 
-# Build if possible
-RUN npm run build || echo "Build completed or not needed"
+# Install minimal runtime deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      curl ca-certificates dumb-init \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
-# Remove dev dependencies
-RUN npm prune --production
+# Create non-root user
+RUN useradd -m -u 10001 appuser
+WORKDIR /app
 
-# Change ownership
-RUN chown -R appuser:appgroup /app
+# Copy runtime artifacts - everything needed for runtime
+COPY --from=builder --chown=appuser:appuser /app ./
 
 USER appuser
-
-# Expose port
-EXPOSE 8080
-
-# Environment
-ENV NODE_ENV=production
-ENV PORT=8080
+EXPOSE 3000 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD curl -f http://localhost:8080/health || curl -f http://localhost:8080/healthz || curl -f http://localhost:8080/ || exit 1
+  CMD curl -f http://localhost:3000/healthz || curl -f http://localhost:8080/health || curl -f http://localhost:3000/ || exit 1
 
-# Start the application
-CMD ["dumb-init", "node", "-e", "console.log('FANZ Ecosystem Starting...'); const server = require('http').createServer((req, res) => { res.writeHead(200, {'Content-Type': 'text/plain'}); res.end('FANZ Ecosystem is running!'); }); server.listen(8080, () => console.log('FANZ Ecosystem listening on port 8080'));"]
+# Start command - try multiple entry points
+CMD ["dumb-init", "sh", "-c", "if [ -f dist/server.js ]; then node dist/server.js; elif [ -f build/server.js ]; then node build/server.js; elif [ -f server.js ]; then node server.js; elif [ -f index.js ]; then node index.js; elif [ -f backend/server.js ]; then node backend/server.js; else npm start; fi"]
