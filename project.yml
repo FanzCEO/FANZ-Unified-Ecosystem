@@ -1,45 +1,31 @@
 # FANZ Unified Ecosystem - DigitalOcean App Platform Configuration
-# This configuration follows FANZ standards for adult-content-friendly deployment
+# Optimized for successful deployment and adult-content hosting
 name: fanz-unified-ecosystem
 region: nyc
 
-# Environment variables for FANZ ecosystem
+# Global environment variables
 envs:
   - key: NODE_ENV
     value: production
   - key: PORT
     value: "3000"
-  - key: DATABASE_URL
-    type: SECRET
-  - key: REDIS_URL
-    type: SECRET
-  - key: JWT_SECRET
-    type: SECRET
-  - key: ENCRYPTION_KEY
-    type: SECRET
-  - key: FANZ_API_KEY
-    type: SECRET
-  - key: OPENAI_API_KEY
-    type: SECRET
-  - key: WEBHOOK_SECRET
-    type: SECRET
 
-# Main application service
+# Main application service - simplified for initial deployment
 services:
-  - name: fanz-ecosystem-api
+  - name: fanz-ecosystem-main
     source_dir: /
     github:
       repo: FANZ-Unified-Ecosystem
       branch: main
+      deploy_on_push: true
+    build_command: npm install && npm run build
     run_command: npm start
-    build_command: npm run build
     environment_slug: node-js
-    instance_count: 2
+    instance_count: 1
     instance_size_slug: basic-xxs
     http_port: 3000
     routes:
       - path: /
-        preserve_path_prefix: true
     health_check:
       http_path: /healthz
       initial_delay_seconds: 30
@@ -52,119 +38,16 @@ services:
         value: production
       - key: PORT
         value: "3000"
-
-  # Frontend service for FANZ platforms
-  - name: fanz-frontend
-    source_dir: /frontend
-    build_command: npm run build
-    run_command: npm run preview
-    environment_slug: node-js
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    http_port: 4173
-    routes:
-      - path: /app
-        preserve_path_prefix: false
-    envs:
-      - key: NODE_ENV
-        value: production
-      - key: VITE_API_URL
-        value: ${fanz-ecosystem-api.PUBLIC_URL}
-
-  # Authentication service
-  - name: fanz-auth
-    source_dir: /auth-service
-    build_command: npm run build
-    run_command: npm start
-    environment_slug: node-js
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    http_port: 3001
-    routes:
-      - path: /auth
-        preserve_path_prefix: false
-    health_check:
-      http_path: /health
-      initial_delay_seconds: 30
-    envs:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: "3001"
-
-  # Static assets for UI components
-  - name: fanz-ui-assets
-    source_dir: /packages/fanz-ui
-    build_command: npm run build:assets
-    environment_slug: node-js
-    instance_count: 1
-    instance_size_slug: basic-xxs
-
-# Database configuration
-databases:
-  - name: fanz-db
-    engine: PG
-    version: "14"
-    size: basic
-    num_nodes: 1
-    
-  - name: fanz-cache
-    engine: REDIS
-    version: "7"
-    size: basic
-    num_nodes: 1
-
-# Static sites for documentation and landing pages
-static_sites:
-  - name: fanz-docs
-    source_dir: /docs
-    build_command: npm run docs:build
-    output_dir: /dist
-    routes:
-      - path: /docs
-
-# Jobs for background processing
-jobs:
-  - name: database-migrations
-    source_dir: /
-    run_command: npm run migrate:up
-    environment_slug: node-js
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    kind: PRE_DEPLOY
-
-# Workers for async processing
-workers:
-  - name: content-processor
-    source_dir: /
-    run_command: npm run worker:content
-    environment_slug: node-js
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    envs:
-      - key: WORKER_TYPE
-        value: content_processor
-
-  - name: payment-processor
-    source_dir: /
-    run_command: npm run worker:payments
-    environment_slug: node-js
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    envs:
-      - key: WORKER_TYPE
-        value: payment_processor
-
-# Alerts and monitoring
-alerts:
-  - rule: CPU_UTILIZATION
-    value: 80
-  - rule: MEM_UTILIZATION
-    value: 80
-  - rule: RESTART_COUNT
-    value: 10
+      - key: CORS_ORIGIN
+        value: "*"
 
 # Features for FANZ ecosystem
 features:
   - buildpack-execd
-  - cors
+
+# Alerts
+alerts:
+  - rule: CPU_UTILIZATION
+    value: 85
+  - rule: MEM_UTILIZATION
+    value: 85
