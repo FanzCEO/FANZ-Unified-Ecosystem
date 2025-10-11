@@ -1,0 +1,360 @@
+---
+# BoyFanz Ingress - boyfanz.com routing
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: boyfanz-web-ingress
+  namespace: boyfanz
+  labels:
+    app: boyfanz
+    component: web
+    brand: boyfanz
+    system: fanz
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "256m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://boyfanz.com,https://www.boyfanz.com"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET,POST,PUT,DELETE,OPTIONS,HEAD"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-FANZ-Auth"
+    
+    # Adult content and compliance headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header X-Adult-Content "true" always;
+      add_header Age-Verification "required" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-Frame-Options "SAMEORIGIN" always;
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+      add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.fanz.media; style-src 'self' 'unsafe-inline' https://cdn.fanz.media; img-src 'self' data: https: blob:; media-src 'self' https: blob:; connect-src 'self' https: wss: ws:; font-src 'self' https://cdn.fanz.media;" always;
+      
+      # Rate limiting per IP
+      limit_req_zone $binary_remote_addr zone=boyfanz_ratelimit:10m rate=100r/m;
+      limit_req zone=boyfanz_ratelimit burst=20 nodelay;
+spec:
+  rules:
+  - host: boyfanz.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: boyfanz-web
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: boyfanz-api
+            port:
+              number: 8080
+      - path: /media
+        pathType: Prefix
+        backend:
+          service:
+            name: boyfanz-media
+            port:
+              number: 8081
+  - host: www.boyfanz.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: boyfanz-web
+            port:
+              number: 80
+
+---
+# GirlFanz Ingress - girlfanz.com routing
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: girlfanz-web-ingress
+  namespace: girlfanz
+  labels:
+    app: girlfanz
+    component: web
+    brand: girlfanz
+    system: fanz
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "256m"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://girlfanz.com,https://www.girlfanz.com"
+    
+    # Adult content headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header X-Adult-Content "true" always;
+      add_header Age-Verification "required" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-Frame-Options "SAMEORIGIN" always;
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+      
+      # Rate limiting per IP
+      limit_req_zone $binary_remote_addr zone=girlfanz_ratelimit:10m rate=100r/m;
+      limit_req zone=girlfanz_ratelimit burst=20 nodelay;
+spec:
+  rules:
+  - host: girlfanz.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: girlfanz-web
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: girlfanz-api
+            port:
+              number: 8080
+      - path: /media
+        pathType: Prefix
+        backend:
+          service:
+            name: girlfanz-media
+            port:
+              number: 8081
+  - host: www.girlfanz.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: girlfanz-web
+            port:
+              number: 80
+
+---
+# PupFanz Ingress - pupfanz.com routing
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pupfanz-web-ingress
+  namespace: pupfanz
+  labels:
+    app: pupfanz
+    component: web
+    brand: pupfanz
+    system: fanz
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "256m"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://pupfanz.com,https://www.pupfanz.com"
+    
+    # Adult content headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header X-Adult-Content "true" always;
+      add_header Age-Verification "required" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-Frame-Options "SAMEORIGIN" always;
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+      
+      # Kink-positive community specific headers
+      add_header X-Community-Safe "kink-positive" always;
+      
+      # Rate limiting per IP
+      limit_req_zone $binary_remote_addr zone=pupfanz_ratelimit:10m rate=100r/m;
+      limit_req zone=pupfanz_ratelimit burst=20 nodelay;
+spec:
+  rules:
+  - host: pupfanz.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: pupfanz-web
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: pupfanz-api
+            port:
+              number: 8080
+      - path: /media
+        pathType: Prefix
+        backend:
+          service:
+            name: pupfanz-media
+            port:
+              number: 8081
+
+---
+# TransFanz Ingress - transfanz.com routing
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: transfanz-web-ingress
+  namespace: transfanz
+  labels:
+    app: transfanz
+    component: web
+    brand: transfanz
+    system: fanz
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "256m"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://transfanz.com,https://www.transfanz.com"
+    
+    # Adult content headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header X-Adult-Content "true" always;
+      add_header Age-Verification "required" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-Frame-Options "SAMEORIGIN" always;
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+      
+      # Trans-inclusive community headers
+      add_header X-Trans-Safe "true" always;
+      add_header X-Inclusive "LGBTQIA+" always;
+      
+      # Rate limiting per IP
+      limit_req_zone $binary_remote_addr zone=transfanz_ratelimit:10m rate=100r/m;
+      limit_req zone=transfanz_ratelimit burst=20 nodelay;
+spec:
+  rules:
+  - host: transfanz.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: transfanz-web
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: transfanz-api
+            port:
+              number: 8080
+
+---
+# TabooFanz Ingress - TabooFanz.com routing (replaces EbonyFanz)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taboofanz-web-ingress
+  namespace: taboofanz
+  labels:
+    app: taboofanz
+    component: web
+    brand: taboofanz
+    system: fanz
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "256m"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://taboofanz.com,https://www.taboofanz.com"
+    
+    # Adult content headers with enhanced restrictions
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header X-Adult-Content "true" always;
+      add_header Age-Verification "required" always;
+      add_header X-Content-Warning "explicit" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-Frame-Options "SAMEORIGIN" always;
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+      
+      # Enhanced rate limiting for taboo content
+      limit_req_zone $binary_remote_addr zone=taboofanz_ratelimit:10m rate=50r/m;
+      limit_req zone=taboofanz_ratelimit burst=10 nodelay;
+spec:
+  rules:
+  - host: taboofanz.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: taboofanz-web
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: taboofanz-api
+            port:
+              number: 8080
+
+---
+# DaddiesFanz Ingress - daddiesfanz.com routing
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: daddiesfanz-web-ingress
+  namespace: daddiesfanz
+  labels:
+    app: daddiesfanz
+    component: web
+    brand: daddiesfanz
+    system: fanz
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "256m"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://daddiesfanz.com,https://www.daddiesfanz.com"
+    
+    # Adult content headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header X-Adult-Content "true" always;
+      add_header Age-Verification "required" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-Frame-Options "SAMEORIGIN" always;
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+      
+      # Rate limiting per IP
+      limit_req_zone $binary_remote_addr zone=daddiesfanz_ratelimit:10m rate=100r/m;
+      limit_req zone=daddiesfanz_ratelimit burst=20 nodelay;
+spec:
+  rules:
+  - host: daddiesfanz.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: daddiesfanz-web
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: daddiesfanz-api
+            port:
+              number: 8080
