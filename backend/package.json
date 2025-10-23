@@ -1,4 +1,4 @@
-{
+"engines": { "node": "20.x" }{
   "name": "fanz-unified-ecosystem-backend",
   "version": "1.0.0",
   "description": "Revolutionary Creator Economy Platform - Backend API",
