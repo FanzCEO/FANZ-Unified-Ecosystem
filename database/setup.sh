@@ -146,7 +146,7 @@ show_stats() {
     echo "  • ChatSphere (Messaging)"
     echo "  • MediaCore (Media Processing)"
     echo "  • FanzFinance OS (Financial Management)"
-    echo "  • FusionGeniusFanzSocial (Social Networking)"
+    echo "  • FanzSocialFanzSocial (Social Networking)"
     echo "  • FanzShield (Security & Compliance)"
     echo
     

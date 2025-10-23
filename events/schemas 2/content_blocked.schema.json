@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.fanzunlimited.com/content_blocked.schema.json",
+  "title": "content_blocked",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "const": "content_blocked"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "content_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "boyfanz",
+        "girlfanz",
+        "pupfanz"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "policy_violation",
+        "copyright",
+        "malware"
+      ]
+    },
+    "appeal_url": {
+      "type": "string",
+      "format": "uri"
+    }
+  },
+  "required": [
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "content_id",
+    "platform",
+    "reason"
+  ]
+}

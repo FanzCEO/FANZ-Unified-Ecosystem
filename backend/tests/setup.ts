@@ -2,6 +2,8 @@
 import { config } from 'dotenv';
 import { performance } from 'perf_hooks';
 import axios from 'axios';
+// Node.js built-in URL class for robust URL parsing
+// No explicit import needed in Node 10+, global 'URL' is available
 
 // Load test environment variables
 config({ path: '.env.test' });
@@ -191,12 +193,30 @@ const originalEmit = process.emit;
 
 // Set up default HTTP mocks for payment processors using axios mocking
 function setupAxiosMocks() {
+  // Allowed payment processor hosts for mocks
+  const ccbillHosts = ['ccbill.com', 'www.ccbill.com', 'pay.ccbill.com'];
+  const paxumHosts = ['paxum.com', 'www.paxum.com', 'api.paxum.com'];
+  const segpayHosts = ['segpay.com', 'www.segpay.com', 'api.segpay.com'];
+
+  // Helper to check hostname against allowed (exact or subdomain)
+  function isAllowedHost(url: string, allowedHosts: string[]): boolean {
+    try {
+      const { hostname } = new URL(url);
+      return allowedHosts.some(allowed => (
+        hostname === allowed || hostname.endsWith(`.${allowed}`)
+      ));
+    } catch {
+      // Not a valid URL - fallback to 'false'
+      return false;
+    }
+  }
+
   // Mock axios.post for various payment processor endpoints
   mockedAxios.post.mockImplementation((url: string, data?: any, config?: any) => {
     console.log('🔄 Mocked axios.post called for:', url);
     
     // CCBill API mocks
-    if (url.includes('ccbill.com')) {
+    if (isAllowedHost(url, ccbillHosts)) {
       if (url.includes('/wap-frontflex/flexforms/ping')) {
         return Promise.resolve({ data: { status: 'ok' }, status: 200 });
       }
@@ -216,7 +236,7 @@ function setupAxiosMocks() {
     }
     
     // Paxum API mocks
-    if (url.includes('paxum.com')) {
+    if (isAllowedHost(url, paxumHosts)) {
       if (url.includes('/api/payout')) {
         return Promise.resolve({
           data: {
@@ -233,7 +253,7 @@ function setupAxiosMocks() {
     }
     
     // Segpay API mocks
-    if (url.includes('segpay.com')) {
+    if (isAllowedHost(url, segpayHosts)) {
       return Promise.resolve({
         data: {
           success: true,
@@ -251,13 +271,13 @@ function setupAxiosMocks() {
   mockedAxios.get.mockImplementation((url: string, config?: any) => {
     console.log('🔄 Mocked axios.get called for:', url);
     
-    if (url.includes('paxum.com')) {
+    if (isAllowedHost(url, paxumHosts)) {
       return Promise.resolve({ data: { status: 'healthy' }, status: 200 });
     }
-    if (url.includes('segpay.com')) {
+    if (isAllowedHost(url, segpayHosts)) {
       return Promise.resolve({ data: { status: 'ok' }, status: 200 });
     }
-    if (url.includes('ccbill.com')) {
+    if (isAllowedHost(url, ccbillHosts)) {
       return Promise.resolve({ data: { status: 'ok' }, status: 200 });
     }
     

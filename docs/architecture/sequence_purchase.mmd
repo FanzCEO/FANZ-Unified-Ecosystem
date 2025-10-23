@@ -1,0 +1,30 @@
+%% FANZ — Purchase/Subscribe/Tip
+sequenceDiagram
+    autonumber
+    participant F as Fan
+    participant P as Platform (BoyFanz/GirlFanz/PupFanz)
+    participant G as API Gateway
+    participant FIN as FanzFinance (Ledger)
+    participant PAY as Payment Processor (KYC/Tax/Fraud)
+    participant DB as Core DB
+    participant BUS as Event Bus
+    participant N as Notify
+    participant ANA as Analytics/Data Lake
+
+    F->>P: Buy subscription / tip / PPV
+    P->>G: Create order
+    G->>FIN: Authorize transaction
+    FIN->>PAY: Payment intent (3DS/AVS/CVV)
+    PAY-->>FIN: Authorized/Declined
+    alt Authorized
+        FIN->>PAY: Capture/Settle
+        FIN->>DB: Grant entitlements
+        FIN->>BUS: Publish payment_settled
+        BUS->>ANA: ETL facts
+        BUS->>N: Receipt & access granted
+        N-->>F: Receipt email/SMS/push
+    else Declined
+        FIN->>BUS: payment_failed
+        BUS->>N: Send failure notice
+        N-->>F: "Try again" message
+    end

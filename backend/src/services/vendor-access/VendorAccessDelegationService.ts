@@ -176,7 +176,7 @@ export default class VendorAccessDelegationService {
   }): Promise<VendorProfile> {
     // Mock implementation - in production, this would create a vendor profile
     return {
-      id: 'vendor-' + Math.random().toString(36).substr(2, 9),
+      id: 'vendor-' + require('crypto').randomBytes(5).toString('hex').slice(0, 9),
       email: data.email,
       name: data.name,
       company: data.company,
@@ -249,7 +249,7 @@ export default class VendorAccessDelegationService {
     const durationHours = data.durationHours || data.duration || 24;
     const endDate = new Date(Date.now() + durationHours * 60 * 60 * 1000);
     return {
-      id: 'grant-' + Math.random().toString(36).substr(2, 9),
+      id: 'grant-' + require('crypto').randomBytes(5).toString('hex').slice(0, 9),
       vendorId: data.vendorId,
       categories: data.categories as AccessCategory[],
       accessLevel: data.accessLevel as AccessLevel,
@@ -300,10 +300,10 @@ export default class VendorAccessDelegationService {
     // Mock implementation - in production, this would generate a secure access token
     const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
     return {
-      token: 'tok_' + Math.random().toString(36).substr(2, 32),
+      token: 'tok_' + require('crypto').randomBytes(16).toString('hex').slice(0, 32),
       expires_at,
       expiresAt: expires_at, // Alias for compatibility
-      vendorId: 'vendor-' + Math.random().toString(36).substr(2, 9), // Mock vendor ID
+      vendorId: 'vendor-' + require('crypto').randomBytes(5).toString('hex').slice(0, 9), // Mock vendor ID
       grantId
     };
   }
@@ -394,9 +394,9 @@ export default class VendorAccessDelegationService {
     // Mock implementation - in production, this would validate vendor access
     return {
       valid: true,
-      vendorId: 'vendor-' + Math.random().toString(36).substr(2, 9),
-      sessionId: 'session-' + Math.random().toString(36).substr(2, 9),
-      riskScore: Math.floor(Math.random() * 50), // Low risk score 0-50
+      vendorId: 'vendor-' + require('crypto').randomBytes(5).toString('hex').slice(0, 9),
+      sessionId: 'session-' + require('crypto').randomBytes(5).toString('hex').slice(0, 9),
+      riskScore: Math.floor(require('crypto').randomInt(0, 50)), // Low risk score 0-50
       vendor: undefined,
       permissions: ['read', 'write']
     };

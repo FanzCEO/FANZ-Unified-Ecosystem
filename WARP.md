@@ -31,7 +31,7 @@
 - **BioLinkHub**: Link aggregation
 - **ChatSphere**: Real-time communication
 - **MediaCore**: Media processing
-- **FusionGeniusFanzSocial**: Social networking
+- **FanzSocialFanzSocial**: Social networking
 - **FanzGPT**: AI assistance
 - **FanzShield**: Security & protection
 

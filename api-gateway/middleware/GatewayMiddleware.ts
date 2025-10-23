@@ -1,3 +1,56 @@
+
+// Security: HTML escaping utility
+const escapeHtml = (text) => {
+  if (!text || typeof text !== 'string') return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/\//g, '&#x2F;');
+};
+
+// Security: Safe logging utility
+const safeLog = (message, data = null) => {
+  const sensitiveFields = ['password', 'token', 'key', 'secret', 'auth', 'session'];
+  
+  if (data && typeof data === 'object') {
+    const sanitized = JSON.parse(JSON.stringify(data));
+    
+    const redactSensitive = (obj) => {
+      for (const key in obj) {
+        if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
+          obj[key] = '[REDACTED]';
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+          redactSensitive(obj[key]);
+        }
+      }
+    };
+    
+    redactSensitive(sanitized);
+    safeLog(message, sanitized);
+  } else {
+    safeLog(message);
+  }
+};
+
+// Security: URL sanitization utility
+const sanitizeUrl = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  
+  const dangerousProtocols = /^(javascript|data|vbscript|file|ftp):/i;
+  if (dangerousProtocols.test(url)) return '';
+  
+  if (!/^https?:\/\//.test(url)) return '';
+  
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.href;
+  } catch {
+    return '';
+  }
+};
 /**
  * 🛡️ Advanced Middleware Stack for FANZ API Gateway
  * 
@@ -268,7 +321,7 @@ export class GatewayMiddleware {
         req.session = authResult.session;
         req.api_key = authResult.api_key;
         
-        this.logger.info('Authentication successful', {
+        safeLogger.log('Authentication successful', {
           user_id: authResult.user?.id,
           auth_method: authResult.method,
           ip: req.ip
@@ -279,7 +332,7 @@ export class GatewayMiddleware {
         this.handleAuthFailure(req, res, authResult);
       }
     } catch (error) {
-      this.logger.error('Authentication error', { error: error.message, ip: req.ip });
+      safeLogger.error('Authentication error', { error: error.message, ip: req.ip });
       this.metrics.auth_failures.inc({ auth_type: 'system', reason: 'error' });
       res.status(500).json({ error: 'Authentication system error' });
     }
@@ -298,7 +351,7 @@ export class GatewayMiddleware {
       // Continue regardless of authentication result
       next();
     } catch (error) {
-      this.logger.warn('Optional authentication failed', { error: error.message, ip: req.ip });
+      safeLogger.warn('Optional authentication failed', { error: error.message, ip: req.ip });
       next(); // Continue anyway
     }
   };
@@ -466,7 +519,7 @@ export class GatewayMiddleware {
   }
 
   private handleAuthFailure(req: Request, res: Response, authResult: any): void {
-    this.logger.warn('Authentication failed', {
+    safeLogger.warn('Authentication failed', {
       error: authResult.error,
       ip: req.ip,
       user_agent: req.get('User-Agent'),
@@ -510,7 +563,7 @@ export class GatewayMiddleware {
             return;
           }
 
-          this.logger.warn('Authorization failed', {
+          safeLogger.warn('Authorization failed', {
             user_id: req.user.id,
             required_permissions: permissions,
             user_permissions: userPermissions,
@@ -527,7 +580,7 @@ export class GatewayMiddleware {
 
         next();
       } catch (error) {
-        this.logger.error('Authorization error', { error: error.message });
+        safeLogger.error('Authorization error', { error: error.message });
         res.status(500).json({ error: 'Authorization system error' });
       }
     };
@@ -563,7 +616,7 @@ export class GatewayMiddleware {
         this.handleRateLimitExceeded(req, res, rateLimitResult);
       }
     } catch (error) {
-      this.logger.error('Rate limiting error', { error: error.message });
+      safeLogger.error('Rate limiting error', { error: error.message });
       next(); // Continue on rate limit system error
     }
   };
@@ -639,7 +692,7 @@ export class GatewayMiddleware {
   }
 
   private handleRateLimitExceeded(req: Request, res: Response, rateLimitResult: any): void {
-    this.logger.warn('Rate limit exceeded', {
+    safeLogger.warn('Rate limit exceeded', {
       ip: req.ip,
       user_agent: req.get('User-Agent'),
       endpoint: req.path,
@@ -689,7 +742,7 @@ export class GatewayMiddleware {
       }
     }
 
-    this.logger.info('Request received', requestLog);
+    safeLogger.log('Request received', requestLog);
 
     // Hook into response to log completion
     const originalSend = res.send;
@@ -711,7 +764,7 @@ export class GatewayMiddleware {
         }
       }
 
-      this.logger.info('Request completed', responseLog);
+      safeLogger.log('Request completed', responseLog);
 
       // Update metrics
       if (this.config.monitoring.collect_metrics) {
@@ -859,13 +912,13 @@ export class GatewayMiddleware {
   // =============================================================================
 
   public async shutdown(): Promise<void> {
-    this.logger.info('Shutting down Gateway Middleware...');
+    safeLogger.log('Shutting down Gateway Middleware...');
     
     if (this.redis) {
       await this.redis.disconnect();
     }
     
-    this.logger.info('Gateway Middleware shutdown complete');
+    safeLogger.log('Gateway Middleware shutdown complete');
   }
 }
 

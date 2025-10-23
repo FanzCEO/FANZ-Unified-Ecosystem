@@ -1,0 +1,91 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits", 
+    ":rebaseStalePrs"
+  ],
+  "rangeStrategy": "bump",
+  "automerge": false,
+  "assignees": ["@FANZ-DevOps"],
+  "reviewers": ["@FANZ-DevOps"],
+  "timezone": "America/New_York",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies", "automated"],
+  "commitMessagePrefix": "🤖 ",
+  "prTitle": "🔄 Update {{depName}} to {{newVersion}}",
+  "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}\n\n---\n🤖 **FANZ Auto-Update via Renovate**\n\n🔍 **Review Checklist:**\n- [ ] Version compatibility verified\n- [ ] Breaking changes reviewed\n- [ ] Security implications assessed\n- [ ] Deployment strategy confirmed",
+  "packageRules": [
+    {
+      "description": "Group all FANZ infrastructure updates",
+      "matchManagers": ["dockerfile", "github-actions", "helm-values", "kubernetes"],
+      "groupName": "fanz-infrastructure",
+      "schedule": ["before 6am on monday"]
+    },
+    {
+      "description": "Auto-merge patch updates for trusted packages", 
+      "matchUpdateTypes": ["patch"],
+      "matchPackagePatterns": ["nginx", "alpine", "ubuntu"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Kubernetes and Helm charts",
+      "matchDatasources": ["helm", "kubernetes"],
+      "enabled": true,
+      "groupName": "k8s-ecosystem"
+    },
+    {
+      "description": "Docker images", 
+      "matchDatasources": ["docker"],
+      "enabled": true,
+      "groupName": "docker-images"
+    },
+    {
+      "description": "Terraform modules",
+      "matchManagers": ["terraform"],
+      "enabled": true,
+      "groupName": "terraform-modules"
+    },
+    {
+      "description": "GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "enabled": true,
+      "groupName": "github-actions"
+    },
+    {
+      "description": "Security updates - high priority",
+      "matchPackagePatterns": ["*"],
+      "vulnerabilityAlerts": {
+        "enabled": true
+      },
+      "prPriority": 10,
+      "labels": ["security", "high-priority"]
+    }
+  ],
+  "regexManagers": [
+    {
+      "description": "Custom regex for Kubernetes manifests",
+      "fileMatch": ["^k8s/.+\\.ya?ml$"],
+      "matchStrings": [
+        "image:\\s+(?<depName>[^:]+):(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "description": "Terraform modules in main.tf",
+      "fileMatch": ["main\\.tf$"],
+      "matchStrings": [
+        "source\\s+=\\s+\"(?<depName>terraform-aws-modules\\/[^/]+\\/aws)\"\\s+version\\s+=\\s+\"~>\\s+(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "terraform-module"
+    }
+  ],
+  "hostRules": [
+    {
+      "description": "Use GitHub token for private repos",
+      "matchHost": "github.com",
+      "token": "{{ secrets.RENOVATE_TOKEN }}"
+    }
+  ]
+}

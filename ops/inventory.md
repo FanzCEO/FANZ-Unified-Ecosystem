@@ -33,7 +33,7 @@
 | `BioLinkHub` | `/core-systems/biolink-hub` | Link Aggregation | Platform Team | ✅ Ready |
 | `ChatSphere` | `/core-systems/chat-sphere` | Real-time Communication | Chat Team | ✅ Ready |
 | `MediaCore` | `/core-systems/media-core` | Media Processing | Media Team | ✅ Ready |
-| `FusionGeniusFanzSocial` | `/core-systems/social` | Social Networking | Social Team | ✅ Ready |
+| `FanzSocial` | `/core-systems/social` | Social Networking | Social Team | ✅ Ready |
 | `FanzGPT` | `/core-systems/ai-assistant` | AI Assistance | AI Team | ✅ Ready |
 | `FanzShield` | `/core-systems/security` | Security & Protection | SecOps Team | ✅ Ready |
 

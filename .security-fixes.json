@@ -1,0 +1,58 @@
+{
+  "vulnerabilities": {
+    "resolved": [
+      "multer",
+      "tar-fs",
+      "ip",
+      "@babel/runtime",
+      "tmp",
+      "cookie"
+    ],
+    "fixes": {
+      "multer": {
+        "issue": "DoS vulnerabilities",
+        "safeVersion": "^1.4.5-lts.1",
+        "alternative": "@fastify/multipart",
+        "reason": "Multiple DoS vulnerabilities in multer"
+      },
+      "tar-fs": {
+        "issue": "Symlink validation bypass",
+        "safeVersion": "^3.0.4",
+        "alternative": "tar-stream",
+        "reason": "Symlink validation bypass vulnerability"
+      },
+      "ip": {
+        "issue": "SSRF improper categorization",
+        "safeVersion": "^2.0.1",
+        "alternative": "ipaddr.js",
+        "reason": "SSRF vulnerability in isPublic function"
+      },
+      "@babel/runtime": {
+        "issue": "Inefficient RegExp complexity",
+        "safeVersion": "^7.24.0",
+        "alternative": null,
+        "reason": "RegExp DoS in named capturing groups"
+      },
+      "tmp": {
+        "issue": "Arbitrary file write via symlink",
+        "safeVersion": "^0.2.3",
+        "alternative": "tmp-promise",
+        "reason": "Symlink directory parameter vulnerability"
+      },
+      "cookie": {
+        "issue": "Out of bounds characters",
+        "safeVersion": "^0.6.0",
+        "alternative": "@fastify/cookie",
+        "reason": "Accepts invalid characters in name/path/domain"
+      }
+    },
+    "timestamp": "2025-09-25T18:08:59.892Z",
+    "version": "1.0.0"
+  },
+  "recommendations": [
+    "Regularly update dependencies",
+    "Use npm audit or pnpm audit for ongoing monitoring",
+    "Consider using Snyk or similar tools for advanced security scanning",
+    "Implement dependency pinning for critical packages"
+  ]
+}

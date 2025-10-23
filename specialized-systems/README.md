@@ -61,7 +61,7 @@ This directory contains the integrated specialized systems from your comprehensi
 - **Tech Stack**: FFmpeg, Go, MinIO, CDN integration
 - **Directory**: `./mediacore/`
 
-#### **5. FusionGeniusFanzSocial** - Social Networking Features
+#### **5. FanzSocial** - Social Networking Features
 - **Purpose**: Advanced social networking capabilities
 - **Features**:
   - Social feed algorithms and personalization

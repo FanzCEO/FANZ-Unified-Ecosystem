@@ -1,0 +1,216 @@
+services:
+  # Core Infrastructure
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: fanz_ecosystem
+      POSTGRES_USER: fanz_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password_123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fanz_user -d fanz_ecosystem"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fanz-net
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - fanz-net
+
+  # REAL FANZ PLATFORM APPLICATIONS
+
+  # Real FanzLanding Platform (Node.js/React App)
+  fanz-landing:
+    build:
+      context: /Users/joshuastone/Documents/GitHub/FanzLanding
+      dockerfile_inline: |
+        FROM node:20-alpine as builder
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --legacy-peer-deps
+        COPY . .
+        RUN npx vite build
+        
+        FROM node:20-alpine as production
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --omit=dev --legacy-peer-deps && npm install tsx && npm cache clean --force
+        COPY --from=builder /app/dist ./dist
+        COPY --from=builder /app/server ./server
+        COPY --from=builder /app/shared ./shared
+        COPY --from=builder /app/vite.config.ts ./vite.config.ts
+        COPY --from=builder /app/tsconfig.json ./tsconfig.json
+        COPY --from=builder /app/dist/public ./server/public
+        EXPOSE 3000
+        CMD ["npx", "tsx", "server/index.ts"]
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://fanz_user:${DB_PASSWORD:-dev_password_123}@postgres:5432/fanz_ecosystem
+      - REDIS_URL=redis://redis:6379
+      - SESSION_SECRET=${SESSION_SECRET:-fanz_session_secret_dev_2024}
+      - JWT_SECRET=${JWT_SECRET:-fanz_jwt_secret_dev_2024}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-fanz_encryption_dev_key_32bytes}
+      - APP_NAME=FanzLanding
+      - APP_URL=http://localhost:3000
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3030,http://localhost:8090
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - fanz-net
+    restart: unless-stopped
+
+  # Real FanzDash Platform (Admin Control Center)
+  fanzdash:
+    build:
+      context: /Users/joshuastone/Documents/GitHub/FanzDash
+      dockerfile_inline: |
+        FROM node:20-alpine as builder
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --legacy-peer-deps
+        COPY . .
+        RUN npx vite build
+        
+        FROM node:20-alpine as production
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm install --omit=dev --legacy-peer-deps && npm install tsx --legacy-peer-deps && npm cache clean --force
+        COPY --from=builder /app/dist ./dist
+        COPY --from=builder /app/server ./server
+        COPY --from=builder /app/shared ./shared
+        COPY --from=builder /app/vite.config.ts ./vite.config.ts
+        COPY --from=builder /app/tsconfig.json ./tsconfig.json
+        COPY --from=builder /app/dist/public ./server/public
+        EXPOSE 3030
+        CMD ["npx", "tsx", "server/index.ts"]
+    ports:
+      - "3030:3030"
+    environment:
+      - NODE_ENV=production
+      - PORT=3030
+      - DATABASE_URL=postgresql://fanz_user:${DB_PASSWORD:-dev_password_123}@postgres:5432/fanz_ecosystem
+      - REDIS_URL=redis://redis:6379
+      - SESSION_SECRET=${SESSION_SECRET:-fanz_session_secret_dev_2024}
+      - JWT_SECRET=${JWT_SECRET:-fanz_jwt_secret_dev_2024}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-fanz_encryption_dev_key_32bytes}
+      - APP_NAME=FanzDash
+      - APP_URL=http://localhost:3030
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3030,http://localhost:8090
+      - ADMIN_MODE=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - fanz-net
+    restart: unless-stopped
+
+  # API Gateway (Enhanced with Security Fixes)
+  api-gateway:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM node:20-alpine
+        RUN apk add --no-cache python3 make g++
+        WORKDIR /app
+        COPY api-gateway/ ./
+        RUN npm install --legacy-peer-deps
+        EXPOSE 8090
+        CMD ["sh", "-c", "npm run build && npm start"]
+    ports:
+      - "8090:8090"
+    environment:
+      - NODE_ENV=production
+      - PORT=8090
+      - DATABASE_URL=postgresql://fanz_user:${DB_PASSWORD:-dev_password_123}@postgres:5432/fanz_ecosystem
+      - REDIS_URL=redis://redis:6379
+      - FANZ_LANDING_URL=http://fanz-landing:3000
+      - FANZ_DASH_URL=http://fanzdash:3030
+    depends_on:
+      - postgres
+      - redis
+      - fanz-landing
+      - fanzdash
+    networks:
+      - fanz-net
+    restart: unless-stopped
+
+  # Real Platform Applications (to be built)
+  # These will be actual platforms once created
+  boyfanz:
+    image: nginx:alpine
+    ports:
+      - "3001:80"
+    volumes:
+      - /Users/joshuastone/Documents/GitHub/FANZ-Unified-Ecosystem/stubs/boyfanz.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+    labels:
+      - "platform.status=placeholder"
+      - "platform.upgrade=needed"
+
+  girlfanz:
+    image: nginx:alpine
+    ports:
+      - "3002:80"
+    volumes:
+      - /Users/joshuastone/Documents/GitHub/FANZ-Unified-Ecosystem/stubs/girlfanz.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+    labels:
+      - "platform.status=placeholder"
+      - "platform.upgrade=needed"
+
+  pupfanz:
+    image: nginx:alpine
+    ports:
+      - "3003:80"
+    volumes:
+      - /Users/joshuastone/Documents/GitHub/FANZ-Unified-Ecosystem/stubs/pupfanz.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - fanz-net
+    labels:
+      - "platform.status=placeholder"
+      - "platform.upgrade=needed"
+
+networks:
+  fanz-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -1,3 +1,56 @@
+
+// Security: HTML escaping utility
+const escapeHtml = (text) => {
+  if (!text || typeof text !== 'string') return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/\//g, '&#x2F;');
+};
+
+// Security: Safe logging utility
+const safeLog = (message, data = null) => {
+  const sensitiveFields = ['password', 'token', 'key', 'secret', 'auth', 'session'];
+  
+  if (data && typeof data === 'object') {
+    const sanitized = JSON.parse(JSON.stringify(data));
+    
+    const redactSensitive = (obj) => {
+      for (const key in obj) {
+        if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
+          obj[key] = '[REDACTED]';
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+          redactSensitive(obj[key]);
+        }
+      }
+    };
+    
+    redactSensitive(sanitized);
+    safeLog(message, sanitized);
+  } else {
+    safeLog(message);
+  }
+};
+
+// Security: URL sanitization utility
+const sanitizeUrl = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  
+  const dangerousProtocols = /^(javascript|data|vbscript|file|ftp):/i;
+  if (dangerousProtocols.test(url)) return '';
+  
+  if (!/^https?:\/\//.test(url)) return '';
+  
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.href;
+  } catch {
+    return '';
+  }
+};
 #!/usr/bin/env node
 
 /**
@@ -9,6 +62,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
 
@@ -17,6 +71,21 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Security: Rate limiting middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    resetTime: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req, res) => req.path === '/api/health'
+});
+
+app.use(limiter);
 
 // Security and middleware
 app.use(helmet({
@@ -53,6 +122,22 @@ app.use(express.static(path.join(__dirname, 'frontend/build'), {
 }));
 
 // API Routes
+
+// Security: Rate limiting middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    resetTime: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req, res) => req.path === '/api/health'
+});
+
+app.use(limiter);
+
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
@@ -304,8 +389,8 @@ app.get('*', (req, res) => {
         setInterval(() => {
             fetch('/api/status')
                 .then(r => r.json())
-                .then(data => console.log('Platform Status:', data))
-                .catch(e => console.log('Monitoring...'));
+                .then(data => safeLog('Platform Status:', data))
+                .catch(e => safeLog('Monitoring...'));
         }, 30000);
     </script>
 </body>
@@ -325,7 +410,7 @@ app.use((err, req, res, next) => {
 
 // Start server
 const server = app.listen(PORT, () => {
-  console.log(`
+  safeLog(`
   
 🚀 ====================================
    FANZ UNIFIED ECOSYSTEM - LAUNCHED!
@@ -350,9 +435,9 @@ THE FUTURE IS HERE! 🌟
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('🛑 Shutting down gracefully...');
+  safeLog('🛑 Shutting down gracefully...');
   server.close(() => {
-    console.log('✅ Server closed.');
+    safeLog('✅ Server closed.');
     process.exit(0);
   });
 });

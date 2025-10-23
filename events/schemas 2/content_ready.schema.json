@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.fanzunlimited.com/content_ready.schema.json",
+  "title": "content_ready",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "const": "content_ready"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "platform": {
+          "type": "string",
+          "enum": [
+            "boyfanz",
+            "girlfanz",
+            "pupfanz"
+          ]
+        },
+        "vault_key": {
+          "type": "string"
+        },
+        "duration_sec": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "platform",
+        "vault_key"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "const": "media-hub"
+    }
+  },
+  "required": [
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "content",
+    "source"
+  ]
+}

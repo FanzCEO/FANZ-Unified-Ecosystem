@@ -1,0 +1,20 @@
+{
+  "name": "@fanz/events",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "eslint": "^9.12.0",
+    "vitest": "^2.1.3"
+  }
+}
