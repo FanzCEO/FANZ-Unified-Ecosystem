@@ -1,4 +1,5 @@
-{
+"engines": { "node": "20.x" }
+"packageManager": "pnpm@9.12.3"{
   "name": "fanz-unified-ecosystem-backend",
   "version": "1.0.0",
   "description": "Revolutionary Creator Economy Platform - Backend API",
