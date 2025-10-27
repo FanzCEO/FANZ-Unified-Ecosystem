@@ -1,6 +1,6 @@
-"engines": { "node": "20.x" }
-"packageManager": "pnpm@9.12.3"{
+{
   "name": "fanz-unified-ecosystem-backend",
+  "packageManager": "pnpm@9.12.3",
   "version": "1.0.0",
   "description": "Revolutionary Creator Economy Platform - Backend API",
   "main": "dist/server.js",
@@ -79,7 +79,7 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "node-cron": "^3.0.3",
-    "nodemailer": "^6.9.18",
+    "nodemailer": "^7.0.10",
     "openai": "^4.82.0",
     "pg": "^8.16.3",
     "pino": "^9.6.0",
