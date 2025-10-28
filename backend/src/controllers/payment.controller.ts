@@ -589,9 +589,14 @@ export class PaymentController {
       const { period = '30' } = req.query;
       const days = parseInt(period as string);
 
-      // Get earnings summary
+      // Validate days parameter to prevent SQL injection
+      if (isNaN(days) || days < 0 || days > 3650) {
+        throw new ValidationError('Invalid period parameter. Must be a number between 0 and 3650 days.');
+      }
+
+      // Get earnings summary - using parameterized interval to prevent SQL injection
       const summaryQuery = `
-        SELECT 
+        SELECT
           COALESCE(SUM(CASE WHEN t.transaction_type = 'subscription' THEN t.net_amount ELSE 0 END), 0) as subscription_earnings,
           COALESCE(SUM(CASE WHEN t.transaction_type = 'tip' THEN t.net_amount ELSE 0 END), 0) as tip_earnings,
           COALESCE(SUM(CASE WHEN t.transaction_type = 'content_purchase' THEN t.net_amount ELSE 0 END), 0) as content_earnings,
@@ -599,9 +604,9 @@ export class PaymentController {
           COALESCE(SUM(t.fee_amount), 0) as total_fees,
           COUNT(*) as total_transactions
         FROM transactions t
-        WHERE t.recipient_id = $1 
+        WHERE t.recipient_id = $1
           AND t.status = 'completed'
-          AND t.created_at >= NOW() - INTERVAL '${days} days'
+          AND t.created_at >= NOW() - make_interval(days => $2)
       `;
 
       const balanceQuery = `
@@ -611,7 +616,7 @@ export class PaymentController {
       `;
 
       const [summaryResult, balanceResult] = await Promise.all([
-        paymentRepository.db.query(summaryQuery, [user.userId]),
+        paymentRepository.db.query(summaryQuery, [user.userId, days]),
         paymentRepository.db.query(balanceQuery, [user.userId])
       ]);
 
@@ -662,9 +667,14 @@ export class PaymentController {
       const { period = '30' } = req.query;
       const days = parseInt(period as string);
 
-      // Get platform financial summary
+      // Validate days parameter to prevent SQL injection
+      if (isNaN(days) || days < 0 || days > 3650) {
+        throw new ValidationError('Invalid period parameter. Must be a number between 0 and 3650 days.');
+      }
+
+      // Get platform financial summary - using parameterized interval to prevent SQL injection
       const dashboardQuery = `
-        SELECT 
+        SELECT
           COALESCE(SUM(t.amount), 0) as gross_revenue,
           COALESCE(SUM(t.fee_amount), 0) as platform_fees,
           COALESCE(SUM(t.net_amount), 0) as creator_payouts,
@@ -676,22 +686,22 @@ export class PaymentController {
           COALESCE(SUM(CASE WHEN t.transaction_type = 'content_purchase' THEN t.amount ELSE 0 END), 0) as content_volume
         FROM transactions t
         WHERE t.status = 'completed'
-          AND t.created_at >= NOW() - INTERVAL '${days} days'
+          AND t.created_at >= NOW() - make_interval(days => $1)
       `;
 
       const subscriptionStatsQuery = `
-        SELECT 
+        SELECT
           COUNT(*) as total_subscriptions,
           COUNT(CASE WHEN status = 'active' THEN 1 END) as active_subscriptions,
           COUNT(CASE WHEN status = 'trial' THEN 1 END) as trial_subscriptions,
           COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled_subscriptions
         FROM user_subscriptions
-        WHERE created_at >= NOW() - INTERVAL '${days} days'
+        WHERE created_at >= NOW() - make_interval(days => $1)
       `;
 
       const [dashboardResult, subscriptionResult] = await Promise.all([
-        paymentRepository.db.query(dashboardQuery),
-        paymentRepository.db.query(subscriptionStatsQuery)
+        paymentRepository.db.query(dashboardQuery, [days]),
+        paymentRepository.db.query(subscriptionStatsQuery, [days])
       ]);
 
       const dashboard = dashboardResult.rows[0];

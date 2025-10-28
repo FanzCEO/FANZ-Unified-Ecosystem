@@ -524,10 +524,16 @@ export class FinancialReportsController {
 
       const { period = '30d' } = req.query;
       const days = this.parsePeriodDays(period as string);
+      const days2 = days * 2;
 
-      // Key financial metrics
+      // Validate days parameter to prevent SQL injection
+      if (isNaN(days) || days < 0 || days > 3650) {
+        throw new ValidationError('Invalid period parameter. Must be a number between 0 and 3650 days.');
+      }
+
+      // Key financial metrics - using parameterized interval to prevent SQL injection
       const kpiQuery = `
-        SELECT 
+        SELECT
           COALESCE(SUM(fee_amount), 0) as total_revenue,
           COALESCE(SUM(amount), 0) as gross_volume,
           COUNT(*) as total_transactions,
@@ -538,31 +544,31 @@ export class FinancialReportsController {
           COALESCE(SUM(CASE WHEN transaction_type = 'tip' THEN fee_amount ELSE 0 END), 0) as tip_revenue
         FROM transactions
         WHERE status = 'completed'
-          AND created_at >= NOW() - INTERVAL '${days} days'
+          AND created_at >= NOW() - make_interval(days => $1)
       `;
 
-      // Growth metrics (compare to previous period)
+      // Growth metrics (compare to previous period) - using parameterized interval to prevent SQL injection
       const growthQuery = `
         WITH current_period AS (
-          SELECT 
+          SELECT
             SUM(fee_amount) as revenue,
             COUNT(*) as transactions,
             COUNT(DISTINCT sender_id) as users
           FROM transactions
           WHERE status = 'completed'
-            AND created_at >= NOW() - INTERVAL '${days} days'
+            AND created_at >= NOW() - make_interval(days => $1)
         ),
         previous_period AS (
-          SELECT 
+          SELECT
             SUM(fee_amount) as revenue,
             COUNT(*) as transactions,
             COUNT(DISTINCT sender_id) as users
           FROM transactions
           WHERE status = 'completed'
-            AND created_at >= NOW() - INTERVAL '${days * 2} days'
-            AND created_at < NOW() - INTERVAL '${days} days'
+            AND created_at >= NOW() - make_interval(days => $2)
+            AND created_at < NOW() - make_interval(days => $1)
         )
-        SELECT 
+        SELECT
           cp.revenue as current_revenue,
           pp.revenue as previous_revenue,
           cp.transactions as current_transactions,
@@ -572,9 +578,9 @@ export class FinancialReportsController {
         FROM current_period cp, previous_period pp
       `;
 
-      // Top performers
+      // Top performers - using parameterized interval to prevent SQL injection
       const topPerformersQuery = `
-        SELECT 
+        SELECT
           u.username,
           up.display_name,
           COALESCE(SUM(t.net_amount), 0) as total_earnings,
@@ -584,7 +590,7 @@ export class FinancialReportsController {
         JOIN user_profiles up ON u.id = up.user_id
         JOIN transactions t ON u.id = t.recipient_id
         WHERE t.status = 'completed'
-          AND t.created_at >= NOW() - INTERVAL '${days} days'
+          AND t.created_at >= NOW() - make_interval(days => $1)
           AND u.role = 'creator'
         GROUP BY u.id, u.username, up.display_name
         ORDER BY total_earnings DESC
@@ -592,9 +598,9 @@ export class FinancialReportsController {
       `;
 
       const [kpiResult, growthResult, topPerformersResult] = await Promise.all([
-        paymentRepository.db.query(kpiQuery),
-        paymentRepository.db.query(growthQuery),
-        paymentRepository.db.query(topPerformersQuery)
+        paymentRepository.db.query(kpiQuery, [days]),
+        paymentRepository.db.query(growthQuery, [days, days2]),
+        paymentRepository.db.query(topPerformersQuery, [days])
       ]);
 
       const kpis = kpiResult.rows[0];
@@ -730,26 +736,29 @@ export class FinancialReportsController {
   }
 
   private async getRevenueTrend(days: number, granularity: string) {
-    const intervalMap = {
-      daily: '1 day',
-      weekly: '7 days',
-      monthly: '30 days'
-    };
-    const interval = intervalMap[granularity as keyof typeof intervalMap] || '1 day';
+    // Validate granularity to prevent SQL injection
+    const validGranularities = ['daily', 'weekly', 'monthly'];
+    const safeGranularity = validGranularities.includes(granularity) ? granularity : 'daily';
+    const dateTruncPeriod = safeGranularity === 'daily' ? 'day' : safeGranularity === 'weekly' ? 'week' : 'month';
+
+    // Validate days parameter to prevent SQL injection
+    if (isNaN(days) || days < 0 || days > 3650) {
+      throw new ValidationError('Invalid period parameter. Must be a number between 0 and 3650 days.');
+    }
 
     const query = `
-      SELECT 
-        DATE_TRUNC('${granularity === 'daily' ? 'day' : granularity === 'weekly' ? 'week' : 'month'}', created_at) as period,
+      SELECT
+        DATE_TRUNC($1, created_at) as period,
         SUM(fee_amount) as revenue,
         COUNT(*) as transactions
       FROM transactions
       WHERE status = 'completed'
-        AND created_at >= NOW() - INTERVAL '${days} days'
+        AND created_at >= NOW() - make_interval(days => $2)
       GROUP BY period
       ORDER BY period
     `;
 
-    const result = await paymentRepository.db.query(query);
+    const result = await paymentRepository.db.query(query, [dateTruncPeriod, days]);
     return result.rows.map(row => ({
       period: row.period,
       revenue: parseFloat(row.revenue),
@@ -758,19 +767,29 @@ export class FinancialReportsController {
   }
 
   private async getUserGrowthMetrics(days: number, granularity: string) {
+    // Validate granularity to prevent SQL injection
+    const validGranularities = ['daily', 'weekly', 'monthly'];
+    const safeGranularity = validGranularities.includes(granularity) ? granularity : 'daily';
+    const dateTruncPeriod = safeGranularity === 'daily' ? 'day' : safeGranularity === 'weekly' ? 'week' : 'month';
+
+    // Validate days parameter to prevent SQL injection
+    if (isNaN(days) || days < 0 || days > 3650) {
+      throw new ValidationError('Invalid period parameter. Must be a number between 0 and 3650 days.');
+    }
+
     const query = `
-      SELECT 
-        DATE_TRUNC('${granularity === 'daily' ? 'day' : granularity === 'weekly' ? 'week' : 'month'}', created_at) as period,
+      SELECT
+        DATE_TRUNC($1, created_at) as period,
         COUNT(DISTINCT sender_id) as active_users,
         COUNT(DISTINCT recipient_id) as active_creators
       FROM transactions
       WHERE status = 'completed'
-        AND created_at >= NOW() - INTERVAL '${days} days'
+        AND created_at >= NOW() - make_interval(days => $2)
       GROUP BY period
       ORDER BY period
     `;
 
-    const result = await paymentRepository.db.query(query);
+    const result = await paymentRepository.db.query(query, [dateTruncPeriod, days]);
     return result.rows.map(row => ({
       period: row.period,
       active_users: parseInt(row.active_users),
@@ -779,29 +798,59 @@ export class FinancialReportsController {
   }
 
   private async getCreatorPerformanceMetrics(days: number, user: any) {
-    const whereClause = user.role === 'creator' ? `AND t.recipient_id = '${user.userId}'` : '';
-    
-    const query = `
-      SELECT 
-        u.username,
-        up.display_name,
-        SUM(t.net_amount) as total_earnings,
-        COUNT(t.id) as transaction_count,
-        COUNT(DISTINCT t.sender_id) as unique_supporters,
-        AVG(t.net_amount) as avg_transaction_value
-      FROM users u
-      JOIN user_profiles up ON u.id = up.user_id
-      JOIN transactions t ON u.id = t.recipient_id
-      WHERE t.status = 'completed'
-        AND t.created_at >= NOW() - INTERVAL '${days} days'
-        AND u.role = 'creator'
-        ${whereClause}
-      GROUP BY u.id, u.username, up.display_name
-      ORDER BY total_earnings DESC
-      LIMIT 20
-    `;
+    // Validate days parameter to prevent SQL injection
+    if (isNaN(days) || days < 0 || days > 3650) {
+      throw new ValidationError('Invalid period parameter. Must be a number between 0 and 3650 days.');
+    }
 
-    const result = await paymentRepository.db.query(query);
+    // Use parameterized query to prevent SQL injection
+    let query: string;
+    let queryParams: any[];
+
+    if (user.role === 'creator') {
+      query = `
+        SELECT
+          u.username,
+          up.display_name,
+          SUM(t.net_amount) as total_earnings,
+          COUNT(t.id) as transaction_count,
+          COUNT(DISTINCT t.sender_id) as unique_supporters,
+          AVG(t.net_amount) as avg_transaction_value
+        FROM users u
+        JOIN user_profiles up ON u.id = up.user_id
+        JOIN transactions t ON u.id = t.recipient_id
+        WHERE t.status = 'completed'
+          AND t.created_at >= NOW() - make_interval(days => $1)
+          AND u.role = 'creator'
+          AND t.recipient_id = $2
+        GROUP BY u.id, u.username, up.display_name
+        ORDER BY total_earnings DESC
+        LIMIT 20
+      `;
+      queryParams = [days, user.userId];
+    } else {
+      query = `
+        SELECT
+          u.username,
+          up.display_name,
+          SUM(t.net_amount) as total_earnings,
+          COUNT(t.id) as transaction_count,
+          COUNT(DISTINCT t.sender_id) as unique_supporters,
+          AVG(t.net_amount) as avg_transaction_value
+        FROM users u
+        JOIN user_profiles up ON u.id = up.user_id
+        JOIN transactions t ON u.id = t.recipient_id
+        WHERE t.status = 'completed'
+          AND t.created_at >= NOW() - make_interval(days => $1)
+          AND u.role = 'creator'
+        GROUP BY u.id, u.username, up.display_name
+        ORDER BY total_earnings DESC
+        LIMIT 20
+      `;
+      queryParams = [days];
+    }
+
+    const result = await paymentRepository.db.query(query, queryParams);
     return result.rows.map(row => ({
       username: row.username,
       display_name: row.display_name,
@@ -813,8 +862,13 @@ export class FinancialReportsController {
   }
 
   private async getSubscriptionMetrics(days: number) {
+    // Validate days parameter to prevent SQL injection
+    if (isNaN(days) || days < 0 || days > 3650) {
+      throw new ValidationError('Invalid period parameter. Must be a number between 0 and 3650 days.');
+    }
+
     const query = `
-      SELECT 
+      SELECT
         sp.name as plan_name,
         sp.price,
         sp.billing_cycle,
@@ -825,12 +879,12 @@ export class FinancialReportsController {
         COUNT(CASE WHEN us.status = 'cancelled' THEN 1 END) as cancelled_subscribers
       FROM subscription_plans sp
       LEFT JOIN user_subscriptions us ON sp.id = us.plan_id
-        AND us.created_at >= NOW() - INTERVAL '${days} days'
+        AND us.created_at >= NOW() - make_interval(days => $1)
       GROUP BY sp.id, sp.name, sp.price, sp.billing_cycle
       ORDER BY subscriber_count DESC
     `;
 
-    const result = await paymentRepository.db.query(query);
+    const result = await paymentRepository.db.query(query, [days]);
     return result.rows.map(row => ({
       plan_name: row.plan_name,
       price: parseFloat(row.price),

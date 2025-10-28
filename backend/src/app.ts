@@ -253,9 +253,8 @@ class FanzEcosystemApp {
 
   private async checkDatabaseHealth(): Promise<boolean> {
     try {
-      // This would be implemented with actual database health check
-      // For now, return true
-      return true;
+      const dbManager = await import('./config/database');
+      return await dbManager.db.healthCheck();
     } catch (error) {
       logger.error('Database health check failed', { error: error.message });
       return false;
@@ -264,9 +263,8 @@ class FanzEcosystemApp {
 
   private async checkRedisHealth(): Promise<boolean> {
     try {
-      // This would be implemented with actual Redis health check
-      // For now, return true
-      return true;
+      const redisManager = await import('./config/redis');
+      return await redisManager.redis.healthCheck();
     } catch (error) {
       logger.error('Redis health check failed', { error: error.message });
       return false;
