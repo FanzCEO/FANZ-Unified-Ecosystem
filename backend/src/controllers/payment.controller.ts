@@ -606,7 +606,7 @@ export class PaymentController {
         FROM transactions t
         WHERE t.recipient_id = $1
           AND t.status = 'completed'
-          AND t.created_at >= NOW() - make_interval(days => $2)
+          AND t.created_at >= NOW() - make_interval(days := $2)
       `;
 
       const balanceQuery = `
