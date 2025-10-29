@@ -90,7 +90,7 @@ Core Systems (7):
 ├── BioLinkHub (Link Aggregation)
 ├── ChatSphere (Real-time Communication)
 ├── MediaCore (Media Processing)
-├── FusionGeniusFanzSocial (Social Networking)
+├── FanzSocialFanzSocial (Social Networking)
 ├── FanzGPT (AI Assistance)
 └── FanzShield (Security & Protection)
 ```

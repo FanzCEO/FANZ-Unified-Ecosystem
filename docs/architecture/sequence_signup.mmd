@@ -1,0 +1,25 @@
+%% FANZ — Signup/Login Flow
+sequenceDiagram
+    autonumber
+    participant U as User (Fan/Creator)
+    participant L as FanzLanding
+    participant A as Identity/Auth (SSO/OAuth2)
+    participant G as API Gateway (GraphQL/REST)
+    participant DB as Core DB
+    participant BUS as Event Bus (fanz_central_command)
+    participant N as Notify
+
+    U->>L: Visit landing page
+    L->>A: Start OAuth2 (PKCE) / SSO
+    A-->>U: Consent / MFA
+    A->>DB: Create/Update user record
+    A-->>L: ID Token + Access Token
+    L->>G: Exchange token for session
+(X-FANZ-Token)
+    G->>DB: Fetch profile + entitlements
+    DB-->>G: Profile
+    G-->>U: Session cookie / JWT
+
+    G->>BUS: Publish user_registered
+    BUS->>N: Trigger welcome workflow
+    N-->>U: Welcome email/SMS/push

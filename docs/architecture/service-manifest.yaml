@@ -1,0 +1,202 @@
+version: 1
+meta:
+  org: Fanz Unlimited Network
+  owners:
+    - platform: fun-platform@fanzunlimited.com
+    - infra: fun-infra@fanzunlimited.com
+  compliance: ["PII", "PCI-DSS SAQ A-EP", "FanzDash Security Controls"]
+environments:
+  - name: dev
+    domain: dev.fanzunlimited.com
+  - name: stage
+    domain: stage.fanzunlimited.com
+  - name: prod
+    domain: fanzunlimited.com
+
+services:
+  - name: fanz-landing
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: apps/fanz-landing
+    runtime: nextjs
+    public: true
+    depends_on: [api-gateway, identity-auth]
+    routes:
+      - path: "/"
+      - path: "/signup"
+    env:
+      - NEXT_PUBLIC_API_BASE
+      - OAUTH_CLIENT_ID
+    health:
+      http: "/api/health"
+      interval: 30s
+
+  - name: identity-auth
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: services/identity-auth
+    runtime: python
+    public: false
+    ports: [8081]
+    env:
+      - OAUTH_ISSUER
+      - OAUTH_JWKS
+      - SESSION_SECRET
+      - ADMIN_PASSWORD_HASH   # moved to env per security fix
+    storage:
+      db: users
+    health:
+      http: "/health"
+
+  - name: api-gateway
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: services/api-gateway
+    runtime: node
+    public: true
+    ports: [8080]
+    routes:
+      - path: "/graphql"
+      - path: "/v1/*"
+    depends_on: [identity-auth, media-hub, fanz-finance, search-index, notify]
+    policies:
+      authz: token-scope
+      rate_limits:
+        default_rps: 50
+        burst: 200
+    health:
+      http: "/healthz"
+
+  - name: boyfanz
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: apps/boyfanz
+    runtime: nextjs
+    public: true
+    depends_on: [api-gateway]
+
+  - name: girlfanz
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: apps/girlfanz
+    runtime: nextjs
+    public: true
+    depends_on: [api-gateway]
+
+  - name: pupfanz
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: apps/pupfanz
+    runtime: nextjs
+    public: true
+    depends_on: [api-gateway]
+
+  - name: media-hub
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: services/media-hub
+    runtime: python
+    ports: [8090]
+    public: false
+    env:
+      - TRANSCODE_QUEUE
+      - MODERATION_MODEL
+      - VAULT_BUCKET
+    topics:
+      publishes: [content_ready, content_blocked]
+      subscribes: [content_uploaded]
+    depends_on: [fanzhub-vault, core-db, event-bus]
+
+  - name: fanzhub-vault
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: infra/fanzhub-vault
+    runtime: infra
+    public: false
+    storage:
+      bucket: fanzhub-vault
+      cdn_domain: cdn.fanzunlimited.com
+
+  - name: core-db
+    runtime: postgres
+    version: "15"
+    public: false
+    storage:
+      database: fanz_core
+    backups:
+      retention: 30d
+
+  - name: search-index
+    runtime: opensearch
+    public: false
+
+  - name: fanz-finance
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: services/fanz-finance
+    runtime: python
+    public: false
+    ports: [8070]
+    env:
+      - PROCESSOR_API_KEY
+      - WEBHOOK_SECRET
+      - TAX_PROVIDER_KEY
+    topics:
+      publishes: [payment_settled, payment_failed, payout_sent, payout_on_hold]
+      subscribes: [refund_requested]
+    depends_on: [core-db, payment-processor, event-bus]
+
+  - name: payment-processor
+    runtime: external
+    notes: "Stripe/Adyen/Checkout.com etc."
+    webhooks:
+      - "/finance/webhooks/payment"
+
+  - name: fanzdash
+    repo: https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+    path: apps/fanzdash
+    runtime: nextjs
+    public: false
+    depends_on: [api-gateway, fanz-finance, analytics]
+    roles:
+      - admin
+      - compliance
+      - creator_support
+
+  - name: analytics
+    runtime: warehouse
+    notes: "Data lakehouse + BI"
+    inputs: [event-bus, core-db, fanz-finance]
+
+  - name: event-bus
+    runtime: kafka
+    topics:
+      - user_registered
+      - content_ready
+      - content_blocked
+      - payment_settled
+      - payment_failed
+      - payout_sent
+      - payout_on_hold
+
+  - name: notify
+    runtime: worker
+    env:
+      - EMAIL_API_KEY
+      - SMS_API_KEY
+      - PUSH_KEY
+    subscriptions:
+      - user_registered
+      - content_ready
+      - payment_settled
+      - payment_failed
+      - payout_sent
+      - payout_on_hold
+
+observability:
+  logs: centralized
+  metrics:
+    - name: api_latency_p95_ms
+      target: 250
+    - name: content_time_to_live_s
+      target: 300
+    - name: payment_auth_rate
+      target: ">= 92%"
+    - name: payout_time_to_disburse_h
+      target: 48
+security:
+  sso: required
+  mTLS: service-to-service
+  secrets: vault
+  data_masking: pii_fields

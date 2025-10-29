@@ -77,7 +77,7 @@
     "joi": "^18.0.1",
     "jose": "^5.10.0",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.2",
+    "multer": "^1.4.5-lts.1",
     "node-cron": "^3.0.3",
     "nodemailer": "^7.0.10",
     "openai": "^4.82.0",

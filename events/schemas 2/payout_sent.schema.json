@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.fanzunlimited.com/payout_sent.schema.json",
+  "title": "payout_sent",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "const": "payout_sent"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "creator_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "amount_cents": {
+      "type": "integer"
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "ach",
+        "wire"
+      ]
+    },
+    "transfer_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "creator_id",
+    "amount_cents",
+    "method",
+    "transfer_id"
+  ]
+}
