@@ -66,7 +66,7 @@ We've created a revolutionary AI-powered ecosystem that automates 80% of creator
 
 ### **CreatorEconomyAutomation.ts** - The Business Automation Suite
 ```typescript
-📍 Location: ai-REDACTED_AWS_SECRET_KEYion.ts
+📍 Location: ai-automation/core/CreatorEconomyAutomation.ts
 🔢 Lines: 785 lines of business automation
 
 ⚙️ Capabilities:
