@@ -880,7 +880,7 @@ export class FinancialReportsController {
         COUNT(CASE WHEN us.status = 'cancelled' THEN 1 END) as cancelled_subscribers
       FROM subscription_plans sp
       LEFT JOIN user_subscriptions us ON sp.id = us.plan_id
-        AND us.created_at >= NOW() - make_interval(days => $1)
+        AND us.created_at >= NOW() - make_interval(days := $1)
       GROUP BY sp.id, sp.name, sp.price, sp.billing_cycle
       ORDER BY subscriber_count DESC
     `;
