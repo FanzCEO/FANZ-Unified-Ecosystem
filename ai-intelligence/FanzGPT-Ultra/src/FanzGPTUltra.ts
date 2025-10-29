@@ -399,59 +399,138 @@ export class FanzGPTUltra extends EventEmitter {
     };
   }
 
-  private async optimizeImageContent(content: any, platform: string): Promise<ContentOptimization> {
-    // Implement image content optimization logic
-    return {
-      originalContent: content,
-      optimizedContent: content, // Would include enhanced/filtered version
+  // Stub for AI service call for image optimization
+  private async callImageOptimizationAI(content: any, platform: string): Promise<string> {
+    // Replace with actual AI service call
+    // For now, return a mock JSON string
+    return JSON.stringify({
+      optimizedContent: content, // Should be replaced with actual optimized content
       engagementScore: 85,
       recommendations: ['Adjust brightness', 'Add watermark', 'Optimize for mobile viewing'],
-      optimalTiming: new Date(Date.now() + 1 * 60 * 60 * 1000)
-    };
+      optimalTiming: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString()
+    });
+  }
+
+  // Stub for AI service call for video optimization
+  private async callVideoOptimizationAI(content: any, platform: string): Promise<string> {
+    // Replace with actual AI service call
+    // For now, return a mock JSON string
+    return JSON.stringify({
+      optimizedContent: content, // Should be replaced with actual optimized content
+      engagementScore: 92,
+      recommendations: ['Add captions', 'Optimize thumbnail', 'Trim intro'],
+      optimalTiming: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString()
+    });
+  }
+  private async optimizeImageContent(content: any, platform: string): Promise<ContentOptimization> {
+    // Implement image content optimization logic
+    // Example: Call AI service and parse response
+    const aiResponse = await this.callImageOptimizationAI(content, platform);
+    try {
+      const parsed = JSON.parse(aiResponse);
+      return {
+        originalContent: content,
+        optimizedContent: parsed.optimizedContent ?? content,
+        engagementScore: parsed.engagementScore ?? 0,
+        recommendations: parsed.recommendations ?? [],
+        optimalTiming: parsed.optimalTiming ? new Date(parsed.optimalTiming) : new Date()
+      };
+    } catch (e) {
+      // Fallback in case of parsing error
+      return {
+        originalContent: content,
+        optimizedContent: content,
+        engagementScore: 0,
+        recommendations: [],
+        optimalTiming: new Date()
+      };
+    }
   }
 
   private async optimizeVideoContent(content: any, platform: string): Promise<ContentOptimization> {
     // Implement video content optimization logic
-    return {
-      originalContent: content,
-      optimizedContent: content, // Would include transcoded/enhanced version
-      engagementScore: 92,
-      recommendations: ['Add captions', 'Optimize thumbnail', 'Trim intro'],
-      optimalTiming: new Date(Date.now() + 3 * 60 * 60 * 1000)
-    };
+    // Example: Call AI service and parse response
+    const aiResponse = await this.callVideoOptimizationAI(content, platform);
+    try {
+      const parsed = JSON.parse(aiResponse);
+      return {
+        originalContent: content,
+        optimizedContent: parsed.optimizedContent ?? content,
+        engagementScore: parsed.engagementScore ?? 0,
+        recommendations: parsed.recommendations ?? [],
+        optimalTiming: parsed.optimalTiming ? new Date(parsed.optimalTiming) : new Date()
+      };
+    } catch (e) {
+      // Fallback in case of parsing error
+      return {
+        originalContent: content,
+        optimizedContent: content,
+        engagementScore: 0,
+        recommendations: [],
+        optimalTiming: new Date()
+      };
+    }
   }
 
   private parseAudienceMatchingResponse(response: string): any {
     // Parse AI response for audience matching
-    return {
-      targetAudience: {
-        demographics: { age: '25-35', gender: 'mixed', location: 'global' },
-        interests: ['fitness', 'lifestyle', 'entertainment'],
-        behaviorPatterns: { activeHours: '18:00-24:00', engagement: 'high' }
-      },
-      matchScore: 87.5,
-      recommendations: ['Focus on evening posting', 'Use fitness-related content', 'Engage with comments quickly']
-    };
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        targetAudience: parsed.targetAudience ?? {},
+        matchScore: parsed.matchScore ?? 0,
+        recommendations: parsed.recommendations ?? []
+      };
+    } catch (e) {
+      // Fallback in case of parsing error
+      return {
+        targetAudience: {},
+        matchScore: 0,
+        recommendations: []
+      };
+    }
   }
 
   private parsePricingResponse(response: string): any {
     // Parse AI response for pricing optimization
-    return {
-      recommendedPrice: 19.99,
-      priceRange: { min: 15.99, max: 24.99 },
-      demandForecast: 0.85,
-      seasonalFactors: { current: 1.1, trending: 'up' }
-    };
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        recommendedPrice: parsed.recommendedPrice ?? 0,
+        priceRange: parsed.priceRange ?? {},
+        demandForecast: parsed.demandForecast ?? 0,
+        seasonalFactors: parsed.seasonalFactors ?? {}
+      };
+    } catch (e) {
+      // Fallback in case of parsing error
+      return {
+        recommendedPrice: 0,
+        priceRange: {},
+        demandForecast: 0,
+        seasonalFactors: {}
+      };
+    }
   }
 
   private parseComplianceResponse(response: string): any {
     // Parse AI response for compliance checking
-    return {
-      isCompliant: true,
-      violations: [],
-      recommendations: ['Add age verification disclaimer', 'Include regional compliance notice'],
-      riskScore: 0.15
-    };
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        isCompliant: parsed.isCompliant ?? false,
+        violations: parsed.violations ?? [],
+        recommendations: parsed.recommendations ?? [],
+        riskScore: parsed.riskScore ?? 0
+      };
+    } catch (e) {
+      // Fallback in case of parsing error
+      return {
+        isCompliant: false,
+        violations: [],
+        recommendations: [],
+        riskScore: 0
+      };
+    }
   }
 
   private parseSentimentResponse(response: string): any {
