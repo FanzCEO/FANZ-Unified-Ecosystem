@@ -1,0 +1,18 @@
+# FANZ Auto Scaler Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY services/ ./services/
+
+# Install pnpm
+RUN npm install -g pnpm@9
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile --prod
+
+EXPOSE 8081
+
+CMD ["node", "services/auto-scaler/index.js"]

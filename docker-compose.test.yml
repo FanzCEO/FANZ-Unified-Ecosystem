@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # PostgreSQL for testing
+  postgres-test:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: fanzuser
+      POSTGRES_PASSWORD: fanzpass
+      POSTGRES_DB: fanz_test
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fanzuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for testing
+  redis-test:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # MongoDB for testing
+  mongodb-test:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: fanzuser
+      MONGO_INITDB_ROOT_PASSWORD: fanzpass
+      MONGO_INITDB_DATABASE: fanz_test
+    ports:
+      - "27018:27017"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  # API Gateway (main service for E2E tests)
+  api-test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgresql://fanzuser:fanzpass@postgres-test:5432/fanz_test
+      - REDIS_URL=redis://redis-test:6379
+      - MONGODB_URL=mongodb://fanzuser:fanzpass@mongodb-test:27017/fanz_test
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+      mongodb-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Playwright for E2E tests
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.40.0-jammy
+    command: tail -f /dev/null
+    environment:
+      - BASE_URL=http://api-test:3000
+    depends_on:
+      api-test:
+        condition: service_healthy
+    volumes:
+      - ./tests:/tests
+      - ./playwright-report:/playwright-report
+
+networks:
+  default:
+    name: fanz-test-network

@@ -1,0 +1,7 @@
+# US East Region Configuration
+region: us-east-1
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "fanz-region"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
