@@ -1,0 +1,38 @@
+# Staging environment values
+image:
+  tag: staging-latest
+
+services:
+  api:
+    replicaCount: 2
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 5
+
+  blockchain-node:
+    replicaCount: 1
+
+  metaverse-server:
+    replicaCount: 1
+
+  quantum-processor:
+    enabled: false
+
+  auto-scaler:
+    replicaCount: 1
+
+  game-server:
+    replicaCount: 1
+
+ingress:
+  hosts:
+    - host: staging.fanz.eco
+      paths:
+        - path: /
+          pathType: Prefix
+          service: fanz-api
+  tls:
+    - secretName: fanz-staging-tls
+      hosts:
+        - staging.fanz.eco

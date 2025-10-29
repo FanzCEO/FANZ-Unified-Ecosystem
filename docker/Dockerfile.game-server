@@ -1,0 +1,24 @@
+# FANZ Game Server Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY services/ ./services/
+COPY packages/ ./packages/
+
+# Install pnpm
+RUN npm install -g pnpm@9
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile --prod
+
+# Install game server dependencies
+RUN apk add --no-cache \
+    ffmpeg \
+    && rm -rf /var/cache/apk/*
+
+EXPOSE 7777
+
+CMD ["node", "services/game-server/index.js"]

@@ -16,6 +16,8 @@
     "isolatedModules": true,
     "noEmit": false,
     "removeComments": true,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"],
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]

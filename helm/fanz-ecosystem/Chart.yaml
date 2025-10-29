@@ -1,0 +1,19 @@
+apiVersion: v2
+name: fanz-ecosystem
+description: FANZ Unified Ecosystem - Complete K8s deployment for polyglot microservices
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - fanz
+  - microservices
+  - adult-content
+  - web3
+  - polyglot
+home: https://fanz.com
+sources:
+  - https://github.com/FanzCEO/FANZ-Unified-Ecosystem
+maintainers:
+  - name: FANZ Engineering Team
+    email: engineering@fanz.com
+dependencies: []
