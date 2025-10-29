@@ -42,6 +42,7 @@
     "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
     "k8s:delete": "kubectl delete -f k8s/"
   },
+  "packageManager": "pnpm@9.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FanzCEO/FANZ-Unified-Ecosystem.git"

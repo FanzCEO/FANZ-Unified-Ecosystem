@@ -207,7 +207,7 @@
   },
   "peerDependencies": {
     "redis": "^4.0.0",
-    "postgresql": "^1.0.0",
+    "pg": "^8.11.0",
     "mongodb": "^6.0.0"
   },
   "optionalDependencies": {
