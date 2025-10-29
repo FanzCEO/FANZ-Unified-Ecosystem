@@ -6,7 +6,7 @@
 import express from 'express';
 import { authenticateToken } from '../../../../backend/src/middleware/auth';
 import { validateRequest } from '../../../../backend/src/middleware/validation';
-import { rateLimiter } from '../../../../backend/src/middleware/rateLimiter';
+import { rateLimiter } from '@middleware/rateLimiter';
 import FanzGPTUltra from '../FanzGPTUltra';
 import { Logger } from '../../../../backend/src/utils/Logger';
 
