@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.fanzunlimited.com/payout_on_hold.schema.json",
+  "title": "payout_on_hold",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "const": "payout_on_hold"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "creator_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "kyc_pending",
+        "aml_review",
+        "insufficient_funds",
+        "dispute_hold"
+      ]
+    }
+  },
+  "required": [
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "creator_id",
+    "reason"
+  ]
+}
