@@ -46,7 +46,7 @@ We've created a revolutionary AI-powered ecosystem that automates 80% of creator
 
 ### **ContentIntelligenceCore.ts** - The Smart Optimization Engine  
 ```typescript
-📍 Location: ai-REDACTED_AWS_SECRET_KEYnceCore.ts
+📍 Location: ai-automation/core/ContentIntelligenceCore.ts
 🔢 Lines: 775 lines of content intelligence
 
 🎯 Capabilities:
