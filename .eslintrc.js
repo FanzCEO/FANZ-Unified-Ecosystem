@@ -39,7 +39,7 @@ module.exports = {
     ],
 
     // General ESLint rules
-    'no-console': 'warn',
+    'no-console': 'error',
     'no-debugger': 'error',
     'no-alert': 'error',
     'no-var': 'error',
