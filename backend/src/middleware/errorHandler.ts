@@ -157,8 +157,8 @@ export const errorHandler = (
 
   // Handle specific error types
   let statusCode = 500;
-  let _message = 'Internal server error';
-  let _errorCode = 'INTERNAL_SERVER_ERROR';
+  let __message = 'Internal server error';
+  let __errorCode = 'INTERNAL_SERVER_ERROR';
 
   if (error instanceof AppError) {
     statusCode = error.statusCode;

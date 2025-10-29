@@ -39,11 +39,20 @@ Object.entries(fileErrors).forEach(([file, errs]) => {
       const lineIndex = line - 1;
       if (lineIndex >= 0 && lineIndex < lines.length) {
         const originalLine = lines[lineIndex];
-        // Skip if already prefixed with underscore
-        if (!originalLine.includes(`_${varName}`)) {
-          // Replace variable name with underscore-prefixed version
-          const regex = new RegExp(`\\b${varName}\\b(?!:)`, 'g');
-          lines[lineIndex] = originalLine.replace(regex, `_${varName}`);
+
+        // Skip if already prefixed with underscore or double underscore
+        if (varName.startsWith('_') || originalLine.includes(`_${varName}`) || originalLine.includes(`__${varName}`)) {
+          console.log(`  → Skipping ${varName} in ${file}:${line} (already prefixed)`);
+          return;
+        }
+
+        // Replace variable name with underscore-prefixed version
+        // More precise regex to avoid replacing in strings or comments
+        const regex = new RegExp(`\\b${varName}\\b(?!:)`, 'g');
+        const newLine = originalLine.replace(regex, `_${varName}`);
+
+        if (newLine !== originalLine) {
+          lines[lineIndex] = newLine;
         }
       }
     });

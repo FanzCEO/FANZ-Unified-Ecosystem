@@ -35,7 +35,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { validateRequest } from '../middleware/validation';
 import { authenticateUser, authenticateCreator } from '../middleware/authentication';
 import { SecureRandom } from '../middleware/secureRandom';
-const { body, param, _query } = require('express-validator');
+const { body, param, __query } = require('express-validator');
 
 const router = Router();
 const complianceService = new ComplianceValidationService();
@@ -349,7 +349,7 @@ router.post('/refunds',
       // const originalTransaction = await transactionService.getTransaction(refundRequest.originalTransactionId);
       
       // For now, assume we need to determine processor from transaction ID or use routing
-      const _processorName = req.body.processor || 'ccbill'; // Would be determined from original transaction
+      const __processorName = req.body.processor || 'ccbill'; // Would be determined from original transaction
       
       const processor = PaymentProcessorFactory.getProcessor('mock'); // Only mock processor available currently
       const refundResult = await processor.processRefund(refundRequest);

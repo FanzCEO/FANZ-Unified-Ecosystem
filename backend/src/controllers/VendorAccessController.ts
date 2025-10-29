@@ -68,7 +68,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(400).json({
         error: 'Failed to register vendor',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -105,7 +105,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(400).json({
         error: 'Failed to complete verification',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -116,7 +116,7 @@ export class VendorAccessController {
    */
   async listVendors(req: Request, res: Response) {
     try {
-      const { _status, _vendorType, page = 1, limit = 50 } = req.query;
+      const { __status, __vendorType, page = 1, limit = 50 } = req.query;
       
       // Implementation would use database service to fetch vendors
       // This is a placeholder for the actual implementation
@@ -133,7 +133,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(500).json({
         error: 'Failed to fetch vendors',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -203,7 +203,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(400).json({
         error: 'Failed to create access grant',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -233,7 +233,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(400).json({
         error: 'Failed to approve grant',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -265,7 +265,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(400).json({
         error: 'Failed to generate token',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -276,7 +276,7 @@ export class VendorAccessController {
    */
   async listGrants(req: Request, res: Response) {
     try {
-      const { _vendorId, _status, page = 1, limit = 50 } = req.query;
+      const { __vendorId, __status, page = 1, limit = 50 } = req.query;
       
       // Implementation placeholder - would fetch from database
       
@@ -292,7 +292,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(500).json({
         error: 'Failed to fetch grants',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -329,7 +329,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(500).json({
         error: 'Failed to revoke access',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -361,7 +361,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(500).json({
         error: 'Failed to revoke vendor access',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -394,7 +394,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(500).json({
         error: 'Failed to fetch analytics',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }
@@ -427,7 +427,7 @@ export class VendorAccessController {
     } catch (error) {
       res.status(500).json({
         error: 'Failed to fetch config',
-        message: error.message
+        message: (error instanceof Error ? error.message : String(error))
       });
     }
   }

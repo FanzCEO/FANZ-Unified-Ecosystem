@@ -357,7 +357,7 @@ export class VendorAccessMiddleware {
       } catch (error) {
         await this.auditLogger.log({
           action: 'vendor_access_middleware_error',
-          error: error.message,
+          error: (error instanceof Error ? error.message : String(error)),
           endpoint: `${req.method} ${req.path}`,
           ipAddress: this.getClientIP(req),
           severity: 'HIGH'

@@ -336,7 +336,7 @@ router.get('/health/detailed',
       res.status(500).json({
         status: 'unhealthy',
         service: 'FanzFinance OS',
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         timestamp: new Date().toISOString()
       });
     }

@@ -132,7 +132,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Registration failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         email: req.body?.email,
         ip: req.ip
       });
@@ -215,7 +215,7 @@ export class AuthController {
 
     } catch (error) {
       logger.warn('Login failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         email: req.body?.email,
         ip: req.ip
       });
@@ -251,7 +251,7 @@ export class AuthController {
 
     } catch (error) {
       logger.warn('Token refresh failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         ip: req.ip
       });
       throw error;
@@ -281,7 +281,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Logout failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId,
         ip: req.ip
       });
@@ -313,7 +313,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Logout all failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId,
         ip: req.ip
       });
@@ -362,7 +362,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Get profile failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -390,7 +390,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Get sessions failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -423,7 +423,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Token validation failed', {
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
       throw error;
     }
@@ -480,7 +480,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Change password failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -510,7 +510,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Password reset request failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         ip: req.ip
       });
       throw error;

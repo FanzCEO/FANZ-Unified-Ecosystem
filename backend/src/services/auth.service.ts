@@ -77,7 +77,7 @@ export class AuthService {
       return token;
     } catch (error) {
       logger.error('Failed to generate access token', { 
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: payload.userId 
       });
       throw new AuthenticationError('Token generation failed');
@@ -106,7 +106,7 @@ export class AuthService {
       return token;
     } catch (error) {
       logger.error('Failed to generate refresh token', { 
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: payload.userId 
       });
       throw new AuthenticationError('Refresh token generation failed');
@@ -147,7 +147,7 @@ export class AuthService {
         logger.warn('Invalid token', { token: token.substring(0, 20) + '...' });
         throw new AuthenticationError('Invalid token');
       } else {
-        logger.error('Token verification failed', { error: error.message });
+        logger.error('Token verification failed', { error: (error instanceof Error ? error.message : String(error)) });
         throw error;
       }
     }
@@ -232,7 +232,7 @@ export class AuthService {
         tokenType: 'Bearer'
       };
     } catch (error) {
-      logger.error('Token refresh failed', { error: error.message });
+      logger.error('Token refresh failed', { error: (error instanceof Error ? error.message : String(error)) });
       throw error;
     }
   }
@@ -248,7 +248,7 @@ export class AuthService {
       logger.debug('Password hashed successfully');
       return hashedPassword;
     } catch (error) {
-      logger.error('Password hashing failed', { error: error.message });
+      logger.error('Password hashing failed', { error: (error instanceof Error ? error.message : String(error)) });
       throw error;
     }
   }
@@ -260,7 +260,7 @@ export class AuthService {
       logger.debug('Password verification completed', { isValid });
       return isValid;
     } catch (error) {
-      logger.error('Password verification failed', { error: error.message });
+      logger.error('Password verification failed', { error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -306,7 +306,7 @@ export class AuthService {
         logger.debug('Token blacklisted', { ttl });
       }
     } catch (error) {
-      logger.error('Failed to blacklist token', { error: error.message });
+      logger.error('Failed to blacklist token', { error: (error instanceof Error ? error.message : String(error)) });
     }
   }
 
@@ -317,7 +317,7 @@ export class AuthService {
       const result = await redis.get(key);
       return result !== null;
     } catch (error) {
-      logger.error('Failed to check token blacklist', { error: error.message });
+      logger.error('Failed to check token blacklist', { error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -333,7 +333,7 @@ export class AuthService {
       
       logger.info('All user tokens revoked', { userId });
     } catch (error) {
-      logger.error('Failed to revoke user tokens', { userId, error: error.message });
+      logger.error('Failed to revoke user tokens', { userId, error: (error instanceof Error ? error.message : String(error)) });
     }
   }
 
@@ -346,7 +346,7 @@ export class AuthService {
       
       logger.debug('User session stored', { userId, sessionId });
     } catch (error) {
-      logger.error('Failed to store user session', { userId, error: error.message });
+      logger.error('Failed to store user session', { userId, error: (error instanceof Error ? error.message : String(error)) });
     }
   }
 
@@ -364,7 +364,7 @@ export class AuthService {
         logger.debug('User session updated', { userId, sessionId });
       }
     } catch (error) {
-      logger.error('Failed to update user session', { userId, error: error.message });
+      logger.error('Failed to update user session', { userId, error: (error instanceof Error ? error.message : String(error)) });
     }
   }
 
@@ -379,7 +379,7 @@ export class AuthService {
         ...JSON.parse(data)
       }));
     } catch (error) {
-      logger.error('Failed to get user sessions', { userId, error: error.message });
+      logger.error('Failed to get user sessions', { userId, error: (error instanceof Error ? error.message : String(error)) });
       return [];
     }
   }
@@ -393,7 +393,7 @@ export class AuthService {
       const validFamilies = await redis.smembers(key);
       return validFamilies.includes(tokenFamily);
     } catch (error) {
-      logger.error('Failed to validate token family', { userId, error: error.message });
+      logger.error('Failed to validate token family', { userId, error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }

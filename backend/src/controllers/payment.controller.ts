@@ -127,7 +127,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Create transaction failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -174,7 +174,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Process transaction failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         transactionId: req.params.transactionId,
         userId: req.user?.userId
       });
@@ -216,7 +216,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Get user transactions failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -254,7 +254,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Get user balances failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -326,7 +326,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Send tip failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -377,7 +377,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Create subscription plan failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -442,7 +442,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Subscribe failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -496,7 +496,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Get user subscriptions failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -566,7 +566,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Request payout failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -644,7 +644,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Get earnings summary failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -736,7 +736,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Get financial dashboard failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -774,7 +774,7 @@ export class PaymentController {
 
     } catch (error) {
       logger.error('Get trial balance failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;

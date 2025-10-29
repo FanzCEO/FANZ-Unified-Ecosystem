@@ -275,7 +275,7 @@ export class ContentRepository extends BaseRepository {
       return await this.getPostById(result.id, creatorId);
     } catch (error) {
       logger.error('Failed to create post', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         creatorId,
         postData
       });
@@ -336,7 +336,7 @@ export class ContentRepository extends BaseRepository {
       return await this.getPostById(postId, userId);
     } catch (error) {
       logger.error('Failed to update post', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId,
         userId
       });
@@ -363,7 +363,7 @@ export class ContentRepository extends BaseRepository {
       return true;
     } catch (error) {
       logger.error('Failed to delete post', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId,
         userId
       });
@@ -472,7 +472,7 @@ export class ContentRepository extends BaseRepository {
       return post;
     } catch (error) {
       logger.error('Failed to get post by ID', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId
       });
       throw error;
@@ -691,7 +691,7 @@ export class ContentRepository extends BaseRepository {
       };
     } catch (error) {
       logger.error('Failed to get feed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         options
       });
       throw error;
@@ -724,7 +724,7 @@ export class ContentRepository extends BaseRepository {
       return result.rows[0];
     } catch (error) {
       logger.error('Failed to add interaction', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId,
         userId,
         interactionType
@@ -745,7 +745,7 @@ export class ContentRepository extends BaseRepository {
       return result.rows.length > 0;
     } catch (error) {
       logger.error('Failed to remove interaction', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId,
         userId,
         interactionType
@@ -777,7 +777,7 @@ export class ContentRepository extends BaseRepository {
       return result.rows[0];
     } catch (error) {
       logger.error('Failed to add comment', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId,
         userId
       });
@@ -824,7 +824,7 @@ export class ContentRepository extends BaseRepository {
       return result.rows;
     } catch (error) {
       logger.error('Failed to get comments', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId
       });
       throw error;
@@ -847,7 +847,7 @@ export class ContentRepository extends BaseRepository {
       return result.rows;
     } catch (error) {
       logger.error('Failed to get categories', {
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
       throw error;
     }

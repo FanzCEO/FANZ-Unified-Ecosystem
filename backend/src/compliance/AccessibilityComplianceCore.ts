@@ -154,7 +154,7 @@ export class AccessibilityComplianceCore extends EventEmitter {
 
     } catch (error) {
       this.logger.error('❌ Failed to initialize Accessibility Compliance:', error);
-      throw new Error(`Accessibility initialization failed: ${error.message}`);
+      throw new Error(`Accessibility initialization failed: ${(error instanceof Error ? error.message : String(error))}`);
     }
   }
 

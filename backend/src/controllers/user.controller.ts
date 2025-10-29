@@ -136,7 +136,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Get user profile failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         identifier: req.params.identifier
       });
       throw error;
@@ -177,7 +177,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Update profile failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -237,7 +237,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Search users failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         query: req.query
       });
       throw error;
@@ -288,7 +288,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Follow user failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         followerId: req.user?.userId,
         targetUserId: req.params.userId
       });
@@ -331,7 +331,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Unfollow user failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         followerId: req.user?.userId,
         targetUserId: req.params.userId
       });
@@ -370,7 +370,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Get followers failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.params.userId
       });
       throw error;
@@ -408,7 +408,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Get following failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.params.userId
       });
       throw error;
@@ -456,7 +456,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Update creator profile failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -495,7 +495,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Get all users failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         adminUserId: req.user?.userId
       });
       throw error;
@@ -534,7 +534,7 @@ export class UserController {
 
     } catch (error) {
       logger.error('Update user status failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         adminUserId: req.user?.userId,
         targetUserId: req.params.userId
       });
@@ -575,7 +575,7 @@ export class UserController {
       const result = await userRepository.db.query(query, [followerId, followedUserId]);
       return result.rows.length > 0;
     } catch (error) {
-      logger.error('Failed to check following status', { error: error.message });
+      logger.error('Failed to check following status', { error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -598,7 +598,7 @@ export class UserController {
         following: parseInt(followingResult.rows[0]?.count || '0')
       };
     } catch (error) {
-      logger.error('Failed to get follow stats', { error: error.message });
+      logger.error('Failed to get follow stats', { error: (error instanceof Error ? error.message : String(error)) });
       return { followers: 0, following: 0 };
     }
   }

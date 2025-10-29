@@ -38,7 +38,7 @@ export const setupRoutes = (app: Application) => {
     
     logger.info('Vendor access system integrated successfully');
   } catch (error) {
-    logger.error('Failed to setup vendor access system', { error: error.message });
+    logger.error('Failed to setup vendor access system', { error: (error instanceof Error ? error.message : String(error)) });
   }
   
   // Health check and test endpoints

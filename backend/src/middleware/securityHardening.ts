@@ -393,7 +393,7 @@ export const validateOutgoingRequest = (url: string): boolean => {
 
     return true;
   } catch (error) {
-    logger.warn('SSRF validation error', { url, error: error.message });
+    logger.warn('SSRF validation error', { url, error: (error instanceof Error ? error.message : String(error)) });
     return false;
   }
 };
