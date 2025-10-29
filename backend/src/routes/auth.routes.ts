@@ -98,9 +98,42 @@ router.post('/change-password',
  * @access  Public
  * @body    { email }
  */
-router.post('/reset-password', 
+router.post('/reset-password',
   authRateLimit,
   authController.requestPasswordReset
+);
+
+/**
+ * @route   POST /api/v1/auth/reset-password/confirm
+ * @desc    Reset password with token
+ * @access  Public
+ * @body    { token, new_password }
+ */
+router.post('/reset-password/confirm',
+  authRateLimit,
+  authController.resetPassword
+);
+
+/**
+ * @route   POST /api/v1/auth/verify-email
+ * @desc    Verify email address with token
+ * @access  Public
+ * @body    { token }
+ */
+router.post('/verify-email',
+  authRateLimit,
+  authController.verifyEmail
+);
+
+/**
+ * @route   POST /api/v1/auth/resend-verification
+ * @desc    Resend email verification
+ * @access  Private
+ */
+router.post('/resend-verification',
+  authRateLimit,
+  authenticate,
+  authController.resendVerification
 );
 
 export default router;
