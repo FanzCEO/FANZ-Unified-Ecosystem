@@ -1,0 +1,234 @@
+---
+# FANZ Media Hub - RTMP Ingest Load Balancer
+# Handles live streaming ingestion on port 1935
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-rtmp-ingest
+  namespace: media
+  labels:
+    app: media-hub
+    component: rtmp
+    tier: public
+    system: fanz
+  annotations:
+    # DigitalOcean TCP Load Balancer for RTMP
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-rtmp-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "tcp"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "least_connections"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "3"
+    
+    # Health Check for RTMP Service
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "tcp"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "1935"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "10"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "2"
+    
+    # Allow creators from anywhere to stream
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "0.0.0.0/0"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,media,rtmp,streaming"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  selector:
+    app: nginx-rtmp
+    component: ingest
+  ports:
+  - name: rtmp
+    port: 1935
+    targetPort: 1935
+    protocol: TCP
+  sessionAffinity: ClientIP
+
+---
+# FANZ Media Hub - HLS/HTTP Delivery (Private Origin)
+# Internal load balancer for media origin - CDN will front this
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-hls-origin
+  namespace: media
+  labels:
+    app: media-hub
+    component: hls
+    tier: private
+    system: fanz
+  annotations:
+    # Private Load Balancer for HLS Origin
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-hls-origin-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-private: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "5"
+    
+    # Health Check
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/health"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "10"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "2"
+    
+    # Only CDN and VPC access
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "10.0.0.0/8"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,media,hls,origin"
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx-hls
+    component: origin
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 8443
+    protocol: TCP
+
+---
+# FANZ WebRTC TURN/STUN Server Load Balancer
+# Handles real-time communication for live chat and video calls
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-webrtc-turn
+  namespace: media
+  labels:
+    app: media-hub
+    component: webrtc
+    tier: public
+    system: fanz
+  annotations:
+    # DigitalOcean UDP/TCP Load Balancer for TURN
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-turn-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "udp"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "least_connections"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "3"
+    
+    # Health Check for TURN Service
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "tcp"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "3478"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "10"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "2"
+    
+    # Allow global access for WebRTC
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "0.0.0.0/0,::/0"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,media,webrtc,turn"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  selector:
+    app: coturn
+    component: relay
+  ports:
+  - name: turn-udp
+    port: 3478
+    targetPort: 3478
+    protocol: UDP
+  - name: turn-tcp
+    port: 3478
+    targetPort: 3478
+    protocol: TCP
+  - name: turns-tls
+    port: 5349
+    targetPort: 5349
+    protocol: TCP
+  sessionAffinity: ClientIP
+
+---
+# FANZ Media Processing Load Balancer
+# Handles video encoding, thumbnail generation, etc.
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-media-processing
+  namespace: media
+  labels:
+    app: media-hub
+    component: processing
+    tier: private
+    system: fanz
+  annotations:
+    # Private Load Balancer for Media Processing
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-processing-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-private: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "least_connections"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "3"
+    
+    # Health Check
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/health"
+    
+    # VPC only access
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "10.0.0.0/8"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,media,processing,private"
+spec:
+  type: LoadBalancer
+  selector:
+    app: ffmpeg-processor
+    component: worker
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  - name: grpc
+    port: 9090
+    targetPort: 9090
+    protocol: TCP
+
+---
+# FANZ Media Storage Access Load Balancer
+# Handles authenticated access to stored media files
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-media-storage
+  namespace: media
+  labels:
+    app: media-hub
+    component: storage
+    tier: private
+    system: fanz
+  annotations:
+    # Private Load Balancer for Media Storage Access
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-storage-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-private: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "2"
+    
+    # Health Check
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/health"
+    
+    # VPC + CDN access only
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "10.0.0.0/8"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,media,storage,private"
+spec:
+  type: LoadBalancer
+  selector:
+    app: media-storage
+    component: api
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP

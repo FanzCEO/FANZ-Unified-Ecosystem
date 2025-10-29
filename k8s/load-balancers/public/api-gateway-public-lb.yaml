@@ -1,0 +1,112 @@
+---
+# FANZ API Gateway Public Load Balancer
+# Handles all API traffic for api.fanzunlimited.com and brand-specific APIs
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-api-gateway-public
+  namespace: apigw
+  labels:
+    app: api-gateway
+    component: kong
+    tier: public
+    system: fanz
+  annotations:
+    # DigitalOcean Load Balancer Configuration
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-apigw-public-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-http-ports: "80"
+    service.beta.kubernetes.io/do-loadbalancer-https-ports: "443"
+    service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "5"  # Higher capacity for API
+    
+    # TLS Configuration
+    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "cert-api-fanzunlimited-com"
+    service.beta.kubernetes.io/do-loadbalancer-tls-passthrough: "false"
+    
+    # Health Check Configuration
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/health"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "10"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "2"
+    
+    # Rate Limiting at LB Level
+    service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
+    
+    # Global access for API endpoints
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "0.0.0.0/0,::/0"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,api,public,prod"
+    
+    # Sticky sessions for complex API workflows
+    service.beta.kubernetes.io/do-loadbalancer-sticky-sessions-type: "cookies"
+    service.beta.kubernetes.io/do-loadbalancer-sticky-sessions-cookie-name: "FANZ_API_SESSION"
+    service.beta.kubernetes.io/do-loadbalancer-sticky-sessions-cookie-ttl: "300"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  selector:
+    app: kong
+    component: proxy
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8000
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 8443
+    protocol: TCP
+  - name: admin-api
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+  sessionAffinity: ClientIP
+
+---
+# API Gateway Admin Interface (Private)
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-api-gateway-admin
+  namespace: apigw
+  labels:
+    app: api-gateway
+    component: kong-admin
+    tier: private
+    system: fanz
+  annotations:
+    # Private Load Balancer for Admin Interface
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-apigw-admin-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-private: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "least_connections"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "1"
+    
+    # Health Check
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/status"
+    
+    # Restrict to VPC only
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "10.0.0.0/8"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,api,admin,private"
+spec:
+  type: LoadBalancer
+  selector:
+    app: kong
+    component: admin
+  ports:
+  - name: admin-api
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+  - name: admin-gui
+    port: 8002
+    targetPort: 8002
+    protocol: TCP
