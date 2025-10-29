@@ -1052,9 +1052,7 @@ export class GDPRComplianceCore extends EventEmitter {
   private async auditAdultContentGDPR(): Promise<{ score: number; violations: any[] }> {
     return { score: 92, violations: [] };
   }
-}
 
-export default GDPRComplianceCore;
   // Stub methods for missing implementations
   private async restrictProcessingActivities(_userId: string): Promise<void> {
     this.logger.info('Restricting processing activities');
@@ -1211,3 +1209,6 @@ export default GDPRComplianceCore;
   private async recordPrivacyByDesignImplementation(_processingActivity: string, _measures: any): Promise<void> {
     this.logger.info(`Recording privacy by design implementation for ${_processingActivity}`);
   }
+}
+
+export default GDPRComplianceCore;
