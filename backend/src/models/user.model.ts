@@ -394,19 +394,19 @@ export class UserRepository extends BaseRepository {
         `;
         await this.db.query(query, [userId]);
       } else {
-        // Increment failed attempts
+        // Increment failed attempts - using parameterized interval to prevent SQL injection
         const query = `
-          UPDATE users 
+          UPDATE users
           SET failed_login_attempts = failed_login_attempts + 1,
-              locked_until = CASE 
-                WHEN failed_login_attempts + 1 >= $2 
-                THEN NOW() + INTERVAL '${this.LOCK_DURATION} milliseconds'
+              locked_until = CASE
+                WHEN failed_login_attempts + 1 >= $2
+                THEN NOW() + make_interval(secs := $3 / 1000.0)
                 ELSE locked_until
               END,
               updated_at = NOW()
           WHERE id = $1
         `;
-        await this.db.query(query, [userId, this.MAX_FAILED_ATTEMPTS]);
+        await this.db.query(query, [userId, this.MAX_FAILED_ATTEMPTS, this.LOCK_DURATION]);
       }
     } catch (error) {
       logger.error('Failed to update login attempt', {

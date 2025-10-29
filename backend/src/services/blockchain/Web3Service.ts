@@ -1,6 +1,9 @@
 import { ethers } from 'ethers';
 import { EventEmitter } from 'events';
 import axios from 'axios';
+import { Logger } from '../../utils/logger';
+
+const logger = new Logger('Web3Service');
 
 // Contract ABI interfaces - Use type alias instead of interface extension
 type NFTMarketplaceContract = ethers.Contract & {
@@ -153,11 +156,11 @@ export class Web3Service extends EventEmitter {
       
       // Set up event listeners
       this.setupEventListeners();
-      
+
       this.emit('initialized');
-      console.log('Web3Service initialized successfully');
+      logger.info('Web3Service initialized successfully');
     } catch (error) {
-      console.error('Failed to initialize Web3Service:', error);
+      logger.error('Failed to initialize Web3Service', { error });
       this.emit('error', error);
     }
   }
@@ -218,7 +221,7 @@ export class Web3Service extends EventEmitter {
       const ipfsHash = response.data.IpfsHash;
       return `${this.ipfsConfig.gateway}/${ipfsHash}`;
     } catch (error) {
-      console.error('IPFS upload failed:', error);
+      logger.error('IPFS upload failed', { error });
       throw new Error('Failed to upload metadata to IPFS');
     }
   }
@@ -277,7 +280,7 @@ export class Web3Service extends EventEmitter {
         effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
-      console.error('Failed to create NFT:', error);
+      logger.error('Failed to create NFT', { error });
       return {
         hash: '',
         success: false,
@@ -311,7 +314,7 @@ export class Web3Service extends EventEmitter {
         effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
-      console.error('Failed to purchase NFT:', error);
+      logger.error('Failed to purchase NFT', { error });
       return {
         hash: '',
         success: false,
@@ -341,7 +344,7 @@ export class Web3Service extends EventEmitter {
         effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
-      console.error('Failed to list NFT:', error);
+      logger.error('Failed to list NFT', { error });
       return {
         hash: '',
         success: false,
@@ -370,7 +373,7 @@ export class Web3Service extends EventEmitter {
         effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
-      console.error('Failed to delist NFT:', error);
+      logger.error('Failed to delist NFT', { error });
       return {
         hash: '',
         success: false,
@@ -391,7 +394,7 @@ export class Web3Service extends EventEmitter {
       const items = await this.contract.getActiveMarketItems();
       return items;
     } catch (error) {
-      console.error('Failed to get market items:', error);
+      logger.error('Failed to get market items', { error });
       return [];
     }
   }
@@ -408,7 +411,7 @@ export class Web3Service extends EventEmitter {
       const items = await this.contract.getUserNFTs(userAddress);
       return items;
     } catch (error) {
-      console.error('Failed to get user NFTs:', error);
+      logger.error('Failed to get user NFTs', { error });
       return [];
     }
   }
@@ -432,7 +435,7 @@ export class Web3Service extends EventEmitter {
         effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
-      console.error('Failed to verify creator:', error);
+      logger.error('Failed to verify creator', { error });
       return {
         hash: '',
         success: false,
@@ -460,7 +463,7 @@ export class Web3Service extends EventEmitter {
         effectiveGasPrice: receipt?.gasPrice?.toString()
       };
     } catch (error) {
-      console.error('Failed to verify age:', error);
+      logger.error('Failed to verify age', { error });
       return {
         hash: '',
         success: false,
@@ -481,7 +484,7 @@ export class Web3Service extends EventEmitter {
       const gasPrice = await this.provider.getFeeData();
       return ethers.formatUnits(gasPrice.gasPrice || 0n, 'gwei');
     } catch (error) {
-      console.error('Failed to get gas price:', error);
+      logger.error('Failed to get gas price', { error });
       return '0';
     }
   }
@@ -498,7 +501,7 @@ export class Web3Service extends EventEmitter {
       const balance = await this.provider.getBalance(address);
       return ethers.formatEther(balance);
     } catch (error) {
-      console.error('Failed to get balance:', error);
+      logger.error('Failed to get balance', { error });
       return '0';
     }
   }
@@ -518,7 +521,7 @@ export class Web3Service extends EventEmitter {
       const gasEstimate = await this.contract.estimateGas[method](...params);
       return gasEstimate.toString();
     } catch (error) {
-      console.error('Failed to estimate gas:', error);
+      logger.error('Failed to estimate gas', { error });
       return '0';
     }
   }
@@ -534,7 +537,7 @@ export class Web3Service extends EventEmitter {
 
       return await this.provider.getTransactionReceipt(hash);
     } catch (error) {
-      console.error('Failed to get transaction receipt:', error);
+      logger.error('Failed to get transaction receipt', { error });
       return null;
     }
   }
@@ -553,7 +556,7 @@ export class Web3Service extends EventEmitter {
 
       return await this.provider.waitForTransaction(hash, confirmations);
     } catch (error) {
-      console.error('Failed to wait for transaction:', error);
+      logger.error('Failed to wait for transaction', { error });
       return null;
     }
   }
@@ -572,7 +575,7 @@ export class Web3Service extends EventEmitter {
       this.emit('walletConnected', { address });
       return true;
     } catch (error) {
-      console.error('Failed to connect wallet:', error);
+      logger.error('Failed to connect wallet', { error });
       return false;
     }
   }
