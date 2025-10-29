@@ -1,0 +1,29 @@
+%% FANZ — Creator Payout Run
+sequenceDiagram
+    autonumber
+    participant C as Creatorz
+    participant D as FanzDash (Admin/Ops)
+    participant FIN as FanzFinance (Ledger/Payouts)
+    participant PAY as Payment Processor (KYB/AML)
+    participant DB as Core DB
+    participant BUS as Event Bus
+    participant N as Notify
+    participant ANA as Analytics/Data Lake
+
+    C->>D: Request payout / choose schedule
+    D->>FIN: Initiate payout batch
+    FIN->>DB: Verify balance, holds, disputes
+    FIN->>PAY: KYC/KYB status + AML screening
+    alt Cleared
+        FIN->>PAY: Disburse (ACH/Wire)
+        PAY-->>FIN: Transfer ID
+        FIN->>DB: Record payout + taxes
+        FIN->>BUS: payout_sent
+        BUS->>ANA: Update creator earnings
+        BUS->>N: Payout confirmation
+        N-->>C: "Funds on the way"
+    else On hold / fail
+        FIN->>BUS: payout_on_hold
+        BUS->>N: Request docs / remediate
+        N-->>C: "Need additional verification"
+    end

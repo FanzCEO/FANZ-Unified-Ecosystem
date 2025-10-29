@@ -44,7 +44,7 @@ export const authenticateUser = (req: Request, res: Response, next: NextFunction
 
   try {
     // Mock user data - in production, decode JWT and fetch user from database
-    const mockUserId = 'user-' + Math.random().toString(36).substr(2, 9);
+    const mockUserId = 'user-' + require('crypto').randomBytes(5).toString('hex').slice(0, 9);
     req.user = {
       userId: mockUserId,
       id: mockUserId, // Legacy compatibility
@@ -91,7 +91,7 @@ export const authenticateCreator = (req: Request, res: Response, next: NextFunct
     // Check if user is a creator
     if (!req.user || req.user.role !== 'creator') {
       // Mock creator data for development
-      const mockCreatorId = 'creator-' + Math.random().toString(36).substr(2, 9);
+      const mockCreatorId = 'creator-' + require('crypto').randomBytes(5).toString('hex').slice(0, 9);
       req.user = {
         userId: mockCreatorId,
         id: mockCreatorId, // Legacy compatibility

@@ -1,3 +1,56 @@
+
+// Security: HTML escaping utility
+const escapeHtml = (text) => {
+  if (!text || typeof text !== 'string') return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/\//g, '&#x2F;');
+};
+
+// Security: Safe logging utility
+const safeLog = (message, data = null) => {
+  const sensitiveFields = ['password', 'token', 'key', 'secret', 'auth', 'session'];
+  
+  if (data && typeof data === 'object') {
+    const sanitized = JSON.parse(JSON.stringify(data));
+    
+    const redactSensitive = (obj) => {
+      for (const key in obj) {
+        if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
+          obj[key] = '[REDACTED]';
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+          redactSensitive(obj[key]);
+        }
+      }
+    };
+    
+    redactSensitive(sanitized);
+    safeLog(message, sanitized);
+  } else {
+    safeLog(message);
+  }
+};
+
+// Security: URL sanitization utility
+const sanitizeUrl = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  
+  const dangerousProtocols = /^(javascript|data|vbscript|file|ftp):/i;
+  if (dangerousProtocols.test(url)) return '';
+  
+  if (!/^https?:\/\//.test(url)) return '';
+  
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.href;
+  } catch {
+    return '';
+  }
+};
 /**
  * 🔍 Advanced Service Discovery System for FANZ API Gateway
  * 
@@ -178,7 +231,7 @@ export class ServiceDiscovery extends EventEmitter {
   }
 
   private async initialize(): Promise<void> {
-    console.log('🔍 Initializing Service Discovery System...');
+    safeLog('🔍 Initializing Service Discovery System...');
     
     // Initialize backend connection
     await this.initializeBackend();
@@ -191,7 +244,7 @@ export class ServiceDiscovery extends EventEmitter {
     // Load existing services
     await this.loadExistingServices();
     
-    console.log('✅ Service Discovery System initialized');
+    safeLog('✅ Service Discovery System initialized');
   }
 
   private async initializeBackend(): Promise<void> {
@@ -206,23 +259,23 @@ export class ServiceDiscovery extends EventEmitter {
         });
         
         this.redis.on('connect', () => {
-          console.log('🔗 Connected to Redis service registry');
+          safeLog('🔗 Connected to Redis service registry');
         });
         break;
         
       case 'consul':
         // Initialize Consul client
-        console.log('🏛️ Initializing Consul service registry');
+        safeLog('🏛️ Initializing Consul service registry');
         break;
         
       case 'etcd':
         // Initialize etcd client
-        console.log('🗄️ Initializing etcd service registry');
+        safeLog('🗄️ Initializing etcd service registry');
         break;
         
       case 'kubernetes':
         // Initialize Kubernetes service discovery
-        console.log('☸️ Initializing Kubernetes service discovery');
+        safeLog('☸️ Initializing Kubernetes service discovery');
         break;
     }
   }
@@ -233,7 +286,7 @@ export class ServiceDiscovery extends EventEmitter {
 
   public async registerService(registration: ServiceRegistration): Promise<void> {
     try {
-      console.log(`📝 Registering service: ${registration.name} (${registration.id})`);
+      safeLog(`📝 Registering service: ${registration.name} (${registration.id})`);
       
       // Validate registration
       await this.validateServiceRegistration(registration);
@@ -279,7 +332,7 @@ export class ServiceDiscovery extends EventEmitter {
       // Broadcast topology update
       this.broadcastTopologyUpdate('service_registered', registration);
       
-      console.log(`✅ Service registered: ${registration.name}`);
+      safeLog(`✅ Service registered: ${registration.name}`);
       
     } catch (error) {
       console.error('❌ Service registration failed:', error);
@@ -289,7 +342,7 @@ export class ServiceDiscovery extends EventEmitter {
 
   public async deregisterService(serviceId: string): Promise<void> {
     try {
-      console.log(`📤 Deregistering service: ${serviceId}`);
+      safeLog(`📤 Deregistering service: ${serviceId}`);
       
       const service = this.topology.services.get(serviceId);
       if (!service) {
@@ -316,7 +369,7 @@ export class ServiceDiscovery extends EventEmitter {
       // Broadcast topology update
       this.broadcastTopologyUpdate('service_deregistered', { id: serviceId });
       
-      console.log(`✅ Service deregistered: ${serviceId}`);
+      safeLog(`✅ Service deregistered: ${serviceId}`);
       
     } catch (error) {
       console.error('❌ Service deregistration failed:', error);
@@ -558,7 +611,7 @@ export class ServiceDiscovery extends EventEmitter {
       await this.cleanupStaleInstances();
     }, this.config.announcement.cleanup_interval);
     
-    console.log('🏥 Health monitoring system started');
+    safeLog('🏥 Health monitoring system started');
   }
 
   private async cleanupStaleInstances(): Promise<void> {
@@ -589,7 +642,7 @@ export class ServiceDiscovery extends EventEmitter {
     this.wsServer = new WebSocketServer({ port: 8080 });
     
     this.wsServer.on('connection', (ws) => {
-      console.log('📡 New client connected to service discovery');
+      safeLog('📡 New client connected to service discovery');
       this.connectedClients.add(ws);
       
       // Send current topology to new client
@@ -603,7 +656,7 @@ export class ServiceDiscovery extends EventEmitter {
       });
     });
     
-    console.log('📡 Topology broadcast server started on port 8080');
+    safeLog('📡 Topology broadcast server started on port 8080');
   }
 
   private broadcastTopologyUpdate(event: string, data: any): void {
@@ -676,7 +729,7 @@ export class ServiceDiscovery extends EventEmitter {
   private async loadExistingServices(): Promise<void> {
     if (!this.redis) return;
     
-    console.log('🔄 Loading existing services from registry...');
+    safeLog('🔄 Loading existing services from registry...');
     
     const servicePattern = `${this.config.redis.key_prefix}:services:*`;
     const serviceKeys = await this.redis.keys(servicePattern);
@@ -710,7 +763,7 @@ export class ServiceDiscovery extends EventEmitter {
       }
     }
     
-    console.log(`✅ Loaded ${this.topology.services.size} existing services`);
+    safeLog(`✅ Loaded ${this.topology.services.size} existing services`);
   }
 
   // =============================================================================
@@ -745,7 +798,7 @@ export class ServiceDiscovery extends EventEmitter {
       await this.refreshServiceDiscovery();
     }, 60000); // Every minute
     
-    console.log('🔍 Service discovery refresh started');
+    safeLog('🔍 Service discovery refresh started');
   }
 
   private async refreshServiceDiscovery(): Promise<void> {
@@ -819,7 +872,7 @@ export class ServiceDiscovery extends EventEmitter {
   }
 
   public async shutdown(): Promise<void> {
-    console.log('🛑 Shutting down Service Discovery...');
+    safeLog('🛑 Shutting down Service Discovery...');
     
     // Clear all intervals
     for (const interval of this.healthCheckIntervals.values()) {
@@ -840,7 +893,7 @@ export class ServiceDiscovery extends EventEmitter {
       await this.redis.disconnect();
     }
     
-    console.log('✅ Service Discovery shutdown complete');
+    safeLog('✅ Service Discovery shutdown complete');
   }
 }
 

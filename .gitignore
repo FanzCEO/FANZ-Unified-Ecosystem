@@ -60,6 +60,9 @@ jspm_packages/
 
 # dotenv environment variables file
 .env
+.env.*
+!.env.example
+!.env.*.example
 # But allow .example files
 !.env*.example
 
@@ -96,3 +99,42 @@ terraform/tfplan
 terraform/.terraform/
 *.tfstate
 *.tfstate.*
+package-lock.json
+yarn.lock
+
+# Security and sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+keys/
+credentials/
+config/secrets/
+*.secret
+*.secrets
+*_secret*
+*_key*
+*.api_key
+api_keys/
+auth_keys/
+
+# Backup files that may contain secrets
+*.backup
+*~
+*.bak
+*_backup*
+* 2
+* 3
+* 4
+
+# Additional cleanup patterns
+*.tmp
+.venv/
+.pytest_cache/
+*.iml
+
+# Test artifacts  
+test-results/
+.coverage
+.nyc_output
