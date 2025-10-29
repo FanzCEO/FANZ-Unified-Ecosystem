@@ -754,7 +754,7 @@ export class FinancialReportsController {
         COUNT(*) as transactions
       FROM transactions
       WHERE status = 'completed'
-        AND created_at >= NOW() - make_interval(days => $2)
+        AND created_at >= NOW() - make_interval(days := $2)
       GROUP BY period
       ORDER BY period
     `;
