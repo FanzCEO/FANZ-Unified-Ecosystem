@@ -400,7 +400,7 @@ export class UserRepository extends BaseRepository {
           SET failed_login_attempts = failed_login_attempts + 1,
               locked_until = CASE
                 WHEN failed_login_attempts + 1 >= $2
-                THEN NOW() + make_interval(secs => $3 / 1000)
+                THEN NOW() + make_interval(secs := $3 / 1000.0)
                 ELSE locked_until
               END,
               updated_at = NOW()
