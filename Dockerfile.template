@@ -3,7 +3,7 @@
 # Implements: Distroless runtime, pinned digests, minimal attack surface
 
 # Stage 1: Dependency resolution with pinned base image
-FROM node:18-alpine@sha256:REDACTED_AWS_SECRET_KEY5588d0a35cb9bc4b8ca09d9e AS base
+FROM node:18-alpine AS base
 
 # Install only essential dependencies with security updates
 RUN apk update && apk upgrade --no-cache && \
