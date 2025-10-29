@@ -140,8 +140,8 @@ export interface RightToErasureRequest {
 export class GDPRComplianceCore extends EventEmitter {
   private logger: Logger;
   private metrics: MetricsCollector;
-  private encryption: EncryptionService;
-  private config: GDPRConfig;
+  private _encryption: EncryptionService;
+  private _config: GDPRConfig;
 
   // GDPR Article Implementation Tracker
   private gdprArticles = {
@@ -218,10 +218,10 @@ export class GDPRComplianceCore extends EventEmitter {
 
   constructor(config: GDPRConfig) {
     super();
-    this.config = config;
+    this._config = config;
     this.logger = new Logger('GDPRCompliance');
     this.metrics = new MetricsCollector('gdpr');
-    this.encryption = new EncryptionService();
+    this._encryption = new EncryptionService();
     this.initializeGDPRCore();
   }
 
@@ -939,17 +939,17 @@ export class GDPRComplianceCore extends EventEmitter {
     return `breach_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private async verifyAgeVerification(userId: string): Promise<boolean> {
+  private async verifyAgeVerification(_userId: string): Promise<boolean> {
     // Implementation for age verification check
     return true; // Placeholder
   }
 
-  private async getCurrentUserIP(userId: string): Promise<string> {
+  private async getCurrentUserIP(_userId: string): Promise<string> {
     // Implementation to get current user IP
     return '0.0.0.0'; // Placeholder
   }
 
-  private async getCurrentUserAgent(userId: string): Promise<string> {
+  private async getCurrentUserAgent(_userId: string): Promise<string> {
     // Implementation to get current user agent
     return 'Mozilla/5.0'; // Placeholder
   }
@@ -959,12 +959,12 @@ export class GDPRComplianceCore extends EventEmitter {
     this.logger.info(`Storing consent record ${consent.consentId}`);
   }
 
-  private async updateProcessingRecords(userId: string, consent: ConsentRecord): Promise<void> {
+  private async updateProcessingRecords(userId: string, _consent: ConsentRecord): Promise<void> {
     // Implementation to update processing records
     this.logger.info(`Updating processing records for user ${userId}`);
   }
 
-  private async getConsentRecord(consentId: string): Promise<ConsentRecord | null> {
+  private async getConsentRecord(_consentId: string): Promise<ConsentRecord | null> {
     // Implementation to retrieve consent record
     return null; // Placeholder
   }

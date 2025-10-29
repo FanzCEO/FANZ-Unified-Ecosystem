@@ -1,4 +1,4 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -7,7 +7,6 @@ import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { setupDatabase } from './config/database';
 import { setupRedis } from './config/redis';
-import { setupAuth } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/logger';
 import { setupRoutes } from './routes';
@@ -103,9 +102,9 @@ class FanzEcosystemApp {
     this.app.use('/api/auth/', authLimiter);
 
     // Body parsing
-    this.app.use(express.json({ 
+    this.app.use(express.json({
       limit: '10mb',
-      verify: (req: any, res, buf) => {
+      verify: (req: any, _res, buf) => {
         req.rawBody = buf;
       }
     }));
@@ -121,7 +120,7 @@ class FanzEcosystemApp {
     this.app.use(setupMetrics());
 
     // Health check endpoint
-    this.app.get('/health', (req: Request, res: Response) => {
+    this.app.get('/health', (_req: Request, res: Response) => {
       res.status(200).json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
@@ -132,7 +131,7 @@ class FanzEcosystemApp {
     });
 
     // Ready check endpoint (for Kubernetes readiness probe)
-    this.app.get('/ready', async (req: Request, res: Response) => {
+    this.app.get('/ready', async (_req: Request, res: Response) => {
       try {
         // Check database connection
         const dbHealth = await this.checkDatabaseHealth();
