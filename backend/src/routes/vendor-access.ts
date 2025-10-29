@@ -278,13 +278,13 @@ export function createVendorAccessMiddleware(container: Container) {
 // ============================================
 
 export function addVendorAccessHealthChecks(router: Router, container: Container) {
-  const service = container.get<VendorAccessDelegationService>(VendorAccessDelegationService);
+  const _service = container.get<VendorAccessDelegationService>(VendorAccessDelegationService);
 
   /**
    * Health check endpoint
    * GET /api/vendor-access/health
    */
-  router.get('/health', async (req, res) => {
+  router.get('/health', async (_req, res) => {
     try {
       // Basic health check
       const health = {
@@ -321,7 +321,7 @@ export function addVendorAccessHealthChecks(router: Router, container: Container
    * Detailed status endpoint
    * GET /api/vendor-access/status
    */
-  router.get('/status', async (req, res) => {
+  router.get('/status', async (_req, res) => {
     try {
       // This would include more detailed metrics
       const status = {

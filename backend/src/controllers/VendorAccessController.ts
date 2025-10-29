@@ -116,7 +116,7 @@ export class VendorAccessController {
    */
   async listVendors(req: Request, res: Response) {
     try {
-      const { status, vendorType, page = 1, limit = 50 } = req.query;
+      const { _status, _vendorType, page = 1, limit = 50 } = req.query;
       
       // Implementation would use database service to fetch vendors
       // This is a placeholder for the actual implementation
@@ -276,7 +276,7 @@ export class VendorAccessController {
    */
   async listGrants(req: Request, res: Response) {
     try {
-      const { vendorId, status, page = 1, limit = 50 } = req.query;
+      const { _vendorId, _status, page = 1, limit = 50 } = req.query;
       
       // Implementation placeholder - would fetch from database
       

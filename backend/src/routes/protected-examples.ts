@@ -4,7 +4,7 @@
  * Examples showing how to protect existing FANZ routes with vendor access middleware
  */
 
-import { Router } from 'express';
+import { _Router } from 'express';
 import { Logger } from '../utils/logger';
 
 const logger = new Logger('ProtectedRoutes');

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Logger } from '../utils/logger';
 import { authService, JWTPayload } from '../services/auth.service';
-import { AuthenticationError, AuthorizationError } from './errorHandler';
+import { AuthenticationError, _AuthorizationError } from './errorHandler';
 
 const logger = new Logger('AuthMiddleware');
 

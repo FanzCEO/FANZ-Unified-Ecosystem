@@ -31,7 +31,7 @@ export class FanzDashSecurityCenter {
     });
   }
 
-  async checkThreatLevel(ip: string, userAgent?: string): Promise<'low' | 'medium' | 'high' | 'critical'> {
+  async checkThreatLevel(ip: string, _userAgent?: string): Promise<'low' | 'medium' | 'high' | 'critical'> {
     // Stub implementation - always return low for now
     return 'low';
   }

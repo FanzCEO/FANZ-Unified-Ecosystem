@@ -638,7 +638,7 @@ export class PaymentRepository extends BaseRepository {
         }
 
         // Calculate dates
-        const now = new Date();
+        const _now = new Date();
         const periodStart = new Date();
         const periodEnd = this.calculateBillingPeriodEnd(periodStart, plan.billing_cycle);
         

@@ -75,7 +75,7 @@ export const setupRoutes = (app: Application) => {
   }
   
   // Health status endpoint with more details
-  app.get(`${apiV1}/status`, (req, res) => {
+  app.get(`${apiV1}/status`, (_req, res) => {
     res.json({
       success: true,
       status: 'operational',

@@ -3,7 +3,7 @@ import { contentController } from '../controllers/content.controller';
 import { 
   authenticate, 
   optionalAuth,
-  requireRole,
+  _requireRole,
   rateLimitByUser 
 } from '../middleware/auth';
 import { metricsMiddleware } from '../middleware/metrics';

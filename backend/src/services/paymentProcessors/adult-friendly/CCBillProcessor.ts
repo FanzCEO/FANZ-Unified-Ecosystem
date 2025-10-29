@@ -8,7 +8,7 @@ import {
   PayoutResponse,
   WebhookEvent
 } from '../interfaces/IPaymentProcessor';
-import axios, { AxiosResponse } from 'axios';
+import axios, { _AxiosResponse } from 'axios';
 import crypto from 'crypto';
 
 interface CCBillConfig {

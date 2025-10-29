@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { userRepository, UserRepository } from '../models/user.model';
+import { userRepository, _UserRepository } from '../models/user.model';
 import { Logger } from '../utils/logger';
 import { MetricsCollector } from '../middleware/metrics';
 import { 

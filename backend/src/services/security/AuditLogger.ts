@@ -75,7 +75,7 @@ export class AuditLogger {
     });
   }
 
-  async getAuditLogs(filters?: any): Promise<{ logs: AuditLogEntry[]; total: number }> {
+  async getAuditLogs(_filters?: any): Promise<{ logs: AuditLogEntry[]; total: number }> {
     // Stub implementation
     return { logs: [], total: 0 };
   }

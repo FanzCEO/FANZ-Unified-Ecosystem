@@ -756,7 +756,7 @@ export class ContentController {
       const offset = (Number(page) - 1) * Number(limit);
 
       let statusFilter = '';
-      const params = [user.userId];
+      const _params = [user.userId];
 
       if (status === 'published') {
         statusFilter = 'AND p.published_at IS NOT NULL AND p.deleted_at IS NULL';

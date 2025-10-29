@@ -2,8 +2,8 @@ import { Router } from 'express';
 import { authController } from '../controllers/auth.controller';
 import { 
   authenticate, 
-  optionalAuth, 
-  rateLimitByUser 
+  _optionalAuth, 
+  _rateLimitByUser 
 } from '../middleware/auth';
 import { metricsMiddleware } from '../middleware/metrics';
 import { 
