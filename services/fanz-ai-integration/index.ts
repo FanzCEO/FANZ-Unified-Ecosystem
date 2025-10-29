@@ -12,6 +12,14 @@ const PORT = process.env.PORT || 3001;
 
 // Security middleware
 app.use(helmet());
+
+// Rate limiters
+const healthLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute window
+  max: 10, // limit each IP to 10 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
@@ -302,7 +310,7 @@ app.post('/api/security/deepfake-detection', async (req, res) => {
 });
 
 // Health check
-app.get('/health', async (req, res) => {
+app.get('/health', healthLimiter, async (req, res) => {
   try {
     const redisStatus = await redis.ping();
     res.json({
