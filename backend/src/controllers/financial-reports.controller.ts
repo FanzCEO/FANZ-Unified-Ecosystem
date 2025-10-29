@@ -739,7 +739,8 @@ export class FinancialReportsController {
     // Validate granularity to prevent SQL injection
     const validGranularities = ['daily', 'weekly', 'monthly'];
     const safeGranularity = validGranularities.includes(granularity) ? granularity : 'daily';
-    const dateTruncPeriod = safeGranularity === 'daily' ? 'day' : safeGranularity === 'weekly' ? 'week' : 'month';
+    const periodMap: Record<string, string> = { daily: 'day', weekly: 'week', monthly: 'month' };
+    const dateTruncPeriod = periodMap[safeGranularity] || 'day';
 
     // Validate days parameter to prevent SQL injection
     if (isNaN(days) || days < 0 || days > 3650) {
