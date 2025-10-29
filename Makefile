@@ -100,7 +100,7 @@ docker-build: ## Build Docker images for all services
 # Security scan
 security: ## Run security scan on Go code
 	@echo "🔒 Running security scan..."
-	@which gosec > /dev/null || go install github.REDACTED_AWS_SECRET_KEY@latest
+	@which gosec > /dev/null || go install github.com/securego/gosec/cmd/gosec@latest
 	gosec ./...
 	@echo "✅ Security scan completed"
 
