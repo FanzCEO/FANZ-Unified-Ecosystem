@@ -692,7 +692,7 @@ class FanzContentDNASystem {
   private generateTags(mood: ContentMood): string[] {
     const tagMap: Record<ContentMood, string[]> = {
       [ContentMood.SENSUAL]: ['sensual', 'intimate', 'seductive', 'alluring'],
-      [ContentMood.PLAYFUL]: ['playful', 'FANZ', 'cute', 'flirty'],
+      [ContentMood.PLAYFUL]: ['playful', 'fun', 'cute', 'flirty'],
       [ContentMood.DOMINANT]: ['dominant', 'powerful', 'controlling', 'intense'],
       [ContentMood.SUBMISSIVE]: ['submissive', 'obedient', 'gentle', 'soft'],
       [ContentMood.ROMANTIC]: ['romantic', 'loving', 'passionate', 'tender'],
@@ -769,7 +769,7 @@ class FanzContentDNASystem {
         audiences.push('sensual_lovers', 'intimate_seekers');
         break;
       case ContentMood.PLAYFUL:
-        audiences.push('playful_fans', 'fanz_seekers');
+        audiences.push('playful_fans', 'fun_seekers');
         break;
       case ContentMood.DOMINANT:
         audiences.push('dom_admirers', 'power_dynamic_fans');

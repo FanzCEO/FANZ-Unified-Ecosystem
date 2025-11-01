@@ -1,4 +1,4 @@
-fanz-frontend@1.0.0 REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/frontend
+fanz-frontend@1.0.0 /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/frontend
 ├─┬ @rainbow-me/rainbowkit@2.2.8
 │ └── wagmi@2.16.9 deduped
 ├── react-mentions@3.0.2

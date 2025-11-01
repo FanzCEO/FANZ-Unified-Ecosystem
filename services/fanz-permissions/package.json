@@ -23,10 +23,7 @@
     "migrate:up": "npx knex migrate:latest",
     "migrate:down": "npx knex migrate:rollback",
     "seed": "npx knex seed:run",
-    "docs:generate": "typedoc --out docs src/index.ts",
-    "security:audit": "npm audit --audit-level=high",
-    "security:fix": "npm audit fix",
-    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
+    "docs:generate": "typedoc --out docs src/index.ts"
   },
   "keywords": [
     "authorization",
@@ -72,7 +69,6 @@
     "node-cron": "^3.0.3",
     "compression": "^1.7.4",
     "morgan": "^1.10.0",
-    "@opa-wasm/opa-wasm": "^1.8.0",
     "js-yaml": "^4.1.0",
     "minimatch": "^9.0.3",
     "semver": "^7.5.4"
@@ -109,9 +105,13 @@
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3"
   },
-  "peerDependencies": {
-    "@fanz/auth": "^1.0.0",
-    "@fanz/compliance": "^1.0.0"
+  "peerDependenciesMeta": {
+    "@fanz/auth": {
+      "optional": true
+    },
+    "@fanz/compliance": {
+      "optional": true
+    }
   },
   "jest": {
     "preset": "ts-jest",

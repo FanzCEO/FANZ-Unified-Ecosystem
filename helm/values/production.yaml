@@ -1,0 +1,48 @@
+# Production environment values
+image:
+  tag: stable
+
+services:
+  api:
+    replicaCount: 5
+    autoscaling:
+      enabled: true
+      minReplicas: 5
+      maxReplicas: 20
+      targetCPUUtilizationPercentage: 60
+
+  blockchain-node:
+    replicaCount: 3
+
+  metaverse-server:
+    replicaCount: 3
+
+  quantum-processor:
+    enabled: true
+    replicaCount: 2
+
+  auto-scaler:
+    replicaCount: 2
+
+  game-server:
+    replicaCount: 4
+
+monitoring:
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  grafana:
+    enabled: true
+
+logging:
+  fluentd:
+    enabled: true
+  elasticsearch:
+    enabled: true
+
+security:
+  podSecurityPolicy:
+    enabled: true
+  networkPolicy:
+    enabled: true

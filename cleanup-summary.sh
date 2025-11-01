@@ -4,7 +4,7 @@
 echo "🎉 FANZ Documentation Cleanup - COMPLETE!"
 echo "=============================================="
 
-PROJECT_ROOT="REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM"
+PROJECT_ROOT="/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM"
 
 echo "📊 CLEANUP RESULTS:"
 echo

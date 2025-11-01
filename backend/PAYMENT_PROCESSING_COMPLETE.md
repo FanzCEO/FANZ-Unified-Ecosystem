@@ -135,12 +135,12 @@ chmod +x scripts/demo-payment-processing.sh
 ### 3. **Test the API**
 ```bash
 # Check processor status
-curl -H "Authorization: Bearer REDACTED_DEMO_TOKEN" \
+curl -H "Authorization: Bearer demo-token" \
   http://localhost:3000/api/payments/processors
 
 # Process a payment
 curl -X POST -H "Content-Type: application/json" \
-  -H "Authorization: Bearer REDACTED_DEMO_TOKEN" \
+  -H "Authorization: Bearer demo-token" \
   -d '{"amount": 29.99, "currency": "USD", "contentType": "adult", ...}' \
   http://localhost:3000/api/payments/process
 ```
@@ -237,7 +237,7 @@ ALERT_EMAIL=admin@fanz.com
 
 ### **Run Test Suite**
 ```bash
-npm test -- REDACTED_AWS_SECRET_KEYaymentProcessors.test.ts
+npm test -- tests/services/payment/processors/AdultPaymentProcessors.test.ts
 ```
 
 ### **Test Coverage**

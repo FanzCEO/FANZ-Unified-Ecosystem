@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import axios from 'axios';
-import { IPaymentProcessor } from '../..REDACTED_AWS_SECRET_KEYocessor';
+import { IPaymentProcessor } from '../../paymentProcessors/interfaces/IPaymentProcessor';
 import {
   PaymentRequest,
   PaymentResponse,
@@ -9,7 +9,7 @@ import {
   PayoutRequest,
   PayoutResponse,
   WebhookData
-} from '../..REDACTED_AWS_SECRET_KEYocessor';
+} from '../../paymentProcessors/interfaces/IPaymentProcessor';
 import { logger } from '../../../utils/logger';
 import { SecureRandom } from '../../../middleware/secureRandom';
 

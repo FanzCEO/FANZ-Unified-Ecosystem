@@ -1,0 +1,53 @@
+# FANZ Unified Ecosystem - DigitalOcean App Platform Configuration
+# Optimized for successful deployment and adult-content hosting
+name: fanz-unified-ecosystem
+region: nyc
+
+# Global environment variables
+envs:
+  - key: NODE_ENV
+    value: production
+  - key: PORT
+    value: "3000"
+
+# Main application service - simplified for initial deployment
+services:
+  - name: fanz-ecosystem-main
+    source_dir: /
+    github:
+      repo: FANZ-Unified-Ecosystem
+      branch: main
+      deploy_on_push: true
+    build_command: npm install && npm run build
+    run_command: npm start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 3000
+    routes:
+      - path: /
+    health_check:
+      http_path: /healthz
+      initial_delay_seconds: 30
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: CORS_ORIGIN
+        value: "*"
+
+# Features for FANZ ecosystem
+features:
+  - buildpack-execd
+
+# Alerts
+alerts:
+  - rule: CPU_UTILIZATION
+    value: 85
+  - rule: MEM_UTILIZATION
+    value: 85

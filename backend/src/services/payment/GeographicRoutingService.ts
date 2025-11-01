@@ -1,4 +1,4 @@
-import { PaymentRequest, PayoutRequest } from '..REDACTED_AWS_SECRET_KEYocessor';
+import { PaymentRequest, PayoutRequest } from '../paymentProcessors/interfaces/IPaymentProcessor';
 import { logger } from '../../utils/logger';
 
 interface ProcessorRoutingRule {

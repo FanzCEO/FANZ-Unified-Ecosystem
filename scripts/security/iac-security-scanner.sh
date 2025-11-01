@@ -56,7 +56,7 @@ init_scanner() {
         if [[ "$OSTYPE" == "darwin"* ]]; then
             brew install tfsec || tools_missing=$((tools_missing + 1))
         elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-            curl -s https://raw.githubusercontent.REDACTED_AWS_SECRET_KEYstall_linux.sh | bash || tools_missing=$((tools_missing + 1))
+            curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash || tools_missing=$((tools_missing + 1))
         fi
     fi
     

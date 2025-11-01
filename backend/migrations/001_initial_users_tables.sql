@@ -333,7 +333,7 @@ VALUES (
     '00000000-0000-0000-0000-000000000001',
     'admin@fanz.local',
     'admin',
-    '$2b$12$REDACTED_AWS_SECRET_KEYm1Vr2KlMlNPIe', -- admin123
+    '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/lewam1Vr2KlMlNPIe', -- admin123
     'admin',
     true,
     'active'

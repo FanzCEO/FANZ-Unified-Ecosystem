@@ -9,7 +9,7 @@ import { Request, Response, NextFunction } from 'express';
 import { injectable, inject } from 'inversify';
 import VendorAccessDelegationService, { AccessCategory, AccessLevel } from '../services/vendor-access/VendorAccessDelegationService';
 import { AuditLogger } from '../services/security/AuditLogger';
-import { FanzDashSecurityCenter } from '..REDACTED_AWS_SECRET_KEYr';
+import { FanzDashSecurityCenter } from '../services/security/FanzDashSecurityCenter';
 
 // ============================================
 // 🏷️ ROUTE PERMISSION MAPPINGS

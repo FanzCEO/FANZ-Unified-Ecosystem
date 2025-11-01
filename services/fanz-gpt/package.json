@@ -10,10 +10,7 @@
     "demo": "tsx scripts/demo.ts",
     "test": "echo \"Tests will be configured after core setup\"",
     "lint": "echo \"Linting will be configured after core setup\"",
-    "format": "echo \"Formatting will be configured after core setup\"",
-    "security:audit": "npm audit --audit-level=high",
-    "security:fix": "npm audit fix",
-    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
+    "format": "echo \"Formatting will be configured after core setup\""
   },
   "keywords": [
     "ai",

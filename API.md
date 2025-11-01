@@ -324,7 +324,7 @@ POST /payments/intents
   "creator_id": "user_123",
   "content_id": "content_456", // optional, for PPV content
   "message": "Great content! Keep it up!", // optional, for tips
-  "payment_method": "card", // "card", "crypto", "bank", "ccbill"
+  "payment_method": "card", // "card", "paypal", "crypto", "bank"
   "metadata": {
     "campaign": "holiday_special"
   }

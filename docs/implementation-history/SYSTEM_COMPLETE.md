@@ -37,7 +37,7 @@ The **FANZ Unified Ecosystem** is now a fully integrated, production-ready creat
 2. **BioLinkHub**: Link aggregation
 3. **ChatSphere**: Real-time communication
 4. **MediaCore**: Media processing
-5. **FanzSocial**: Social networking
+5. **FusionGeniusFanzSocial**: Social networking
 6. **FanzGPT**: AI assistance
 7. **FanzShield**: Security & protection
 
@@ -120,7 +120,7 @@ ANTHROPIC_API_KEY=your-anthropic-key
 # Blockchain
 WEB3_PROVIDER_URL=https://mainnet.infura.io/v3/your-project-id
 WEB3_NETWORK=mainnet
-SMART_CONTRACT_ADDRESS=REDACTED_AWS_SECRET_KEY78
+SMART_CONTRACT_ADDRESS=0x1234567890abcdef1234567890abcdef12345678
 
 # Media Processing
 AWS_ACCESS_KEY_ID=your-aws-key

@@ -11,7 +11,7 @@ import { Container } from 'inversify';
 import request from 'supertest';
 import { createApp } from '../../src/server-integration-example';
 import { VendorAccessDelegationService } from '../../src/services/vendor-access/VendorAccessDelegationService';
-import VendorAccessDatabaseAdapter from '../..REDACTED_AWS_SECRET_KEYaseAdapter';
+import VendorAccessDatabaseAdapter from '../../src/services/database/VendorAccessDatabaseAdapter';
 import { createVendorAccessContainer } from '../../src/routes/vendor-access';
 
 // ============================================

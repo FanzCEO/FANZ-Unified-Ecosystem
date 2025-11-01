@@ -11,7 +11,7 @@ import { Pool } from 'pg';
 import VendorAccessController from '../controllers/VendorAccessController';
 import { VendorAccessMiddleware } from '../middleware/VendorAccessMiddleware';
 import { VendorAccessDelegationService } from '../services/vendor-access/VendorAccessDelegationService';
-import VendorAccessDatabaseAdapter from '..REDACTED_AWS_SECRET_KEYdapter';
+import VendorAccessDatabaseAdapter from '../services/database/VendorAccessDatabaseAdapter';
 
 // ============================================
 // 🔧 DEPENDENCY INJECTION SETUP

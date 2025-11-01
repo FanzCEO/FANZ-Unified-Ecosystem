@@ -5,7 +5,7 @@ const path = require("path");
 // Deployment configuration
 const DEPLOYMENT_CONFIG = {
   // Platform wallet for fee collection
-  platformWallet: process.env.PLATFORM_WALLET || "REDACTED_AWS_SECRET_KEY00",
+  platformWallet: process.env.PLATFORM_WALLET || "0x0000000000000000000000000000000000000000",
   
   // Initial configuration
   platformFeePercentage: 250, // 2.5%
@@ -62,7 +62,7 @@ async function main() {
   console.log(`💰 Balance: ${ethers.utils.formatEther(balance)} ETH\n`);
   
   // Validate platform wallet
-  if (DEPLOYMENT_CONFIG.platformWallet === "REDACTED_AWS_SECRET_KEY00") {
+  if (DEPLOYMENT_CONFIG.platformWallet === "0x0000000000000000000000000000000000000000") {
     console.log("⚠️  Warning: Using zero address for platform wallet");
     console.log("   Set PLATFORM_WALLET environment variable for production");
     DEPLOYMENT_CONFIG.platformWallet = deployer.address;

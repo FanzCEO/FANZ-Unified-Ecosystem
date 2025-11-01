@@ -79,7 +79,7 @@ backend/
 
 ### **Start the Server**
 ```bash
-cd REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/backend
+cd /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/backend
 node working-server.js
 ```
 

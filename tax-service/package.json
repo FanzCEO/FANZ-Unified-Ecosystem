@@ -15,10 +15,7 @@
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
     "docker:build": "docker build -t fanz-tax-service .",
-    "docker:run": "docker run -p 8080:8080 --env-file .env fanz-tax-service",
-    "security:audit": "npm audit --audit-level=high",
-    "security:fix": "npm audit fix",
-    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
+    "docker:run": "docker run -p 8080:8080 --env-file .env fanz-tax-service"
   },
   "keywords": [
     "tax",

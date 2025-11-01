@@ -7,7 +7,7 @@ Oops! Something went wrong! :(
 
 ESLint: 9.35.0
 
-Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@eslint/js' imported from REDACTED_AWS_SECRET_KEYnt.config.js
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@eslint/js' imported from /Users/joshuastone/Documents/GitHub/eslint.config.js
     at Object.getPackageJSONURL (node:internal/modules/package_json_reader:268:9)
     at packageResolve (node:internal/modules/esm/resolve:768:81)
     at moduleResolve (node:internal/modules/esm/resolve:858:18)

@@ -331,7 +331,7 @@ export class FanzBlockchainService extends EventEmitter {
       hash: transactionHash,
       chain,
       type: 'mint',
-      from: 'REDACTED_AWS_SECRET_KEY00',
+      from: '0x0000000000000000000000000000000000000000',
       to: walletConnection.address,
       value: '0',
       gasUsed: '150000',

@@ -53,7 +53,7 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - REDACTED_AWS_SECRET_KEYLanding:/app
+      - /Users/joshuastone/Documents/GitHub/FanzLanding:/app
       - /app/node_modules
     working_dir: /app
     command: ["sh", "-c", "npm install --legacy-peer-deps && npm run build && npm start"]
@@ -82,7 +82,7 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - REDACTED_AWS_SECRET_KEYDash:/app
+      - /Users/joshuastone/Documents/GitHub/FanzDash:/app
       - /app/node_modules
     working_dir: /app
     command: ["sh", "-c", "npm install --legacy-peer-deps && npm run build && npm start"]
@@ -123,7 +123,7 @@ services:
     ports:
       - "3001:80"
     volumes:
-      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/boyfanz.html:/usr/share/nginx/html/index.html:ro
+      - /Users/joshuastone/Documents/GitHub/FANZ-Unified-Ecosystem/stubs/boyfanz.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
@@ -136,7 +136,7 @@ services:
     ports:
       - "3002:80"
     volumes:
-      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/girlfanz.html:/usr/share/nginx/html/index.html:ro
+      - /Users/joshuastone/Documents/GitHub/FANZ-Unified-Ecosystem/stubs/girlfanz.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
@@ -149,7 +149,7 @@ services:
     ports:
       - "3003:80"
     volumes:
-      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/pupfanz.html:/usr/share/nginx/html/index.html:ro
+      - /Users/joshuastone/Documents/GitHub/FANZ-Unified-Ecosystem/stubs/pupfanz.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis

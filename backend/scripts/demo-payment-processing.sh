@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 
 # API Base URL
 API_BASE="http://localhost:3000/api"
-AUTH_TOKEN="Bearer REDACTED_DEMO_TOKEN-for-testing"
+AUTH_TOKEN="Bearer demo-token-for-testing"
 
 log_info() {
     echo -e "${BLUE}[INFO]${NC} $1"
@@ -145,7 +145,7 @@ demo_european_payment() {
         "paymentMethod": {
             "type": "credit_card",
             "details": {
-                "token": "REDACTED_TOKEN"
+                "token": "test_eu_cc_token_456"
             }
         },
         "description": "FANZ Content Purchase"
@@ -238,7 +238,7 @@ demo_high_risk_transaction() {
         "paymentMethod": {
             "type": "prepaid_card",
             "details": {
-                "token": "REDACTED_TOKEN"
+                "token": "test_prepaid_token_789"
             }
         },
         "description": "High-value content purchase",

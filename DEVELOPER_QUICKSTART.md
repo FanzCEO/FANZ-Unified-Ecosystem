@@ -39,7 +39,7 @@ npm run dev:all
 curl http://localhost:3000/api/health
 
 # Test payment processors
-curl -H "Authorization: Bearer REDACTED_DEMO_TOKEN" \
+curl -H "Authorization: Bearer demo-token" \
   http://localhost:3000/api/payments/processors
 
 # Run the payment demo

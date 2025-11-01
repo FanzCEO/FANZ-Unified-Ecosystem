@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@REDACTED_AWS_SECRET_KEY.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@REDACTED_AWS_SECRET_KEYcyGuard.sol";
-import "@REDACTED_AWS_SECRET_KEYth.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 // 🪙 FANZ CREATOR TOKEN SYSTEM - Revolutionary Creator Economy
 // Each creator gets their own tradeable token with unique utility and governance

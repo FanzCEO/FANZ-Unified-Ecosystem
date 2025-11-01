@@ -37,7 +37,7 @@ services:
   # Real FanzLanding Platform (Node.js/React App)
   fanz-landing:
     build:
-      context: REDACTED_AWS_SECRET_KEYLanding
+      context: /Users/joshuastone/Documents/GitHub/FanzLanding
       dockerfile_inline: |
         FROM node:20-alpine as builder
         WORKDIR /app
@@ -83,7 +83,7 @@ services:
   # Real FanzDash Platform (Admin Control Center)
   fanzdash:
     build:
-      context: REDACTED_AWS_SECRET_KEYDash
+      context: /Users/joshuastone/Documents/GitHub/FanzDash
       dockerfile_inline: |
         FROM node:20-alpine as builder
         WORKDIR /app
@@ -164,7 +164,7 @@ services:
     ports:
       - "3001:80"
     volumes:
-      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/boyfanz.html:/usr/share/nginx/html/index.html:ro
+      - /Users/joshuastone/Documents/GitHub/FANZ-Unified-Ecosystem/stubs/boyfanz.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
@@ -179,7 +179,7 @@ services:
     ports:
       - "3002:80"
     volumes:
-      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/girlfanz.html:/usr/share/nginx/html/index.html:ro
+      - /Users/joshuastone/Documents/GitHub/FANZ-Unified-Ecosystem/stubs/girlfanz.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis
@@ -194,7 +194,7 @@ services:
     ports:
       - "3003:80"
     volumes:
-      - REDACTED_AWS_SECRET_KEY-Unified-Ecosystem/stubs/pupfanz.html:/usr/share/nginx/html/index.html:ro
+      - /Users/joshuastone/Documents/GitHub/FANZ-Unified-Ecosystem/stubs/pupfanz.html:/usr/share/nginx/html/index.html:ro
     depends_on:
       - postgres
       - redis

@@ -1,4 +1,4 @@
-import { IPaymentProcessor } from '..REDACTED_AWS_SECRET_KEYocessor';
+import { IPaymentProcessor } from '../paymentProcessors/interfaces/IPaymentProcessor';
 import { MockProcessor } from '../paymentProcessors/MockProcessor';
 import { SegpayProcessor } from './processors/SegpayProcessor';
 import { CCBillProcessor } from './processors/CCBillProcessor';

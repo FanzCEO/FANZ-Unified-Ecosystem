@@ -29,16 +29,16 @@ INSERT INTO users (id, username, email, password_hash, role, display_name, bio, 
 -- Creator profiles
 INSERT INTO creator_profiles (id, user_id, stage_name, category, tags, description, verified_at, subscription_price, tip_minimum, total_earnings, total_tips, subscriber_count, content_count, view_count, social_links, wallet_address, allow_tips, allow_messages) VALUES
 -- Luna Starlight
-('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002', 'Luna Starlight', 'Lifestyle', '{"cosmic", "premium", "exclusive", "live shows"}', 'Your favorite cosmic creator bringing you premium content, custom videos, and exclusive live shows from across the galaxy!', NOW() - INTERVAL '30 days', 29.99, 5.00, 15750.50, 8200.25, 1250, 85, 125000, '{"instagram": "@luna_starlight", "twitter": "@lunastar_official", "tiktok": "@lunastarlight"}', 'REDACTED_AWS_SECRET_KEY8D', TRUE, TRUE),
+('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002', 'Luna Starlight', 'Lifestyle', '{"cosmic", "premium", "exclusive", "live shows"}', 'Your favorite cosmic creator bringing you premium content, custom videos, and exclusive live shows from across the galaxy!', NOW() - INTERVAL '30 days', 29.99, 5.00, 15750.50, 8200.25, 1250, 85, 125000, '{"instagram": "@luna_starlight", "twitter": "@lunastar_official", "tiktok": "@lunastarlight"}', '0x742d35Cc6435C0532925a3b8D6Ac0532925a3b8D', TRUE, TRUE),
 
 -- Jade Phoenix  
-('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440003', 'Jade Phoenix', 'Fitness', '{"fitness", "wellness", "lifestyle", "workouts"}', 'Fitness model and lifestyle creator helping you achieve your best self through workouts, wellness tips, and motivational content!', NOW() - INTERVAL '45 days', 19.99, 3.00, 12200.75, 6500.50, 950, 120, 98000, '{"instagram": "@jade_phoenix_fit", "youtube": "@jadephoenixfitness", "tiktok": "@jadephoenix"}', 'REDACTED_AWS_SECRET_KEY5', TRUE, TRUE),
+('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440003', 'Jade Phoenix', 'Fitness', '{"fitness", "wellness", "lifestyle", "workouts"}', 'Fitness model and lifestyle creator helping you achieve your best self through workouts, wellness tips, and motivational content!', NOW() - INTERVAL '45 days', 19.99, 3.00, 12200.75, 6500.50, 950, 120, 98000, '{"instagram": "@jade_phoenix_fit", "youtube": "@jadephoenixfitness", "tiktok": "@jadephoenix"}', '0x8D6Ac532925a3b8D6Ac532925a3b8D6Ac532925', TRUE, TRUE),
 
 -- Scarlett Rose
-('660e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440004', 'Scarlett Rose', 'Art', '{"art", "modeling", "photography", "creative"}', 'Art model and creative soul sharing exclusive photoshoots, artistic content, and personal insights into the creative process!', NOW() - INTERVAL '60 days', 24.99, 4.00, 18900.25, 9200.75, 800, 95, 76000, '{"instagram": "@scarlett_rose_art", "twitter": "@scarlettrose", "deviantart": "@scarlettroseart"}', 'REDACTED_AWS_SECRET_KEY9', TRUE, TRUE),
+('660e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440004', 'Scarlett Rose', 'Art', '{"art", "modeling", "photography", "creative"}', 'Art model and creative soul sharing exclusive photoshoots, artistic content, and personal insights into the creative process!', NOW() - INTERVAL '60 days', 24.99, 4.00, 18900.25, 9200.75, 800, 95, 76000, '{"instagram": "@scarlett_rose_art", "twitter": "@scarlettrose", "deviantart": "@scarlettroseart"}', '0x3b8D6Ac532925a3b8D6Ac532925a3b8D6Ac5329', TRUE, TRUE),
 
 -- Diamond Doll
-('660e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440005', 'Diamond Doll', 'Luxury', '{"luxury", "fashion", "travel", "lifestyle"}', 'Luxury lifestyle creator showcasing high-end fashion, exclusive travel experiences, and VIP lifestyle content!', NOW() - INTERVAL '20 days', 49.99, 10.00, 25500.00, 12750.50, 650, 75, 95000, '{"instagram": "@diamond_doll_official", "twitter": "@diamonddoll", "pinterest": "@diamonddollstyle"}', 'REDACTED_AWS_SECRET_KEYc', TRUE, TRUE);
+('660e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440005', 'Diamond Doll', 'Luxury', '{"luxury", "fashion", "travel", "lifestyle"}', 'Luxury lifestyle creator showcasing high-end fashion, exclusive travel experiences, and VIP lifestyle content!', NOW() - INTERVAL '20 days', 49.99, 10.00, 25500.00, 12750.50, 650, 75, 95000, '{"instagram": "@diamond_doll_official", "twitter": "@diamonddoll", "pinterest": "@diamonddollstyle"}', '0x925a3b8D6Ac532925a3b8D6Ac532925a3b8D6Ac', TRUE, TRUE);
 
 -- Sample content for each creator
 INSERT INTO content (id, creator_id, title, description, content_type, status, media_urls, thumbnail_url, is_premium, price, required_tokens, view_count, like_count, comment_count, tags, published_at) VALUES
@@ -88,16 +88,16 @@ INSERT INTO transactions (id, from_user_id, to_user_id, creator_id, type, status
 -- Sample creator tokens
 INSERT INTO creator_tokens (id, creator_id, token_name, token_symbol, contract_address, total_supply, current_supply, current_price, market_cap, total_volume, holder_count, description, is_active, deployed_at) VALUES
 -- Luna's token
-('aa0e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440001', 'Luna Starlight Token', 'LUNA', 'REDACTED_AWS_SECRET_KEY90', 1000000, 250000, 0.05000000, 12500.00, 45000.00, 185, 'Official token for Luna Starlight - unlock exclusive content and participate in governance!', TRUE, NOW() - INTERVAL '30 days'),
+('aa0e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440001', 'Luna Starlight Token', 'LUNA', '0x1234567890123456789012345678901234567890', 1000000, 250000, 0.05000000, 12500.00, 45000.00, 185, 'Official token for Luna Starlight - unlock exclusive content and participate in governance!', TRUE, NOW() - INTERVAL '30 days'),
 
 -- Jade's token
-('aa0e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440002', 'Jade Phoenix Token', 'JADE', 'REDACTED_AWS_SECRET_KEY01', 800000, 180000, 0.03500000, 6300.00, 32000.00, 142, 'Official token for Jade Phoenix - join the fitness community and earn rewards!', TRUE, NOW() - INTERVAL '45 days'),
+('aa0e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440002', 'Jade Phoenix Token', 'JADE', '0x2345678901234567890123456789012345678901', 800000, 180000, 0.03500000, 6300.00, 32000.00, 142, 'Official token for Jade Phoenix - join the fitness community and earn rewards!', TRUE, NOW() - INTERVAL '45 days'),
 
 -- Scarlett's token  
-('aa0e8400-e29b-41d4-a716-446655440003', '660e8400-e29b-41d4-a716-446655440003', 'Scarlett Rose Token', 'ROSE', 'REDACTED_AWS_SECRET_KEY12', 600000, 120000, 0.07500000, 9000.00, 28000.00, 98, 'Official token for Scarlett Rose - collect artistic NFTs and support creative projects!', TRUE, NOW() - INTERVAL '60 days'),
+('aa0e8400-e29b-41d4-a716-446655440003', '660e8400-e29b-41d4-a716-446655440003', 'Scarlett Rose Token', 'ROSE', '0x3456789012345678901234567890123456789012', 600000, 120000, 0.07500000, 9000.00, 28000.00, 98, 'Official token for Scarlett Rose - collect artistic NFTs and support creative projects!', TRUE, NOW() - INTERVAL '60 days'),
 
 -- Diamond's token
-('aa0e8400-e29b-41d4-a716-446655440004', '660e8400-e29b-41d4-a716-446655440004', 'Diamond Doll Token', 'DIAMOND', 'REDACTED_AWS_SECRET_KEY23', 500000, 150000, 0.12000000, 18000.00, 65000.00, 75, 'Official token for Diamond Doll - access luxury experiences and VIP content!', TRUE, NOW() - INTERVAL '20 days');
+('aa0e8400-e29b-41d4-a716-446655440004', '660e8400-e29b-41d4-a716-446655440004', 'Diamond Doll Token', 'DIAMOND', '0x4567890123456789012345678901234567890123', 500000, 150000, 0.12000000, 18000.00, 65000.00, 75, 'Official token for Diamond Doll - access luxury experiences and VIP content!', TRUE, NOW() - INTERVAL '20 days');
 
 -- Sample token holdings
 INSERT INTO token_holdings (id, user_id, token_id, balance, total_purchased, total_spent, total_dividends_earned, first_purchase_at) VALUES

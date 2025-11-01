@@ -31,7 +31,7 @@ This document summarizes the critical security vulnerabilities that were identif
 - `routes/payment.routes.ts`  
 - `middleware/validation.ts`
 - `middleware/authentication.ts`
-- `REDACTED_AWS_SECRET_KEYsor.ts`
+- `services/payment/processors/SegpayProcessor.ts`
 - Various monitoring and security services
 
 **Solution Implemented**:
@@ -43,7 +43,7 @@ This document summarizes the critical security vulnerabilities that were identif
 **Vulnerability**: SegpayProcessor using SHA-256 instead of proper password hashing with computational effort.
 
 **File Fixed**:
-- `REDACTED_AWS_SECRET_KEYsor.ts`
+- `services/payment/processors/SegpayProcessor.ts`
 
 **Solution Implemented**:
 - Enhanced webhook signature verification using HMAC-SHA256
@@ -183,7 +183,7 @@ All security events are now properly logged with:
 - `src/routes/payments.ts`
 
 ### Service Files Updated:
-- `REDACTED_AWS_SECRET_KEYocessor.ts`
+- `src/services/payment/processors/SegpayProcessor.ts`
 
 ### Security Infrastructure:
 - `src/middleware/validation.ts` (secure random integration)

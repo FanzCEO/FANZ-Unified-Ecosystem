@@ -343,7 +343,7 @@ export class NFTMarketplaceCore extends EventEmitter {
     marketplace: {
       name: 'FANZ NFT Marketplace',
       version: '1.0.0',
-      contract_address: 'REDACTED_AWS_SECRET_KEY01',
+      contract_address: '0x0000000000000000000000000000000000000001',
       supported_networks: ['ethereum', 'polygon', 'binance_smart_chain'],
       transaction_fee_percentage: 2.5,
       creator_royalty_percentage: 10,

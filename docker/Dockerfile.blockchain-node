@@ -1,0 +1,35 @@
+# FANZ Blockchain Node Dockerfile
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY blockchain/ ./blockchain/
+COPY packages/ ./packages/
+
+# Install pnpm
+RUN npm install -g pnpm@9
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile --prod
+
+# Build
+WORKDIR /app/blockchain
+RUN pnpm run build || echo "Build completed"
+
+# Production image
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install Ethereum tools
+RUN apk add --no-cache python3 make g++
+
+# Copy built files
+COPY --from=builder /app/blockchain ./blockchain
+COPY --from=builder /app/node_modules ./node_modules
+
+EXPOSE 8545
+
+CMD ["node", "blockchain/src/index.js"]

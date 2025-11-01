@@ -29,7 +29,7 @@ grep -r "WEB3_ENABLED" src/config/flags.ts
 ```bash
 # Verify shim components exist
 ls -la src/providers/Web3ProviderShim.tsx
-ls -la REDACTED_AWS_SECRET_KEY
+ls -la src/components/ConnectWalletPlaceholder/
 # ✅ Expected Result: Files present and accessible
 ```
 

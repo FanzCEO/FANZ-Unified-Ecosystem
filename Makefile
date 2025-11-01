@@ -100,7 +100,7 @@ docker-build: ## Build Docker images for all services
 # Security scan
 security: ## Run security scan on Go code
 	@echo "🔒 Running security scan..."
-	@which gosec > /dev/null || go install github.com/securego/gosec/cmd/gosec@latest
+	@which gosec > /dev/null || go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
 	gosec ./...
 	@echo "✅ Security scan completed"
 

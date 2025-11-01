@@ -322,7 +322,7 @@ EOF
     if command -v curl >/dev/null 2>&1; then
         curl -s -X POST \
              -H "Content-Type: application/json" \
-             -H "Authorization: Bearer ${FANZDASH_TOKEN:-REDACTED_DEMO_TOKEN}" \
+             -H "Authorization: Bearer ${FANZDASH_TOKEN:-demo-token}" \
              -d "$payload" \
              "$FANZDASH_API/security/incidents" || log_action "⚠️ FanzDash notification failed"
     else
@@ -806,7 +806,7 @@ from typing import Dict, Any, Optional
 class FanzDashSecurityConnector:
     def __init__(self, base_url: str = "http://localhost:3000", api_token: str = None):
         self.base_url = base_url.rstrip('/')
-        self.api_token = api_token or "REDACTED_DEMO_TOKEN"
+        self.api_token = api_token or "demo-token"
         self.session = requests.Session()
         self.session.headers.update({
             'Content-Type': 'application/json',

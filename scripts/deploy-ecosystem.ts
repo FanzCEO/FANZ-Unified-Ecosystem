@@ -12,16 +12,16 @@ import chalk from 'chalk';
 
 // Import all system modules
 import CoreFinanceLedger from '../finance/src/ledger/CoreFinanceLedger';
-import TransactionProcessingEngine from '..REDACTED_AWS_SECRET_KEYcessingEngine';
+import TransactionProcessingEngine from '../finance/src/transactions/TransactionProcessingEngine';
 import MultiFactor from '../security/src/auth/MultiFactor';
 import RateLimiter from '../security/src/rate-limiting/RateLimiter';
-import ContentModerationSystem from '..REDACTED_AWS_SECRET_KEYem';
-import AIContentIntelligenceSuite from '..REDACTED_AWS_SECRET_KEYceSuite';
+import ContentModerationSystem from '../ai/src/moderation/ContentModerationSystem';
+import AIContentIntelligenceSuite from '../ai/src/intelligence/AIContentIntelligenceSuite';
 import AdultIndustryComplianceService from '../compliance/src/adult-industry/AdultIndustryComplianceService';
-import LegalComplianceTracker from '..REDACTED_AWS_SECRET_KEYcker';
-import PaymentSecurityFraudSystem from '..REDACTED_AWS_SECRET_KEYaudSystem';
-import SecurityMonitoringDashboard from '..REDACTED_AWS_SECRET_KEYingDashboard';
-import BlockchainCreatorTokenFoundation from '..REDACTED_AWS_SECRET_KEYTokenFoundation';
+import LegalComplianceTracker from '../compliance/src/legal/LegalComplianceTracker';
+import PaymentSecurityFraudSystem from '../payments/src/security/PaymentSecurityFraudSystem';
+import SecurityMonitoringDashboard from '../security/src/monitoring/SecurityMonitoringDashboard';
+import BlockchainCreatorTokenFoundation from '../blockchain/src/tokens/BlockchainCreatorTokenFoundation';
 
 interface DeploymentConfig {
   environment: 'development' | 'staging' | 'production';

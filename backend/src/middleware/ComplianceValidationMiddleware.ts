@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { PaymentRequest as BasePaymentRequest, PayoutRequest as BasePayoutRequest } from '..REDACTED_AWS_SECRET_KEYPaymentProcessor';
+import { PaymentRequest as BasePaymentRequest, PayoutRequest as BasePayoutRequest } from '../services/paymentProcessors/interfaces/IPaymentProcessor';
 import { logger } from '../utils/logger';
 import crypto from 'crypto';
 

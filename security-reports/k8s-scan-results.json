@@ -801,7 +801,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -925,7 +925,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -1750,7 +1750,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -1874,7 +1874,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -2699,7 +2699,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -2823,7 +2823,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -3648,7 +3648,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -3772,7 +3772,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -4597,7 +4597,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -4721,7 +4721,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -5546,7 +5546,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -5670,7 +5670,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -6495,7 +6495,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -6619,7 +6619,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -7444,7 +7444,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -7568,7 +7568,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -8393,7 +8393,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -8517,7 +8517,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -9342,7 +9342,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -9466,7 +9466,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -10291,7 +10291,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -10415,7 +10415,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -11240,7 +11240,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -11364,7 +11364,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -11372,7 +11372,7 @@
                 ],
                 "resource": "Deployment.fanz-production.fanz-backend-hardened",
                 "evaluations": {},
-                "check_class": "checkov.kubernetes.checks.resource.k8s.REDACTED_AWS_SECRET_KEY",
+                "check_class": "checkov.kubernetes.checks.resource.k8s.ApiServerAuthorizationModeNotAlwaysAllow",
                 "fixed_definition": null,
                 "entity_tags": null,
                 "caller_file_path": null,
@@ -12189,7 +12189,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -12313,7 +12313,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -13138,7 +13138,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -13262,7 +13262,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -14087,7 +14087,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -14211,7 +14211,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -15036,7 +15036,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -15160,7 +15160,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -15985,7 +15985,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -16109,7 +16109,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -16117,7 +16117,7 @@
                 ],
                 "resource": "Deployment.fanz-production.fanz-backend-hardened",
                 "evaluations": {},
-                "check_class": "checkov.kubernetes.checks.resource.k8s.REDACTED_AWS_SECRET_KEYntials",
+                "check_class": "checkov.kubernetes.checks.resource.k8s.KubeControllerManagerServiceAccountCredentials",
                 "fixed_definition": null,
                 "entity_tags": null,
                 "caller_file_path": null,
@@ -16934,7 +16934,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -17058,7 +17058,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -17883,7 +17883,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -18007,7 +18007,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -18832,7 +18832,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -18956,7 +18956,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -19781,7 +19781,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -19905,7 +19905,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -20730,7 +20730,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -20854,7 +20854,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -21679,7 +21679,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -21803,7 +21803,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -22628,7 +22628,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -22752,7 +22752,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -23577,7 +23577,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -23701,7 +23701,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -24526,7 +24526,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -24650,7 +24650,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -25475,7 +25475,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -25599,7 +25599,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -26424,7 +26424,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -26548,7 +26548,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -27373,7 +27373,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -27497,7 +27497,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -28322,7 +28322,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -28446,7 +28446,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -29271,7 +29271,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -29395,7 +29395,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -30220,7 +30220,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -30344,7 +30344,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -31169,7 +31169,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -31293,7 +31293,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -32118,7 +32118,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -32242,7 +32242,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -33067,7 +33067,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -33191,7 +33191,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -34016,7 +34016,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -34140,7 +34140,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -34965,7 +34965,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -35089,7 +35089,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -35914,7 +35914,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -36038,7 +36038,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -36863,7 +36863,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -36987,7 +36987,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -37812,7 +37812,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -37936,7 +37936,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -38761,7 +38761,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -38885,7 +38885,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -39710,7 +39710,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -39834,7 +39834,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -40659,7 +40659,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -40783,7 +40783,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -41608,7 +41608,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -41732,7 +41732,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -42557,7 +42557,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -42681,7 +42681,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -43506,7 +43506,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -43630,7 +43630,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -44455,7 +44455,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -44579,7 +44579,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -45404,7 +45404,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -45528,7 +45528,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -45536,7 +45536,7 @@
                 ],
                 "resource": "Deployment.fanz-production.fanz-backend-hardened",
                 "evaluations": {},
-                "check_class": "checkov.kubernetes.checks.resource.k8s.REDACTED_AWS_SECRET_KEYteKeyFile",
+                "check_class": "checkov.kubernetes.checks.resource.k8s.KubeControllerManagerServiceAccountPrivateKeyFile",
                 "fixed_definition": null,
                 "entity_tags": null,
                 "caller_file_path": null,
@@ -46353,7 +46353,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -46477,7 +46477,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -47302,7 +47302,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -47426,7 +47426,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -48251,7 +48251,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -48375,7 +48375,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -49200,7 +49200,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -49324,7 +49324,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -50149,7 +50149,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -50273,7 +50273,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -51098,7 +51098,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -51222,7 +51222,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -52047,7 +52047,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -52171,7 +52171,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -52996,7 +52996,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -53120,7 +53120,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -53945,7 +53945,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -54069,7 +54069,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -54894,7 +54894,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -55018,7 +55018,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -55843,7 +55843,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -55967,7 +55967,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -56792,7 +56792,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -56916,7 +56916,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -57741,7 +57741,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -57865,7 +57865,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -58690,7 +58690,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -58814,7 +58814,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -59639,7 +59639,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -59763,7 +59763,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -60588,7 +60588,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -60712,7 +60712,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -61537,7 +61537,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -61661,7 +61661,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -62486,7 +62486,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -62610,7 +62610,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -63435,7 +63435,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -63559,7 +63559,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -64384,7 +64384,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -64508,7 +64508,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -65333,7 +65333,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -65457,7 +65457,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -66282,7 +66282,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -66406,7 +66406,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -67231,7 +67231,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -67355,7 +67355,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -68180,7 +68180,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -68304,7 +68304,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -69129,7 +69129,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -69253,7 +69253,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -70078,7 +70078,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -70202,7 +70202,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -71027,7 +71027,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -71151,7 +71151,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -71976,7 +71976,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -72100,7 +72100,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -72925,7 +72925,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -73049,7 +73049,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -73874,7 +73874,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -73998,7 +73998,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -74823,7 +74823,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -74947,7 +74947,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -75772,7 +75772,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -75896,7 +75896,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -76721,7 +76721,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -76845,7 +76845,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -77670,7 +77670,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -77794,7 +77794,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -78619,7 +78619,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -78743,7 +78743,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -79568,7 +79568,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -79692,7 +79692,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -80517,7 +80517,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -80641,7 +80641,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -80710,7 +80710,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     243,
@@ -80779,7 +80779,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     243,
@@ -80916,7 +80916,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     262,
@@ -81746,7 +81746,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -81870,7 +81870,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -82697,7 +82697,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -82821,7 +82821,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,
@@ -83648,7 +83648,7 @@
                     ],
                     [
                         211,
-                        "          REDACTED_AWS_SECRET_KEYecution:\n"
+                        "          preferredDuringSchedulingIgnoredDuringExecution:\n"
                     ],
                     [
                         212,
@@ -83772,7 +83772,7 @@
                     ]
                 ],
                 "file_path": "/k8s/hardened-deployment.yaml",
-                "file_abs_path": "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
+                "file_abs_path": "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/k8s/k8s/hardened-deployment.yaml",
                 "repo_file_path": "/k8s/k8s/hardened-deployment.yaml",
                 "file_line_range": [
                     14,

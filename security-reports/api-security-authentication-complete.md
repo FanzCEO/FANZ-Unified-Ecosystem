@@ -301,7 +301,7 @@ Successfully deployed comprehensive API security and authentication systems for 
 - **Rate Limiting:** `/api/security/RateLimitingService.ts`  
 - **OAuth Provider:** `/auth/oauth/OAuthProvider.ts`
 - **Payment Security:** `/api/payment/PaymentSecurityMiddleware.ts`
-- **Age Verification:** `REDACTED_AWS_SECRET_KEY.ts`
+- **Age Verification:** `/auth/verification/AgeVerificationSystem.ts`
 
 ### Documentation
 - **API Security Guide:** `security-reports/api-security-guide.md`

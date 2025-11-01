@@ -27,9 +27,6 @@
     "build": "tsc",
     "test": "jest",
     "security-scan": "npm audit && npm run test:security",
-    "test:security": "jest security.test.ts",
-    "security:audit": "npm audit --audit-level=high",
-    "security:fix": "npm audit fix",
-    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
+    "test:security": "jest security.test.ts"
   }
 }

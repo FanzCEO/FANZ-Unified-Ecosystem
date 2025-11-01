@@ -1669,8 +1669,8 @@ deploy_complete_security() {
     deploy_mfa_system "$repo_dir"
     
     # Copy API Gateway Security Config
-    if [[ -f "$ECOSYSTEM_REDACTED_AWS_SECRET_KEY.ts" ]]; then
-        cp "$ECOSYSTEM_REDACTED_AWS_SECRET_KEY.ts" "$repo_dir/api/gateway/"
+    if [[ -f "$ECOSYSTEM_DIR/api/gateway/ApiGatewaySecurityConfig.ts" ]]; then
+        cp "$ECOSYSTEM_DIR/api/gateway/ApiGatewaySecurityConfig.ts" "$repo_dir/api/gateway/"
         print_step "API Gateway Security Config copied"
     fi
     

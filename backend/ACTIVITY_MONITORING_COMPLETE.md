@@ -127,7 +127,7 @@ GET /api/admin/activity/sessions?
 
 ### **VendorActivityTracker Service**
 
-```javascript path=REDACTED_AWS_SECRET_KEY_UNIFIED_REDACTED_AWS_SECRET_KEYyTracker.js start=1
+```javascript path=/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/backend/services/VendorActivityTracker.js start=1
 class VendorActivityTracker {
   // Core activity logging with risk assessment
   static async logActivity(vendorId, sessionId, activityData)
@@ -149,7 +149,7 @@ class VendorActivityTracker {
 
 ### **Activity Tracking Middleware**
 
-```javascript path=REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/backend/middleware/activity-tracker-middleware.js start=1
+```javascript path=/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/backend/middleware/activity-tracker-middleware.js start=1
 // Automatic vendor activity tracking
 function trackVendorActivity(req, res, next) {
   // Captures request details
@@ -337,7 +337,7 @@ curl -X POST \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"reason":"suspicious_activity"}' \
-  "http://localhost:REDACTED_AWS_SECRET_KEY-123/end"
+  "http://localhost:3000/api/admin/activity/sessions/session-123/end"
 ```
 
 ### **Live Risk Analytics**

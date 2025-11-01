@@ -142,7 +142,7 @@ services:
       - xpack.license.self_generated.type=basic
     volumes:
       - elasticsearch_security_data:/usr/share/elasticsearch/data
-      - ./security/elasticsearch/elasticsearch.yml:REDACTED_AWS_SECRET_KEYearch.yml:ro
+      - ./security/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
     ports:
       - "9201:9200"
     networks:

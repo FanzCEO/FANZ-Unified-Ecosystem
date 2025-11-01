@@ -15,6 +15,7 @@ dist/
 .env.local
 .env.development.local
 .env.test.local
+.env.production
 .env.production.local
 
 # Database
@@ -62,6 +63,8 @@ jspm_packages/
 .env.*
 !.env.example
 !.env.*.example
+# But allow .example files
+!.env*.example
 
 # IDE files
 .vscode/
@@ -135,21 +138,3 @@ auth_keys/
 test-results/
 .coverage
 .nyc_output
-
-# Security - Environment Variables
-.env
-.env.*
-!.env.example
-
-# Security - Keys and Certificates
-*.pem
-*.key
-*.p12
-*.pfx
-id_rsa*
-*.ppk
-
-# Security - Logs and Reports
-*.log
-security-reports/
-

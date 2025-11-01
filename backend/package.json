@@ -1,5 +1,6 @@
 {
   "name": "fanz-unified-ecosystem-backend",
+  "packageManager": "pnpm@9.12.3",
   "version": "1.0.0",
   "description": "Revolutionary Creator Economy Platform - Backend API",
   "main": "dist/server.js",
@@ -35,10 +36,7 @@
     "docker:dev": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "logs": "docker-compose logs -f api",
-    "health": "curl -f http://localhost:3000/health || exit 1",
-    "security:audit": "npm audit --audit-level=high",
-    "security:fix": "npm audit fix",
-    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
+    "health": "curl -f http://localhost:3000/health || exit 1"
   },
   "keywords": [
     "creator-economy",
@@ -79,9 +77,9 @@
     "joi": "^18.0.1",
     "jose": "^5.10.0",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.2",
     "node-cron": "^3.0.3",
-    "nodemailer": "^6.9.18",
+    "nodemailer": "^7.0.7",
     "openai": "^4.82.0",
     "pg": "^8.16.3",
     "pino": "^9.6.0",

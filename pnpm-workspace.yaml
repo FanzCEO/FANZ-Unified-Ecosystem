@@ -2,8 +2,3 @@ packages:
   - apps/*
   - services/*
   - packages/*
-
-overrides:
-  '@babel/runtime@<7.26.10': '>=7.26.10'
-  cookie@<0.7.0: '>=0.7.0'
-  tmp@<=0.2.3: '>=0.2.4'

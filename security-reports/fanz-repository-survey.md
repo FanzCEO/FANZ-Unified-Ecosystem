@@ -65,7 +65,7 @@
 ### Phase 1: Critical Protection (IMMEDIATE)
 Execute branch protection across all 19 repositories:
 ```bash
-cd REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM
+cd /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM
 DRY_RUN=false ./scripts/security/implement-branch-protection.sh
 ```
 

@@ -119,8 +119,8 @@ npm run start:all
 
 **Key files:**
 ```
-REDACTED_AWS_SECRET_KEY/
-REDACTED_AWS_SECRET_KEYtionMiddleware.ts
+/backend/src/services/payment/processors/
+/backend/src/middleware/ComplianceValidationMiddleware.ts
 /backend/migrations/20241215_add_processor_tracking.sql
 /docs/payment-processors-guide.md
 ```
@@ -208,7 +208,7 @@ npm test -- tests/services/payment/processors/
 npm run test:compliance
 
 # Check processor health
-curl -H "Authorization: Bearer REDACTED_DEMO_TOKEN" \
+curl -H "Authorization: Bearer demo-token" \
   http://localhost:3000/api/payments/processors
 ```
 

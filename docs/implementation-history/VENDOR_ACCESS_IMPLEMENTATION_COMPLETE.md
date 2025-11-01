@@ -34,7 +34,7 @@ The **FANZ Vendor Access Delegation System** has been successfully implemented a
 | `backend/src/services/vendor-access/VendorAccessDelegationService.ts` | Main business logic service | ✅ Created |
 | `backend/src/services/vendor-access/VendorAccessController.ts` | REST API endpoints | ✅ Created |
 | `backend/src/services/vendor-access/VendorAccessMiddleware.ts` | Authentication middleware | ✅ Created |
-| `REDACTED_AWS_SECRET_KEYssDatabaseAdapter.ts` | Database operations | ✅ Created |
+| `backend/src/services/database/VendorAccessDatabaseAdapter.ts` | Database operations | ✅ Created |
 | `backend/src/routes/vendor-access.ts` | Route configuration | ✅ Created |
 
 ### 🗄️ Database & Migration
@@ -402,6 +402,6 @@ The FANZ Vendor Access Delegation System is now fully implemented, tested, and r
 </document>
 <document>
 <document_type>RULE</document_type>
-<document_id>REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/WARP.md</document_id>
+<document_id>/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/WARP.md</document_id>
 </document>
 </citations>

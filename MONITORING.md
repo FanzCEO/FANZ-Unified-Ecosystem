@@ -770,7 +770,7 @@ groups:
 ```yaml
 # alertmanager.yml
 global:
-  slack_api_url: '<SLACK_WEBHOOK_URL>'
+  slack_api_url: 'YOUR_SLACK_WEBHOOK_URL'
   pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
 
 route:

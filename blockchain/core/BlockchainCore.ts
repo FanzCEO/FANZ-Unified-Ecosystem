@@ -295,31 +295,31 @@ export class BlockchainCore extends EventEmitter {
     },
     contracts: {
       fanz_token: {
-        address: 'REDACTED_AWS_SECRET_KEY00', // Placeholder
+        address: '0x0000000000000000000000000000000000000000', // Placeholder
         abi: [], // Would contain actual ABI
         deployment_block: 0,
         verified: true
       },
       nft_marketplace: {
-        address: 'REDACTED_AWS_SECRET_KEY01',
+        address: '0x0000000000000000000000000000000000000001',
         abi: [],
         deployment_block: 0,
         verified: true
       },
       creator_rewards: {
-        address: 'REDACTED_AWS_SECRET_KEY02',
+        address: '0x0000000000000000000000000000000000000002',
         abi: [],
         deployment_block: 0,
         verified: true
       },
       content_licensing: {
-        address: 'REDACTED_AWS_SECRET_KEY03',
+        address: '0x0000000000000000000000000000000000000003',
         abi: [],
         deployment_block: 0,
         verified: true
       },
       governance: {
-        address: 'REDACTED_AWS_SECRET_KEY04',
+        address: '0x0000000000000000000000000000000000000004',
         abi: [],
         deployment_block: 0,
         verified: true

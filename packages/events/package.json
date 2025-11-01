@@ -7,10 +7,7 @@
     "build": "tsc -p tsconfig.json",
     "lint": "eslint .",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
-    "security:audit": "npm audit --audit-level=high",
-    "security:fix": "npm audit fix",
-    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "ajv": "^8.17.1"

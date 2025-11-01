@@ -396,35 +396,35 @@ class CreatorTokenEconomy extends EventEmitter {
       
       // Token Factory Contract (ERC-20 token creation)
       this.tokenFactoryContract = new Contract(
-        process.env.TOKEN_FACTORY_ADDRESS || 'REDACTED_AWS_SECRET_KEY00',
+        process.env.TOKEN_FACTORY_ADDRESS || '0x0000000000000000000000000000000000000000',
         this.getTokenFactoryABI(),
         this.signer
       );
       
       // Revenue Share Contract
       this.revenueShareContract = new Contract(
-        process.env.REVENUE_SHARE_ADDRESS || 'REDACTED_AWS_SECRET_KEY00',
+        process.env.REVENUE_SHARE_ADDRESS || '0x0000000000000000000000000000000000000000',
         this.getRevenueShareABI(),
         this.signer
       );
       
       // Staking Contract
       this.stakingContract = new Contract(
-        process.env.STAKING_ADDRESS || 'REDACTED_AWS_SECRET_KEY00',
+        process.env.STAKING_ADDRESS || '0x0000000000000000000000000000000000000000',
         this.getStakingABI(),
         this.signer
       );
       
       // NFT Contract (ERC-721)
       this.nftContract = new Contract(
-        process.env.NFT_CONTRACT_ADDRESS || 'REDACTED_AWS_SECRET_KEY00',
+        process.env.NFT_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000',
         this.getNFTABI(),
         this.signer
       );
       
       // DAO Governance Contract
       this.daoGovernanceContract = new Contract(
-        process.env.DAO_GOVERNANCE_ADDRESS || 'REDACTED_AWS_SECRET_KEY00',
+        process.env.DAO_GOVERNANCE_ADDRESS || '0x0000000000000000000000000000000000000000',
         this.getDAOGovernanceABI(),
         this.signer
       );
@@ -902,7 +902,7 @@ class CreatorTokenEconomy extends EventEmitter {
           balance: initialFunding,
           assets: [{
             assetType: 'token',
-            contractAddress: 'REDACTED_AWS_SECRET_KEY00', // ETH
+            contractAddress: '0x0000000000000000000000000000000000000000', // ETH
             amount: initialFunding,
             currentValue: initialFunding
           }]
@@ -1024,7 +1024,7 @@ class CreatorTokenEconomy extends EventEmitter {
     console.log(`💰 Setting up revenue sharing for ${token.tokenSymbol}`);
     
     const revenueShare: RevenueShareContract = {
-      contractAddress: 'REDACTED_AWS_SECRET_KEY00',
+      contractAddress: '0x0000000000000000000000000000000000000000',
       creatorId: token.creatorId,
       tokenId: token.tokenId,
       sharePercentages: {
@@ -1099,12 +1099,12 @@ class CreatorTokenEconomy extends EventEmitter {
 
   private extractTokenAddress(receipt: any): string {
     // Extract token contract address from transaction receipt
-    return receipt.events?.find((e: any) => e.event === 'TokenCreated')?.args?.tokenAddress || 'REDACTED_AWS_SECRET_KEY00';
+    return receipt.events?.find((e: any) => e.event === 'TokenCreated')?.args?.tokenAddress || '0x0000000000000000000000000000000000000000';
   }
 
   private extractNFTAddress(receipt: any): string {
     // Extract NFT contract address from transaction receipt
-    return receipt.events?.find((e: any) => e.event === 'CollectionCreated')?.args?.collectionAddress || 'REDACTED_AWS_SECRET_KEY00';
+    return receipt.events?.find((e: any) => e.event === 'CollectionCreated')?.args?.collectionAddress || '0x0000000000000000000000000000000000000000';
   }
 
   private async processTokenPayment(fanId: string, amount: number, method: 'crypto' | 'fiat'): Promise<{ success: boolean; error?: string }> {
@@ -1341,15 +1341,15 @@ class CreatorTokenEconomy extends EventEmitter {
   private async getTokenHolders(tokenId: string): Promise<any[]> {
     // Mock token holders data
     return [
-      { address: 'REDACTED_AWS_SECRET_KEY90', balance: ethers.utils.parseEther('1000') },
-      { address: 'REDACTED_AWS_SECRET_KEY21', balance: ethers.utils.parseEther('500') }
+      { address: '0x1234567890123456789012345678901234567890', balance: ethers.utils.parseEther('1000') },
+      { address: '0x0987654321098765432109876543210987654321', balance: ethers.utils.parseEther('500') }
     ];
   }
 
   private async getRevenueShareContract(tokenId: string): Promise<RevenueShareContract> {
     // Mock revenue share contract data
     return {
-      contractAddress: 'REDACTED_AWS_SECRET_KEY00',
+      contractAddress: '0x0000000000000000000000000000000000000000',
       creatorId: 'creator1',
       tokenId,
       sharePercentages: {

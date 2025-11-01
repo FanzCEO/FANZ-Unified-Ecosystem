@@ -1,18 +1,18 @@
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { CCBillProcessor } from '../../../..REDACTED_AWS_SECRET_KEYrocessor';
-import { PaxumPayoutProcessor } from '../../../..REDACTED_AWS_SECRET_KEYyoutProcessor';
-import { SegpayProcessor } from '../../../..REDACTED_AWS_SECRET_KEYrocessor';
-import { PaymentProcessorFactory, ProcessorType } from '../../../..REDACTED_AWS_SECRET_KEYctory';
-import { ComplianceValidationService } from '../../../..REDACTED_AWS_SECRET_KEYleware';
-import { GeographicRoutingService } from '../../../..REDACTED_AWS_SECRET_KEYervice';
-import { ProcessorMonitoringService } from '../../../..REDACTED_AWS_SECRET_KEYringService';
+import { CCBillProcessor } from '../../../../src/services/payment/processors/CCBillProcessor';
+import { PaxumPayoutProcessor } from '../../../../src/services/payment/processors/PaxumPayoutProcessor';
+import { SegpayProcessor } from '../../../../src/services/payment/processors/SegpayProcessor';
+import { PaymentProcessorFactory, ProcessorType } from '../../../../src/services/payment/PaymentProcessorFactory';
+import { ComplianceValidationService } from '../../../../src/middleware/ComplianceValidationMiddleware';
+import { GeographicRoutingService } from '../../../../src/services/payment/GeographicRoutingService';
+import { ProcessorMonitoringService } from '../../../../src/services/monitoring/ProcessorMonitoringService';
 import {
   PaymentRequest,
   PayoutRequest,
   RefundRequest,
   WebhookData,
   PaymentMethod
-} from '../../../..REDACTED_AWS_SECRET_KEYes/IPaymentProcessor';
+} from '../../../../src/services/paymentProcessors/interfaces/IPaymentProcessor';
 import crypto from 'crypto';
 import nock from 'nock';
 

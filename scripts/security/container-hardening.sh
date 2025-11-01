@@ -45,7 +45,7 @@ install_tools() {
         if [[ "$OSTYPE" == "darwin"* ]]; then
             brew install aquasecurity/trivy/trivy
         elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-            curl -sfL https://raw.githubusercontent.REDACTED_AWS_SECRET_KEYall.sh | sh -s -- -b /usr/local/bin
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
         fi
     fi
     
@@ -64,9 +64,9 @@ scan_images() {
     
     # Base images used in the ecosystem
     local images=(
-        "node:18-alpine@sha256:REDACTED_AWS_SECRET_KEY5588d0a35cb9bc4b8ca09d9e"
-        "postgres:15-alpine@sha256:REDACTED_AWS_SECRET_KEYece84824a14c9d6fbbab02d0"
-        "redis:7-alpine@sha256:REDACTED_AWS_SECRET_KEY13465bb14d845db72a4e3e08"
+        "node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e"
+        "postgres:15-alpine@sha256:dfcf0459185089e88a43197975780f5a3078acd5ece84824a14c9d6fbbab02d0"
+        "redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08"
         "rabbitmq:3-management-alpine"
         "nginx:alpine"
         "gcr.io/distroless/nodejs18-debian12:nonroot"

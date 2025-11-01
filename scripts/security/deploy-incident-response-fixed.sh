@@ -261,7 +261,7 @@ notify_fanzdash() {
     if command -v curl >/dev/null 2>&1; then
         curl -s -X POST \
              -H "Content-Type: application/json" \
-             -H "Authorization: Bearer ${FANZDASH_TOKEN:-REDACTED_DEMO_TOKEN}" \
+             -H "Authorization: Bearer ${FANZDASH_TOKEN:-demo-token}" \
              -d "{\"incident_id\":\"$INCIDENT_ID\",\"type\":\"$incident_type\",\"severity\":\"$severity\",\"description\":\"$description\"}" \
              "$FANZDASH_API/security/incidents" || log_action "⚠️ FanzDash notification failed"
     else

@@ -215,7 +215,7 @@ deploy_sast_workflows() {
         
         # Deploy CodeQL workflow if needed
         if [ "$needs_codeql" = "true" ]; then
-            cp "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/.github/workflows/codeql-analysis.yml" \
+            cp "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/.github/workflows/codeql-analysis.yml" \
                "$repo_path/.github/workflows/codeql-analysis.yml" 2>/dev/null || {
                 log_warning "⚠️ Could not copy CodeQL workflow template to $repo_name"
             }
@@ -223,7 +223,7 @@ deploy_sast_workflows() {
         
         # Deploy Semgrep workflow if needed  
         if [ "$needs_semgrep" = "true" ]; then
-            cp "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/.github/workflows/semgrep-analysis.yml" \
+            cp "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/.github/workflows/semgrep-analysis.yml" \
                "$repo_path/.github/workflows/semgrep-analysis.yml" 2>/dev/null || {
                 log_warning "⚠️ Could not copy Semgrep workflow template to $repo_name"
             }

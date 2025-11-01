@@ -231,7 +231,7 @@ generate_summary() {
 ### Immediate Actions Required
 1. **Run Branch Protection Implementation**:
    \`\`\`bash
-   cd REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM
+   cd /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM
    DRY_RUN=false ./scripts/security/implement-branch-protection.sh
    \`\`\`
 

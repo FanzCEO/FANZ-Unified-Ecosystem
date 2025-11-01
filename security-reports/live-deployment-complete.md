@@ -95,7 +95,7 @@ git config tag.gpgSign true
 
 ### 1. Validate Deployment
 ```bash
-cd REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM
+cd /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM
 ./scripts/security/validate-deployment.sh
 ```
 

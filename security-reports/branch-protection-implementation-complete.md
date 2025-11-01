@@ -190,7 +190,7 @@ DRY_RUN=false ./scripts/security/implement-branch-protection.sh
 1. **Immediate Actions Available**:
    ```bash
    # Start with comprehensive survey
-   cd REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM
+   cd /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM
    ./scripts/security/survey-branch-protection.sh
    ```
 

@@ -676,7 +676,7 @@ export class GDPRComplianceCore extends EventEmitter {
       }
 
       // Notification to data subjects (Article 34)
-      const requiresDataSubjectNotification = this.REDACTED_AWS_SECRET_KEY(breachIncident);
+      const requiresDataSubjectNotification = this.assessDataSubjectNotificationRequirement(breachIncident);
       if (requiresDataSubjectNotification) {
         await this.notifyAffectedDataSubjects(breachIncident);
         breachIncident.dataSubjectsNotified = true;

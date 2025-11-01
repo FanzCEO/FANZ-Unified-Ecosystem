@@ -82,7 +82,7 @@ export function Web3ProviderShim({ children }: Web3ProviderShimProps) {
 
 ### Wallet Connect Placeholders
 ```typescript  
-// REDACTED_AWS_SECRET_KEYceholder/index.tsx
+// frontend/src/components/ConnectWalletPlaceholder/index.tsx
 export function ConnectWalletPlaceholder() {
   // Secure payment alternatives UI
   // Shows CCBill/Paxum/Segpay options

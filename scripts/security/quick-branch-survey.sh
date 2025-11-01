@@ -16,7 +16,7 @@ log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 
 # Create output directory
-BASE_DIR="REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM"
+BASE_DIR="/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM"
 mkdir -p "$BASE_DIR/security-reports"
 REPORT_FILE="$BASE_DIR/security-reports/quick-branch-survey-$(date +%Y%m%d-%H%M%S).md"
 
@@ -124,7 +124,7 @@ cat >> "$REPORT_FILE" << EOF
 
 ### 1. Run Branch Protection Test (Dry Run)
 \`\`\`bash
-cd REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM
+cd /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM
 ./scripts/security/implement-branch-protection.sh
 \`\`\`
 

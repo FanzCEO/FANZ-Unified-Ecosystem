@@ -8,7 +8,7 @@ import { EventEmitter } from 'events';
 import { createSecurityLogger } from '../../security/fanz-secure/src/utils/logger.js';
 import { emitSecurityEvent } from '../../security/fanz-secure/src/utils/securityEvents.js';
 import { fanzSignForensicCore } from '../../security/fanzsign/FanzSignForensicCore.js';
-import { securityMonitoring } from '../..REDACTED_AWS_SECRET_KEYore.js';
+import { securityMonitoring } from '../../security/monitoring/SecurityMonitoringCore.js';
 import * as redis from 'redis';
 import * as fs from 'fs/promises';
 import * as path from 'path';

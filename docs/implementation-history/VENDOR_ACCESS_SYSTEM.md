@@ -177,7 +177,7 @@ Authorization: Bearer {admin-token}
 
 Response:
 {
-  "token": "REDACTED_TOKEN",
+  "token": "eyJhbGciOiJIUzI1NiIs...",
   "expiresAt": "2024-03-15T18:30:00.000Z",
   "grantId": "grant-uuid"
 }

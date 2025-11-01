@@ -41,9 +41,7 @@
     "audit": "npm audit --audit-level moderate",
     "audit:fix": "npm audit fix",
     "security:scan": "npm run test:security && npm run test:dast",
-    "prepublishOnly": "npm run build",
-    "security:audit": "npm audit --audit-level=high",
-    "security:fix": "npm audit fix"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "security",

@@ -1,14 +1,14 @@
 import { Router, Request, Response } from 'express';
-import { PaymentProcessorFactory } from '..REDACTED_AWS_SECRET_KEYssorFactory';
-import { ComplianceValidationService } from '..REDACTED_AWS_SECRET_KEYre';
-import { GeographicRoutingService } from '..REDACTED_AWS_SECRET_KEYce';
-import { ProcessorMonitoringService } from '..REDACTED_AWS_SECRET_KEYService';
+import { PaymentProcessorFactory } from '../services/paymentProcessors/PaymentProcessorFactory';
+import { ComplianceValidationService } from '../middleware/ComplianceValidationMiddleware';
+import { GeographicRoutingService } from '../services/payment/GeographicRoutingService';
+import { ProcessorMonitoringService } from '../services/monitoring/ProcessorMonitoringService';
 import {
   PaymentRequest as BasePaymentRequest,
   PayoutRequest as BasePayoutRequest,
   RefundRequest,
   WebhookData
-} from '..REDACTED_AWS_SECRET_KEYPaymentProcessor';
+} from '../services/paymentProcessors/interfaces/IPaymentProcessor';
 
 // Extended PaymentRequest for route handling
 interface PaymentRequest extends BasePaymentRequest {

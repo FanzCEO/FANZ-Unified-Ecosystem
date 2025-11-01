@@ -174,14 +174,14 @@ class DASTRunner {
   async setupAuthentication() {
     try {
       // Configure form-based authentication
-      await this.zapRequest('REDACTED_AWS_SECRET_KEYationMethod/', {
+      await this.zapRequest('/JSON/authentication/action/setAuthenticationMethod/', {
         contextId: '0',
         authMethodName: 'formBasedAuthentication',
         authMethodConfigParams: `loginUrl=${this.config.targetUrl}/api/auth/login&loginRequestData=email%3D%7B%25username%25%7D%26password%3D%7B%25password%25%7D`
       });
 
       // Set login indicator
-      await this.zapRequest('REDACTED_AWS_SECRET_KEYndicator/', {
+      await this.zapRequest('/JSON/authentication/action/setLoggedInIndicator/', {
         contextId: '0',
         loggedInIndicatorRegex: '\\Qauthenticated\\E.*\\Qtrue\\E'
       });
@@ -193,7 +193,7 @@ class DASTRunner {
       });
 
       // Set user credentials
-      await this.zapRequest('REDACTED_AWS_SECRET_KEYentials/', {
+      await this.zapRequest('/JSON/users/action/setAuthenticationCredentials/', {
         contextId: '0',
         userId: '0',
         authCredentialsConfigParams: `username=${process.env.TEST_USERNAME}&password=${process.env.TEST_PASSWORD}`

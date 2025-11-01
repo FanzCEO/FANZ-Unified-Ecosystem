@@ -544,7 +544,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#REDACTED_AWS_SECRET_KEYs'
+                $ref: '#/components/schemas/PaginatedTransactions'
         '401':
           description: Unauthorized
           content:
@@ -562,7 +562,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#REDACTED_AWS_SECRET_KEYuest'
+              $ref: '#/components/schemas/CreateTransactionRequest'
       responses:
         '201':
           description: Transaction created successfully
@@ -962,4 +962,4 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#REDACTED_AWS_SECRET_KEYs'
+                $ref: '#/components/schemas/PaginatedTransactions'

@@ -274,7 +274,7 @@ All systems are designed to work together seamlessly:
 FANZ_UNIFIED_ECOSYSTEM/
 ├── 💰 finance/src/
 │   ├── ledger/CoreFinanceLedger.ts
-│   └── REDACTED_AWS_SECRET_KEY.ts
+│   └── transactions/TransactionProcessingEngine.ts
 ├── 🔒 security/src/
 │   ├── auth/MultiFactor.ts
 │   ├── rate-limiting/RateLimiter.ts

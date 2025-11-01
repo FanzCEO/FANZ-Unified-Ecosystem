@@ -46,7 +46,7 @@ We've created a revolutionary AI-powered ecosystem that automates 80% of creator
 
 ### **ContentIntelligenceCore.ts** - The Smart Optimization Engine  
 ```typescript
-📍 Location: ai-automation/core/ContentIntelligenceCore.ts
+📍 Location: ai-automation/intelligence/ContentIntelligenceCore.ts
 🔢 Lines: 775 lines of content intelligence
 
 🎯 Capabilities:
@@ -66,7 +66,7 @@ We've created a revolutionary AI-powered ecosystem that automates 80% of creator
 
 ### **CreatorEconomyAutomation.ts** - The Business Automation Suite
 ```typescript
-📍 Location: ai-automation/core/CreatorEconomyAutomation.ts
+📍 Location: ai-automation/economy/CreatorEconomyAutomation.ts
 🔢 Lines: 785 lines of business automation
 
 ⚙️ Capabilities:
@@ -90,7 +90,7 @@ We've created a revolutionary AI-powered ecosystem that automates 80% of creator
 
 ### **GlobalizationCore.ts** - Worldwide Accessibility Engine
 ```typescript
-📍 Location: ai-REDACTED_AWS_SECRET_KEYre.ts
+📍 Location: ai-automation/globalization/GlobalizationCore.ts
 🔢 Lines: 806 lines of global expansion infrastructure
 
 🗺️ Capabilities:
@@ -120,7 +120,7 @@ We've created a revolutionary AI-powered ecosystem that automates 80% of creator
 
 ### **EnterpriseSecurityCore.ts** - Military-Grade Protection
 ```typescript
-📍 Location: ai-enterpriseSecurityCore.ts
+📍 Location: ai-automation/security/EnterpriseSecurityCore.ts
 🔢 Lines: 769 lines of enterprise security
 
 🔐 Capabilities:

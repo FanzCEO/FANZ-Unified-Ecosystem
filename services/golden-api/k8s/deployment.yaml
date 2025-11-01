@@ -10,7 +10,7 @@ spec:
     metadata:
       labels:
         app: golden-api
-        FANZ.autofix: "safe"
+        fun.autofix: "safe"
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"

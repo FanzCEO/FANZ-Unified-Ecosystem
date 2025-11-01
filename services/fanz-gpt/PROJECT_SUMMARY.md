@@ -171,7 +171,7 @@ const calendar = await fanzGPT.generateContentCalendar(
 ### **Quick Start Commands**
 ```bash
 # Navigate to FanzGPT service
-cd REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/services/fanz-gpt
+cd /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/services/fanz-gpt
 
 # Set up development environment
 ./scripts/quick-setup.sh

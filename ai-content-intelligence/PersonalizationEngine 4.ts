@@ -1163,7 +1163,7 @@ class FanzPersonalizationEngine extends EventEmitter {
         spendingCapacity: 200,
         spendingWillingness: 0.7,
         averageTransactionSize: 25,
-        preferredPaymentMethods: ['credit_card', 'crypto', 'ccbill'],
+        preferredPaymentMethods: ['credit_card', 'paypal'],
         priceElasticity: 0.5
       },
       predictedLifetimeValue: 500,

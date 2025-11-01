@@ -1,0 +1,255 @@
+---
+# FANZ Auth SSO Private Load Balancer
+# Internal authentication service - no direct external access
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-auth-sso-private
+  namespace: auth
+  labels:
+    app: auth-sso
+    component: keycloak
+    tier: private
+    system: fanz
+  annotations:
+    # Private Load Balancer Configuration
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-auth-sso-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-private: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "least_connections"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "3"
+    
+    # Health Check Configuration
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/auth/realms/master"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "10"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "2"
+    
+    # VPC-only access
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "10.0.0.0/8"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,auth,sso,private,critical"
+    
+    # Sticky sessions for auth flows
+    service.beta.kubernetes.io/do-loadbalancer-sticky-sessions-type: "cookies"
+    service.beta.kubernetes.io/do-loadbalancer-sticky-sessions-cookie-name: "KEYCLOAK_IDENTITY"
+    service.beta.kubernetes.io/do-loadbalancer-sticky-sessions-cookie-ttl: "1800"
+spec:
+  type: LoadBalancer
+  selector:
+    app: keycloak
+    component: server
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  - name: https
+    port: 8443
+    targetPort: 8443
+    protocol: TCP
+  sessionAffinity: ClientIP
+
+---
+# FANZ Vault Private Load Balancer
+# FanzHubVault for regulatory forms and sensitive data
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-vault-private
+  namespace: vault
+  labels:
+    app: fanzhubvault
+    component: vault
+    tier: private
+    system: fanz
+  annotations:
+    # Private Load Balancer with Enhanced Security
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-vault-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-private: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "least_connections"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "2"
+    
+    # Health Check
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/v1/sys/health"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "15"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "2"
+    
+    # Restricted VPC access only
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "10.0.0.0/8"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,vault,sensitive,private,compliance"
+spec:
+  type: LoadBalancer
+  selector:
+    app: hashicorp-vault
+    component: server
+  ports:
+  - name: vault-api
+    port: 8200
+    targetPort: 8200
+    protocol: TCP
+  - name: vault-cluster
+    port: 8201
+    targetPort: 8201
+    protocol: TCP
+  sessionAffinity: ClientIP
+
+---
+# FanzDash Private Load Balancer
+# Security control center - admin access only
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanzdash-private
+  namespace: fanzdash
+  labels:
+    app: fanzdash
+    component: dashboard
+    tier: private
+    system: fanz
+  annotations:
+    # Private Load Balancer for Admin Dashboard
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanzdash-admin-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-private: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "2"
+    
+    # Health Check
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/health"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "10"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "2"
+    
+    # VPC access only
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "10.0.0.0/8"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,dashboard,admin,private"
+    
+    # Sticky sessions for admin workflows
+    service.beta.kubernetes.io/do-loadbalancer-sticky-sessions-type: "cookies"
+    service.beta.kubernetes.io/do-loadbalancer-sticky-sessions-cookie-name: "FANZDASH_SESSION"
+    service.beta.kubernetes.io/do-loadbalancer-sticky-sessions-cookie-ttl: "3600"
+spec:
+  type: LoadBalancer
+  selector:
+    app: fanzdash
+    component: web
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  - name: https
+    port: 8443
+    targetPort: 8443
+    protocol: TCP
+  - name: websocket
+    port: 8081
+    targetPort: 8081
+    protocol: TCP
+  sessionAffinity: ClientIP
+
+---
+# FANZ Database Private Load Balancer
+# Internal database access for applications
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-database-private
+  namespace: database
+  labels:
+    app: postgresql
+    component: database
+    tier: private
+    system: fanz
+  annotations:
+    # Private Load Balancer for Database Access
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-db-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "tcp"
+    service.beta.kubernetes.io/do-loadbalancer-private: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "least_connections"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "3"
+    
+    # Health Check for PostgreSQL
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "tcp"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "5432"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "10"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "2"
+    
+    # VPC access only
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "10.0.0.0/8"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,database,postgresql,private"
+spec:
+  type: LoadBalancer
+  selector:
+    app: postgresql
+    component: primary
+  ports:
+  - name: postgresql
+    port: 5432
+    targetPort: 5432
+    protocol: TCP
+  sessionAffinity: ClientIP
+
+---
+# FANZ Redis Cache Private Load Balancer
+# Internal caching and session storage
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-redis-private
+  namespace: database
+  labels:
+    app: redis
+    component: cache
+    tier: private
+    system: fanz
+  annotations:
+    # Private Load Balancer for Redis
+    service.beta.kubernetes.io/do-loadbalancer-name: "fanz-redis-nyc3"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "tcp"
+    service.beta.kubernetes.io/do-loadbalancer-private: "true"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "least_connections"
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "2"
+    
+    # Health Check for Redis
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "tcp"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "6379"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "10"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "2"
+    
+    # VPC access only
+    service.beta.kubernetes.io/do-loadbalancer-source-ranges: "10.0.0.0/8"
+    
+    # Tags
+    service.beta.kubernetes.io/do-loadbalancer-tag: "fanz,cache,redis,private"
+spec:
+  type: LoadBalancer
+  selector:
+    app: redis
+    component: server
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+    protocol: TCP
+  sessionAffinity: ClientIP

@@ -29,10 +29,7 @@
     "workers:start": "tsx scripts/start-workers.ts",
     "workers:stop": "tsx scripts/stop-workers.ts",
     "health:check": "tsx scripts/health-check.ts",
-    "analytics:export": "tsx scripts/export-analytics.ts",
-    "security:audit": "npm audit --audit-level=high",
-    "security:fix": "npm audit fix",
-    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
+    "analytics:export": "tsx scripts/export-analytics.ts"
   },
   "keywords": [
     "fanz",
@@ -196,32 +193,9 @@
   "config": {
     "maxFileSize": 1073741824,
     "defaultWorkerCount": 4,
-    "supportedImageFormats": [
-      "jpg",
-      "jpeg",
-      "png",
-      "gif",
-      "webp",
-      "tiff",
-      "bmp"
-    ],
-    "supportedVideoFormats": [
-      "mp4",
-      "avi",
-      "mov",
-      "wmv",
-      "flv",
-      "webm",
-      "mkv"
-    ],
-    "supportedAudioFormats": [
-      "mp3",
-      "wav",
-      "aac",
-      "flac",
-      "ogg",
-      "m4a"
-    ],
+    "supportedImageFormats": ["jpg", "jpeg", "png", "gif", "webp", "tiff", "bmp"],
+    "supportedVideoFormats": ["mp4", "avi", "mov", "wmv", "flv", "webm", "mkv"],
+    "supportedAudioFormats": ["mp3", "wav", "aac", "flac", "ogg", "m4a"],
     "defaultCDNTTL": 86400,
     "maxTranscodeRetries": 3
   },

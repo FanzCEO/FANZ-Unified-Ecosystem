@@ -1,0 +1,243 @@
+---
+# FANZ Unified Ecosystem - Namespace Definitions
+# All brand and core service namespaces with proper labeling
+
+# Brand Namespaces
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: boyfanz
+  labels:
+    fanz.network/brand: "boyfanz"
+    fanz.network/tier: "brand"
+    fanz.network/environment: "production"
+    name: boyfanz
+  annotations:
+    fanz.network/description: "BoyFanz platform namespace"
+    fanz.network/domain: "boyfanz.com"
+    fanz.network/adult-content: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: girlfanz
+  labels:
+    fanz.network/brand: "girlfanz"
+    fanz.network/tier: "brand"
+    fanz.network/environment: "production"
+    name: girlfanz
+  annotations:
+    fanz.network/description: "GirlFanz platform namespace"
+    fanz.network/domain: "girlfanz.com"
+    fanz.network/adult-content: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pupfanz
+  labels:
+    fanz.network/brand: "pupfanz"
+    fanz.network/tier: "brand"
+    fanz.network/environment: "production"
+    name: pupfanz
+  annotations:
+    fanz.network/description: "PupFanz platform namespace"
+    fanz.network/domain: "pupfanz.com"
+    fanz.network/adult-content: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: transfanz
+  labels:
+    fanz.network/brand: "transfanz"
+    fanz.network/tier: "brand"
+    fanz.network/environment: "production"
+    name: transfanz
+  annotations:
+    fanz.network/description: "TransFanz platform namespace"
+    fanz.network/domain: "transfanz.com"
+    fanz.network/adult-content: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: taboofanz
+  labels:
+    fanz.network/brand: "taboofanz"
+    fanz.network/tier: "brand"
+    fanz.network/environment: "production"
+    name: taboofanz
+  annotations:
+    fanz.network/description: "TabooFanz platform namespace (replaces EbonyFanz)"
+    fanz.network/domain: "taboofanz.com"
+    fanz.network/adult-content: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: daddiesfanz
+  labels:
+    fanz.network/brand: "daddiesfanz"
+    fanz.network/tier: "brand"
+    fanz.network/environment: "production"
+    name: daddiesfanz
+  annotations:
+    fanz.network/description: "DaddiesFanz platform namespace"
+    fanz.network/domain: "daddiesfanz.com"
+    fanz.network/adult-content: "true"
+
+# Core Service Namespaces
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fanz-core
+  labels:
+    fanz.network/tier: "core"
+    fanz.network/environment: "production"
+    name: fanz-core
+  annotations:
+    fanz.network/description: "FANZ core services namespace"
+    fanz.network/domain: "fanzunlimited.com"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apigw
+  labels:
+    fanz.network/tier: "core"
+    fanz.network/component: "gateway"
+    fanz.network/environment: "production"
+    name: apigw
+  annotations:
+    fanz.network/description: "API Gateway namespace"
+    fanz.network/domain: "api.fanzunlimited.com"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: auth
+  labels:
+    fanz.network/tier: "core"
+    fanz.network/component: "security"
+    fanz.network/environment: "production"
+    name: auth
+  annotations:
+    fanz.network/description: "Authentication and SSO services"
+    fanz.network/domain: "sso.fanz.fans"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: media
+  labels:
+    fanz.network/tier: "core"
+    fanz.network/component: "media"
+    fanz.network/environment: "production"
+    name: media
+  annotations:
+    fanz.network/description: "MediaHub services namespace"
+    fanz.network/domain: "media.fanz.media"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vault
+  labels:
+    fanz.network/tier: "core"
+    fanz.network/component: "security"
+    fanz.network/environment: "production"
+    name: vault
+  annotations:
+    fanz.network/description: "FanzHubVault secure storage"
+    fanz.network/domain: "vault.fanz.foundation"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fanzdash
+  labels:
+    fanz.network/tier: "core"
+    fanz.network/component: "admin"
+    fanz.network/environment: "production"
+    name: fanzdash
+  annotations:
+    fanz.network/description: "FanzDash security control center"
+    fanz.network/domain: "dash.fanzunlimited.com"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ads
+  labels:
+    fanz.network/tier: "core"
+    fanz.network/component: "monetization"
+    fanz.network/environment: "production"
+    name: ads
+  annotations:
+    fanz.network/description: "FANZ Ad Engine services"
+    fanz.network/domain: "ads.fanz.fans"
+
+# Infrastructure Namespaces
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ingress-nginx
+  labels:
+    fanz.network/tier: "infrastructure"
+    fanz.network/component: "ingress"
+    fanz.network/environment: "production"
+    name: ingress-nginx
+  annotations:
+    fanz.network/description: "NGINX Ingress Controller"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: observability
+  labels:
+    fanz.network/tier: "infrastructure"
+    fanz.network/component: "monitoring"
+    fanz.network/environment: "production"
+    name: observability
+  annotations:
+    fanz.network/description: "Monitoring, logging, and observability stack"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+  labels:
+    fanz.network/tier: "infrastructure"
+    fanz.network/component: "certificates"
+    fanz.network/environment: "production"
+    name: cert-manager
+  annotations:
+    fanz.network/description: "Certificate management and automation"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: linkerd
+  labels:
+    fanz.network/tier: "infrastructure"
+    fanz.network/component: "service-mesh"
+    fanz.network/environment: "production"
+    name: linkerd
+  annotations:
+    fanz.network/description: "Linkerd service mesh for mTLS and traffic policy"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-dns
+  labels:
+    fanz.network/tier: "infrastructure"
+    fanz.network/component: "dns"
+    fanz.network/environment: "production"
+    name: external-dns
+  annotations:
+    fanz.network/description: "External DNS automation for DigitalOcean/Cloudflare"

@@ -131,7 +131,7 @@ security-reports/
 1. **🧹 Clean Demo Secrets**
    ```bash
    # Remove demo tokens from documentation
-   grep -r "REDACTED_DEMO_TOKEN" . --exclude-dir=.git
+   grep -r "demo-token" . --exclude-dir=.git
    
    # Sanitize vault root tokens from examples  
    grep -r "VAULT_ROOT_TOKEN" . --exclude-dir=.git

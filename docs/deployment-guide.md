@@ -268,7 +268,7 @@ spec:
         emptyDir: {}
       affinity:
         podAntiAffinity:
-          REDACTED_AWS_SECRET_KEYecution:
+          preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
               labelSelector:

@@ -2,7 +2,7 @@
 # Implements security best practices: minimal images, non-root user, read-only filesystem
 
 # Stage 1: Build stage with pinned digest for supply chain security
-FROM node:18-alpine@sha256:REDACTED_AWS_SECRET_KEY5588d0a35cb9bc4b8ca09d9e AS builder
+FROM node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e AS builder
 
 # Install security updates first and only required build tools
 RUN apk update && apk upgrade --no-cache && \
