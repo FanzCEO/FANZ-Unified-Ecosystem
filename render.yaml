@@ -31,7 +31,7 @@ services:
       fi
       echo "Build successful - backend/dist/server.js exists"
     startCommand: cd backend && node dist/server.js
-    healthCheckPath: /healthz
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
