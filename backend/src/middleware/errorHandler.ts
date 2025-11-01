@@ -21,7 +21,7 @@ export class AppError extends Error {
 }
 
 export class ValidationError extends AppError {
-  constructor(message: string, details?: any) {
+  constructor(message: string, _details?: any) {
     super(message, 400, 'VALIDATION_ERROR');
     this.name = 'ValidationError';
   }
@@ -157,8 +157,8 @@ export const errorHandler = (
 
   // Handle specific error types
   let statusCode = 500;
-  let message = 'Internal server error';
-  let errorCode = 'INTERNAL_SERVER_ERROR';
+  let __message = 'Internal server error';
+  let __errorCode = 'INTERNAL_SERVER_ERROR';
 
   if (error instanceof AppError) {
     statusCode = error.statusCode;

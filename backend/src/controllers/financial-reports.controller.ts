@@ -180,7 +180,7 @@ export class FinancialReportsController {
 
     } catch (error) {
       logger.error('Generate P&L statement failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -314,7 +314,7 @@ export class FinancialReportsController {
 
     } catch (error) {
       logger.error('Generate balance sheet failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -458,7 +458,7 @@ export class FinancialReportsController {
 
     } catch (error) {
       logger.error('Generate cash flow statement failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -502,7 +502,7 @@ export class FinancialReportsController {
 
     } catch (error) {
       logger.error('Get financial analytics failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -671,7 +671,7 @@ export class FinancialReportsController {
 
     } catch (error) {
       logger.error('Get executive dashboard failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;

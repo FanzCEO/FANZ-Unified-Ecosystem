@@ -119,7 +119,7 @@ export class ProcessorMonitoringService extends EventEmitter {
     logger.info('Stopping payment processor monitoring service');
     
     // Stop all scheduled health checks
-    for (const [processorName, job] of this.healthCheckJobs) {
+    for (const [_processorName, job] of this.healthCheckJobs) {
       if (job && typeof job.destroy === 'function') {
         job.destroy();
       }

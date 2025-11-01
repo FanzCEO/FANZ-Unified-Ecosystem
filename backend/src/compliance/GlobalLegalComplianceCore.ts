@@ -365,7 +365,7 @@ export class GlobalLegalComplianceCore extends EventEmitter {
 
     } catch (error) {
       this.logger.error('❌ Failed to initialize Global Legal Compliance:', error);
-      throw new Error(`Global compliance initialization failed: ${error.message}`);
+      throw new Error(`Global compliance initialization failed: ${(error instanceof Error ? error.message : String(error))}`);
     }
   }
 
@@ -697,7 +697,7 @@ export class GlobalLegalComplianceCore extends EventEmitter {
     dataType: string,
     sourceJurisdiction: Jurisdiction,
     targetJurisdiction: Jurisdiction,
-    userId?: string
+    _userId?: string
   ): Promise<{
     allowed: boolean;
     safeguardsRequired: string[];
@@ -708,8 +708,8 @@ export class GlobalLegalComplianceCore extends EventEmitter {
     try {
       this.logger.info(`🌐 Validating data transfer: ${sourceJurisdiction} → ${targetJurisdiction}`);
 
-      const sourceRules = this.complianceMatrix[sourceJurisdiction];
-      const targetRules = this.complianceMatrix[targetJurisdiction];
+      const __sourceRules = this.complianceMatrix[sourceJurisdiction];
+      const __targetRules = this.complianceMatrix[targetJurisdiction];
 
       let allowed = true;
       let safeguardsRequired: string[] = [];

@@ -57,6 +57,11 @@ interface Config {
   TWILIO_ACCOUNT_SID: string;
   TWILIO_AUTH_TOKEN: string;
   SENDGRID_API_KEY: string;
+
+  // Email
+  EMAIL_FROM: string;
+  EMAIL_FROM_NAME: string;
+  FRONTEND_URL: string;
   
   // Security
   BCRYPT_ROUNDS: number;
@@ -171,7 +176,12 @@ export const config: Config = {
   TWILIO_ACCOUNT_SID: getEnvVar('TWILIO_ACCOUNT_SID', ''),
   TWILIO_AUTH_TOKEN: getEnvVar('TWILIO_AUTH_TOKEN', ''),
   SENDGRID_API_KEY: getEnvVar('SENDGRID_API_KEY', ''),
-  
+
+  // Email
+  EMAIL_FROM: getEnvVar('EMAIL_FROM', 'noreply@fanz.com'),
+  EMAIL_FROM_NAME: getEnvVar('EMAIL_FROM_NAME', 'FANZ Platform'),
+  FRONTEND_URL: getEnvVar('FRONTEND_URL', 'http://localhost:3000'),
+
   // Security
   BCRYPT_ROUNDS: getEnvVarAsNumber('BCRYPT_ROUNDS', 12),
   SESSION_SECRET: getEnvVar('SESSION_SECRET'), // No default - must be provided

@@ -3,7 +3,7 @@ import { userController } from '../controllers/user.controller';
 import { 
   authenticate, 
   requireRole,
-  requireOwnership,
+  _requireOwnership,
   rateLimitByUser 
 } from '../middleware/auth';
 import { metricsMiddleware } from '../middleware/metrics';

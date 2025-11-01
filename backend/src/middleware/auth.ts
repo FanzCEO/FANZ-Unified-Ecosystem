@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Logger } from '../utils/logger';
 import { authService, JWTPayload } from '../services/auth.service';
-import { AuthenticationError, AuthorizationError } from './errorHandler';
+import { AuthenticationError, _AuthorizationError } from './errorHandler';
 
 const logger = new Logger('AuthMiddleware');
 
@@ -56,7 +56,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     next();
   } catch (error) {
     logger.warn('Authentication failed', { 
-      error: error.message,
+      error: (error instanceof Error ? error.message : String(error)),
       ip: req.ip,
       userAgent: req.get('User-Agent')
     });
@@ -64,7 +64,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     if (error instanceof AuthenticationError) {
       return res.status(401).json({
         error: {
-          message: error.message,
+          message: (error instanceof Error ? error.message : String(error)),
           code: 'AUTHENTICATION_ERROR',
           statusCode: 401
         }
@@ -91,7 +91,7 @@ export const optionalAuth = async (req: Request, res: Response, next: NextFuncti
         });
       } catch (error) {
         logger.debug('Optional auth - invalid token ignored', { 
-          error: error.message 
+          error: (error instanceof Error ? error.message : String(error)) 
         });
         // Continue without setting user
       }

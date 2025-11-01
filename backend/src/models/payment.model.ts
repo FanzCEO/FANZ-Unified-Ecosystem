@@ -216,7 +216,7 @@ export class PaymentRepository extends BaseRepository {
       const result = await this.db.query(query);
       return result.rows;
     } catch (error) {
-      logger.error('Failed to get chart of accounts', { error: error.message });
+      logger.error('Failed to get chart of accounts', { error: (error instanceof Error ? error.message : String(error)) });
       throw new DatabaseError('Failed to get chart of accounts');
     }
   }
@@ -230,7 +230,7 @@ export class PaymentRepository extends BaseRepository {
       const result = await this.db.query(query, [accountCode]);
       return result.rows[0] || null;
     } catch (error) {
-      logger.error('Failed to get account by code', { error: error.message, accountCode });
+      logger.error('Failed to get account by code', { error: (error instanceof Error ? error.message : String(error)), accountCode });
       throw new DatabaseError('Failed to get account');
     }
   }
@@ -334,7 +334,7 @@ export class PaymentRepository extends BaseRepository {
       });
     } catch (error) {
       logger.error('Failed to create journal entry', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         entryData
       });
       throw error;
@@ -390,7 +390,7 @@ export class PaymentRepository extends BaseRepository {
       return transaction;
     } catch (error) {
       logger.error('Failed to create transaction', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         transactionData
       });
       throw error;
@@ -447,7 +447,7 @@ export class PaymentRepository extends BaseRepository {
       `, [transactionId]).catch(() => {}); // Don't throw on this error
 
       logger.error('Failed to process transaction', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         transactionId
       });
       throw error;
@@ -460,7 +460,7 @@ export class PaymentRepository extends BaseRepository {
       const result = await this.db.query(query, [transactionId]);
       return result.rows[0] || null;
     } catch (error) {
-      logger.error('Failed to get transaction', { error: error.message, transactionId });
+      logger.error('Failed to get transaction', { error: (error instanceof Error ? error.message : String(error)), transactionId });
       throw new DatabaseError('Failed to get transaction');
     }
   }
@@ -514,7 +514,7 @@ export class PaymentRepository extends BaseRepository {
       };
     } catch (error) {
       logger.error('Failed to get user transactions', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId
       });
       throw new DatabaseError('Failed to get user transactions');
@@ -535,7 +535,7 @@ export class PaymentRepository extends BaseRepository {
       return result.rows[0] || null;
     } catch (error) {
       logger.error('Failed to get user balance', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId,
         balanceType
       });
@@ -554,7 +554,7 @@ export class PaymentRepository extends BaseRepository {
       return result.rows;
     } catch (error) {
       logger.error('Failed to get user balances', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId
       });
       throw new DatabaseError('Failed to get user balances');
@@ -610,7 +610,7 @@ export class PaymentRepository extends BaseRepository {
       return plan;
     } catch (error) {
       logger.error('Failed to create subscription plan', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         creatorId,
         planData
       });
@@ -638,7 +638,7 @@ export class PaymentRepository extends BaseRepository {
         }
 
         // Calculate dates
-        const now = new Date();
+        const __now = new Date();
         const periodStart = new Date();
         const periodEnd = this.calculateBillingPeriodEnd(periodStart, plan.billing_cycle);
         
@@ -706,7 +706,7 @@ export class PaymentRepository extends BaseRepository {
       });
     } catch (error) {
       logger.error('Failed to create subscription', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         subscriberId,
         subscriptionData
       });
@@ -720,7 +720,7 @@ export class PaymentRepository extends BaseRepository {
       const result = await this.db.query(query, [planId]);
       return result.rows[0] || null;
     } catch (error) {
-      logger.error('Failed to get subscription plan', { error: error.message, planId });
+      logger.error('Failed to get subscription plan', { error: (error instanceof Error ? error.message : String(error)), planId });
       throw new DatabaseError('Failed to get subscription plan');
     }
   }
@@ -737,7 +737,7 @@ export class PaymentRepository extends BaseRepository {
       return result.rows[0] || null;
     } catch (error) {
       logger.error('Failed to get user subscription', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         subscriberId,
         creatorId
       });
@@ -784,7 +784,7 @@ export class PaymentRepository extends BaseRepository {
       return payout;
     } catch (error) {
       logger.error('Failed to create payout', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         payoutData
       });
       throw error;

@@ -60,7 +60,7 @@ class RedisManager {
     });
 
     this.client.on('error', (error) => {
-      logger.error('Redis client error', { error: error.message });
+      logger.error('Redis client error', { error: (error instanceof Error ? error.message : String(error)) });
     });
 
     this.client.on('close', () => {
@@ -77,7 +77,7 @@ class RedisManager {
     });
 
     this.subscriber.on('error', (error) => {
-      logger.error('Redis subscriber error', { error: error.message });
+      logger.error('Redis subscriber error', { error: (error instanceof Error ? error.message : String(error)) });
     });
 
     // Publisher events
@@ -86,7 +86,7 @@ class RedisManager {
     });
 
     this.publisher.on('error', (error) => {
-      logger.error('Redis publisher error', { error: error.message });
+      logger.error('Redis publisher error', { error: (error instanceof Error ? error.message : String(error)) });
     });
   }
 
@@ -99,7 +99,7 @@ class RedisManager {
       ]);
       logger.info('All Redis clients connected successfully');
     } catch (error) {
-      logger.error('Failed to connect Redis clients', { error: error.message });
+      logger.error('Failed to connect Redis clients', { error: (error instanceof Error ? error.message : String(error)) });
       throw error;
     }
   }
@@ -111,7 +111,7 @@ class RedisManager {
       logger.debug('Cache get', { key, hit: result !== null });
       return result;
     } catch (error) {
-      logger.error('Cache get failed', { key, error: error.message });
+      logger.error('Cache get failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return null;
     }
   }
@@ -122,7 +122,7 @@ class RedisManager {
       if (!value) return null;
       return JSON.parse(value);
     } catch (error) {
-      logger.error('Cache getJson failed', { key, error: error.message });
+      logger.error('Cache getJson failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return null;
     }
   }
@@ -136,7 +136,7 @@ class RedisManager {
       logger.debug('Cache set', { key, ttl, success: result === 'OK' });
       return result === 'OK';
     } catch (error) {
-      logger.error('Cache set failed', { key, error: error.message });
+      logger.error('Cache set failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -146,7 +146,7 @@ class RedisManager {
       const jsonValue = JSON.stringify(value);
       return await this.set(key, jsonValue, ttl);
     } catch (error) {
-      logger.error('Cache setJson failed', { key, error: error.message });
+      logger.error('Cache setJson failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -157,7 +157,7 @@ class RedisManager {
       logger.debug('Cache delete', { key, deleted: result > 0 });
       return result > 0;
     } catch (error) {
-      logger.error('Cache delete failed', { key, error: error.message });
+      logger.error('Cache delete failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -167,7 +167,7 @@ class RedisManager {
       const result = await this.client.exists(key);
       return result === 1;
     } catch (error) {
-      logger.error('Cache exists failed', { key, error: error.message });
+      logger.error('Cache exists failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -177,7 +177,7 @@ class RedisManager {
       const result = await this.client.expire(key, ttl);
       return result === 1;
     } catch (error) {
-      logger.error('Cache expire failed', { key, ttl, error: error.message });
+      logger.error('Cache expire failed', { key, ttl, error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -188,7 +188,7 @@ class RedisManager {
       logger.debug('Cache increment', { key, amount, result });
       return result;
     } catch (error) {
-      logger.error('Cache increment failed', { key, amount, error: error.message });
+      logger.error('Cache increment failed', { key, amount, error: (error instanceof Error ? error.message : String(error)) });
       throw error;
     }
   }
@@ -199,7 +199,7 @@ class RedisManager {
       logger.debug('Cache decrement', { key, amount, result });
       return result;
     } catch (error) {
-      logger.error('Cache decrement failed', { key, amount, error: error.message });
+      logger.error('Cache decrement failed', { key, amount, error: (error instanceof Error ? error.message : String(error)) });
       throw error;
     }
   }
@@ -210,7 +210,7 @@ class RedisManager {
       const result = await this.client.lpush(key, ...values);
       return result;
     } catch (error) {
-      logger.error('Redis lpush failed', { key, error: error.message });
+      logger.error('Redis lpush failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       throw error;
     }
   }
@@ -220,7 +220,7 @@ class RedisManager {
       const result = await this.client.rpop(key);
       return result;
     } catch (error) {
-      logger.error('Redis rpop failed', { key, error: error.message });
+      logger.error('Redis rpop failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return null;
     }
   }
@@ -230,7 +230,7 @@ class RedisManager {
       const result = await this.client.lrange(key, start, stop);
       return result;
     } catch (error) {
-      logger.error('Redis lrange failed', { key, start, stop, error: error.message });
+      logger.error('Redis lrange failed', { key, start, stop, error: (error instanceof Error ? error.message : String(error)) });
       return [];
     }
   }
@@ -241,7 +241,7 @@ class RedisManager {
       const result = await this.client.sadd(key, ...members);
       return result;
     } catch (error) {
-      logger.error('Redis sadd failed', { key, error: error.message });
+      logger.error('Redis sadd failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return 0;
     }
   }
@@ -251,7 +251,7 @@ class RedisManager {
       const result = await this.client.srem(key, ...members);
       return result;
     } catch (error) {
-      logger.error('Redis srem failed', { key, error: error.message });
+      logger.error('Redis srem failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return 0;
     }
   }
@@ -261,7 +261,7 @@ class RedisManager {
       const result = await this.client.smembers(key);
       return result;
     } catch (error) {
-      logger.error('Redis smembers failed', { key, error: error.message });
+      logger.error('Redis smembers failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return [];
     }
   }
@@ -271,7 +271,7 @@ class RedisManager {
       const result = await this.client.sismember(key, member);
       return result === 1;
     } catch (error) {
-      logger.error('Redis sismember failed', { key, member, error: error.message });
+      logger.error('Redis sismember failed', { key, member, error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -282,7 +282,7 @@ class RedisManager {
       const result = await this.client.hset(key, field, value);
       return result;
     } catch (error) {
-      logger.error('Redis hset failed', { key, field, error: error.message });
+      logger.error('Redis hset failed', { key, field, error: (error instanceof Error ? error.message : String(error)) });
       return 0;
     }
   }
@@ -292,7 +292,7 @@ class RedisManager {
       const result = await this.client.hget(key, field);
       return result;
     } catch (error) {
-      logger.error('Redis hget failed', { key, field, error: error.message });
+      logger.error('Redis hget failed', { key, field, error: (error instanceof Error ? error.message : String(error)) });
       return null;
     }
   }
@@ -302,7 +302,7 @@ class RedisManager {
       const result = await this.client.hgetall(key);
       return result;
     } catch (error) {
-      logger.error('Redis hgetall failed', { key, error: error.message });
+      logger.error('Redis hgetall failed', { key, error: (error instanceof Error ? error.message : String(error)) });
       return {};
     }
   }
@@ -312,7 +312,7 @@ class RedisManager {
       const result = await this.client.hdel(key, ...fields);
       return result;
     } catch (error) {
-      logger.error('Redis hdel failed', { key, fields, error: error.message });
+      logger.error('Redis hdel failed', { key, fields, error: (error instanceof Error ? error.message : String(error)) });
       return 0;
     }
   }
@@ -324,7 +324,7 @@ class RedisManager {
       logger.debug('Published message', { channel, subscribers: result });
       return result;
     } catch (error) {
-      logger.error('Redis publish failed', { channel, error: error.message });
+      logger.error('Redis publish failed', { channel, error: (error instanceof Error ? error.message : String(error)) });
       return 0;
     }
   }
@@ -334,7 +334,7 @@ class RedisManager {
       const message = JSON.stringify(data);
       return await this.publish(channel, message);
     } catch (error) {
-      logger.error('Redis publishJson failed', { channel, error: error.message });
+      logger.error('Redis publishJson failed', { channel, error: (error instanceof Error ? error.message : String(error)) });
       return 0;
     }
   }
@@ -349,7 +349,7 @@ class RedisManager {
       });
       logger.info('Subscribed to channel', { channel });
     } catch (error) {
-      logger.error('Redis subscribe failed', { channel, error: error.message });
+      logger.error('Redis subscribe failed', { channel, error: (error instanceof Error ? error.message : String(error)) });
     }
   }
 
@@ -358,7 +358,7 @@ class RedisManager {
       await this.subscriber.unsubscribe(channel);
       logger.info('Unsubscribed from channel', { channel });
     } catch (error) {
-      logger.error('Redis unsubscribe failed', { channel, error: error.message });
+      logger.error('Redis unsubscribe failed', { channel, error: (error instanceof Error ? error.message : String(error)) });
     }
   }
 
@@ -368,7 +368,7 @@ class RedisManager {
       const result = await this.client.keys(pattern);
       return result;
     } catch (error) {
-      logger.error('Redis keys failed', { pattern, error: error.message });
+      logger.error('Redis keys failed', { pattern, error: (error instanceof Error ? error.message : String(error)) });
       return [];
     }
   }
@@ -384,7 +384,7 @@ class RedisManager {
       const result = await this.client.ping();
       return result === 'PONG';
     } catch (error) {
-      logger.error('Redis health check failed', { error: error.message });
+      logger.error('Redis health check failed', { error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -408,7 +408,7 @@ class RedisManager {
       ]);
       logger.info('All Redis connections closed');
     } catch (error) {
-      logger.error('Error closing Redis connections', { error: error.message });
+      logger.error('Error closing Redis connections', { error: (error instanceof Error ? error.message : String(error)) });
     }
   }
 }
@@ -492,7 +492,7 @@ export async function setupRedis(): Promise<void> {
       stats: redis.getConnectionStats()
     });
   } catch (error) {
-    logger.error('Redis setup failed', { error: error.message });
+    logger.error('Redis setup failed', { error: (error instanceof Error ? error.message : String(error)) });
     throw error;
   }
 }

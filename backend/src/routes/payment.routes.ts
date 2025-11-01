@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/auth';
 import { authorize } from '../middleware/authorization';
-import { validateRequest } from '../middleware/validation';
+import { _validateRequest } from '../middleware/validation';
 import { rateLimiter } from '../middleware/rateLimiter';
 import { paymentController } from '../controllers/payment.controller';
 import { financialReportsController } from '../controllers/financial-reports.controller';
@@ -252,7 +252,7 @@ router.get('/executive-dashboard',
  */
 router.post('/webhooks/payment-processor',
   rateLimiter({ windowMs: 60 * 1000, max: 100 }), // 100 webhooks per minute
-  async (req, res) => {
+  async (_req, res) => {
     try {
       // Webhook signature validation would go here
       // For now, just acknowledge receipt
@@ -270,7 +270,7 @@ router.post('/webhooks/payment-processor',
  */
 router.post('/webhooks/bank-feed',
   rateLimiter({ windowMs: 60 * 1000, max: 50 }), // 50 bank feeds per minute
-  async (req, res) => {
+  async (_req, res) => {
     try {
       // Bank feed processing would go here
       res.status(200).json({ processed: true });
@@ -289,7 +289,7 @@ router.post('/webhooks/bank-feed',
  * @desc Payment system health check
  * @access Public
  */
-router.get('/health', (req, res) => {
+router.get('/health', (_req, res) => {
   res.status(200).json({
     status: 'healthy',
     service: 'FanzFinance OS',
@@ -306,7 +306,7 @@ router.get('/health', (req, res) => {
 router.get('/health/detailed',
   authenticate,
   authorize(['admin']),
-  async (req, res) => {
+  async (_req, res) => {
     try {
       // Check database connection
       const dbHealthQuery = 'SELECT NOW() as timestamp';
@@ -336,7 +336,7 @@ router.get('/health/detailed',
       res.status(500).json({
         status: 'unhealthy',
         service: 'FanzFinance OS',
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         timestamp: new Date().toISOString()
       });
     }
@@ -352,7 +352,7 @@ router.get('/health/detailed',
  * @desc Payment API documentation metadata
  * @access Public
  */
-router.get('/docs', (req, res) => {
+router.get('/docs', (_req, res) => {
   const apiDocs = {
     name: 'FanzFinance OS Payment API',
     version: '1.0.0',

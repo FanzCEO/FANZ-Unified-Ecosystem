@@ -214,7 +214,7 @@ export default class VendorAccessDelegationService {
     throw new Error('Not implemented - stub service');
   }
 
-  async listVendors(filters?: any, pagination?: { page: number; limit: number }): Promise<{ vendors: VendorProfile[]; total: number; page: number; totalPages: number }> {
+  async listVendors(_filters?: any, pagination?: { page: number; limit: number }): Promise<{ vendors: VendorProfile[]; total: number; page: number; totalPages: number }> {
     // Mock implementation - return empty results
     return {
       vendors: [],
@@ -224,7 +224,7 @@ export default class VendorAccessDelegationService {
     };
   }
 
-  async listVendorProfiles(filters?: any): Promise<{ profiles: VendorProfile[]; total: number; page: number; limit: number }> {
+  async listVendorProfiles(_filters?: any): Promise<{ profiles: VendorProfile[]; total: number; page: number; limit: number }> {
     throw new Error('Not implemented - stub service');
   }
 
@@ -291,7 +291,7 @@ export default class VendorAccessDelegationService {
     throw new Error('Not implemented - stub service');
   }
 
-  async listAccessGrants(filters?: any): Promise<{ grants: AccessGrant[]; total: number; page: number; limit: number }> {
+  async listAccessGrants(_filters?: any): Promise<{ grants: AccessGrant[]; total: number; page: number; limit: number }> {
     throw new Error('Not implemented - stub service');
   }
 
@@ -338,7 +338,7 @@ export default class VendorAccessDelegationService {
     throw new Error('Not implemented - stub service');
   }
 
-  async listAccessTokens(vendorId?: string): Promise<{ tokens: AccessToken[]; total: number }> {
+  async listAccessTokens(_vendorId?: string): Promise<{ tokens: AccessToken[]; total: number }> {
     throw new Error('Not implemented - stub service');
   }
 
@@ -381,8 +381,8 @@ export default class VendorAccessDelegationService {
     token: string,
     category: AccessCategory | string, 
     level: AccessLevel | string,
-    endpoint?: string,
-    ipAddress?: string
+    _endpoint?: string,
+    _ipAddress?: string
   ): Promise<{
     valid: boolean;
     vendorId?: string;
@@ -421,7 +421,7 @@ export default class VendorAccessDelegationService {
     };
   }
 
-  async getVendorActivityReport(vendorId?: string, options?: any): Promise<any> {
+  async getVendorActivityReport(_vendorId?: string, _options?: any): Promise<any> {
     throw new Error('Not implemented - stub service');
   }
 

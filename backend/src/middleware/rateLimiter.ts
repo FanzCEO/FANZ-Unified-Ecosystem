@@ -1,5 +1,5 @@
 import { rateLimit, Options } from 'express-rate-limit';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, _NextFunction } from 'express';
 
 // Default rate limit configuration
 const defaultConfig: Partial<Options> = {

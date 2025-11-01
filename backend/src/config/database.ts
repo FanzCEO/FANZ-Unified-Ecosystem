@@ -1,4 +1,4 @@
-import { Pool, Client, PoolClient } from 'pg';
+import { Pool, PoolClient } from 'pg';
 import { config } from './index';
 import { Logger } from '../utils/logger';
 
@@ -81,7 +81,7 @@ class DatabaseManager {
     } catch (error) {
       const duration = Date.now() - start;
       logger.error('Database query failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         query: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
         params: params?.slice(0, 5), // Only log first 5 params for security
         duration
@@ -95,7 +95,7 @@ class DatabaseManager {
       const client = await this.pool.connect();
       return client;
     } catch (error) {
-      logger.error('Failed to get database client', { error: error.message });
+      logger.error('Failed to get database client', { error: (error instanceof Error ? error.message : String(error)) });
       throw error;
     }
   }
@@ -115,7 +115,7 @@ class DatabaseManager {
       return result;
     } catch (error) {
       await client.query('ROLLBACK');
-      logger.error('Database transaction rolled back', { error: error.message });
+      logger.error('Database transaction rolled back', { error: (error instanceof Error ? error.message : String(error)) });
       throw error;
     } finally {
       client.release();
@@ -127,7 +127,7 @@ class DatabaseManager {
       const result = await this.query('SELECT 1 as health_check');
       return result.rows[0].health_check === 1;
     } catch (error) {
-      logger.error('Database health check failed', { error: error.message });
+      logger.error('Database health check failed', { error: (error instanceof Error ? error.message : String(error)) });
       return false;
     }
   }
@@ -149,7 +149,7 @@ class DatabaseManager {
       await this.pool.end();
       logger.info('Database connection pool closed');
     } catch (error) {
-      logger.error('Error closing database connection pool', { error: error.message });
+      logger.error('Error closing database connection pool', { error: (error instanceof Error ? error.message : String(error)) });
     }
   }
 }
@@ -172,7 +172,7 @@ export async function setupDatabase(): Promise<void> {
       poolStats: db.getPoolStats()
     });
   } catch (error) {
-    logger.error('Database setup failed', { error: error.message });
+    logger.error('Database setup failed', { error: (error instanceof Error ? error.message : String(error)) });
     throw error;
   }
 }
@@ -187,7 +187,7 @@ async function setupDatabaseExtensions(db: DatabaseManager): Promise<void> {
 
     logger.info('Database extensions enabled successfully');
   } catch (error) {
-    logger.error('Failed to setup database extensions', { error: error.message });
+    logger.error('Failed to setup database extensions', { error: (error instanceof Error ? error.message : String(error)) });
     throw error;
   }
 }

@@ -12,7 +12,7 @@ import {
   VendorProfile, 
   AccessGrant, 
   VendorSession, 
-  VendorActivity 
+  _VendorActivity 
 } from '../vendor-access/VendorAccessDelegationService';
 
 // ============================================

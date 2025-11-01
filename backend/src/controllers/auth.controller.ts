@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
 import { authService, AuthResult } from '../services/auth.service';
 import { userRepository, CreateUserInput } from '../models/user.model';
+import { verificationService } from '../services/verification.service';
 import { Logger } from '../utils/logger';
 import { MetricsCollector } from '../middleware/metrics';
-import { 
-  ValidationError, 
-  AuthenticationError, 
+import {
+  ValidationError,
+  AuthenticationError,
   ConflictError,
-  NotFoundError 
+  NotFoundError
 } from '../middleware/errorHandler';
 import { asyncHandler } from '../middleware/errorHandler';
 import Joi from 'joi';
@@ -96,6 +97,21 @@ export class AuthController {
       // Create user
       const user = await userRepository.createUser(userData);
 
+      // Send email verification
+      try {
+        await verificationService.sendEmailVerification(
+          user.id,
+          user.email,
+          user.username
+        );
+      } catch (emailError) {
+        // Log error but don't fail registration
+        logger.error('Failed to send verification email', {
+          error: emailError instanceof Error ? emailError.message : String(emailError),
+          userId: user.id
+        });
+      }
+
       // Generate tokens
       const tokens = await authService.generateTokenPair(user);
 
@@ -126,13 +142,13 @@ export class AuthController {
 
       res.status(201).json({
         success: true,
-        message: 'Account created successfully',
+        message: 'Account created successfully. Please check your email to verify your account.',
         data: authResult
       });
 
     } catch (error) {
       logger.error('Registration failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         email: req.body?.email,
         ip: req.ip
       });
@@ -215,7 +231,7 @@ export class AuthController {
 
     } catch (error) {
       logger.warn('Login failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         email: req.body?.email,
         ip: req.ip
       });
@@ -251,7 +267,7 @@ export class AuthController {
 
     } catch (error) {
       logger.warn('Token refresh failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         ip: req.ip
       });
       throw error;
@@ -281,7 +297,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Logout failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId,
         ip: req.ip
       });
@@ -313,7 +329,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Logout all failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId,
         ip: req.ip
       });
@@ -362,7 +378,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Get profile failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -390,7 +406,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Get sessions failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -423,7 +439,7 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Token validation failed', {
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
       throw error;
     }
@@ -480,14 +496,14 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Change password failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
     }
   });
 
-  // Request password reset (placeholder)
+  // Request password reset
   requestPasswordReset = asyncHandler(async (req: Request, res: Response) => {
     try {
       const { email } = req.body;
@@ -496,11 +512,19 @@ export class AuthController {
         throw new ValidationError('Email is required');
       }
 
+      // Find user by email
+      const user = await userRepository.findByEmail(email);
+
       // Always return success to prevent email enumeration
-      // In a real implementation, send reset email if user exists
-      logger.info('Password reset requested', { 
+      // But only send email if user exists
+      if (user) {
+        await verificationService.sendPasswordResetEmail(user.id, user.email, user.username);
+      }
+
+      logger.info('Password reset requested', {
         email,
-        ip: req.ip 
+        userExists: !!user,
+        ip: req.ip
       });
 
       res.status(200).json({
@@ -510,7 +534,153 @@ export class AuthController {
 
     } catch (error) {
       logger.error('Password reset request failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
+        ip: req.ip
+      });
+      throw error;
+    }
+  });
+
+  // Verify email with token
+  verifyEmail = asyncHandler(async (req: Request, res: Response) => {
+    try {
+      const { token } = req.body;
+
+      if (!token) {
+        throw new ValidationError('Verification token is required');
+      }
+
+      const result = await verificationService.verifyEmail(token);
+
+      if (!result.success) {
+        res.status(400).json({
+          success: false,
+          message: result.message
+        });
+        return;
+      }
+
+      logger.info('Email verified successfully', {
+        userId: result.userId,
+        ip: req.ip
+      });
+
+      res.status(200).json({
+        success: true,
+        message: result.message
+      });
+
+    } catch (error) {
+      logger.error('Email verification failed', {
+        error: (error instanceof Error ? error.message : String(error)),
+        ip: req.ip
+      });
+      throw error;
+    }
+  });
+
+  // Resend email verification
+  resendVerification = asyncHandler(async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+
+      if (!user) {
+        throw new AuthenticationError('Authentication required');
+      }
+
+      // Get user from database
+      const dbUser = await userRepository.findByEmail(user.email);
+      if (!dbUser) {
+        throw new NotFoundError('User');
+      }
+
+      // Check if already verified
+      if (dbUser.email_verified) {
+        res.status(400).json({
+          success: false,
+          message: 'Email is already verified'
+        });
+        return;
+      }
+
+      // Send verification email
+      await verificationService.sendEmailVerification(
+        dbUser.id,
+        dbUser.email,
+        dbUser.username
+      );
+
+      logger.info('Verification email resent', {
+        userId: dbUser.id,
+        email: dbUser.email,
+        ip: req.ip
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Verification email sent successfully'
+      });
+
+    } catch (error) {
+      logger.error('Resend verification failed', {
+        error: (error instanceof Error ? error.message : String(error)),
+        userId: req.user?.userId,
+        ip: req.ip
+      });
+      throw error;
+    }
+  });
+
+  // Reset password with token
+  resetPassword = asyncHandler(async (req: Request, res: Response) => {
+    try {
+      const { token, new_password } = req.body;
+
+      if (!token || !new_password) {
+        throw new ValidationError('Token and new password are required');
+      }
+
+      // Validate new password
+      if (new_password.length < 8) {
+        throw new ValidationError('Password must be at least 8 characters long');
+      }
+
+      // Verify token
+      const verifyResult = await verificationService.verifyPasswordResetToken(token);
+
+      if (!verifyResult.success || !verifyResult.userId) {
+        res.status(400).json({
+          success: false,
+          message: verifyResult.message
+        });
+        return;
+      }
+
+      // Hash new password
+      const newPasswordHash = await authService.hashPassword(new_password);
+
+      // Update password in database
+      await userRepository.db.query(
+        'UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2',
+        [newPasswordHash, verifyResult.userId]
+      );
+
+      // Revoke all existing tokens (force re-login)
+      await authService.revokeAllUserTokens(verifyResult.userId);
+
+      logger.info('Password reset successfully', {
+        userId: verifyResult.userId,
+        ip: req.ip
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Password reset successfully. Please login with your new password.'
+      });
+
+    } catch (error) {
+      logger.error('Password reset failed', {
+        error: (error instanceof Error ? error.message : String(error)),
         ip: req.ip
       });
       throw error;

@@ -120,7 +120,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Create post failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -164,7 +164,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Update post failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId: req.params.postId,
         userId: req.user?.userId
       });
@@ -201,7 +201,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Delete post failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId: req.params.postId,
         userId: req.user?.userId
       });
@@ -244,7 +244,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Get post failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId: req.params.postId
       });
       throw error;
@@ -298,7 +298,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Get feed failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         query: req.query
       });
       throw error;
@@ -335,7 +335,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Get trending failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         query: req.query
       });
       throw error;
@@ -387,7 +387,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Like post failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId: req.params.postId,
         userId: req.user?.userId
       });
@@ -424,7 +424,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Unlike post failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId: req.params.postId,
         userId: req.user?.userId
       });
@@ -473,7 +473,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Share post failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId: req.params.postId,
         userId: req.user?.userId
       });
@@ -522,7 +522,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Get comments failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId: req.params.postId
       });
       throw error;
@@ -580,7 +580,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Add comment failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId: req.params.postId,
         userId: req.user?.userId
       });
@@ -604,7 +604,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Get categories failed', {
-        error: error.message
+        error: (error instanceof Error ? error.message : String(error))
       });
       throw error;
     }
@@ -639,7 +639,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Get popular creators failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         query: req.query
       });
       throw error;
@@ -732,7 +732,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Search content failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         query: req.query
       });
       throw error;
@@ -756,7 +756,7 @@ export class ContentController {
       const offset = (Number(page) - 1) * Number(limit);
 
       let statusFilter = '';
-      const params = [user.userId];
+      const __params = [user.userId];
 
       if (status === 'published') {
         statusFilter = 'AND p.published_at IS NOT NULL AND p.deleted_at IS NULL';
@@ -810,7 +810,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Get creator posts failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId: req.user?.userId
       });
       throw error;
@@ -904,7 +904,7 @@ export class ContentController {
 
     } catch (error) {
       logger.error('Get post analytics failed', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         postId: req.params.postId,
         userId: req.user?.userId
       });

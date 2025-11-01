@@ -26,8 +26,8 @@ async function startServer() {
 
   } catch (error) {
     logger.error('Failed to start FANZ Ecosystem Server', {
-      error: error.message,
-      stack: error.stack
+      error: (error instanceof Error ? error.message : String(error)),
+      stack: (error instanceof Error ? error.stack : undefined)
     });
     process.exit(1);
   }

@@ -8,7 +8,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { Logger } from '../utils/Logger';
+import { Logger } from '../utils/logger';
 import { MetricsCollector } from '../monitoring/MetricsCollector';
 
 export interface AccessibilityConfig {
@@ -100,24 +100,24 @@ export class AccessibilityComplianceCore extends EventEmitter {
     }
   };
 
-  // Keyboard Navigation Requirements
-  private keyboardRequirements = {
-    focusIndicators: true,
-    skipLinks: true,
-    modalTrapping: true,
-    customControls: true,
-    shortcuts: true
-  };
+  // Keyboard Navigation Requirements (reserved for future implementation)
+  // private keyboardRequirements = {
+  //   focusIndicators: true,
+  //   skipLinks: true,
+  //   modalTrapping: true,
+  //   customControls: true,
+  //   shortcuts: true
+  // };
 
-  // Screen Reader Support
-  private screenReaderSupport = {
-    ariaLabels: true,
-    ariaDescriptions: true,
-    ariaLive: true,
-    roleAttributes: true,
-    landmarkNavigation: true,
-    headingStructure: true
-  };
+  // Screen Reader Support (reserved for future implementation)
+  // private screenReaderSupport = {
+  //   ariaLabels: true,
+  //   ariaDescriptions: true,
+  //   ariaLive: true,
+  //   roleAttributes: true,
+  //   landmarkNavigation: true,
+  //   headingStructure: true
+  // };
 
   constructor(config: AccessibilityConfig) {
     super();
@@ -154,7 +154,7 @@ export class AccessibilityComplianceCore extends EventEmitter {
 
     } catch (error) {
       this.logger.error('❌ Failed to initialize Accessibility Compliance:', error);
-      throw new Error(`Accessibility initialization failed: ${error.message}`);
+      throw new Error(`Accessibility initialization failed: ${(error instanceof Error ? error.message : String(error))}`);
     }
   }
 
@@ -742,142 +742,142 @@ export class AccessibilityComplianceCore extends EventEmitter {
     return content.includes('skip to main') || content.includes('skip navigation');
   }
 
-  private analyzeFocusIndicators(content: string): AccessibilityViolation[] {
+  private analyzeFocusIndicators(_content: string): AccessibilityViolation[] {
     // Implementation for focus indicator analysis
     return [];
   }
 
-  private async detectKeyboardTraps(content: string): Promise<AccessibilityViolation[]> {
+  private async detectKeyboardTraps(_content: string): Promise<AccessibilityViolation[]> {
     // Implementation for keyboard trap detection
     return [];
   }
 
-  private auditCustomControls(content: string): AccessibilityViolation[] {
+  private auditCustomControls(_content: string): AccessibilityViolation[] {
     // Implementation for custom control audit
     return [];
   }
 
-  private async auditARIAImplementation(content: string): Promise<AccessibilityViolation[]> {
+  private async auditARIAImplementation(_content: string): Promise<AccessibilityViolation[]> {
     // Implementation for ARIA audit
     return [];
   }
 
-  private auditSemanticStructure(content: string): AccessibilityViolation[] {
+  private auditSemanticStructure(_content: string): AccessibilityViolation[] {
     // Implementation for semantic structure audit
     return [];
   }
 
-  private validateHeadingStructure(content: string): AccessibilityViolation[] {
+  private validateHeadingStructure(_content: string): AccessibilityViolation[] {
     // Implementation for heading structure validation
     return [];
   }
 
-  private auditLandmarkRegions(content: string): AccessibilityViolation[] {
+  private auditLandmarkRegions(_content: string): AccessibilityViolation[] {
     // Implementation for landmark audit
     return [];
   }
 
-  private auditLiveRegions(content: string): AccessibilityViolation[] {
+  private auditLiveRegions(_content: string): AccessibilityViolation[] {
     // Implementation for live region audit
     return [];
   }
 
-  private calculateARIAScore(content: string, issues: AccessibilityViolation[]): number {
+  private calculateARIAScore(_content: string, _issues: AccessibilityViolation[]): number {
     // Implementation for ARIA score calculation
     return 85;
   }
 
-  private calculateSemanticScore(content: string, issues: AccessibilityViolation[]): number {
+  private calculateSemanticScore(_content: string, _issues: AccessibilityViolation[]): number {
     // Implementation for semantic score calculation
     return 90;
   }
 
-  private async detectCaptions(mediaUrl: string): Promise<boolean> {
+  private async detectCaptions(_mediaUrl: string): Promise<boolean> {
     // Implementation for caption detection
     return false;
   }
 
-  private async detectAudioDescriptions(mediaUrl: string): Promise<boolean> {
+  private async detectAudioDescriptions(_mediaUrl: string): Promise<boolean> {
     // Implementation for audio description detection
     return false;
   }
 
-  private async generatePrivateTranscript(mediaUrl: string): Promise<boolean> {
+  private async generatePrivateTranscript(_mediaUrl: string): Promise<boolean> {
     // Implementation for private transcript generation
     return false;
   }
 
-  private async generateAccessibleAlternatives(mediaUrl: string, isAdult: boolean): Promise<string[]> {
+  private async generateAccessibleAlternatives(_mediaUrl: string, _isAdult: boolean): Promise<string[]> {
     // Implementation for accessible alternatives generation
     return [];
   }
 
-  private async detectTranscripts(mediaUrl: string): Promise<boolean> {
+  private async detectTranscripts(_mediaUrl: string): Promise<boolean> {
     // Implementation for transcript detection
     return false;
   }
 
-  private async generateImageAlternatives(mediaUrl: string, isAdult: boolean): Promise<string[]> {
+  private async generateImageAlternatives(_mediaUrl: string, _isAdult: boolean): Promise<string[]> {
     // Implementation for image alternatives generation
     return [];
   }
 
-  private assessMediaAccessibilityCompliance(accessibility: MediaAccessibility, mediaType: string): boolean {
+  private assessMediaAccessibilityCompliance(_accessibility: MediaAccessibility, _mediaType: string): boolean {
     // Implementation for media accessibility compliance assessment
     return true;
   }
 
-  private auditFormLabels(formHTML: string): AccessibilityViolation[] {
+  private auditFormLabels(_formHTML: string): AccessibilityViolation[] {
     // Implementation for form label audit
     return [];
   }
 
-  private auditErrorHandling(formHTML: string): AccessibilityViolation[] {
+  private auditErrorHandling(_formHTML: string): AccessibilityViolation[] {
     // Implementation for error handling audit
     return [];
   }
 
-  private auditFormInstructions(formHTML: string): AccessibilityViolation[] {
+  private auditFormInstructions(_formHTML: string): AccessibilityViolation[] {
     // Implementation for form instruction audit
     return [];
   }
 
-  private auditFieldsets(formHTML: string): AccessibilityViolation[] {
+  private auditFieldsets(_formHTML: string): AccessibilityViolation[] {
     // Implementation for fieldset audit
     return [];
   }
 
-  private calculateLabelScore(formHTML: string): number {
+  private calculateLabelScore(_formHTML: string): number {
     // Implementation for label score calculation
     return 95;
   }
 
-  private hasProperErrorHandling(formHTML: string): boolean {
+  private hasProperErrorHandling(_formHTML: string): boolean {
     // Implementation for error handling check
     return true;
   }
 
-  private hasAdequateInstructions(formHTML: string): boolean {
+  private hasAdequateInstructions(_formHTML: string): boolean {
     // Implementation for instruction adequacy check
     return true;
   }
 
-  private async auditPageColorContrast(pageContent: string): Promise<AccessibilityViolation[]> {
+  private async auditPageColorContrast(_pageContent: string): Promise<AccessibilityViolation[]> {
     // Implementation for page color contrast audit
     return [];
   }
 
-  private extractMediaElements(content: string): Array<{url: string; type: 'video' | 'audio' | 'image'; isAdultContent: boolean}> {
+  private extractMediaElements(_content: string): Array<{url: string; type: 'video' | 'audio' | 'image'; isAdultContent: boolean}> {
     // Implementation for media element extraction
     return [];
   }
 
-  private async storeAuditResult(pageUrl: string, result: AccessibilityAuditResult): Promise<void> {
+  private async storeAuditResult(pageUrl: string, _result: AccessibilityAuditResult): Promise<void> {
     // Implementation for audit result storage
     this.logger.info(`Storing audit result for ${pageUrl}`);
   }
 
-  private async generateContrastRecommendation(fg: string, bg: string, required: number): Promise<string> {
+  private async generateContrastRecommendation(_fg: string, _bg: string, required: number): Promise<string> {
     // Implementation for contrast recommendation generation
     return `Adjust colors to achieve ${required}:1 contrast ratio`;
   }

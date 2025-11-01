@@ -198,7 +198,7 @@ export class UserRepository extends BaseRepository {
       return result;
     } catch (error) {
       logger.error('Failed to create user', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         email: userData.email
       });
       throw error;
@@ -216,7 +216,7 @@ export class UserRepository extends BaseRepository {
       return result.rows[0] || null;
     } catch (error) {
       logger.error('Failed to find user by email', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         email
       });
       throw new DatabaseError('Failed to find user');
@@ -234,7 +234,7 @@ export class UserRepository extends BaseRepository {
       return result.rows[0] || null;
     } catch (error) {
       logger.error('Failed to find user by username', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         username
       });
       throw new DatabaseError('Failed to find user');
@@ -308,7 +308,7 @@ export class UserRepository extends BaseRepository {
       return user;
     } catch (error) {
       logger.error('Failed to find user by ID with profile', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId
       });
       throw new DatabaseError('Failed to find user');
@@ -326,7 +326,7 @@ export class UserRepository extends BaseRepository {
       return result.rows[0] || null;
     } catch (error) {
       logger.error('Failed to get creator profile', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId
       });
       return null;
@@ -372,7 +372,7 @@ export class UserRepository extends BaseRepository {
       return result.rows[0] || null;
     } catch (error) {
       logger.error('Failed to update user profile', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId
       });
       throw error;
@@ -410,7 +410,7 @@ export class UserRepository extends BaseRepository {
       }
     } catch (error) {
       logger.error('Failed to update login attempt', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId,
         success
       });
@@ -428,7 +428,7 @@ export class UserRepository extends BaseRepository {
       return result.rows.length > 0;
     } catch (error) {
       logger.error('Failed to check user lock status', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId
       });
       return false;
@@ -508,7 +508,7 @@ export class UserRepository extends BaseRepository {
       return stats;
     } catch (error) {
       logger.error('Failed to get user stats', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId
       });
       // Return default stats on error
@@ -621,7 +621,7 @@ export class UserRepository extends BaseRepository {
       return { users, total };
     } catch (error) {
       logger.error('Failed to search users', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         query
       });
       throw new DatabaseError('Failed to search users');
@@ -643,7 +643,7 @@ export class UserRepository extends BaseRepository {
       return result.rowCount > 0;
     } catch (error) {
       logger.error('Failed to delete user', {
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         userId
       });
       throw new DatabaseError('Failed to delete user');
