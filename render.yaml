@@ -10,11 +10,23 @@ services:
     plan: starter
     branch: main
     buildCommand: |
-      # Skip git hooks and dev dependencies in production
+      # Skip git hooks during install
       export CI=true
       export NODE_ENV=production
-      pnpm install --prod --ignore-scripts
-      pnpm run build || echo "Build script not found, continuing..."
+      # Ensure pnpm is installed with correct version (matches backend/package.json)
+      command -v pnpm || npm install -g pnpm@9.12.3
+      # Use corepack if available to respect packageManager field
+      corepack enable || true
+      corepack prepare pnpm@9.12.3 --activate || true
+      # Install all dependencies (including dev) for build
+      pnpm install --ignore-scripts
+      # Build the TypeScript code
+      cd backend && pnpm run build
+      # Verify build output exists
+      if [ ! -f backend/dist/server.js ]; then
+        echo "ERROR: Build failed - dist/server.js not found"
+        exit 1
+      fi
     startCommand: cd backend && node dist/server.js
     healthCheckPath: /healthz
     envVars:
