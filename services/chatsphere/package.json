@@ -14,7 +14,7 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "clean": "rm -rf dist",
-    "prepare": "npm run build"
+    "prepare": "node -e \"if (process.env.CI !== 'true' && process.env.NODE_ENV !== 'production') { require('child_process').execSync('npm run build', {stdio: 'inherit'}) }\""
   },
   "keywords": [
     "chat",

@@ -14,7 +14,7 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "clean": "rm -rf dist",
-    "prepare": "npm run build",
+    "prepare": "node -e \"if (process.env.CI !== 'true' && process.env.NODE_ENV !== 'production') { require('child_process').execSync('npm run build', {stdio: 'inherit'}) }\"",
     "db:migrate": "npm run db:migrate:up",
     "db:migrate:up": "node -r ts-node/register scripts/migrate.ts up",
     "db:migrate:down": "node -r ts-node/register scripts/migrate.ts down",

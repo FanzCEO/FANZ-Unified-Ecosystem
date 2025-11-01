@@ -7,7 +7,11 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '../../database/supabase-types';
+// Type import - will be generated after database setup
+// import type { Database } from '../../database/supabase-types';
+
+// Temporary: Use any for Database type until types are generated
+type Database = any;
 
 // Environment variables
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://mcayxybcgxhfttvwmhgm.supabase.co';
