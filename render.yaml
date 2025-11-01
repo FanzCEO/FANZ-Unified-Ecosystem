@@ -9,26 +9,25 @@ services:
     region: oregon
     plan: starter
     branch: main
+    node: 22.21.1
     buildCommand: |
-      # Skip git hooks and dev dependencies in production
+      # Enable pnpm via corepack (available in Node 22)
+      corepack enable
+      corepack prepare pnpm@9.12.3 --activate
+      # Install all dependencies (including devDependencies for TypeScript build)
       export CI=true
       export NODE_ENV=production
-      pnpm install --prod --ignore-scripts
-      pnpm run build || echo "Build script not found, continuing..."
+      pnpm install --frozen-lockfile --ignore-scripts
+      # Build the backend
+      cd backend && pnpm install --frozen-lockfile && pnpm run build
     startCommand: cd backend && node dist/server.js
-    healthCheckPath: /healthz
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
       - key: DATABASE_URL
-        sync: false
-      - key: SUPABASE_URL
-        sync: false
-      - key: SUPABASE_ANON_KEY
-        sync: false
-      - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: REDIS_URL
         fromService:
@@ -54,15 +53,50 @@ services:
       - key: ENABLE_WEBSOCKETS
         value: true
       - key: ENABLE_BLOCKCHAIN
-        value: true
+        value: false
       - key: ENABLE_AI_FEATURES
         value: true
+      - key: ENABLE_PLAYGROUND
+        value: false
       - key: BCRYPT_ROUNDS
         value: 12
       - key: RATE_LIMIT_WINDOW_MS
         value: 900000
       - key: RATE_LIMIT_MAX_REQUESTS
         value: 1000
+      # Payment Processing - Set in Render dashboard
+      - key: PAYMENT_PROCESSOR_API_KEY
+        sync: false
+      - key: PAYMENT_WEBHOOK_SECRET
+        sync: false
+      - key: PAYMENT_PUBLIC_KEY
+        sync: false
+      # AWS S3 - Set in Render dashboard
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        value: us-west-2
+      - key: S3_BUCKET_NAME
+        sync: false
+      # Optional services (can be empty for initial deployment)
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: FRONTEND_URL
+        value: https://fanzlab.com
+      - key: EMAIL_FROM
+        value: noreply@fanz.com
+      - key: EMAIL_FROM_NAME
+        value: FANZ Platform
 
 databases:
   # Redis Cache (already created)
