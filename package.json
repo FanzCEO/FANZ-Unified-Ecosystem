@@ -8,8 +8,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "start": "node dist/index.js",
+    "build": "cd backend && pnpm run build",
+    "start": "cd backend && node dist/server.js",
     "dev": "node --loader ts-node/esm scripts/deploy-ecosystem.ts",
     "demo": "node --loader ts-node/esm scripts/live-demo.ts",
     "demo:quick": "node --loader ts-node/esm scripts/live-demo.ts --duration=2",

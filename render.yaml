@@ -20,13 +20,16 @@ services:
       corepack prepare pnpm@9.12.3 --activate || true
       # Install all dependencies (including dev) for build
       pnpm install --ignore-scripts
-      # Build the TypeScript code
-      cd backend && pnpm run build
+      # Build the backend TypeScript code specifically
+      cd backend
+      pnpm run build
       # Verify build output exists
-      if [ ! -f backend/dist/server.js ]; then
-        echo "ERROR: Build failed - dist/server.js not found"
+      if [ ! -f dist/server.js ]; then
+        echo "ERROR: Build failed - backend/dist/server.js not found"
+        ls -la dist/ || echo "dist directory does not exist"
         exit 1
       fi
+      echo "Build successful - backend/dist/server.js exists"
     startCommand: cd backend && node dist/server.js
     healthCheckPath: /healthz
     envVars:
