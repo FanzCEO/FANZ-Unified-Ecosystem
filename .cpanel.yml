@@ -1,0 +1,106 @@
+---
+# cPanel Deployment Configuration for FANZ Unified Ecosystem
+# This file automates deployment via cPanel's Git Version Control
+#
+# IMPORTANT: Update DEPLOYPATH to match your actual cPanel home directory
+# Example: /home/yourusername/public_html/ or /home/yourusername/domains/myfanz.network/public_html/
+#
+# For more information: https://docs.cpanel.net/knowledge-base/web-services/guide-to-git-deployment/
+
+deployment:
+  tasks:
+    # Set your deployment path - UPDATE THIS!
+    - export DEPLOYPATH=/home/username/public_html/
+
+    # Create necessary directories before deployment
+    - /bin/mkdir -p $DEPLOYPATH/logs
+    - /bin/mkdir -p $DEPLOYPATH/uploads
+    - /bin/mkdir -p $DEPLOYPATH/temp
+
+    # Deploy backend files
+    - /bin/cp -R backend $DEPLOYPATH
+    - /bin/cp -R database $DEPLOYPATH
+    - /bin/cp -R scripts $DEPLOYPATH
+
+    # Deploy frontend files
+    - /bin/cp -R frontend $DEPLOYPATH
+
+    # Deploy mobile app files
+    - /bin/cp -R mobile $DEPLOYPATH
+
+    # Deploy API gateway
+    - /bin/cp -R api-gateway $DEPLOYPATH
+
+    # Deploy AI services
+    - /bin/cp -R ai-intelligence $DEPLOYPATH
+    - /bin/cp -R ai-content-intelligence $DEPLOYPATH
+
+    # Deploy security configurations
+    - /bin/cp -R security $DEPLOYPATH
+
+    # Deploy blockchain services (if needed)
+    - /bin/cp -R blockchain $DEPLOYPATH
+
+    # Deploy shared packages
+    - /bin/cp -R packages $DEPLOYPATH
+
+    # Deploy services
+    - /bin/cp -R services $DEPLOYPATH
+
+    # Deploy Kubernetes configs (for reference, not for cPanel hosting)
+    - /bin/cp -R k8s $DEPLOYPATH
+
+    # Deploy documentation
+    - /bin/cp -R docs $DEPLOYPATH
+
+    # Deploy configuration files
+    - /bin/cp .env.example $DEPLOYPATH
+    - /bin/cp package.json $DEPLOYPATH
+    - /bin/cp docker-compose.yml $DEPLOYPATH
+
+    # Copy root-level important files
+    - /bin/cp README.md $DEPLOYPATH
+    - /bin/cp LICENSE $DEPLOYPATH
+
+    # Install backend dependencies
+    - cd $DEPLOYPATH/backend && /usr/bin/npm install --production
+
+    # Install and build frontend
+    - cd $DEPLOYPATH/frontend && /usr/bin/npm install --production && /usr/bin/npm run build
+
+    # Install mobile dependencies
+    - cd $DEPLOYPATH/mobile && /usr/bin/npm install --production
+
+    # Install API gateway dependencies
+    - cd $DEPLOYPATH/api-gateway && /usr/bin/npm install --production
+
+    # Install AI services dependencies
+    - cd $DEPLOYPATH/ai-intelligence/FanzGPT-Ultra && /usr/bin/npm install --production
+
+    # Set proper file permissions (files: 644, directories: 755)
+    - /bin/find $DEPLOYPATH -type f -exec /bin/chmod 644 {} \;
+    - /bin/find $DEPLOYPATH -type d -exec /bin/chmod 755 {} \;
+
+    # Secure environment file if it exists
+    - /bin/chmod 600 $DEPLOYPATH/.env 2>/dev/null || /bin/true
+
+    # Set writable permissions for logs, uploads, and temp
+    - /bin/chmod 777 $DEPLOYPATH/logs
+    - /bin/chmod 777 $DEPLOYPATH/uploads
+    - /bin/chmod 777 $DEPLOYPATH/temp
+
+    # Run database migrations (uncomment if needed)
+    # - cd $DEPLOYPATH/backend && /usr/bin/node scripts/migrate.js
+
+    # Clear temporary files
+    - /bin/rm -rf $DEPLOYPATH/temp/* 2>/dev/null || /bin/true
+
+    # Create restart files for Node.js apps (if using cPanel Node.js Application Manager)
+    - /bin/mkdir -p $DEPLOYPATH/backend/tmp
+    - /bin/mkdir -p $DEPLOYPATH/api-gateway/tmp
+    - /bin/touch $DEPLOYPATH/backend/tmp/restart.txt
+    - /bin/touch $DEPLOYPATH/api-gateway/tmp/restart.txt
+
+    # Log successful deployment
+    - /bin/echo "Deployment completed at $(/bin/date)" >> $DEPLOYPATH/logs/deployment.log
+    - /bin/echo "Git commit: $(/usr/bin/git rev-parse HEAD)" >> $DEPLOYPATH/logs/deployment.log
