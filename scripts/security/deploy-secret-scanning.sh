@@ -236,7 +236,7 @@ scan_repositories_for_secrets() {
         fi
         
         # Copy gitleaks config to repository
-        cp "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/.gitleaks.toml" . 2>/dev/null || true
+        cp "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/.gitleaks.toml" . 2>/dev/null || true
         
         # Run gitleaks scan
         local scan_output="$OUTPUT_DIR/secret-scans/${repo_name}-gitleaks.json"
@@ -467,7 +467,7 @@ jobs:
     
     - name: Install Gitleaks
       run: |
-        wget -qO- https://github.com/zricethezav/gitleaks/releases/download/v8.18.0/gitleaks_8.18.0_linux_x64.tar.gz | tar xzf -
+        wget -qO- https://github.REDACTED_AWS_SECRET_KEYad/v8.18.0/gitleaks_8.18.0_linux_x64.tar.gz | tar xzf -
         sudo mv gitleaks /usr/local/bin/
     
     - name: Run Gitleaks Scan
@@ -575,7 +575,7 @@ deploy_secret_scanning() {
         pushd "$repo_path" &> /dev/null || continue
         
         # Copy gitleaks config
-        cp "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/.gitleaks.toml" . 2>/dev/null || {
+        cp "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/.gitleaks.toml" . 2>/dev/null || {
             log_warning "Could not copy gitleaks config to $repo_name"
             popd &> /dev/null
             continue
@@ -583,14 +583,14 @@ deploy_secret_scanning() {
         
         # Copy GitHub Action
         mkdir -p ".github/workflows"
-        cp "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/scripts/security/secret-management/github-actions/secret-scanning.yml" \
+        cp "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/scripts/security/secret-management/github-actions/secret-scanning.yml" \
            ".github/workflows/secret-scanning.yml" 2>/dev/null || {
             log_warning "Could not copy secret scanning workflow to $repo_name"
         }
         
         # Set up pre-commit hook
         mkdir -p ".git/hooks"
-        cp "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/scripts/security/secret-management/pre-commit-secrets.sh" \
+        cp "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/scripts/security/secret-management/pre-commit-secrets.sh" \
            ".git/hooks/pre-commit" 2>/dev/null || {
             log_warning "Could not install pre-commit hook in $repo_name"
         }

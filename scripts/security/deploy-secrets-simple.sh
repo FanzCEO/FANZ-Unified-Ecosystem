@@ -30,22 +30,22 @@ for repo_path in /Users/joshuastone/Documents/GitHub/*[Ff]anz* /Users/joshuaston
     pushd "$repo_path" &> /dev/null || continue
     
     # Copy gitleaks config if it exists
-    if [ -f "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/.gitleaks.toml" ]; then
-        cp "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/.gitleaks.toml" . 2>/dev/null || true
+    if [ -f "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/.gitleaks.toml" ]; then
+        cp "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/.gitleaks.toml" . 2>/dev/null || true
     fi
     
     # Create GitHub workflow directory and copy secret scanning workflow
     mkdir -p ".github/workflows"
     
-    if [ -f "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/scripts/security/secret-management/github-actions/secret-scanning.yml" ]; then
-        cp "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/scripts/security/secret-management/github-actions/secret-scanning.yml" \
+    if [ -f "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/scripts/security/secret-management/github-actions/secret-scanning.yml" ]; then
+        cp "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/scripts/security/secret-management/github-actions/secret-scanning.yml" \
            ".github/workflows/secret-scanning.yml" 2>/dev/null || true
     fi
     
     # Set up pre-commit hook if the script exists
     mkdir -p ".git/hooks"
-    if [ -f "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/scripts/security/secret-management/pre-commit-secrets.sh" ]; then
-        cp "/Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM/scripts/security/secret-management/pre-commit-secrets.sh" \
+    if [ -f "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/scripts/security/secret-management/pre-commit-secrets.sh" ]; then
+        cp "REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM/scripts/security/secret-management/pre-commit-secrets.sh" \
            ".git/hooks/pre-commit" 2>/dev/null || true
         chmod +x ".git/hooks/pre-commit" 2>/dev/null || true
     fi
@@ -65,7 +65,7 @@ echo ""
 
 # Run a quick secret scan on a sample repository
 echo "🔍 Running sample secret scan..."
-for repo_path in /Users/joshuastone/Documents/GitHub/FANZ_UNIFIED_ECOSYSTEM /Users/joshuastone/Documents/GitHub/Fanz; do
+for repo_path in REDACTED_AWS_SECRET_KEY_UNIFIED_ECOSYSTEM REDACTED_AWS_SECRET_KEY; do
     if [ -d "$repo_path" ] && [ -d "$repo_path/.git" ]; then
         repo_name=$(basename "$repo_path")
         echo "Scanning $repo_name for secrets..."

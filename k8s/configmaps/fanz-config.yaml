@@ -1,0 +1,243 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fanz-app-config
+  namespace: fanz-production
+  labels:
+    app.kubernetes.io/name: fanz
+    app.kubernetes.io/component: config
+data:
+  # Application Configuration
+  NODE_ENV: "production"
+  APP_ENV: "production"
+  LOG_LEVEL: "info"
+  
+  # Server Configuration
+  PORT: "3000"
+  HOST: "0.0.0.0"
+  
+  # API Configuration
+  API_VERSION: "v1"
+  API_PREFIX: "/api/v1"
+  
+  # Security Configuration
+  BCRYPT_ROUNDS: "12"
+  SESSION_TIMEOUT: "3600"  # 1 hour in seconds
+  CORS_ORIGIN: "https://fanz.network,https://boyfanz.com,https://girlfanz.com,https://pupfanz.com,https://taboofanz.com"
+  
+  # Rate Limiting
+  RATE_LIMIT_WINDOW: "900000"  # 15 minutes in ms
+  RATE_LIMIT_MAX: "1000"      # requests per window
+  
+  # File Upload Configuration
+  MAX_FILE_SIZE: "100000000"   # 100MB in bytes
+  ALLOWED_FILE_TYPES: "image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/quicktime"
+  
+  # AI Configuration
+  AI_ENABLED: "true"
+  AI_MAX_TOKENS: "4000"
+  AI_TEMPERATURE: "0.7"
+  AI_MODEL: "gpt-4o-mini"
+  
+  # Content Moderation
+  MODERATION_ENABLED: "true"
+  AUTO_MODERATION: "true"
+  MODERATION_CONFIDENCE_THRESHOLD: "0.8"
+  
+  # Payment Configuration
+  PAYMENT_CURRENCY: "USD"
+  PAYMENT_TIMEOUT: "300000"    # 5 minutes in ms
+  CREATOR_PAYOUT_PERCENTAGE: "95"
+  PLATFORM_FEE_PERCENTAGE: "5"
+  
+  # Media Configuration
+  IMAGE_QUALITY: "85"
+  VIDEO_QUALITY: "720p"
+  THUMBNAIL_SIZE: "300x300"
+  WATERMARK_ENABLED: "true"
+  
+  # Cache Configuration
+  CACHE_TTL: "3600"           # 1 hour in seconds
+  CACHE_MAX_SIZE: "1000"      # max items in cache
+  
+  # Logging Configuration
+  LOG_FORMAT: "json"
+  LOG_TIMESTAMP: "true"
+  
+  # Health Check Configuration
+  HEALTH_CHECK_INTERVAL: "30" # seconds
+  
+  # Feature Flags
+  FEATURE_AI_RECOMMENDATIONS: "true"
+  FEATURE_LIVE_STREAMING: "true"
+  FEATURE_GEOLOCATION: "true"
+  FEATURE_NFT_SUPPORT: "false"
+  FEATURE_CRYPTO_PAYMENTS: "false"
+  
+  # URLs and Domains
+  FRONTEND_URL: "https://fanz.network"
+  API_BASE_URL: "https://api.fanz.network"
+  CDN_BASE_URL: "https://cdn.fanz.network"
+  
+  # Social Media Integration
+  SOCIAL_SHARING_ENABLED: "true"
+  TWITTER_INTEGRATION: "true"
+  INSTAGRAM_INTEGRATION: "false"
+  
+  # Age Verification
+  AGE_VERIFICATION_REQUIRED: "true"
+  MINIMUM_AGE: "18"
+  
+  # Compliance
+  GDPR_ENABLED: "true"
+  CCPA_ENABLED: "true"
+  ADA_COMPLIANCE: "true"
+  
+  # Monitoring and Analytics
+  ANALYTICS_ENABLED: "true"
+  ERROR_TRACKING_ENABLED: "true"
+  PERFORMANCE_MONITORING: "true"
+  
+  # Backup Configuration
+  BACKUP_ENABLED: "true"
+  BACKUP_INTERVAL: "86400"    # 24 hours in seconds
+  BACKUP_RETENTION: "30"      # days
+  
+  # Scaling Configuration
+  AUTO_SCALING_ENABLED: "true"
+  MIN_REPLICAS: "3"
+  MAX_REPLICAS: "50"
+  CPU_THRESHOLD: "70"
+  MEMORY_THRESHOLD: "80"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: fanz-production
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/component: proxy
+data:
+  nginx.conf: |
+    events {
+        worker_connections 1024;
+    }
+    
+    http {
+        upstream backend {
+            server api-gateway:3000;
+        }
+        
+        upstream ai-service {
+            server fanz-ai-integration:3000;
+        }
+        
+        server {
+            listen 80;
+            server_name api.fanz.network;
+            
+            # Security headers
+            add_header X-Frame-Options DENY;
+            add_header X-Content-Type-Options nosniff;
+            add_header X-XSS-Protection "1; mode=block";
+            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+            
+            # Rate limiting
+            limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+            limit_req zone=api burst=20 nodelay;
+            
+            # Proxy settings
+            location /api/ {
+                proxy_pass http://backend;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_connect_timeout 30s;
+                proxy_send_timeout 30s;
+                proxy_read_timeout 30s;
+            }
+            
+            location /ai/ {
+                proxy_pass http://ai-service;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_connect_timeout 60s;
+                proxy_send_timeout 60s;
+                proxy_read_timeout 60s;
+            }
+            
+            location /health {
+                access_log off;
+                return 200 "healthy\n";
+                add_header Content-Type text/plain;
+            }
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: fanz-production
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    
+    rule_files:
+      - "/etc/prometheus/rules/*.yml"
+    
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+              - alertmanager:9093
+    
+    scrape_configs:
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+        - role: endpoints
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: default;kubernetes;https
+      
+      - job_name: 'fanz-services'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - fanz-production
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+          action: keep
+          regex: true
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: (.+)
+        - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+          action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_service_name]
+          action: replace
+          target_label: kubernetes_name

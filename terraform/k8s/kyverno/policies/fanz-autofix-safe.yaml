@@ -1,0 +1,91 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: fanz-autofix-safe
+  annotations:
+    policies.kyverno.io/title: FANZ Auto-Fix Safe Policy
+    policies.kyverno.io/category: FANZ Warp Directive
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod, Deployment
+    policies.kyverno.io/minversion: 1.7.0
+    policies.kyverno.io/description: >-
+      Auto-fix safe FANZ workloads by restarting crash-looping pods,
+      scaling burst capacity, and enforcing security policies.
+spec:
+  validationFailureAction: enforce
+  background: true
+  failurePolicy: Fail
+  rules:
+    - name: restart-on-crashloop
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              selector:
+                matchLabels:
+                  FANZ.autofix: "safe"
+      preconditions:
+        all:
+          - key: "{{ request.object.status.containerStatuses[].restartCount || [] | sum(@) }}"
+            operator: GreaterThan
+            value: 3
+          - key: "{{ request.object.status.phase }}"
+            operator: Equals
+            value: "Running"
+      mutate:
+        targets:
+          - apiVersion: "apps/v1"
+            kind: Deployment
+            name: "{{ request.object.metadata.ownerReferences[0].name }}"
+            namespace: "{{ request.object.metadata.namespace }}"
+        patchStrategicMerge:
+          spec:
+            template:
+              metadata:
+                annotations:
+                  FANZ/last-autofix: "{{ time.now_utc() }}"
+                  FANZ/restart-reason: "crashloop-detected"
+    - name: enforce-resource-limits
+      match:
+        any:
+          - resources:
+              kinds: ["Deployment", "StatefulSet", "DaemonSet"]
+              namespaces: ["default", "fanz-*"]
+      validate:
+        message: "Resource limits are required for FANZ workloads"
+        pattern:
+          spec:
+            template:
+              spec:
+                containers:
+                - name: "*"
+                  resources:
+                    limits:
+                      memory: "?*"
+                      cpu: "?*"
+                    requests:
+                      memory: "?*"
+                      cpu: "?*"
+    - name: enforce-security-context
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              selector:
+                matchLabels:
+                  FANZ.autofix: "safe"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              fsGroup: 2000
+            containers:
+            - (name): "*"
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                  - ALL
