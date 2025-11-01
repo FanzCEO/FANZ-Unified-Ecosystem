@@ -82,4 +82,3 @@ databases:
     plan: starter
     region: oregon
     maxmemoryPolicy: allkeys_lru
-
