@@ -15,7 +15,7 @@ services:
       export NODE_ENV=production
       pnpm install --prod --ignore-scripts
       pnpm run build || echo "Build script not found, continuing..."
-    startCommand: node dist/index.js || node src/index.js || node backend/dist/index.js || node backend/src/server.js
+    startCommand: cd backend && node dist/server.js
     healthCheckPath: /healthz
     envVars:
       - key: NODE_ENV
