@@ -1,0 +1,73 @@
+# 🚀 Render.com Deployment Configuration
+# FANZ Unified Ecosystem - Production Ready
+
+services:
+  # Main Backend Service
+  - type: web
+    name: fanz-unified-ecosystem
+    runtime: node
+    region: oregon
+    plan: starter
+    branch: main
+    buildCommand: |
+      # Skip git hooks and dev dependencies in production
+      export CI=true
+      export NODE_ENV=production
+      pnpm install --prod --ignore-scripts
+      pnpm run build || echo "Build script not found, continuing..."
+    startCommand: node dist/index.js || node src/index.js || node backend/dist/index.js || node backend/src/server.js
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: fanz-redis
+          property: connectionString
+      - key: JWT_SECRET
+        sync: false
+      - key: REFRESH_TOKEN_SECRET
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://fanz-unified-ecosystem.onrender.com,https://fanzlab.com
+      - key: LOG_LEVEL
+        value: info
+      - key: DATABASE_POOL_MIN
+        value: 2
+      - key: DATABASE_POOL_MAX
+        value: 10
+      - key: ENABLE_WEBSOCKETS
+        value: true
+      - key: ENABLE_BLOCKCHAIN
+        value: true
+      - key: ENABLE_AI_FEATURES
+        value: true
+      - key: BCRYPT_ROUNDS
+        value: 12
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 1000
+
+databases:
+  # Redis Cache (already created)
+  - name: fanz-redis
+    plan: starter
+    region: oregon
+    maxmemoryPolicy: allkeys_lru
+

@@ -30,7 +30,7 @@
     "a11y-check": "axe-core src/components/**/*.tsx",
     "chromatic": "chromatic --project-token=$CHROMATIC_PROJECT_TOKEN",
     "tokens:sync": "node scripts/sync-figma-tokens.js",
-    "prepare": "husky install"
+    "prepare": "node -e \"if (process.env.NODE_ENV !== 'production') require('husky').install()\""
   },
   "keywords": [
     "design-system",
