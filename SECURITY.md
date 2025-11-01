@@ -243,7 +243,7 @@ ws.onmessage = (event) => {
 # Military-Grade Security
 SECURITY_TOKEN=FanzSecurityControl2024!
 ENCRYPTION_KEY=FanzMilitaryGrade2024!
-VAULT_ROOT_TOKEN=fanz_vault_root_2024
+VAULT_ROOT_TOKEN=your-vault-root-token-here
 
 # Security Thresholds
 MAX_LOGIN_ATTEMPTS=3

@@ -208,7 +208,7 @@ npm test -- tests/services/payment/processors/
 npm run test:compliance
 
 # Check processor health
-curl -H "Authorization: Bearer demo-token" \
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   http://localhost:3000/api/payments/processors
 ```
 

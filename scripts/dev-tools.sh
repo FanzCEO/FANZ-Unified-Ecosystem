@@ -164,7 +164,7 @@ cmd_status() {
     fi
     
     # Check payment processors
-    if curl -s -H "Authorization: Bearer demo-token" http://localhost:3000/api/payments/processors >/dev/null 2>&1; then
+    if curl -s -H "Authorization: Bearer \$JWT_TOKEN" http://localhost:3000/api/payments/processors >/dev/null 2>&1; then
         log_success "✅ Payment Processors - Available"
     else
         log_warn "⚠️  Payment Processors - Not available"
@@ -230,7 +230,7 @@ cmd_payments_health() {
     log_header "Checking payment processor health..."
     
     if command -v curl >/dev/null 2>&1; then
-        response=$(curl -s -H "Authorization: Bearer demo-token" http://localhost:3000/api/payments/processors 2>/dev/null || echo "ERROR")
+        response=$(curl -s -H "Authorization: Bearer \$JWT_TOKEN" http://localhost:3000/api/payments/processors 2>/dev/null || echo "ERROR")
         
         if [[ "$response" != "ERROR" ]]; then
             echo "$response" | python3 -m json.tool 2>/dev/null || echo "$response"
@@ -305,7 +305,7 @@ cmd_monitor_health() {
     
     echo ""
     echo "💳 Payment Processors:"
-    curl -s -H "Authorization: Bearer demo-token" http://localhost:3000/api/payments/processors | python3 -m json.tool 2>/dev/null || log_error "Payment API not responding"
+    curl -s -H "Authorization: Bearer \$JWT_TOKEN" http://localhost:3000/api/payments/processors | python3 -m json.tool 2>/dev/null || log_error "Payment API not responding"
     
     echo ""
     echo "💾 Database:"

@@ -135,7 +135,7 @@ chmod +x scripts/demo-payment-processing.sh
 ### 3. **Test the API**
 ```bash
 # Check processor status
-curl -H "Authorization: Bearer demo-token" \
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   http://localhost:3000/api/payments/processors
 
 # Process a payment

@@ -38,8 +38,8 @@ npm run dev:all
 # Check all services
 curl http://localhost:3000/api/health
 
-# Test payment processors
-curl -H "Authorization: Bearer demo-token" \
+# Test payment processors (replace YOUR_JWT_TOKEN with actual token)
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   http://localhost:3000/api/payments/processors
 
 # Run the payment demo
