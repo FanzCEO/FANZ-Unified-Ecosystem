@@ -467,7 +467,7 @@ jobs:
     
     - name: Install Gitleaks
       run: |
-        wget -qO- https://github.REDACTED_AWS_SECRET_KEYad/v8.18.0/gitleaks_8.18.0_linux_x64.tar.gz | tar xzf -
+        wget -qO- https://github.com/gitleaks/gitleaks/releases/download/v8.18.0/gitleaks_8.18.0_linux_x64.tar.gz | tar xzf -
         sudo mv gitleaks /usr/local/bin/
     
     - name: Run Gitleaks Scan
