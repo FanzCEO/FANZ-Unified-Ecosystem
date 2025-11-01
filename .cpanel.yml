@@ -10,7 +10,7 @@
 deployment:
   tasks:
     # Set your deployment path - UPDATE THIS!
-    - export /home/backdoor/repositories/FANZ-Unified-Ecosystem 
+    - export DEPLOYPATH=/home/fanzgroup/public_html 
 
     # Create necessary directories before deployment
     - /bin/mkdir -p $DEPLOYPATH/logs
