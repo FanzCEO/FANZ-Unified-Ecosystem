@@ -1,26 +1,31 @@
 # FANZ Queue Worker Deployment Status
 
 **Service ID:** srv-d44bsj6uk2gs73a5e3r0
-**Last Updated:** 2025-11-03
-**Status:** ⚠️ AWAITING MANUAL CONFIGURATION
+**Last Updated:** 2025-11-03 15:30 UTC
+**Status:** ⚠️ AWAITING ENVIRONMENT VARIABLE CONFIGURATION
 
 ---
 
 ## Current Situation
 
-The Queue Worker has been deployed to Render, but is currently **failing** due to a configuration issue that requires manual intervention in the Render dashboard.
+The Queue Worker deployment is **90% complete**! The build and start commands are working, but the worker is failing because environment variables are missing.
 
-### Issue Summary
-
-The Render service was created with an old configuration that used `rootDir: backend/workers`. Even though we fixed the `render.yaml` file (commit 26faff2), Render **caches service configuration** for existing services and does not automatically apply render.yaml updates to services that already exist.
-
-### Error
+### Latest Error
 
 ```
-Service Root Directory "/opt/render/project/src/backend/workers" is missing.
+Error: supabaseUrl is required.
+    at validateSupabaseUrl (/opt/render/project/src/FANZ-Unified-Ecosystem/backend/workers/node_modules/@supabase/supabase-js/dist/main/lib/helpers.js:50:15)
 ```
 
-This happens because the service is still using the old `rootDir` configuration instead of the new `cd` command approach.
+### What's Working ✅
+
+- Build completes successfully with nested path `cd FANZ-Unified-Ecosystem/backend/workers && npm install`
+- Worker starts and attempts to connect to Supabase
+- Code is correctly deployed from GitHub
+
+### What Needs Fixing ⚠️
+
+The worker needs environment variables to be configured in Render dashboard. The `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are not being passed to the worker process.
 
 ---
 
@@ -37,29 +42,29 @@ This happens because the service is still using the old `rootDir` configuration 
 
 ## ⚠️ Manual Configuration Required
 
-To fix the deployment, you need to manually update the Render service configuration:
+To fix the deployment, you need to add environment variables in the Render dashboard:
 
-### Step 1: Open Service Settings
+### Step 1: Open Environment Variables Settings
 
-Go to: https://dashboard.render.com/web/srv-d44bsj6uk2gs73a5e3r0/settings
+Go to: https://dashboard.render.com/worker/srv-d44bsj6uk2gs73a5e3r0
 
-### Step 2: Update Build & Start Commands
+Then click on **Environment** in the left sidebar.
 
-Make the following changes:
+### Step 2: Add Required Environment Variables
 
-| Setting | Old Value | New Value |
-|---------|-----------|-----------|
-| **Root Directory** | `backend/workers` | *(leave BLANK)* |
-| **Build Command** | `npm install` | `cd backend/workers && npm install` |
-| **Start Command** | `npm start` | `cd backend/workers && npm start` |
-| **Service Type** | Background Worker | Worker |
+Click **Add Environment Variable** and add these THREE variables:
 
-### Step 3: Save and Deploy
+| Key | Value |
+|-----|-------|
+| `NODE_ENV` | `production` |
+| `SUPABASE_URL` | `https://mcayxybcgxhfttvwmhgm.supabase.co` |
+| `SUPABASE_SERVICE_ROLE_KEY` | *(Get from Supabase Dashboard - Settings > API > service_role secret)* |
 
-1. Click **Save Changes** at the bottom
-2. Go to the **Manual Deploy** tab
-3. Click **Deploy latest commit** (should show commit 26faff2)
-4. Wait for deployment to complete
+### Step 3: Save and Redeploy
+
+1. Click **Save Changes**
+2. Render will automatically trigger a new deployment
+3. Wait for deployment to complete (check the **Logs** tab)
 
 ---
 
