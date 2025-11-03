@@ -1,14 +1,13 @@
 services:
   # FANZ Multi-Platform Queue Worker
-  - type: background
+  - type: worker
     name: fanz-multiplatform-worker
     runtime: node
     region: oregon
     plan: starter
     branch: main
-    rootDir: backend/workers
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cd backend/workers && npm install
+    startCommand: cd backend/workers && npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -16,5 +15,4 @@ services:
         value: https://mcayxybcgxhfttvwmhgm.supabase.co
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false  # Must be set manually in Render dashboard for security
-    healthCheckPath: ""
     autoDeploy: true
