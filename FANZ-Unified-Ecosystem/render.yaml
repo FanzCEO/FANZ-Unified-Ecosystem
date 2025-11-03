@@ -6,8 +6,8 @@ services:
     region: oregon
     plan: starter
     branch: main
-    buildCommand: cd backend/workers && npm install
-    startCommand: cd backend/workers && npm start
+    buildCommand: cd FANZ-Unified-Ecosystem/backend/workers && npm install
+    startCommand: cd FANZ-Unified-Ecosystem/backend/workers && npm start
     envVars:
       - key: NODE_ENV
         value: production
