@@ -1,0 +1,24 @@
+{
+  "name": "fanz-unified-ecosystem",
+  "version": "2.0.0",
+  "description": "FANZ Complete Infrastructure - 13 Platforms + Admin Services",
+  "main": "platform-router.js",
+  "scripts": {
+    "start": "node platform-router.js",
+    "dev": "NODE_ENV=development node platform-router.js",
+    "build": "echo 'Building all platforms...' && node scripts/build-all.js",
+    "test": "echo 'Testing all platforms...' && node scripts/test-all.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": ["fanz", "creator-platform", "multi-tenant", "adult-content"],
+  "author": "FANZ Group Holdings",
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
