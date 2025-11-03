@@ -2,8 +2,70 @@
 
 **Service ID:** srv-d43icaemcj7s73b4c750
 **URL:** https://boyfanzv1.onrender.com
-**Current Status:** 502 Bad Gateway (FAILING)
-**Last Updated:** 2025-11-03 15:45 UTC
+**Current Status:** ❌ BUILD FAILED - vite: not found
+**Last Updated:** 2025-11-03 18:05 UTC
+**Latest Error:** `sh: 1: vite: not found` (during `npm run build`)
+
+## ❌ Critical Issue
+
+**The deployment is failing because environment variables are NOT configured in the Render dashboard.**
+
+Even though you said you "done added all of that", the logs show:
+```
+Error: Missing required environment variables: DATABASE_URL, JWT_SECRET
+```
+
+This means the environment variables are **NOT** actually set in Render.
+
+**Root Cause:** Environment variables in `render.yaml` do NOT automatically apply to existing services. They **MUST** be added manually in the Render dashboard UI.
+
+## ✅ Progress Update
+
+**Runtime configuration fixed!** The service is now using Node.js (not Docker).
+
+**Build Status:** ✅ SUCCESSFUL
+- Cloned from GitHub (commit 1710786)
+- Using Node.js 20.19.5
+- Installed 766 packages
+- Vite build completed in 17.93s
+- Production assets generated
+
+**Start Status:** ❌ FAILING - Missing environment variables
+
+The application is starting but crashing at `/opt/render/project/src/server/env.ts:86` because these environment variables are `undefined`:
+- `DATABASE_URL` - PostgreSQL connection string
+- `JWT_SECRET` - Secret key for JWT tokens
+
+---
+
+## ⚠️ Action Required: Add Environment Variables
+
+Go to: https://dashboard.render.com/web/srv-d43icaemcj7s73b4c750/env
+
+Add these environment variables:
+
+| Key | Value | Notes |
+|-----|-------|-------|
+| `DATABASE_URL` | `postgresql://postgres.ysjondxpwvfjofbneqki:[password]@aws-0-us-east-1.pooler.supabase.com:6543/postgres` | BoyFanz uses Supabase project ysjondxpwvfjofbneqki |
+| `JWT_SECRET` | `9WVb1bJQPRI1bvFTrncCnLfLOKFr9Z4uErFiwV7W5kY6JVHzW6RaZWUWT5SiId3hKymdl8dKfd4maPTZC47viA==` | JWT secret for BoyFanz |
+| `SUPABASE_URL` | `https://ysjondxpwvfjofbneqki.supabase.co` | BoyFanz Supabase project URL |
+| `SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzam9uZHhwd3Zmam9mYm5lcWtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NjY1NjcsImV4cCI6MjA3MTQ0MjU2N30.72MyxK6NprjcECBs3rM_LMLLpDXMuFB69m0e5_8ER3A` | Public anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzam9uZHhwd3Zmam9mYm5lcWtpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTg2NjU2NywiZXhwIjoyMDcxNDQyNTY3fQ.mmBBfpS7feLB0DODh4Fj4b5GVqLutDnczyayK8H4dwg` | Service role key (secret) |
+| `SUPABASE_JWT_SECRET` | `9WVb1bJQPRI1bvFTrncCnLfLOKFr9Z4uErFiwV7W5kY6JVHzW6RaZWUWT5SiId3hKymdl8dKfd4maPTZC47viA==` | Same as JWT_SECRET |
+| `JWT_KEY_ID` | `887b5924-7f06-4628-8618-4db7f41c265b` | JWT key ID from JWKS |
+| `NODE_ENV` | `production` | Standard production flag |
+| `PORT` | `10000` | Render's default port (may be auto-set) |
+
+**IMPORTANT:** BoyFanz uses a **different Supabase project** than the FANZ-Unified-Ecosystem:
+- BoyFanz: `db.ysjondxpwvfjofbneqki.supabase.co`
+- FANZ Ecosystem: `db.mcayxybcgxhfttvwmhgm.supabase.co`
+
+**To get DATABASE_URL:**
+1. Go to: https://supabase.com/dashboard/project/ysjondxpwvfjofbneqki/settings/database
+2. Look for "Connection string" section
+3. Select "URI" tab
+4. Copy the connection string (it will have [YOUR-PASSWORD] placeholder)
+5. Replace [YOUR-PASSWORD] with your actual database password
 
 ---
 
@@ -47,14 +109,19 @@ Based on typical Next.js/React applications, use these commands:
 
 | Setting | Value |
 |---------|-------|
-| **Build Command** | `npm install && npm run build` |
+| **Build Command** | `npm install --production=false && npm run build` |
 | **Start Command** | `npm start` |
 | **Node Version** | 18.x or higher (auto-detected from package.json) |
 
-**Alternative build commands to try if the above doesn't work:**
-- `npm install --production=false && npm run build`
-- `pnpm install && pnpm run build`
-- `yarn install && yarn build`
+**Why `--production=false`?**
+- Vite is a dev dependency needed for building
+- Without this flag, `npm install` skips dev dependencies
+- This causes "vite: not found" error during build
+
+**Alternative build commands if needed:**
+- `npm ci --include=dev && npm run build` (uses package-lock.json)
+- `pnpm install && pnpm run build` (if using pnpm)
+- `yarn install && yarn build` (if using yarn)
 
 ### Step 4: Add Environment Variables
 
