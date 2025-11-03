@@ -1,361 +1,182 @@
-# BoyFanz Supabase Deployment Status
+# FANZ Queue Worker Deployment Status
 
-**Date**: November 2, 2025
-**Project**: ysjondxpwvfjofbneqki (BoyFanz Database)
-**Status**: ⚠️ Ready for Manual Deployment
+**Service ID:** srv-d44bsj6uk2gs73a5e3r0
+**Last Updated:** 2025-11-03
+**Status:** ⚠️ AWAITING MANUAL CONFIGURATION
 
 ---
 
 ## Current Situation
 
-The BoyFanz database schema (205 tables with multi-tenant RLS) has been fully prepared and is ready for deployment. However, automated deployment via `supabase db push` is blocked by existing tables in the remote database from a previous migration.
+The Queue Worker has been deployed to Render, but is currently **failing** due to a configuration issue that requires manual intervention in the Render dashboard.
 
-### Automated Reset Attempts
+### Issue Summary
 
-1. **Migration repair**: ✅ Successfully marked remote migration as reverted
-2. **Table cleanup script**: ⚠️ Partially successful (some tables remain)
-3. **CLI database reset**: ⚠️ Failed with "out of shared memory" error
-4. **supabase db push**: ❌ Blocked by existing "messages" table and others
+The Render service was created with an old configuration that used `rootDir: backend/workers`. Even though we fixed the `render.yaml` file (commit 26faff2), Render **caches service configuration** for existing services and does not automatically apply render.yaml updates to services that already exist.
 
----
+### Error
 
-## What's Been Prepared
+```
+Service Root Directory "/opt/render/project/src/backend/workers" is missing.
+```
 
-### 1. Complete Database Schema
-- **File**: `supabase/migrations/20251103000000_initial_schema.sql`
-- **Size**: 4,974 lines
-- **Contents**:
-  - 201 tables from Drizzle ORM (BoyFanz core schema)
-  - 4 tables from Outlawz Program
-  - 150+ ENUM types
-  - 400+ indexes
-  - 300+ foreign keys
-
-### 2. Multi-Tenant RLS Policies
-- **File**: `supabase/migrations/20251103000001_rls_policies.sql`
-- **Size**: 317 lines
-- **Contents**:
-  - RLS enabled on all tables
-  - 50+ security policies
-  - 2 helper functions (`get_user_tenant_id()`, `is_admin()`)
-  - Tenant isolation for all 48 FANZ platforms
-
-### 3. Environment Configuration
-- **File**: `boyfanz/.env`
-- **Status**: ✅ Updated with actual Supabase credentials
-- **Contains**:
-  - DATABASE_URL
-  - SUPABASE_URL
-  - SUPABASE_ANON_KEY
-  - SUPABASE_SERVICE_ROLE_KEY
-  - JWT configuration
-
-### 4. MCP Server Configuration
-- **File**: `boyfanz/.mcp.json`
-- **Status**: ✅ Configured for Supabase MCP access
+This happens because the service is still using the old `rootDir` configuration instead of the new `cd` command approach.
 
 ---
 
-## Recommended Deployment Method
+## ✅ What's Been Completed
 
-### ⭐ Option 1: Supabase Dashboard (Recommended)
+1. **Infrastructure Audit** - Identified all 16 platforms in the ecosystem
+2. **Master Deployment Plan** - Created 28-day deployment strategy (MASTER_DEPLOYMENT_PLAN.md)
+3. **Platform Router** - Created multi-tenant routing system (platform-router.js)
+4. **Render Configuration Fixed** - Updated render.yaml with proper `cd` commands (commit 26faff2)
+5. **Code Committed to GitHub** - All infrastructure code is in version control
+6. **Git Push** - Latest changes pushed to `main` branch
 
-This is the most reliable method given the current database state.
+---
 
-**Steps**:
+## ⚠️ Manual Configuration Required
 
-1. **Reset Database**
-   - Go to: https://app.supabase.com/project/ysjondxpwvfjofbneqki/settings/general
-   - Scroll to **Danger Zone**
-   - Click **"Reset database"**
-   - Confirm reset (this will delete all existing data)
-   - Wait 1-2 minutes for completion
+To fix the deployment, you need to manually update the Render service configuration:
 
-2. **Deploy Initial Schema**
-   - Go to: https://app.supabase.com/project/ysjondxpwvfjofbneqki/sql/new
-   - Open file: `/Users/joshuastone/FANZ-Unified-Ecosystem/supabase/migrations/20251103000000_initial_schema.sql`
-   - Copy ALL 4,974 lines
-   - Paste into SQL Editor
-   - Click **RUN** (or Cmd+Enter)
-   - Wait ~30-60 seconds
-   - Verify success (no errors in output)
+### Step 1: Open Service Settings
 
-3. **Deploy RLS Policies**
-   - Click **"New query"** in SQL Editor
-   - Open file: `/Users/joshuastone/FANZ-Unified-Ecosystem/supabase/migrations/20251103000001_rls_policies.sql`
-   - Copy ALL 317 lines
-   - Paste into SQL Editor
-   - Click **RUN** (or Cmd+Enter)
-   - Wait ~5-10 seconds
-   - Verify success message: "Multi-tenant RLS policies applied successfully!"
+Go to: https://dashboard.render.com/web/srv-d44bsj6uk2gs73a5e3r0/settings
 
-4. **Sync Migration History**
-   ```bash
-   cd /Users/joshuastone/FANZ-Unified-Ecosystem
-   supabase db remote commit
-   ```
+### Step 2: Update Build & Start Commands
 
-### Option 2: Direct SQL via psql
+Make the following changes:
 
-If you prefer command-line:
+| Setting | Old Value | New Value |
+|---------|-----------|-----------|
+| **Root Directory** | `backend/workers` | *(leave BLANK)* |
+| **Build Command** | `npm install` | `cd backend/workers && npm install` |
+| **Start Command** | `npm start` | `cd backend/workers && npm start` |
+| **Service Type** | Background Worker | Worker |
 
+### Step 3: Save and Deploy
+
+1. Click **Save Changes** at the bottom
+2. Go to the **Manual Deploy** tab
+3. Click **Deploy latest commit** (should show commit 26faff2)
+4. Wait for deployment to complete
+
+---
+
+## 🔍 Expected Success Indicators
+
+Once the manual configuration is applied and the service is redeployed, you should see:
+
+### Successful Build Output
 ```bash
-# 1. Reset database (requires manual confirmation in dashboard first)
-
-# 2. Deploy schema
-psql "postgresql://postgres:1FbOG6izeEfI1AWx@db.ysjondxpwvfjofbneqki.supabase.co:5432/postgres" \
-  -f /Users/joshuastone/FANZ-Unified-Ecosystem/supabase/migrations/20251103000000_initial_schema.sql
-
-# 3. Deploy RLS
-psql "postgresql://postgres:1FbOG6izeEfI1AWx@db.ysjondxpwvfjofbneqki.supabase.co:5432/postgres" \
-  -f /Users/joshuastone/FANZ-Unified-Ecosystem/supabase/migrations/20251103000001_rls_policies.sql
+==> Cloning from https://github.com/[your-org]/FANZ-Unified-Ecosystem...
+==> Checking out commit 26faff2...
+==> Running build command: cd backend/workers && npm install
+==> Build successful ✓
 ```
 
----
-
-## Post-Deployment Verification
-
-### 1. Check Table Count
-
-```sql
-SELECT COUNT(*) as table_count
-FROM information_schema.tables
-WHERE table_schema = 'public';
-```
-
-**Expected Result**: 205 tables
-
-### 2. Check RLS Policies
-
-```sql
-SELECT COUNT(*) as policy_count
-FROM pg_policies
-WHERE schemaname = 'public';
-```
-
-**Expected Result**: 50+ policies
-
-### 3. List All Tables
-
-```sql
-SELECT tablename
-FROM pg_tables
-WHERE schemaname = 'public'
-ORDER BY tablename;
-```
-
-**Expected**: Should include tables like:
-- `users`
-- `profiles`
-- `tenants`
-- `profile_tenant`
-- `content`
-- `posts`
-- `subscriptions`
-- `transactions`
-- `outlawz_profiles`
-- `outlawz_clips`
-- ... and 195 more
-
-### 4. Test Helper Functions
-
-```sql
--- Test tenant ID function
-SELECT auth.get_user_tenant_id();
-
--- Test admin check function
-SELECT auth.is_admin();
-```
-
----
-
-## Post-Deployment Tasks
-
-### 1. Create Initial Tenants
-
-```sql
-INSERT INTO tenants (slug, name, domain, is_active) VALUES
-  ('boyfanz', 'BoyFanz', 'boyfanz.com', TRUE),
-  ('girlfanz', 'GirlFanz', 'girlfanz.com', TRUE),
-  ('pupfanz', 'PupFanz', 'pupfanz.com', TRUE),
-  ('gayfanz', 'GayFanz', 'gayfanz.com', TRUE),
-  ('bearfanz', 'BearFanz', 'bearfanz.com', TRUE),
-  ('lesbianfanz', 'LesbianFanz', 'lesbianfanz.com', TRUE),
-  ('transfanz', 'TransFanz', 'transfanz.com', TRUE),
-  ('milffanz', 'MILFFanz', 'milffanz.com', TRUE);
--- Add remaining 40 platforms...
-```
-
-### 2. Enable Required Extensions
-
-Go to **Database** > **Extensions** and enable:
-- ✅ uuid-ossp (UUID generation)
-- ✅ pgcrypto (Encryption)
-- ✅ pg_trgm (Full-text search)
-- ✅ postgis (Geographic data)
-
-### 3. Create Admin Role
-
-```sql
--- First, insert super_admin role if it doesn't exist
-INSERT INTO roles (role_type, name, description)
-VALUES ('super_admin', 'Super Admin', 'Full system access')
-ON CONFLICT DO NOTHING;
-```
-
-### 4. Test RLS Policies
-
-```sql
--- Simulate authenticated user
-SET LOCAL role TO authenticated;
-SET LOCAL request.jwt.claims TO '{"sub": "test-user-uuid"}';
-
--- Try to read content (should return empty or only accessible content)
-SELECT COUNT(*) FROM content;
-
--- Reset to default role
-RESET role;
-```
-
----
-
-## Schema Statistics
-
-| Metric | Count |
-|--------|-------|
-| **Total Tables** | 205 |
-| **Drizzle Tables** | 201 |
-| **Outlawz Tables** | 4 |
-| **ENUM Types** | 150+ |
-| **Indexes** | 400+ |
-| **Foreign Keys** | 300+ |
-| **RLS Policies** | 50+ |
-| **Helper Functions** | 2 |
-| **Total SQL Lines** | 5,291 |
-
----
-
-## Key Features Included
-
-### Core Platform
-- ✅ User authentication & profiles
-- ✅ Multi-tenant data isolation
-- ✅ Role-based access control (RBAC)
-- ✅ Audit logging
-
-### Content Management
-- ✅ Posts, media assets, stories
-- ✅ Live streaming
-- ✅ Content moderation
-- ✅ DMCA protection
-
-### Monetization
-- ✅ Subscriptions & pay-per-view
-- ✅ Tips & donations
-- ✅ FANZ Wallets & Tokens
-- ✅ Credit lines & cards
-- ✅ Affiliate & referral programs
-
-### Compliance
-- ✅ Age verification
-- ✅ KYC/AML checks
-- ✅ 2257 record keeping
-- ✅ Consent management
-
-### Advanced Features
-- ✅ NFT minting & trading
-- ✅ Holographic/AR streaming
-- ✅ Lovense integration
-- ✅ PWA support
-- ✅ Push notifications
-- ✅ Analytics & reporting
-
-### Outlawz Program
-- ✅ Creator verification
-- ✅ Showcase clips
-- ✅ Performance analytics
-- ✅ Platform-ban verification
-
----
-
-## Documentation References
-
-- **Complete Guide**: `SUPABASE_MIGRATION_COMPLETE.md`
-- **Manual Instructions**: `MANUAL_DEPLOYMENT_INSTRUCTIONS.md`
-- **Deployment Guide**: `SUPABASE_DEPLOYMENT_GUIDE.md`
-- **This Status**: `DEPLOYMENT_STATUS.md`
-
----
-
-## Troubleshooting
-
-### Issue: TimescaleDB Extension Not Available
-
-**Solution**: Comment out these lines in `20251103000000_initial_schema.sql` (lines ~4970):
-
-```sql
--- SELECT create_hypertable('transactions', 'created_at', if_not_exists => TRUE);
--- SELECT create_hypertable('audit_logs', 'created_at', if_not_exists => TRUE);
-```
-
-TimescaleDB is only available on Supabase Pro plan and above.
-
-### Issue: "relation already exists" Errors
-
-**Solution**: The database wasn't fully reset. Use the Supabase Dashboard to reset:
-1. Go to Settings > General
-2. Scroll to Danger Zone
-3. Click "Reset database"
-4. Wait for completion
-5. Try deployment again
-
-### Issue: Extensions Permission Denied
-
-**Solution**: Enable extensions via Dashboard (Database > Extensions) instead of SQL.
-
----
-
-## Quick Start Command
-
-Once database is reset, you can deploy everything with:
-
+### Successful Start Output
 ```bash
-# From project root
-cd /Users/joshuastone/FANZ-Unified-Ecosystem
+==> Running start command: cd backend/workers && npm start
+========================================
+FANZ Multi-Platform Queue Worker
+========================================
+Environment: production
+Region: Oregon
+Started: [timestamp]
+========================================
 
-# Deploy via psql (after manual dashboard reset)
-psql "$DATABASE_URL" -f supabase/migrations/20251103000000_initial_schema.sql && \
-psql "$DATABASE_URL" -f supabase/migrations/20251103000001_rls_policies.sql && \
-echo "✅ Deployment complete!"
+[WORKER] Connected to Supabase: https://mcayxybcgxhfttvwmhgm.supabase.co
+[WORKER] Polling queue every 10 seconds...
+[WORKER] Polling crossposting_queue...
+[WORKER] Found 0 pending jobs
 ```
 
 ---
 
-## Support Links
+## 📋 Next Steps After Successful Deployment
 
-- **Supabase Dashboard**: https://app.supabase.com/project/ysjondxpwvfjofbneqki
-- **Supabase Docs**: https://supabase.com/docs
-- **Supabase Discord**: https://discord.supabase.com
-- **Drizzle ORM**: https://orm.drizzle.team
+Once the worker is running successfully:
+
+1. **Verify Queue Worker is Running** (Task 5)
+   - Check Render logs for successful startup
+   - Confirm 10-second polling is active
+   - Verify Supabase connection
+
+2. **Test Cross-posting with Sample Post** (Task 6)
+   - Create a test post in boyfanz
+   - Queue a cross-post to girlfanz and pupfanz
+   - Verify worker picks up the job
+   - Confirm posts created on target platforms
+   - Check history records
+
+3. **Deploy REST API** (Phase 2 of MASTER_DEPLOYMENT_PLAN.md)
+   - Deploy backend/api to Render Web Service
+   - Configure environment variables
+   - Test API endpoints
+
+4. **Deploy Platform Frontends** (Phase 3)
+   - Build and deploy platform router
+   - Configure DNS for all domains
+   - Enable SSL certificates
 
 ---
 
-## Next Steps
+## 🔗 Important Links
 
-1. ✅ **Reset database** via Supabase Dashboard (Danger Zone > Reset database)
-2. ⏳ **Deploy schema** via SQL Editor or psql
-3. ⏳ **Deploy RLS policies** via SQL Editor or psql
-4. ⏳ **Verify deployment** (check table count, policies)
-5. ⏳ **Create initial tenants** (INSERT INTO tenants)
-6. ⏳ **Enable extensions** (Dashboard > Extensions)
-7. ⏳ **Test RLS policies** (simulate authenticated user)
-8. ⏳ **Create admin user** (after Supabase Auth signup)
+- **Render Service:** https://dashboard.render.com/web/srv-d44bsj6uk2gs73a5e3r0
+- **GitHub Repository:** https://github.com/[your-org]/FANZ-Unified-Ecosystem
+- **Supabase Dashboard:** https://supabase.com/dashboard/project/mcayxybcgxhfttvwmhgm
+- **Latest Commit:** 26faff2 - "Fix render.yaml: Use worker type with cd commands"
 
 ---
 
-**Status**: Ready for manual deployment via Supabase Dashboard
-**Estimated Deployment Time**: 5-10 minutes
-**Difficulty**: Easy (copy/paste SQL)
-**Risk**: Low (fresh database, no data loss concern)
+## 📁 Key Files
 
-🚀 **You're ready to deploy!** Just need to manually reset the database in the Supabase Dashboard first.
+| File | Purpose | Location |
+|------|---------|----------|
+| render.yaml | Render deployment config | `/render.yaml` |
+| Queue Worker | Processes cross-post jobs | `/backend/workers/index.js` |
+| Platform Router | Multi-tenant routing | `/platform-router.js` |
+| Deployment Plan | Full infrastructure strategy | `/MASTER_DEPLOYMENT_PLAN.md` |
+
+---
+
+## 💡 Troubleshooting
+
+### If the deployment still fails after manual configuration:
+
+1. **Check Build Logs** - Look for path resolution errors
+2. **Verify package.json exists** - Ensure `/backend/workers/package.json` is in the repo
+3. **Check Node version** - Should be >= 18.0.0 (specified in package.json)
+4. **Verify environment variables:**
+   - `NODE_ENV` = production
+   - `SUPABASE_URL` = https://mcayxybcgxhfttvwmhgm.supabase.co
+   - `SUPABASE_SERVICE_ROLE_KEY` = (must be set manually in dashboard)
+
+### If worker starts but doesn't process jobs:
+
+1. **Check Supabase connection** - Verify service role key is valid
+2. **Check queue table exists** - Run migration if needed
+3. **Check for pending jobs** - Query `crossposting_queue` WHERE status = 'pending'
+4. **Review worker logs** - Look for error messages
+
+---
+
+## 🎯 Success Criteria
+
+The deployment is successful when:
+
+- ✅ Service builds without errors
+- ✅ Worker starts and logs startup message
+- ✅ Worker connects to Supabase successfully
+- ✅ Worker polls queue every 10 seconds
+- ✅ Test cross-post completes successfully
+- ✅ History records are created correctly
+
+---
+
+**Status Check Command (when Render API key is configured):**
+```bash
+render services get srv-d44bsj6uk2gs73a5e3r0 -o json
+```
