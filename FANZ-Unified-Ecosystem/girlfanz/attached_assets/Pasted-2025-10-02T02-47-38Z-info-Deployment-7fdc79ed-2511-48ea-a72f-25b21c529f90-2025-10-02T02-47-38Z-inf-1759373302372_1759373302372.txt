@@ -1,0 +1,59 @@
+2025-10-02T02:47:38Z info: Deployment: 7fdc79ed-2511-48ea-a72f-25b21c529f90
+2025-10-02T02:47:38Z info: Build: 9b787a40-a699-4834-8d8e-12e6bd24cb4f
+2025-10-02T02:47:38Z info: Connecting to builder
+2025-10-02T02:47:41Z info: Builder connected
+2025-10-02T02:47:41Z info: Installing packages
+2025-10-02T02:47:42Z info: Starting Build
+🔨 Building Vite application...
+
+vite v6.3.6 building for production...
+
+transforming...
+
+✓ 3506 modules transformed.
+
+rendering chunks...
+
+computing gzip size...
+
+../dist/public/assets/Girlsbackgroud2_1759228216281-JqStCu18.png  21,744.51 kB
+
+✅ Vite build completed successfully!
+
+🔧 Compiling server TypeScript files...
+
+server/replitAuth.ts(111,15): error TS2339: Property 'state' does not exist on type 'Session & Partial<SessionData>'.
+
+server/services/ai-processor.ts(278,7): error TS2322: Type 'Buffer<ArrayBufferLike>' is not assignable to type 'Buffer<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+      Types of property '[Symbol.toStringTag]' are incompatible.
+        Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+
+server/services/format-converter.ts(378,7): error TS2322: Type 'Buffer<ArrayBufferLike>' is not assignable to type 'Buffer<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+      Types of property '[Symbol.toStringTag]' are incompatible.
+        Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+
+server/websocket/stream-handler.ts(829,21): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(timeout: string | number | Timeout | undefined): void', gave the following error.
+    Argument of type 'Timer' is not assignable to parameter of type 'string | number | Timeout | undefined'.
+      Type 'Timer' is missing the following properties from type 'Timeout': close, _onTimeout, [Symbol.dispose]
+  Overload 2 of 2, '(id: number | undefined): void', gave the following error.
+    Argument of type 'Timer' is not assignable to parameter of type 'number'.
+shared/schema.ts(1836,34): error TS2344: Type 'ZodObject<{ email: ZodString; username: ZodOptional<ZodNullable<ZodString>>; password: ZodString; }, { out: {}; in: {}; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ email: ZodString; username: ZodOptional<ZodNullable<ZodString>>; password: ZodString; }, { out: {}; in: {}; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+vite.config.ts(2,19): error TS2307: Cannot find module '@vitejs/plugin-react' or its corresponding type declarations.
+  There are types at '/home/runner/workspace/node_modules/@vitejs/plugin-react/dist/index.d.ts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+vite.config.ts(4,33): error TS2307: Cannot find module '@replit/vite-plugin-runtime-error-modal' or its corresponding type declarations.
+vite.config.ts(13,24): error TS2307: Cannot find module '@replit/vite-plugin-cartographer' or its corresponding type declarations.
+vite.config.ts(16,24): error TS2307: Cannot find module '@replit/vite-plugin-dev-banner' or its corresponding type declarations.
+vite.config.ts(24,25): error TS1343: The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', or 'nodenext'.
+vite.config.ts(25,31): error TS1343: The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', or 'nodenext'.
+vite.config.ts(26,31): error TS1343: The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', or 'nodenext'.
+vite.config.ts(29,22): error TS1343: The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', or 'nodenext'.
+vite.config.ts(31,26): error TS1343: The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'es2022', 'esnext', 'system', 'node16', 'node18', 'node20', or 'nodenext'.
+
+❌ Server build failed with exit code: 2
+
