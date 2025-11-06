@@ -3,12 +3,12 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { db } from "./db";
-import { 
-  paymentTransactions, 
-  paymentProcessors, 
-  users, 
-  seoSettings, 
-  aeoSettings, 
+import {
+  paymentTransactions,
+  paymentProcessors,
+  users,
+  seoSettings,
+  aeoSettings,
   gtmSettings,
   taxRates,
   adCampaigns,
@@ -17,7 +17,8 @@ import {
   themeSettings,
   shopSettings,
   storySettings,
-  systemSettings
+  systemSettings,
+  huggingfaceModels
 } from "@shared/schema";
 import { sql, eq } from "drizzle-orm";
 import {
@@ -36,6 +37,7 @@ import {
   insertGeoCollaborationSchema,
   insertCronJobSchema,
   insertCronJobLogSchema,
+  insertHuggingFaceModelSchema,
 } from "@shared/schema";
 import { aiModerationService } from "./openaiService";
 import session from "express-session";
@@ -92,6 +94,7 @@ import payoutRoutes from "./routes/payouts";
 import routingRoutes from "./routes/routing";
 import { domainRouter } from "./routing/DomainRouter";
 import complianceRoutes from "./routes/compliance";
+import aiRoutes from "./routes/ai";
 
 // Store connected WebSocket clients
 let connectedModerators: Set<WebSocket> = new Set();
@@ -300,6 +303,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount Compliance Monitoring System routes
   app.use('/api/compliance', complianceRoutes);
+
+  // Mount AI Services routes (Hugging Face integration)
+  app.use('/api/ai', aiRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
@@ -1670,6 +1676,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(summary);
     } catch (error) {
       res.status(500).json({ error: "Failed to get financial summary" });
+    }
+  });
+
+  // ============= HUGGINGFACE AI MODELS ROUTES =============
+
+  // Get all HuggingFace models
+  app.get("/api/huggingface/models", isAuthenticated, async (req, res) => {
+    try {
+      const { huggingFaceService } = await import("./services/huggingFaceService");
+      const models = await huggingFaceService.getAllModels();
+      res.json({ models });
+    } catch (error) {
+      console.error("Error fetching models:", error);
+      res.status(500).json({ error: "Failed to fetch models" });
+    }
+  });
+
+  // Get active HuggingFace models
+  app.get("/api/huggingface/models/active", isAuthenticated, async (req, res) => {
+    try {
+      const { huggingFaceService } = await import("./services/huggingFaceService");
+      const models = await huggingFaceService.getActiveModels();
+      res.json({ models });
+    } catch (error) {
+      console.error("Error fetching active models:", error);
+      res.status(500).json({ error: "Failed to fetch active models" });
+    }
+  });
+
+  // Get single HuggingFace model
+  app.get("/api/huggingface/models/:id", isAuthenticated, async (req, res) => {
+    try {
+      const models = await db.select().from(huggingfaceModels).where(eq(huggingfaceModels.id, req.params.id));
+      if (models.length === 0) {
+        return res.status(404).json({ error: "Model not found" });
+      }
+      res.json({ model: models[0] });
+    } catch (error) {
+      console.error("Error fetching model:", error);
+      res.status(500).json({ error: "Failed to fetch model" });
+    }
+  });
+
+  // Create new HuggingFace model configuration
+  app.post("/api/huggingface/models", isAuthenticated, async (req: any, res) => {
+    try {
+      const modelData = insertHuggingFaceModelSchema.parse(req.body);
+      const result = await db.insert(huggingfaceModels).values(modelData).returning();
+      res.status(201).json({ model: result[0] });
+    } catch (error) {
+      console.error("Error creating model:", error);
+      res.status(400).json({ error: "Failed to create model" });
+    }
+  });
+
+  // Update HuggingFace model configuration
+  app.put("/api/huggingface/models/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const modelData = insertHuggingFaceModelSchema.partial().parse(req.body);
+      const result = await db
+        .update(huggingfaceModels)
+        .set({ ...modelData, updatedAt: new Date() })
+        .where(eq(huggingfaceModels.id, req.params.id))
+        .returning();
+
+      if (result.length === 0) {
+        return res.status(404).json({ error: "Model not found" });
+      }
+      res.json({ model: result[0] });
+    } catch (error) {
+      console.error("Error updating model:", error);
+      res.status(400).json({ error: "Failed to update model" });
+    }
+  });
+
+  // Delete HuggingFace model configuration
+  app.delete("/api/huggingface/models/:id", isAuthenticated, async (req, res) => {
+    try {
+      const result = await db
+        .delete(huggingfaceModels)
+        .where(eq(huggingfaceModels.id, req.params.id))
+        .returning();
+
+      if (result.length === 0) {
+        return res.status(404).json({ error: "Model not found" });
+      }
+      res.json({ message: "Model deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting model:", error);
+      res.status(500).json({ error: "Failed to delete model" });
+    }
+  });
+
+  // Test HuggingFace model
+  app.post("/api/huggingface/models/:id/test", isAuthenticated, async (req, res) => {
+    try {
+      const { huggingFaceService } = await import("./services/huggingFaceService");
+      const result = await huggingFaceService.testModel(req.params.id);
+      res.json(result);
+    } catch (error) {
+      console.error("Error testing model:", error);
+      res.status(500).json({ error: "Failed to test model" });
+    }
+  });
+
+  // Run inference on HuggingFace model
+  app.post("/api/huggingface/infer", isAuthenticated, async (req: any, res) => {
+    try {
+      const { modelId, inputs, parameters, options } = req.body;
+
+      if (!modelId || !inputs) {
+        return res.status(400).json({ error: "modelId and inputs are required" });
+      }
+
+      const { huggingFaceService } = await import("./services/huggingFaceService");
+      const result = await huggingFaceService.infer({
+        modelId,
+        inputs,
+        parameters,
+        options,
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.error("Error running inference:", error);
+      res.status(500).json({ error: "Failed to run inference" });
     }
   });
 
