@@ -52,6 +52,7 @@ import {
   requireAdmin,
   requireModerator,
   requireCreator,
+  requireSuperAdmin,
   optionalAuth
 } from './middleware/auth';
 import logger from './utils/logger';
@@ -98,6 +99,7 @@ import aiRoutes from "./routes/ai";
 import paymentAdminRoutes from "./routes/paymentAdmin";
 import customContentRoutes from "./routes/customContentRequests";
 import mediaProtectionRoutes from "./routes/mediaProtection";
+import legalRoutes from "./routes/legal";
 
 // Store connected WebSocket clients
 let connectedModerators: Set<WebSocket> = new Set();
@@ -318,6 +320,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount Media Protection System routes (Forensic watermarking, DMCA, violations, mobile)
   app.use('/api/protection', mediaProtectionRoutes);
+
+  // Mount Legal & Compliance routes (CSAM legal holds - SUPER ADMIN ONLY)
+  app.use('/api/legal', legalRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {

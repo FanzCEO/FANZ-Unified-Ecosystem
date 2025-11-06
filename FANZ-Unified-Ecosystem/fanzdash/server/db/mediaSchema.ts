@@ -225,6 +225,115 @@ export const dmcaTakedownCases = pgTable('dmca_takedown_cases', {
 }));
 
 // ============================================================================
+// CSAM LEGAL HOLDS (Child Safety & Law Enforcement)
+// ============================================================================
+
+export const csamLegalHolds = pgTable('csam_legal_holds', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  caseNumber: varchar('case_number', { length: 50 }).notNull().unique(),
+
+  // Reporting
+  reportedBy: varchar('reported_by', { length: 255 }).notNull(), // Super Admin user ID
+  reportedToNcmec: boolean('reported_to_ncmec').default(false),
+  ncmecReportId: varchar('ncmec_report_id', { length: 255 }),
+  ncmecReportedAt: timestamp('ncmec_reported_at'),
+
+  // Content Details
+  mediaAssetId: uuid('media_asset_id').references(() => mediaAssets.id),
+  contentUrl: text('content_url'),
+  contentHash: text('content_hash'),
+  contentDescription: text('content_description'),
+
+  // Suspect Information
+  suspectUserId: varchar('suspect_user_id', { length: 255 }),
+  suspectUsername: varchar('suspect_username', { length: 255 }),
+  suspectEmail: varchar('suspect_email', { length: 255 }),
+  suspectIpAddress: varchar('suspect_ip_address', { length: 45 }),
+  suspectDeviceInfo: jsonb('suspect_device_info'),
+
+  // Evidence Storage
+  evidenceStorageUrl: text('evidence_storage_url'), // Encrypted cloud storage URL
+  evidenceEncrypted: boolean('evidence_encrypted').default(true),
+  evidenceIntegrityHash: text('evidence_integrity_hash'),
+  chainOfCustody: jsonb('chain_of_custody').default([]), // Array of custody transfers
+
+  // Law Enforcement
+  lawEnforcementNotified: boolean('law_enforcement_notified').default(false),
+  lawEnforcementAgency: varchar('law_enforcement_agency', { length: 255 }),
+  lawEnforcementCaseId: varchar('law_enforcement_case_id', { length: 255 }),
+  lawEnforcementContactedAt: timestamp('law_enforcement_contacted_at'),
+
+  // Legal Status
+  status: varchar('status', { length: 50 }).default('pending'), // pending, under_review, law_enforcement_notified, closed
+  priority: varchar('priority', { length: 20 }).default('critical'), // critical, high, medium
+  legalNotes: text('legal_notes'),
+
+  // Compliance
+  preservationRequired: boolean('preservation_required').default(true),
+  preservationExpiresAt: timestamp('preservation_expires_at'),
+  retentionPeriodYears: integer('retention_period_years').default(7),
+
+  // Resolution
+  resolved: boolean('resolved').default(false),
+  resolvedAt: timestamp('resolved_at'),
+  resolutionType: varchar('resolution_type', { length: 100 }),
+  resolutionNotes: text('resolution_notes'),
+
+  // Audit Trail
+  createdBy: varchar('created_by', { length: 255 }).notNull(), // Super Admin ID
+  lastModifiedBy: varchar('last_modified_by', { length: 255 }),
+  accessLog: jsonb('access_log').default([]), // Array of access attempts
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+}, (table) => ({
+  caseNumberIdx: index('idx_csam_case_number').on(table.caseNumber),
+  statusIdx: index('idx_csam_status').on(table.status),
+  priorityIdx: index('idx_csam_priority').on(table.priority),
+  suspectIdx: index('idx_csam_suspect').on(table.suspectUserId),
+  createdIdx: index('idx_csam_created').on(table.createdAt)
+}));
+
+// ============================================================================
+// CSAM EVIDENCE FILES (Secure Evidence Storage)
+// ============================================================================
+
+export const csamEvidenceFiles = pgTable('csam_evidence_files', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  legalHoldId: uuid('legal_hold_id').references(() => csamLegalHolds.id, { onDelete: 'cascade' }),
+
+  // File Information
+  filename: varchar('filename', { length: 500 }).notNull(),
+  fileType: varchar('file_type', { length: 100 }).notNull(), // screenshot, video, metadata, communication_log
+  fileHash: text('file_hash').notNull(),
+  fileSize: bigint('file_size', { mode: 'number' }).notNull(),
+  mimeType: varchar('mime_type', { length: 100 }),
+
+  // Secure Storage
+  storageUrl: text('storage_url').notNull(), // Encrypted cloud storage URL
+  encryptionKey: text('encryption_key'), // Encrypted with master key
+  isEncrypted: boolean('is_encrypted').default(true),
+
+  // Evidence Metadata
+  description: text('description'),
+  uploadedBy: varchar('uploaded_by', { length: 255 }).notNull(), // Super Admin ID
+  evidenceType: varchar('evidence_type', { length: 100 }),
+
+  // Access Control
+  accessedCount: integer('accessed_count').default(0),
+  lastAccessedAt: timestamp('last_accessed_at'),
+  lastAccessedBy: varchar('last_accessed_by', { length: 255 }),
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow()
+}, (table) => ({
+  legalHoldIdx: index('idx_csam_evidence_legal_hold').on(table.legalHoldId),
+  fileTypeIdx: index('idx_csam_evidence_type').on(table.fileType),
+  uploadedByIdx: index('idx_csam_evidence_uploaded_by').on(table.uploadedBy)
+}));
+
+// ============================================================================
 // SCREEN CAPTURE VIOLATIONS (Protection System)
 // ============================================================================
 
@@ -382,6 +491,10 @@ export type TranscodingJob = typeof transcodingJobs.$inferSelect;
 export type NewTranscodingJob = typeof transcodingJobs.$inferInsert;
 export type DmcaTakedownCase = typeof dmcaTakedownCases.$inferSelect;
 export type NewDmcaTakedownCase = typeof dmcaTakedownCases.$inferInsert;
+export type CsamLegalHold = typeof csamLegalHolds.$inferSelect;
+export type NewCsamLegalHold = typeof csamLegalHolds.$inferInsert;
+export type CsamEvidenceFile = typeof csamEvidenceFiles.$inferSelect;
+export type NewCsamEvidenceFile = typeof csamEvidenceFiles.$inferInsert;
 export type ScreenCaptureViolation = typeof screenCaptureViolations.$inferSelect;
 export type NewScreenCaptureViolation = typeof screenCaptureViolations.$inferInsert;
 export type MobileDeviceRegistration = typeof mobileDeviceRegistrations.$inferSelect;
