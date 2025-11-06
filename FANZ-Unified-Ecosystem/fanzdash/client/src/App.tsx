@@ -84,6 +84,22 @@ import ComplianceCenter from "@/pages/ComplianceCenter";
 import LegalLibrary from "@/pages/legal-library";
 import QuantumWarRoom from "@/pages/QuantumWarRoom";
 import QuantumWarRoomSimple from "@/pages/QuantumWarRoomSimple";
+import AnalyticsDashboardPage from "@/pages/analytics-dashboard";
+import AdminConfigPage from "@/pages/admin-config";
+import PlatformManager from "@/pages/platform-manager";
+import EcosystemSecurityManagement from "@/pages/ecosystem-security-management";
+import CreatorManagement from "@/pages/creator-management";
+import TubeManagement from "@/pages/tube-management";
+import FanzRouletteManagement from "@/pages/fanzroulette-management";
+import Universal2257System from "@/pages/universal-2257-system";
+import LogoFaviconManagement from "@/pages/logo-favicon-management";
+import LegalHoldManagement from "@/pages/legal-hold-management";
+import ScheduleManagement from "@/pages/schedule-management";
+import HRManagement from "@/pages/hr-management";
+import CRMSystem from "@/pages/crm-system";
+import ERPSystem from "@/pages/erp-system";
+import EmailMarketing from "@/pages/email-marketing";
+import SocialMediaAutomation from "@/pages/social-media-automation";
 
 function Router() {
   return (
@@ -98,6 +114,8 @@ function Router() {
           <Route path="/content-review" component={ContentReviewPage} />
           <Route path="/live-monitoring" component={LiveMonitoringPage} />
           <Route path="/analytics" component={AnalyticsPage} />
+          <Route path="/analytics-dashboard" component={AnalyticsDashboardPage} />
+          <Route path="/admin-config" component={AdminConfigPage} />
           <Route path="/users" component={UsersPage} />
           <Route path="/risk-management" component={RiskManagementPage} />
           <Route path="/crisis-management" component={CrisisManagementPage} />
@@ -209,6 +227,20 @@ function Router() {
           <Route path="/seo-configuration" component={SEOConfiguration} />
           <Route path="/aeo-configuration" component={AEOConfiguration} />
           <Route path="/settings" component={SettingsPage} />
+          <Route path="/platform-manager" component={PlatformManager} />
+          <Route path="/ecosystem-security" component={EcosystemSecurityManagement} />
+          <Route path="/creator-management" component={CreatorManagement} />
+          <Route path="/tube-management" component={TubeManagement} />
+          <Route path="/fanzroulette-management" component={FanzRouletteManagement} />
+          <Route path="/universal-2257" component={Universal2257System} />
+          <Route path="/logo-favicon-management" component={LogoFaviconManagement} />
+          <Route path="/legal-hold-management" component={LegalHoldManagement} />
+          <Route path="/schedule-management" component={ScheduleManagement} />
+          <Route path="/hr-management" component={HRManagement} />
+          <Route path="/crm-system" component={CRMSystem} />
+          <Route path="/erp-system" component={ERPSystem} />
+          <Route path="/email-marketing" component={EmailMarketing} />
+          <Route path="/social-media-automation" component={SocialMediaAutomation} />
           <Route component={NotFound} />
         </Switch>
       </main>
