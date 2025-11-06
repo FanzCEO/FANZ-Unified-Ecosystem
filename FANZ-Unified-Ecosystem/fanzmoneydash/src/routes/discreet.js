@@ -11,6 +11,8 @@ import Transaction from '../models/Transaction.js';
 import User from '../models/User.js';
 import logger from '../config/logger.js';
 import { rateLimitConfig } from '../config/security.js';
+import { calculateRiskScore, shouldBlockTransaction } from '../services/fraudDetection.js';
+import { canCreateCard, canReloadCard, getSpendingSummary, checkLimitWarnings } from '../services/spendingLimits.js';
 
 const router = express.Router();
 
@@ -225,8 +227,21 @@ router.post('/purchase', [
       });
     }
 
+    // Check spending limits
+    const limitCheck = await canCreateCard(req.user.userId, amount);
+
+    if (!limitCheck.allowed) {
+      return res.status(403).json({
+        success: false,
+        error: limitCheck.reason,
+        limitExceeded: limitCheck.exceeded,
+        limit: limitCheck.limit,
+        current: limitCheck.current
+      });
+    }
+
     // Check KYC tier requirements
-    const kycTier = user.compliance?.kycVerified ? 2 : 1;
+    const kycTier = user.compliance?.kycTier || (user.compliance?.kycVerified ? 2 : 1);
 
     if (amount > 100 && kycTier < 2) {
       return res.status(403).json({
@@ -252,6 +267,48 @@ router.post('/purchase', [
     // Generate card details (needed before payment processing)
     const cardId = generateCardId();
     const cardToken = generateCardToken();
+
+    // Fraud detection and risk assessment
+    const riskAssessment = await calculateRiskScore(
+      req.user.userId,
+      totalCharge,
+      req.ip,
+      req.headers['user-agent'],
+      'purchase'
+    );
+
+    logger.info('Risk assessment completed', {
+      userId: req.user.userId,
+      riskScore: riskAssessment.riskScore,
+      riskLevel: riskAssessment.riskLevel,
+      amount: totalCharge
+    });
+
+    // Block high-risk transactions
+    if (riskAssessment.shouldBlock) {
+      logger.error('Transaction blocked due to high risk', {
+        userId: req.user.userId,
+        riskScore: riskAssessment.riskScore,
+        reasons: riskAssessment.reasons
+      });
+
+      return res.status(403).json({
+        success: false,
+        error: 'Transaction blocked for security reasons. Please contact support.',
+        riskLevel: riskAssessment.riskLevel,
+        requiresReview: true
+      });
+    }
+
+    // Require additional verification for medium-high risk
+    if (riskAssessment.requiresMFA && !req.body.mfaToken) {
+      return res.status(403).json({
+        success: false,
+        error: 'Additional verification required',
+        requiresMFA: true,
+        riskLevel: riskAssessment.riskLevel
+      });
+    }
 
     // Process payment via CCBill
     logger.info('Processing CCBill payment for discreet card', {
@@ -329,7 +386,7 @@ router.post('/purchase', [
         kycVerified: user.compliance?.kycVerified || false,
         kycTier,
         amlStatus: 'clear',
-        riskScore: 0
+        riskScore: riskAssessment.riskScore
       },
       timestamps: {
         createdAt: new Date(),
@@ -644,6 +701,19 @@ router.post('/cards/:cardId/reload', [
     const { amount, paymentMethod, paymentToken } = req.body;
 
     const card = await verifyCardAccess(cardId, req.user.userId, req.user.role);
+
+    // Check reload limits
+    const limitCheck = await canReloadCard(req.user.userId, cardId, amount);
+
+    if (!limitCheck.allowed) {
+      return res.status(403).json({
+        success: false,
+        error: limitCheck.reason,
+        limitExceeded: limitCheck.exceeded,
+        limit: limitCheck.limit,
+        current: limitCheck.current
+      });
+    }
 
     // Check if card is reloadable
     if (!card.reloadable.enabled) {

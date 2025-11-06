@@ -25,6 +25,8 @@ import userRoutes from './routes/users.js';
 import transactionRoutes from './routes/transactions.js';
 import integrationRoutes from './routes/integrations.js';
 import discreetRoutes from './routes/discreet.js';
+import discreetWebhooks from './routes/discreetWebhooks.js';
+import discreetLimits from './routes/discreetLimits.js';
 import websocketHandler from './websocket/handler.js';
 
 // Import middleware
@@ -138,6 +140,8 @@ app.use('/api/compliance', complianceRoutes);
 app.use('/api/blockchain', blockchainRoutes);
 app.use('/api/integrations', integrationRoutes);
 app.use('/api/discreet', discreetRoutes); // FanzDiscreet Privacy Cards
+app.use('/api/discreet/webhooks', discreetWebhooks); // CCBill Webhooks
+app.use('/api/discreet/limits', discreetLimits); // Spending Limits
 
 // WebSocket handling
 websocketHandler(io);
