@@ -95,6 +95,9 @@ import routingRoutes from "./routes/routing";
 import { domainRouter } from "./routing/DomainRouter";
 import complianceRoutes from "./routes/compliance";
 import aiRoutes from "./routes/ai";
+import paymentAdminRoutes from "./routes/paymentAdmin";
+import customContentRoutes from "./routes/customContentRequests";
+import mediaProtectionRoutes from "./routes/mediaProtection";
 
 // Store connected WebSocket clients
 let connectedModerators: Set<WebSocket> = new Set();
@@ -306,6 +309,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount AI Services routes (Hugging Face integration)
   app.use('/api/ai', aiRoutes);
+
+  // Mount Payment Administration routes (Unified payment management)
+  app.use('/api/payment-admin', paymentAdminRoutes);
+
+  // Mount Custom Content Request routes (with escrow)
+  app.use('/api/custom-content', customContentRoutes);
+
+  // Mount Media Protection System routes (Forensic watermarking, DMCA, violations, mobile)
+  app.use('/api/protection', mediaProtectionRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
@@ -1802,6 +1814,753 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error running inference:", error);
       res.status(500).json({ error: "Failed to run inference" });
+    }
+  });
+
+  // ============= ANALYTICS CONFIGURATION ROUTES =============
+
+  // Get analytics configuration for a platform
+  app.get("/api/analytics/config/:platformId", isAuthenticated, async (req, res) => {
+    try {
+      const { analyticsService } = await import("./services/analyticsService");
+      const config = await analyticsService.getConfiguration(req.params.platformId);
+
+      if (!config) {
+        return res.status(404).json({ error: "Analytics configuration not found" });
+      }
+
+      res.json({ config });
+    } catch (error) {
+      console.error("Error fetching analytics config:", error);
+      res.status(500).json({ error: "Failed to fetch analytics configuration" });
+    }
+  });
+
+  // Save or update analytics configuration
+  app.post("/api/analytics/config/:platformId", isAuthenticated, async (req: any, res) => {
+    try {
+      const { platformId } = req.params;
+      const { ga4, gtm, pixels, trafficAnalysisEnabled, variableTracking } = req.body;
+
+      const { analyticsService } = await import("./services/analyticsService");
+      const config = await analyticsService.saveConfiguration(platformId, {
+        ga4,
+        gtm,
+        pixels,
+        trafficAnalysisEnabled,
+        variableTracking,
+      });
+
+      res.json({ config, message: "Analytics configuration saved successfully" });
+    } catch (error) {
+      console.error("Error saving analytics config:", error);
+      res.status(500).json({ error: "Failed to save analytics configuration" });
+    }
+  });
+
+  // Generate tracking script for a platform
+  app.get("/api/analytics/script/:platformId", async (req, res) => {
+    try {
+      const { analyticsService } = await import("./services/analyticsService");
+      const script = await analyticsService.generateTrackingScript(req.params.platformId);
+
+      res.setHeader("Content-Type", "text/html");
+      res.send(script);
+    } catch (error) {
+      console.error("Error generating tracking script:", error);
+      res.status(500).json({ error: "Failed to generate tracking script" });
+    }
+  });
+
+  // Track an analytics event
+  app.post("/api/analytics/track", async (req: any, res) => {
+    try {
+      const {
+        eventName,
+        platformId,
+        userId,
+        sessionId,
+        eventData,
+        utmParameters,
+        deviceInfo,
+        pageInfo,
+      } = req.body;
+
+      if (!eventName || !platformId || !sessionId) {
+        return res.status(400).json({
+          error: "eventName, platformId, and sessionId are required"
+        });
+      }
+
+      const { analyticsService } = await import("./services/analyticsService");
+      await analyticsService.trackEvent({
+        eventName,
+        platformId,
+        userId,
+        sessionId,
+        eventData: eventData || {},
+        utmParameters,
+        deviceInfo,
+        pageInfo,
+      });
+
+      res.json({ success: true, message: "Event tracked successfully" });
+    } catch (error) {
+      console.error("Error tracking event:", error);
+      res.status(500).json({ error: "Failed to track event" });
+    }
+  });
+
+  // Get analytics dashboard data
+  app.get("/api/analytics/dashboard/:platformId", isAuthenticated, async (req, res) => {
+    try {
+      const { platformId } = req.params;
+      const { startDate, endDate } = req.query;
+
+      const timeRange = {
+        start: startDate ? new Date(startDate as string) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        end: endDate ? new Date(endDate as string) : new Date(),
+      };
+
+      const { analyticsService } = await import("./services/analyticsService");
+      const dashboardData = await analyticsService.getDashboardData(platformId, timeRange);
+
+      res.json(dashboardData);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      res.status(500).json({ error: "Failed to fetch dashboard data" });
+    }
+  });
+
+  // Test analytics configuration
+  app.post("/api/analytics/test/:platformId", isAuthenticated, async (req, res) => {
+    try {
+      const { analyticsService } = await import("./services/analyticsService");
+      const result = await analyticsService.testConfiguration(req.params.platformId);
+
+      res.json(result);
+    } catch (error) {
+      console.error("Error testing analytics config:", error);
+      res.status(500).json({ error: "Failed to test analytics configuration" });
+    }
+  });
+
+  // Get all platform analytics configurations (admin only)
+  app.get("/api/analytics/configs/all", requireAdmin, async (req, res) => {
+    try {
+      const { analyticsConfigurations } = await import("@shared/schema");
+      const configs = await db.select().from(analyticsConfigurations);
+
+      res.json({ configs });
+    } catch (error) {
+      console.error("Error fetching all analytics configs:", error);
+      res.status(500).json({ error: "Failed to fetch analytics configurations" });
+    }
+  });
+
+  // ============= SOCIAL MEDIA OAUTH ROUTES =============
+
+  // Get OAuth authorization URL
+  app.get("/api/oauth/:provider/authorize", isAuthenticated, async (req: any, res) => {
+    try {
+      const { provider } = req.params;
+      const state = Buffer.from(JSON.stringify({ userId: req.user.id, timestamp: Date.now() })).toString("base64");
+
+      const { socialOAuthService } = await import("./services/socialOAuthService");
+      const authUrl = socialOAuthService.getAuthorizationUrl(provider, state);
+
+      if (!authUrl) {
+        return res.status(400).json({ error: `OAuth not configured for ${provider}` });
+      }
+
+      res.json({ authUrl, state });
+    } catch (error) {
+      console.error("Error generating OAuth URL:", error);
+      res.status(500).json({ error: "Failed to generate authorization URL" });
+    }
+  });
+
+  // OAuth callback handler
+  app.get("/api/oauth/:provider/callback", async (req: any, res) => {
+    try {
+      const { provider } = req.params;
+      const { code, state } = req.query;
+
+      if (!code || !state) {
+        return res.status(400).json({ error: "Missing code or state parameter" });
+      }
+
+      // Decode state to get user ID
+      const stateData = JSON.parse(Buffer.from(state as string, "base64").toString());
+      const userId = stateData.userId;
+
+      const { socialOAuthService } = await import("./services/socialOAuthService");
+
+      // Exchange code for tokens
+      const tokens = await socialOAuthService.exchangeCodeForToken(provider, code as string);
+      if (!tokens) {
+        return res.status(500).json({ error: "Failed to exchange code for token" });
+      }
+
+      // Fetch user profile
+      const profile = await socialOAuthService.fetchProfile(provider, tokens.accessToken);
+      if (!profile) {
+        return res.status(500).json({ error: "Failed to fetch user profile" });
+      }
+
+      // Save connection
+      const connection = await socialOAuthService.saveConnection(userId, provider, tokens, profile);
+
+      res.json({
+        success: true,
+        connection: {
+          provider,
+          profile: {
+            displayName: profile.displayName,
+            username: profile.username,
+            avatar: profile.avatar,
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error in OAuth callback:", error);
+      res.status(500).json({ error: "OAuth authentication failed" });
+    }
+  });
+
+  // Get user's OAuth connections
+  app.get("/api/oauth/connections", isAuthenticated, async (req: any, res) => {
+    try {
+      const { socialOAuthService } = await import("./services/socialOAuthService");
+      const connections = await socialOAuthService.getUserConnections(req.user.id);
+
+      // Remove sensitive data
+      const sanitizedConnections = connections.map(conn => ({
+        id: conn.id,
+        provider: conn.provider,
+        profileData: conn.profileData,
+        isActive: conn.isActive,
+        createdAt: conn.createdAt,
+      }));
+
+      res.json({ connections: sanitizedConnections });
+    } catch (error) {
+      console.error("Error fetching connections:", error);
+      res.status(500).json({ error: "Failed to fetch connections" });
+    }
+  });
+
+  // Disconnect OAuth connection
+  app.delete("/api/oauth/connections/:provider", isAuthenticated, async (req: any, res) => {
+    try {
+      const { provider } = req.params;
+      const { socialOAuthService } = await import("./services/socialOAuthService");
+
+      const success = await socialOAuthService.disconnect(req.user.id, provider);
+
+      if (success) {
+        res.json({ success: true, message: `Disconnected from ${provider}` });
+      } else {
+        res.status(500).json({ error: "Failed to disconnect" });
+      }
+    } catch (error) {
+      console.error("Error disconnecting:", error);
+      res.status(500).json({ error: "Failed to disconnect connection" });
+    }
+  });
+
+  // Save profile URL spot
+  app.post("/api/profile-urls", isAuthenticated, async (req: any, res) => {
+    try {
+      const { platformId, urlType, url, displayText, iconUrl, sortOrder, isVerified } = req.body;
+
+      if (!platformId || !urlType || !url) {
+        return res.status(400).json({ error: "platformId, urlType, and url are required" });
+      }
+
+      const { socialOAuthService } = await import("./services/socialOAuthService");
+      const urlSpot = await socialOAuthService.saveProfileUrl(
+        req.user.id,
+        platformId,
+        urlType,
+        url,
+        { displayText, iconUrl, sortOrder, isVerified }
+      );
+
+      res.json({ urlSpot });
+    } catch (error) {
+      console.error("Error saving profile URL:", error);
+      res.status(500).json({ error: "Failed to save profile URL" });
+    }
+  });
+
+  // Get profile URLs
+  app.get("/api/profile-urls", isAuthenticated, async (req: any, res) => {
+    try {
+      const { platformId } = req.query;
+      const { socialOAuthService } = await import("./services/socialOAuthService");
+
+      const urls = await socialOAuthService.getProfileUrls(
+        req.user.id,
+        platformId as string | undefined
+      );
+
+      res.json({ urls });
+    } catch (error) {
+      console.error("Error fetching profile URLs:", error);
+      res.status(500).json({ error: "Failed to fetch profile URLs" });
+    }
+  });
+
+  // Delete profile URL
+  app.delete("/api/profile-urls/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { profileUrlSpots } = await import("@shared/schema");
+      await db
+        .update(profileUrlSpots)
+        .set({ isActive: false, updatedAt: new Date() })
+        .where(eq(profileUrlSpots.id, req.params.id));
+
+      res.json({ success: true, message: "Profile URL deleted" });
+    } catch (error) {
+      console.error("Error deleting profile URL:", error);
+      res.status(500).json({ error: "Failed to delete profile URL" });
+    }
+  });
+
+  // ============= DELEGATED ACCESS CONTROL ROUTES =============
+
+  // Grant delegated access
+  app.post("/api/access/grant", isAuthenticated, async (req: any, res) => {
+    try {
+      const { granteeId, platformId, accessType, permissions } = req.body;
+
+      if (!granteeId || !platformId || !accessType) {
+        return res.status(400).json({
+          error: "granteeId, platformId, and accessType are required"
+        });
+      }
+
+      const { delegatedAccessService } = await import("./services/delegatedAccessService");
+      const permission = await delegatedAccessService.grantAccess(
+        req.user.id,
+        granteeId,
+        platformId,
+        accessType,
+        permissions || delegatedAccessService.getPermissionTemplate(accessType)
+      );
+
+      res.json({ permission, message: "Access granted successfully" });
+    } catch (error) {
+      console.error("Error granting access:", error);
+      res.status(500).json({ error: "Failed to grant access" });
+    }
+  });
+
+  // Revoke delegated access
+  app.delete("/api/access/revoke", isAuthenticated, async (req: any, res) => {
+    try {
+      const { granteeId, platformId, accessType } = req.body;
+
+      if (!granteeId || !platformId) {
+        return res.status(400).json({ error: "granteeId and platformId are required" });
+      }
+
+      const { delegatedAccessService } = await import("./services/delegatedAccessService");
+      const success = await delegatedAccessService.revokeAccess(
+        req.user.id,
+        granteeId,
+        platformId,
+        accessType
+      );
+
+      if (success) {
+        res.json({ success: true, message: "Access revoked successfully" });
+      } else {
+        res.status(500).json({ error: "Failed to revoke access" });
+      }
+    } catch (error) {
+      console.error("Error revoking access:", error);
+      res.status(500).json({ error: "Failed to revoke access" });
+    }
+  });
+
+  // Check permission
+  app.post("/api/access/check", isAuthenticated, async (req: any, res) => {
+    try {
+      const { action, resource, platformId } = req.body;
+
+      if (!action || !platformId) {
+        return res.status(400).json({ error: "action and platformId are required" });
+      }
+
+      const { delegatedAccessService } = await import("./services/delegatedAccessService");
+      const result = await delegatedAccessService.checkPermission({
+        granteeId: req.user.id,
+        platformId,
+        action,
+        resource,
+        ip: req.ip,
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.error("Error checking permission:", error);
+      res.status(500).json({ error: "Failed to check permission" });
+    }
+  });
+
+  // Get granted permissions (permissions you've given to others)
+  app.get("/api/access/granted", isAuthenticated, async (req: any, res) => {
+    try {
+      const { platformId } = req.query;
+
+      const { delegatedAccessService } = await import("./services/delegatedAccessService");
+      const permissions = await delegatedAccessService.getGrantedPermissions(
+        req.user.id,
+        platformId as string | undefined
+      );
+
+      res.json({ permissions });
+    } catch (error) {
+      console.error("Error fetching granted permissions:", error);
+      res.status(500).json({ error: "Failed to fetch granted permissions" });
+    }
+  });
+
+  // Get received permissions (permissions others have given you)
+  app.get("/api/access/received", isAuthenticated, async (req: any, res) => {
+    try {
+      const { platformId } = req.query;
+
+      const { delegatedAccessService } = await import("./services/delegatedAccessService");
+      const permissions = await delegatedAccessService.getReceivedPermissions(
+        req.user.id,
+        platformId as string | undefined
+      );
+
+      res.json({ permissions });
+    } catch (error) {
+      console.error("Error fetching received permissions:", error);
+      res.status(500).json({ error: "Failed to fetch received permissions" });
+    }
+  });
+
+  // Update permission
+  app.put("/api/access/permissions/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+
+      const { delegatedAccessService } = await import("./services/delegatedAccessService");
+      const permission = await delegatedAccessService.updatePermission(id, updates);
+
+      res.json({ permission, message: "Permission updated successfully" });
+    } catch (error) {
+      console.error("Error updating permission:", error);
+      res.status(500).json({ error: "Failed to update permission" });
+    }
+  });
+
+  // Get permission templates
+  app.get("/api/access/templates", isAuthenticated, async (req, res) => {
+    try {
+      const { delegatedAccessService } = await import("./services/delegatedAccessService");
+
+      const templates = {
+        admin: delegatedAccessService.getPermissionTemplate("admin"),
+        moderator: delegatedAccessService.getPermissionTemplate("moderator"),
+        creator_delegate: delegatedAccessService.getPermissionTemplate("creator_delegate"),
+      };
+
+      res.json({ templates });
+    } catch (error) {
+      console.error("Error fetching templates:", error);
+      res.status(500).json({ error: "Failed to fetch permission templates" });
+    }
+  });
+
+  // Bulk grant access
+  app.post("/api/access/bulk-grant", isAuthenticated, async (req: any, res) => {
+    try {
+      const { grantees, accessType, permissions } = req.body;
+
+      if (!grantees || !Array.isArray(grantees) || !accessType) {
+        return res.status(400).json({ error: "grantees array and accessType are required" });
+      }
+
+      const { delegatedAccessService } = await import("./services/delegatedAccessService");
+      const result = await delegatedAccessService.bulkGrantAccess(
+        req.user.id,
+        grantees,
+        accessType,
+        permissions || delegatedAccessService.getPermissionTemplate(accessType)
+      );
+
+      res.json({
+        success: true,
+        message: `Granted access to ${result.success} users, ${result.failed} failed`,
+        ...result,
+      });
+    } catch (error) {
+      console.error("Error bulk granting access:", error);
+      res.status(500).json({ error: "Failed to bulk grant access" });
+    }
+  });
+
+  // Get audit log (admin only)
+  app.get("/api/access/audit", requireAdmin, async (req: any, res) => {
+    try {
+      const { grantorId, granteeId, platformId } = req.query;
+
+      const { delegatedAccessService } = await import("./services/delegatedAccessService");
+      const auditLog = await delegatedAccessService.getAuditLog(
+        grantorId as string | undefined,
+        granteeId as string | undefined,
+        platformId as string | undefined
+      );
+
+      res.json({ auditLog });
+    } catch (error) {
+      console.error("Error fetching audit log:", error);
+      res.status(500).json({ error: "Failed to fetch audit log" });
+    }
+  });
+
+  // ============= WORKFLOW BUILDER ROUTES =============
+
+  // Create or update workflow
+  app.post("/api/workflows", isAuthenticated, async (req: any, res) => {
+    try {
+      const { name, category, triggers, actions, conditions, nodeData, edgeData, schedule, timezone } = req.body;
+      const { platformId, workflowId } = req.query;
+
+      if (!name || !platformId || !triggers || !actions) {
+        return res.status(400).json({
+          error: "name, platformId, triggers, and actions are required"
+        });
+      }
+
+      const { workflowService } = await import("./services/workflowService");
+      const workflow = await workflowService.saveWorkflow(
+        req.user.id,
+        platformId as string,
+        { name, category, triggers, actions, conditions, nodeData, edgeData, schedule, timezone },
+        workflowId as string | undefined
+      );
+
+      res.json({ workflow, message: "Workflow saved successfully" });
+    } catch (error) {
+      console.error("Error saving workflow:", error);
+      res.status(500).json({ error: "Failed to save workflow" });
+    }
+  });
+
+  // Get user's workflows
+  app.get("/api/workflows", isAuthenticated, async (req: any, res) => {
+    try {
+      const { platformId } = req.query;
+
+      const { workflowService } = await import("./services/workflowService");
+      const workflows = await workflowService.getUserWorkflows(
+        req.user.id,
+        platformId as string | undefined
+      );
+
+      res.json({ workflows });
+    } catch (error) {
+      console.error("Error fetching workflows:", error);
+      res.status(500).json({ error: "Failed to fetch workflows" });
+    }
+  });
+
+  // Get single workflow
+  app.get("/api/workflows/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { workflowService } = await import("./services/workflowService");
+      const workflow = await workflowService.getWorkflow(req.params.id);
+
+      if (!workflow) {
+        return res.status(404).json({ error: "Workflow not found" });
+      }
+
+      res.json({ workflow });
+    } catch (error) {
+      console.error("Error fetching workflow:", error);
+      res.status(500).json({ error: "Failed to fetch workflow" });
+    }
+  });
+
+  // Delete workflow
+  app.delete("/api/workflows/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { workflowService } = await import("./services/workflowService");
+      const success = await workflowService.deleteWorkflow(req.params.id);
+
+      if (success) {
+        res.json({ success: true, message: "Workflow deleted successfully" });
+      } else {
+        res.status(500).json({ error: "Failed to delete workflow" });
+      }
+    } catch (error) {
+      console.error("Error deleting workflow:", error);
+      res.status(500).json({ error: "Failed to delete workflow" });
+    }
+  });
+
+  // Execute workflow manually
+  app.post("/api/workflows/:id/execute", isAuthenticated, async (req: any, res) => {
+    try {
+      const { context } = req.body;
+
+      const { workflowService } = await import("./services/workflowService");
+      const execution = await workflowService.executeWorkflow(req.params.id, context || {});
+
+      res.json({ execution });
+    } catch (error) {
+      console.error("Error executing workflow:", error);
+      res.status(500).json({ error: "Failed to execute workflow" });
+    }
+  });
+
+  // Get execution history
+  app.get("/api/workflows/:id/executions", isAuthenticated, async (req, res) => {
+    try {
+      const { workflowService } = await import("./services/workflowService");
+      const executions = workflowService.getExecutionHistory(req.params.id);
+
+      res.json({ executions });
+    } catch (error) {
+      console.error("Error fetching execution history:", error);
+      res.status(500).json({ error: "Failed to fetch execution history" });
+    }
+  });
+
+  // ============= CALENDAR SCHEDULING ROUTES =============
+
+  // Schedule content
+  app.post("/api/schedule/content", isAuthenticated, async (req: any, res) => {
+    try {
+      const post = req.body;
+
+      if (!post.platformId || !post.contentType || !post.scheduledFor) {
+        return res.status(400).json({
+          error: "platformId, contentType, and scheduledFor are required"
+        });
+      }
+
+      const { calendarService } = await import("./services/calendarService");
+      const scheduled = await calendarService.scheduleContent(req.user.id, post);
+
+      res.json({ scheduled, message: "Content scheduled successfully" });
+    } catch (error) {
+      console.error("Error scheduling content:", error);
+      res.status(500).json({ error: "Failed to schedule content" });
+    }
+  });
+
+  // Get scheduled content
+  app.get("/api/schedule/content", isAuthenticated, async (req: any, res) => {
+    try {
+      const { platformId, startDate, endDate, status } = req.query;
+
+      const options: any = {};
+      if (platformId) options.platformId = platformId;
+      if (startDate) options.startDate = new Date(startDate as string);
+      if (endDate) options.endDate = new Date(endDate as string);
+      if (status) options.status = status;
+
+      const { calendarService } = await import("./services/calendarService");
+      const scheduled = await calendarService.getScheduledContent(req.user.id, options);
+
+      res.json({ scheduled });
+    } catch (error) {
+      console.error("Error fetching scheduled content:", error);
+      res.status(500).json({ error: "Failed to fetch scheduled content" });
+    }
+  });
+
+  // Update scheduled content
+  app.put("/api/schedule/content/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+
+      const { calendarService } = await import("./services/calendarService");
+      const updated = await calendarService.updateScheduledContent(id, updates);
+
+      res.json({ scheduled: updated, message: "Content updated successfully" });
+    } catch (error) {
+      console.error("Error updating scheduled content:", error);
+      res.status(500).json({ error: "Failed to update scheduled content" });
+    }
+  });
+
+  // Cancel scheduled content
+  app.delete("/api/schedule/content/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { calendarService } = await import("./services/calendarService");
+      const success = await calendarService.cancelScheduledContent(req.params.id);
+
+      if (success) {
+        res.json({ success: true, message: "Content cancelled successfully" });
+      } else {
+        res.status(500).json({ error: "Failed to cancel content" });
+      }
+    } catch (error) {
+      console.error("Error cancelling scheduled content:", error);
+      res.status(500).json({ error: "Failed to cancel content" });
+    }
+  });
+
+  // Connect external calendar
+  app.post("/api/schedule/calendars/connect", isAuthenticated, async (req: any, res) => {
+    try {
+      const integration = req.body;
+
+      if (!integration.provider || !integration.accountId) {
+        return res.status(400).json({ error: "provider and accountId are required" });
+      }
+
+      const { calendarService } = await import("./services/calendarService");
+      const connected = await calendarService.connectCalendar(req.user.id, integration);
+
+      res.json({ integration: connected, message: "Calendar connected successfully" });
+    } catch (error) {
+      console.error("Error connecting calendar:", error);
+      res.status(500).json({ error: "Failed to connect calendar" });
+    }
+  });
+
+  // Get calendar integrations
+  app.get("/api/schedule/calendars", isAuthenticated, async (req: any, res) => {
+    try {
+      const { calendarService } = await import("./services/calendarService");
+      const integrations = await calendarService.getCalendarIntegrations(req.user.id);
+
+      res.json({ integrations });
+    } catch (error) {
+      console.error("Error fetching calendar integrations:", error);
+      res.status(500).json({ error: "Failed to fetch calendar integrations" });
+    }
+  });
+
+  // Disconnect calendar
+  app.delete("/api/schedule/calendars/:provider", isAuthenticated, async (req: any, res) => {
+    try {
+      const { provider } = req.params;
+
+      const { calendarService } = await import("./services/calendarService");
+      const success = await calendarService.disconnectCalendar(req.user.id, provider);
+
+      if (success) {
+        res.json({ success: true, message: "Calendar disconnected successfully" });
+      } else {
+        res.status(500).json({ error: "Failed to disconnect calendar" });
+      }
+    } catch (error) {
+      console.error("Error disconnecting calendar:", error);
+      res.status(500).json({ error: "Failed to disconnect calendar" });
     }
   });
 
