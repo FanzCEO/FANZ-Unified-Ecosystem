@@ -13,7 +13,7 @@
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { db } from '../db/database.js';
+import { db } from "../db/index.js";
 import { transcodingJobs, mediaAssets, type NewTranscodingJob } from '../db/mediaSchema.js';
 import { fanzForensicService } from './FanzForensicService.js';
 import { eq, and } from 'drizzle-orm';

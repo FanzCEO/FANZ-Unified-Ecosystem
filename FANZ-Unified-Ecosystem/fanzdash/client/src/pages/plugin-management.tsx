@@ -104,8 +104,22 @@ export default function PluginManagement() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedPlugin, setSelectedPlugin] = useState<Plugin | null>(null);
 
-  // Mock installed plugins based on Fanz ecosystem inventory
-  const installedPlugins: Plugin[] = [
+  // Fetch installed plugins from API
+  const { data: installedPlugins = [], isLoading: pluginsLoading } = useQuery<Plugin[]>({
+    queryKey: ["/api/admin/plugins"],
+    refetchInterval: 30000,
+  });
+
+  // Fetch plugin store from API
+  const { data: pluginStore = [], isLoading: storeLoading } = useQuery<PluginStore[]>({
+    queryKey: ["/api/admin/plugins/store"],
+    refetchInterval: 60000,
+  });
+
+  const isLoading = pluginsLoading || storeLoading;
+
+  // Removed mock data - now using API data above
+  const _installedPlugins_removed: Plugin[] = [
     {
       id: "fanzos_api_gateway",
       name: "FanzOS API Gateway",
@@ -287,8 +301,8 @@ export default function PluginManagement() {
     },
   ];
 
-  // Mock plugin store
-  const storePlugins: PluginStore[] = [
+  // Removed mock data - now fetching from API
+  const _storePlugins_removed: PluginStore[] = [
     {
       id: "stripe_advanced",
       name: "Stripe Advanced Integration",
@@ -361,7 +375,7 @@ export default function PluginManagement() {
       apiRequest(`/api/plugins/install`, "POST", { pluginId }),
     onSuccess: (_, pluginId) => {
       queryClient.invalidateQueries({ queryKey: ["/api/plugins"] });
-      const plugin = storePlugins.find((p) => p.id === pluginId);
+      const plugin = pluginStore.find((p) => p.id === pluginId);
       toast({
         title: "Plugin installed successfully",
         description: `${plugin?.name} has been installed and is ready to configure`,
@@ -717,7 +731,7 @@ export default function PluginManagement() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {storePlugins.map((plugin) => (
+                  {pluginStore.map((plugin) => (
                     <Card key={plugin.id} className="bg-gray-800/50">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-2">

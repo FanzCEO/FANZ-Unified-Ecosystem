@@ -6,7 +6,7 @@
  */
 
 import { Request, Response } from 'express';
-import { db } from '../../db/database.js';
+import { db } from "../../db/index.js";
 import { screenCaptureViolations, mobileDeviceRegistrations, type NewScreenCaptureViolation } from '../../db/mediaSchema.js';
 import { eq, and, gte, desc } from 'drizzle-orm';
 

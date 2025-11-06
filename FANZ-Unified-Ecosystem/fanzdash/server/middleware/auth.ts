@@ -188,6 +188,54 @@ export function requireRole(...allowedRoles: string[]) {
  * Clearance level authorization
  * Requires user to have minimum clearance level
  */
+/**
+ * CRITICAL SECURITY: Super Admin Only Access
+ *
+ * REQUIRED for all endpoints handling:
+ * - CSAM evidence and legal hold data
+ * - Law enforcement collaboration data
+ * - Highly sensitive compliance materials
+ *
+ * Only users with role="super_admin" can access these endpoints.
+ * All access attempts are logged for audit trail compliance.
+ */
+export function requireSuperAdmin(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  if (!req.user) {
+    authLogger.warn('Super Admin check failed - no user', {
+      path: req.path,
+      ip: req.ip,
+      attempt: 'UNAUTHORIZED_ACCESS'
+    });
+    res.status(401).json({ error: 'Authentication required' });
+    return;
+  }
+
+  const userRole = req.user.role || 'user';
+
+  if (userRole !== 'super_admin') {
+    authLogger.critical('Super Admin access denied', {
+      userId: req.user.id,
+      userRole,
+      path: req.path,
+      ip: req.ip,
+      timestamp: new Date().toISOString(),
+      severity: 'CRITICAL'
+    });
+    res.status(403).json({ error: 'Super Admin access required - This incident has been logged' });
+    return;
+  }
+
+  authLogger.auth('super-admin-access', req.user.id, true, {
+    path: req.path,
+    timestamp: new Date().toISOString()
+  });
+  next();
+}
+
 export function requireClearance(minLevel: number) {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {

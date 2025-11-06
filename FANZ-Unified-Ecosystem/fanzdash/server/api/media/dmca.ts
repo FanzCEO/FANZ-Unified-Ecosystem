@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express';
 import { dmcaService } from '../../services/DMCAService.js';
-import { db } from '../../db/database.js';
+import { db } from '../../db/index.js';
 import { dmcaTakedownCases } from '../../db/mediaSchema.js';
 import { eq, desc, and, gte } from 'drizzle-orm';
 

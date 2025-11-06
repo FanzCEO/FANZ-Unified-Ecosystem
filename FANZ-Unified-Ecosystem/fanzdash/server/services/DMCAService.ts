@@ -9,7 +9,7 @@
  * - Provide dashboard for monitoring all DMCA cases
  */
 
-import { db } from '../db/database.js';
+import { db } from "../db/index.js";
 import {
   dmcaTakedownCases,
   forensicWatermarks,

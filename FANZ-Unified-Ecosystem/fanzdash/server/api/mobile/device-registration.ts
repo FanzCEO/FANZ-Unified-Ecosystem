@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express';
 import { createHash } from 'crypto';
-import { db } from '../../db/database.js';
+import { db } from "../../db/index.js";
 import { mobileDeviceRegistrations, type NewMobileDeviceRegistration } from '../../db/mediaSchema.js';
 import { eq, and } from 'drizzle-orm';
 

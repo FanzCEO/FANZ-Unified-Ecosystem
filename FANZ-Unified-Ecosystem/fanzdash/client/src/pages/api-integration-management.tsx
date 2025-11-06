@@ -112,6 +112,12 @@ export default function APIIntegrationManagement() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
 
+  // Fetch webhook endpoints from API
+  const { data: webhookEndpoints = [] } = useQuery<WebhookEndpoint[]>({
+    queryKey: ["/api/webhooks"],
+    refetchInterval: 30000,
+  });
+
   // Comprehensive API integrations for adult industry, media, communications, and live streaming
   const apiIntegrations: APIIntegration[] = [
     // === AI & CONTENT ANALYSIS ===
@@ -1219,8 +1225,8 @@ export default function APIIntegrationManagement() {
     },
   ];
 
-  // Mock webhook endpoints
-  const webhookEndpoints: WebhookEndpoint[] = [
+  // Removed mock data - now fetching from API
+  const _webhookEndpoints_removed: WebhookEndpoint[] = [
     {
       id: "ccbill_webhook",
       name: "CCBill Payment Webhook",

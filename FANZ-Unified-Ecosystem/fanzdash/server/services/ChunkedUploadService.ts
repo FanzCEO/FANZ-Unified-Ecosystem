@@ -13,7 +13,7 @@
  */
 
 import { createHash } from 'crypto';
-import { db } from '../db/database.js';
+import { db } from "../db/index.js";
 import { mediaAssets, type NewMediaAsset } from '../db/mediaSchema.js';
 import { fanzForensicService } from './FanzForensicService.js';
 

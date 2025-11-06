@@ -18,7 +18,7 @@
  * - Royalty: All 16 platforms
  */
 
-import { db } from '../db/database.js';
+import { db } from "../db/index.js";
 import { mediaAssets, type NewMediaAsset } from '../db/mediaSchema.js';
 import { chunkedUploadService } from './ChunkedUploadService.js';
 import { fanzForensicService } from './FanzForensicService.js';

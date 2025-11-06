@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'crypto';
-import { db } from '../db/database.js';
+import { db } from "../db/index.js";
 import { forensicWatermarks, mediaAssets, type NewForensicWatermark } from '../db/mediaSchema.js';
 import { eq } from 'drizzle-orm';
 
