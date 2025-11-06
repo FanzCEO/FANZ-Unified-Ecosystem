@@ -69,7 +69,8 @@
     "stripe": "^19.1.0",
     "uuid": "^13.0.0",
     "web3": "^4.16.0",
-    "winston": "^3.18.3"
+    "winston": "^3.18.3",
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "@babel/core": "7.28.4",
@@ -88,7 +89,9 @@
     "supertest": "^7.1.4",
     "webpack": "5.102.1",
     "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.2"
+    "webpack-dev-server": "^5.2.2",
+    "@types/pg": "^8.10.9",
+    "@types/node": "^20.10.0"
   },
   "repository": {
     "type": "git",

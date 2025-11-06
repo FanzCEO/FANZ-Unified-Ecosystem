@@ -24,6 +24,7 @@ import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import transactionRoutes from './routes/transactions.js';
 import integrationRoutes from './routes/integrations.js';
+import discreetRoutes from './routes/discreet.js';
 import websocketHandler from './websocket/handler.js';
 
 // Import middleware
@@ -136,6 +137,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/compliance', complianceRoutes);
 app.use('/api/blockchain', blockchainRoutes);
 app.use('/api/integrations', integrationRoutes);
+app.use('/api/discreet', discreetRoutes); // FanzDiscreet Privacy Cards
 
 // WebSocket handling
 websocketHandler(io);
@@ -175,6 +177,10 @@ app.get('/api/docs', (req, res) => {
       'Blockchain Integration': {
         endpoints: ['/api/blockchain/*'],
         description: 'Transparent transaction logging and verification'
+      },
+      'FanzDiscreet Privacy Cards': {
+        endpoints: ['/api/discreet/*'],
+        description: 'Privacy-focused prepaid cards with discreet billing via CCBill'
       },
       'Real-time Streaming': {
         protocol: 'WebSocket',
