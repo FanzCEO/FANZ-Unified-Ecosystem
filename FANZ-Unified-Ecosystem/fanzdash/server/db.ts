@@ -36,8 +36,34 @@ if (!isValidUrl) {
     end: () => Promise.resolve()
   } as any;
   
+  // Create a chainable mock for Drizzle ORM
+  const createChainableMock = () => {
+    const chainMethods = {
+      from: () => chainMethods,
+      where: () => chainMethods,
+      set: () => chainMethods,
+      values: () => chainMethods,
+      returning: () => chainMethods,
+      limit: () => chainMethods,
+      offset: () => chainMethods,
+      orderBy: () => chainMethods,
+      leftJoin: () => chainMethods,
+      rightJoin: () => chainMethods,
+      innerJoin: () => chainMethods,
+      execute: () => Promise.resolve([]),
+      then: (resolve: (value: any) => any) => Promise.resolve([]).then(resolve),
+      catch: (reject: (reason: any) => any) => Promise.resolve([]).catch(reject),
+    };
+    return chainMethods;
+  };
+
   db = new Proxy({}, {
-    get() {
+    get(target, prop) {
+      // Return chainable methods for common Drizzle operations
+      if (prop === 'select' || prop === 'insert' || prop === 'update' || prop === 'delete') {
+        return () => createChainableMock();
+      }
+      // Return a function for any other property
       return () => Promise.resolve([]);
     }
   }) as any;

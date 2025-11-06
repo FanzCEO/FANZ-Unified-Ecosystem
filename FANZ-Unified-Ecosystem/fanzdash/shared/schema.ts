@@ -599,6 +599,29 @@ export const aiModels = pgTable("ai_models", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// HuggingFace AI Models Configuration
+export const huggingfaceModels = pgTable("huggingface_models", {
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  modelId: varchar("model_id").notNull().unique(), // HuggingFace model identifier
+  task: varchar("task").notNull(), // 'text-generation', 'text-classification', 'image-classification', etc.
+  provider: varchar("provider").default("huggingface"), // 'huggingface', 'huggingface-inference'
+  apiEndpoint: text("api_endpoint"), // Custom endpoint or default to HF Inference API
+  apiKey: text("api_key"), // API key for authentication
+  parameters: jsonb("parameters").default("{}"), // Model-specific parameters (temperature, max_tokens, etc.)
+  contentFiltering: jsonb("content_filtering").default("{}"), // Content moderation settings
+  rateLimiting: jsonb("rate_limiting").default("{}"), // Rate limit configuration
+  isActive: boolean("is_active").default(true),
+  isPremium: boolean("is_premium").default(false), // Premium/paid model flag
+  usageStats: jsonb("usage_stats").default("{}"), // Usage tracking
+  lastUsed: timestamp("last_used"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // VR/WebXR Integration
 export const vrSessions = pgTable("vr_sessions", {
   id: varchar("id")
@@ -1447,6 +1470,13 @@ export const insertAIModelSchema = createInsertSchema(aiModels).omit({
   updatedAt: true,
 });
 
+export const insertHuggingFaceModelSchema = createInsertSchema(huggingfaceModels).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  lastUsed: true,
+});
+
 export const insertVRSessionSchema = createInsertSchema(vrSessions).omit({
   id: true,
   createdAt: true,
@@ -1733,6 +1763,8 @@ export type AICompanion = typeof aiCompanions.$inferSelect;
 export type InsertAICompanion = z.infer<typeof insertAICompanionSchema>;
 export type AIModel = typeof aiModels.$inferSelect;
 export type InsertAIModel = z.infer<typeof insertAIModelSchema>;
+export type HuggingFaceModel = typeof huggingfaceModels.$inferSelect;
+export type InsertHuggingFaceModel = z.infer<typeof insertHuggingFaceModelSchema>;
 export type VRSession = typeof vrSessions.$inferSelect;
 export type InsertVRSession = z.infer<typeof insertVRSessionSchema>;
 export type WebRTCRoom = typeof webrtcRooms.$inferSelect;
