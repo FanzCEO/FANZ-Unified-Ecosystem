@@ -648,7 +648,6 @@ export interface IStorage {
   // Financial operations
   getTransaction(transactionId: string): Promise<any>;
   updateTransaction(transactionId: string, updates: any): Promise<void>;
-  getUserTransactions(userId: string, options: any): Promise<any[]>;
   getUserTransactionCount(userId: string, options: any): Promise<number>;
   getTransactionsByDateRange(startDate: Date, endDate: Date, providerId?: string): Promise<any[]>;
   getTransactionsByFilters(filters: any): Promise<any[]>;
@@ -4155,10 +4154,6 @@ export class DatabaseStorage implements IStorage {
 
   async updateTransaction(transactionId: string, updates: any): Promise<void> {
     console.log('💳 Updated transaction:', transactionId, updates);
-  }
-
-  async getUserTransactions(userId: string, options: any): Promise<any[]> {
-    return []; // Mock implementation
   }
 
   async getUserTransactionCount(userId: string, options: any): Promise<number> {
