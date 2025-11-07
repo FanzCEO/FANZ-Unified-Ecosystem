@@ -23,7 +23,7 @@ const adminRateLimit = rateLimit({
 });
 
 // Middleware to check if user is authenticated
-const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const isAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Authentication required' });
@@ -79,7 +79,7 @@ router.get('/health', (req, res) => {
 // Check compliance for specific context
 router.post('/check',
   complianceRateLimit,
-  requireAuth,
+  isAuthenticated,
   [
     body('platform').isString().notEmpty().withMessage('Platform is required'),
     body('userId').optional().isString(),
@@ -132,7 +132,7 @@ router.post('/check',
 // Get violations with filtering
 router.get('/violations',
   complianceRateLimit,
-  requireAuth,
+  isAuthenticated,
   [
     query('platform').optional().isString(),
     query('severity').optional().isString(),
@@ -188,7 +188,7 @@ router.get('/violations',
 // Get specific violation details
 router.get('/violations/:id',
   complianceRateLimit,
-  requireAuth,
+  isAuthenticated,
   param('id').isString().notEmpty(),
   handleValidationErrors,
   (req, res) => {
@@ -221,7 +221,7 @@ router.get('/violations/:id',
 // Get audit log
 router.get('/audit',
   complianceRateLimit,
-  requireAuth,
+  isAuthenticated,
   [
     query('type').optional().isString(),
     query('platform').optional().isString(),
@@ -272,7 +272,7 @@ router.get('/audit',
 // Record age verification
 router.post('/age-verification',
   complianceRateLimit,
-  requireAuth,
+  isAuthenticated,
   [
     body('userId').isString().notEmpty().withMessage('User ID is required'),
     body('method').isIn(['document', 'database', 'biometric', 'thirdparty']).withMessage('Valid method is required'),
@@ -327,7 +327,7 @@ router.post('/age-verification',
 // Create GDPR request
 router.post('/gdpr-request',
   complianceRateLimit,
-  requireAuth,
+  isAuthenticated,
   [
     body('userId').isString().notEmpty().withMessage('User ID is required'),
     body('type').isIn(['access', 'portability', 'rectification', 'erasure', 'restriction', 'objection']).withMessage('Valid GDPR request type is required'),
@@ -375,7 +375,7 @@ router.post('/gdpr-request',
 // Get compliance statistics
 router.get('/stats',
   complianceRateLimit,
-  requireAuth,
+  isAuthenticated,
   (req, res) => {
     try {
       const stats = complianceMonitor.getComplianceStats();

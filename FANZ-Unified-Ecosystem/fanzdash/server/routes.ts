@@ -102,6 +102,9 @@ import paymentAdminRoutes from "./routes/paymentAdmin";
 import customContentRoutes from "./routes/customContentRequests";
 import mediaProtectionRoutes from "./routes/mediaProtection";
 import legalRoutes from "./routes/legal";
+import crmRoutes from "./routes/crm";
+import erpRoutes from "./routes/erp";
+import hrRoutes from "./routes/hr";
 
 // Store connected WebSocket clients
 let connectedModerators: Set<WebSocket> = new Set();
@@ -331,6 +334,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount Legal & Compliance routes (CSAM legal holds - SUPER ADMIN ONLY)
   app.use('/api/legal', legalRoutes);
+
+  // Mount CRM routes (Customer Relationship Management with file uploads)
+  app.use('/api/crm', crmRoutes);
+
+  // Mount ERP routes (Enterprise Resource Planning with file uploads)
+  app.use('/api/erp', erpRoutes);
+
+  // Mount HR routes (Human Resources with recruitment, payroll, performance)
+  app.use('/api/hr', hrRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {

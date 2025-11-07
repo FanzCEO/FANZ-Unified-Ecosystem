@@ -69,7 +69,7 @@ const checkValidation = (req: express.Request, res: express.Response, next: expr
 };
 
 // Basic authentication middleware (in production, use proper JWT validation)
-const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const isAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
@@ -97,7 +97,7 @@ const requireAdmin = (req: express.Request, res: express.Response, next: express
 // KYC Document Management Routes
 
 // Store KYC document
-router.post('/kyc', vaultLimiter, requireAuth, validateKYC, checkValidation, async (req, res) => {
+router.post('/kyc', vaultLimiter, isAuthenticated, validateKYC, checkValidation, async (req, res) => {
   try {
     const { userId, kycData, accessorId } = req.body;
     
@@ -132,7 +132,7 @@ router.post('/kyc', vaultLimiter, requireAuth, validateKYC, checkValidation, asy
 });
 
 // Retrieve KYC document
-router.get('/kyc/:recordId', vaultLimiter, requireAuth, async (req, res) => {
+router.get('/kyc/:recordId', vaultLimiter, isAuthenticated, async (req, res) => {
   try {
     const { recordId } = req.params;
     const { accessorId, reason } = req.query;
@@ -182,7 +182,7 @@ router.get('/kyc/:recordId', vaultLimiter, requireAuth, async (req, res) => {
 // Age Verification Routes
 
 // Store age verification
-router.post('/age-verification', vaultLimiter, requireAuth, validateAgeVerification, checkValidation, async (req, res) => {
+router.post('/age-verification', vaultLimiter, isAuthenticated, validateAgeVerification, checkValidation, async (req, res) => {
   try {
     const { userId, ageData, accessorId } = req.body;
     
@@ -223,7 +223,7 @@ router.post('/age-verification', vaultLimiter, requireAuth, validateAgeVerificat
 // 2257 Compliance Record Routes
 
 // Store 2257 compliance record
-router.post('/2257-record', vaultLimiter, requireAuth, validate2257Record, checkValidation, async (req, res) => {
+router.post('/2257-record', vaultLimiter, isAuthenticated, validate2257Record, checkValidation, async (req, res) => {
   try {
     const { userId, complianceData, accessorId } = req.body;
     
@@ -264,7 +264,7 @@ router.post('/2257-record', vaultLimiter, requireAuth, validate2257Record, check
 });
 
 // Generic record retrieval
-router.get('/record/:recordId', vaultLimiter, requireAuth, async (req, res) => {
+router.get('/record/:recordId', vaultLimiter, isAuthenticated, async (req, res) => {
   try {
     const { recordId } = req.params;
     const { accessorId, reason } = req.query;

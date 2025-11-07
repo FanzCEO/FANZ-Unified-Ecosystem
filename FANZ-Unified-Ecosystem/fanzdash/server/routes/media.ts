@@ -72,7 +72,7 @@ const checkValidation = (req: express.Request, res: express.Response, next: expr
   next();
 };
 
-const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const isAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
@@ -98,7 +98,7 @@ const requireModerator = (req: express.Request, res: express.Response, next: exp
 // Media Upload and Management Routes
 
 // Upload media asset
-router.post('/upload', mediaLimiter, requireAuth, upload.single('media'), async (req, res) => {
+router.post('/upload', mediaLimiter, isAuthenticated, upload.single('media'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -160,7 +160,7 @@ router.post('/upload', mediaLimiter, requireAuth, upload.single('media'), async 
 });
 
 // Get media asset details
-router.get('/asset/:assetId', generalLimiter, requireAuth, async (req, res) => {
+router.get('/asset/:assetId', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     const { assetId } = req.params;
     const asset = await enhancedMediaHub.getAsset(assetId);
@@ -201,7 +201,7 @@ router.get('/asset/:assetId', generalLimiter, requireAuth, async (req, res) => {
 });
 
 // Get user's media assets
-router.get('/user/:userId/assets', generalLimiter, requireAuth, async (req, res) => {
+router.get('/user/:userId/assets', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     const { userId } = req.params;
     const { limit = 20, offset = 0, platform } = req.query;
@@ -252,7 +252,7 @@ router.get('/user/:userId/assets', generalLimiter, requireAuth, async (req, res)
 // Cross-Platform Synchronization Routes
 
 // Sync media to multiple platforms
-router.post('/sync', generalLimiter, requireAuth, validateSyncRequest, checkValidation, async (req, res) => {
+router.post('/sync', generalLimiter, isAuthenticated, validateSyncRequest, checkValidation, async (req, res) => {
   try {
     const { assetId, targetPlatforms, userId } = req.body;
 
@@ -286,7 +286,7 @@ router.post('/sync', generalLimiter, requireAuth, validateSyncRequest, checkVali
 });
 
 // Get sync job status
-router.get('/sync/:syncJobId/status', generalLimiter, requireAuth, async (req, res) => {
+router.get('/sync/:syncJobId/status', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     const { syncJobId } = req.params;
     const syncJob = await enhancedMediaHub.getSyncJobStatus(syncJobId);
@@ -398,7 +398,7 @@ router.post('/moderation/action', generalLimiter, requireModerator, validateMode
 // Analytics and Statistics Routes
 
 // Get MediaHub statistics
-router.get('/stats', generalLimiter, requireAuth, async (req, res) => {
+router.get('/stats', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     const stats = await enhancedMediaHub.getMediaHubStats();
 
@@ -419,7 +419,7 @@ router.get('/stats', generalLimiter, requireAuth, async (req, res) => {
 });
 
 // Platform status and connectivity
-router.get('/platforms/status', generalLimiter, requireAuth, async (req, res) => {
+router.get('/platforms/status', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     // Mock platform status - in production, check actual connectivity
     const platformStatus = {

@@ -19,7 +19,7 @@ const adminLimiter = rateLimit({
 });
 
 // Middleware
-const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const isAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
@@ -81,7 +81,7 @@ const validateRoutingRule = [
 // Platform Management Routes
 
 // Get all platforms
-router.get('/platforms', generalLimiter, requireAuth, (req, res) => {
+router.get('/platforms', generalLimiter, isAuthenticated, (req, res) => {
   try {
     const platforms = domainRouter.getPlatforms();
     res.json({
@@ -101,7 +101,7 @@ router.get('/platforms', generalLimiter, requireAuth, (req, res) => {
 });
 
 // Get platform by ID
-router.get('/platforms/:id', generalLimiter, requireAuth, (req, res) => {
+router.get('/platforms/:id', generalLimiter, isAuthenticated, (req, res) => {
   try {
     const { id } = req.params;
     const platform = domainRouter.getPlatform(id);
@@ -130,7 +130,7 @@ router.get('/platforms/:id', generalLimiter, requireAuth, (req, res) => {
 });
 
 // Get platform by domain
-router.get('/platforms/domain/:domain', generalLimiter, requireAuth, (req, res) => {
+router.get('/platforms/domain/:domain', generalLimiter, isAuthenticated, (req, res) => {
   try {
     const { domain } = req.params;
     const platform = domainRouter.getPlatformByDomain(domain);
@@ -238,7 +238,7 @@ router.delete('/platforms/:id', adminLimiter, requireAdmin, (req, res) => {
 // Routing Rules Management
 
 // Get all routing rules
-router.get('/rules', generalLimiter, requireAuth, (req, res) => {
+router.get('/rules', generalLimiter, isAuthenticated, (req, res) => {
   try {
     const rules = domainRouter.getRoutingRules();
     res.json({
@@ -294,7 +294,7 @@ router.post('/rules', adminLimiter, requireAdmin, validateRoutingRule, checkVali
 // Analytics and Monitoring
 
 // Get routing analytics
-router.get('/analytics', generalLimiter, requireAuth, (req, res) => {
+router.get('/analytics', generalLimiter, isAuthenticated, (req, res) => {
   try {
     const analytics = domainRouter.getAnalytics();
     const systemStatus = domainRouter.getSystemStatus();
@@ -316,7 +316,7 @@ router.get('/analytics', generalLimiter, requireAuth, (req, res) => {
 });
 
 // Test domain resolution
-router.post('/test-resolve', generalLimiter, requireAuth, (req, res) => {
+router.post('/test-resolve', generalLimiter, isAuthenticated, (req, res) => {
   try {
     const { domain, path = '/', headers = {} } = req.body;
 

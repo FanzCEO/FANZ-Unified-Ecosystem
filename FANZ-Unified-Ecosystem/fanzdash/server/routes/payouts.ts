@@ -69,7 +69,7 @@ const checkValidation = (req: express.Request, res: express.Response, next: expr
   next();
 };
 
-const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const isAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
@@ -95,7 +95,7 @@ const requireAdmin = (req: express.Request, res: express.Response, next: express
 // Creator Management Routes
 
 // Register new creator
-router.post('/creators/register', generalLimiter, requireAuth, validateCreatorRegistration, checkValidation, async (req, res) => {
+router.post('/creators/register', generalLimiter, isAuthenticated, validateCreatorRegistration, checkValidation, async (req, res) => {
   try {
     const { userId, displayName, platforms, taxInfo, preferences, verification } = req.body;
 
@@ -134,7 +134,7 @@ router.post('/creators/register', generalLimiter, requireAuth, validateCreatorRe
 });
 
 // Get creator profile
-router.get('/creators/:creatorId', generalLimiter, requireAuth, async (req, res) => {
+router.get('/creators/:creatorId', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     const { creatorId } = req.params;
     const creator = await creatorPayoutSystem.getCreator(creatorId);
@@ -178,7 +178,7 @@ router.get('/creators/:creatorId', generalLimiter, requireAuth, async (req, res)
 });
 
 // Get creator by user ID
-router.get('/creators/user/:userId', generalLimiter, requireAuth, async (req, res) => {
+router.get('/creators/user/:userId', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     const { userId } = req.params;
     const creator = await creatorPayoutSystem.getCreatorByUserId(userId);
@@ -218,7 +218,7 @@ router.get('/creators/user/:userId', generalLimiter, requireAuth, async (req, re
 // Payout Method Management Routes
 
 // Add payout method
-router.post('/creators/:creatorId/payout-methods', generalLimiter, requireAuth, validatePayoutMethod, checkValidation, async (req, res) => {
+router.post('/creators/:creatorId/payout-methods', generalLimiter, isAuthenticated, validatePayoutMethod, checkValidation, async (req, res) => {
   try {
     const { creatorId } = req.params;
     const { type, displayName, accountDetails, isDefault } = req.body;
@@ -260,7 +260,7 @@ router.post('/creators/:creatorId/payout-methods', generalLimiter, requireAuth, 
 // Revenue Tracking Routes
 
 // Record revenue entry
-router.post('/revenue/record', generalLimiter, requireAuth, validateRevenueEntry, checkValidation, async (req, res) => {
+router.post('/revenue/record', generalLimiter, isAuthenticated, validateRevenueEntry, checkValidation, async (req, res) => {
   try {
     const { creatorId, platform, amount, type, sourceUserId, sourceTransactionId, fees, metadata } = req.body;
 
@@ -304,7 +304,7 @@ router.post('/revenue/record', generalLimiter, requireAuth, validateRevenueEntry
 });
 
 // Get creator earnings
-router.get('/creators/:creatorId/earnings', generalLimiter, requireAuth, async (req, res) => {
+router.get('/creators/:creatorId/earnings', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     const { creatorId } = req.params;
     const earnings = await creatorPayoutSystem.getCreatorEarnings(creatorId);
@@ -336,7 +336,7 @@ router.get('/creators/:creatorId/earnings', generalLimiter, requireAuth, async (
 // Payout Request Routes
 
 // Request payout
-router.post('/request', payoutLimiter, requireAuth, validatePayoutRequest, checkValidation, async (req, res) => {
+router.post('/request', payoutLimiter, isAuthenticated, validatePayoutRequest, checkValidation, async (req, res) => {
   try {
     const { creatorId, amount, payoutMethodId } = req.body;
     const requestedBy = req.headers['x-user-id'] as string || 'api_user';
@@ -371,7 +371,7 @@ router.post('/request', payoutLimiter, requireAuth, validatePayoutRequest, check
 });
 
 // Get payout request status
-router.get('/request/:payoutId', generalLimiter, requireAuth, async (req, res) => {
+router.get('/request/:payoutId', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     const { payoutId } = req.params;
     const payoutRequest = await creatorPayoutSystem.getPayoutRequest(payoutId);
@@ -401,7 +401,7 @@ router.get('/request/:payoutId', generalLimiter, requireAuth, async (req, res) =
 });
 
 // Get payout history
-router.get('/creators/:creatorId/history', generalLimiter, requireAuth, async (req, res) => {
+router.get('/creators/:creatorId/history', generalLimiter, isAuthenticated, async (req, res) => {
   try {
     const { creatorId } = req.params;
     const { limit = 20 } = req.query;
@@ -576,7 +576,7 @@ router.get('/methods', generalLimiter, async (req, res) => {
 // ============= PAYOUT AUTOMATION SYSTEM =============
 
 // Get automation system statistics
-router.get('/automation/stats', generalLimiter, requireAuth, (req, res) => {
+router.get('/automation/stats', generalLimiter, isAuthenticated, (req, res) => {
   try {
     const stats = payoutAutomationSystem.getSystemStats();
     res.json({
@@ -597,7 +597,7 @@ router.get('/automation/stats', generalLimiter, requireAuth, (req, res) => {
 // Record creator revenue with automated payout evaluation
 router.post('/automation/revenue', 
   generalLimiter, 
-  requireAuth,
+  isAuthenticated,
   [
     body('creatorId').isString().notEmpty().withMessage('Creator ID is required'),
     body('transactionId').isString().notEmpty().withMessage('Transaction ID is required'),
@@ -667,7 +667,7 @@ router.post('/automation/revenue',
 // Add automated payout method with verification
 router.post('/automation/payout-methods',
   generalLimiter,
-  requireAuth,
+  isAuthenticated,
   [
     body('creatorId').isString().notEmpty().withMessage('Creator ID is required'),
     body('type').isIn(['paxum', 'epayservice', 'wise', 'payoneer', 'crypto', 'ach', 'sepa', 'wire', 'check']).withMessage('Valid payout method type required'),
@@ -730,7 +730,7 @@ router.post('/automation/payout-methods',
 // Create manual payout request
 router.post('/automation/payout-request',
   payoutLimiter,
-  requireAuth,
+  isAuthenticated,
   [
     body('creatorId').isString().notEmpty().withMessage('Creator ID is required'),
     body('payoutMethodId').isString().notEmpty().withMessage('Payout method ID is required'),
@@ -810,7 +810,7 @@ router.post('/automation/payout-request',
 );
 
 // Get creator ledger details
-router.get('/automation/ledger/:creatorId', generalLimiter, requireAuth, (req, res) => {
+router.get('/automation/ledger/:creatorId', generalLimiter, isAuthenticated, (req, res) => {
   try {
     const { creatorId } = req.params;
     const ledger = payoutAutomationSystem.getCreatorLedger(creatorId);
@@ -840,7 +840,7 @@ router.get('/automation/ledger/:creatorId', generalLimiter, requireAuth, (req, r
 });
 
 // Get payout requests for creator
-router.get('/automation/payout-requests/:creatorId', generalLimiter, requireAuth, (req, res) => {
+router.get('/automation/payout-requests/:creatorId', generalLimiter, isAuthenticated, (req, res) => {
   try {
     const { creatorId } = req.params;
     const { status } = req.query;
@@ -868,7 +868,7 @@ router.get('/automation/payout-requests/:creatorId', generalLimiter, requireAuth
 });
 
 // Get payout batches (admin only)
-router.get('/automation/batches', adminLimiter, requireAuth, requireAdmin, (req, res) => {
+router.get('/automation/batches', adminLimiter, isAuthenticated, requireAdmin, (req, res) => {
   try {
     const { status } = req.query;
     const batches = payoutAutomationSystem.getPayoutBatches(status as string);
@@ -891,7 +891,7 @@ router.get('/automation/batches', adminLimiter, requireAuth, requireAdmin, (req,
 });
 
 // Stop/start automation system (admin only)
-router.post('/automation/control/:action', adminLimiter, requireAuth, requireAdmin, (req, res) => {
+router.post('/automation/control/:action', adminLimiter, isAuthenticated, requireAdmin, (req, res) => {
   try {
     const { action } = req.params;
     

@@ -6,7 +6,7 @@ const router = express.Router();
 const paymentOrchestrator = new PaymentOrchestrator();
 
 // Middleware for auth (basic implementation)
-const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const isAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const apiKey = req.headers['x-api-key'] || req.headers['authorization'];
   
   if (!apiKey) {
@@ -23,7 +23,7 @@ const requireAuth = (req: express.Request, res: express.Response, next: express.
 };
 
 // Payment processing endpoint
-router.post('/process', requireAuth, async (req, res) => {
+router.post('/process', isAuthenticated, async (req, res) => {
   try {
     const {
       userId,
@@ -95,7 +95,7 @@ router.post('/process', requireAuth, async (req, res) => {
 });
 
 // Get available payment gateways
-router.get('/gateways', requireAuth, (req, res) => {
+router.get('/gateways', isAuthenticated, (req, res) => {
   try {
     const { region, type } = req.query;
     
@@ -141,7 +141,7 @@ router.get('/gateways', requireAuth, (req, res) => {
 });
 
 // Get available payout methods
-router.get('/payout-methods', requireAuth, (req, res) => {
+router.get('/payout-methods', isAuthenticated, (req, res) => {
   try {
     const { region, kycRequired } = req.query;
     
@@ -178,7 +178,7 @@ router.get('/payout-methods', requireAuth, (req, res) => {
 });
 
 // Process creator payout
-router.post('/payout', requireAuth, async (req, res) => {
+router.post('/payout', isAuthenticated, async (req, res) => {
   try {
     const { creatorId, amount, methodId, memo } = req.body;
 
@@ -228,7 +228,7 @@ router.post('/payout', requireAuth, async (req, res) => {
 });
 
 // Get transaction status
-router.get('/transaction/:id', requireAuth, (req, res) => {
+router.get('/transaction/:id', isAuthenticated, (req, res) => {
   try {
     const { id } = req.params;
     const transaction = paymentOrchestrator.getTransactionStatus(id);
@@ -257,7 +257,7 @@ router.get('/transaction/:id', requireAuth, (req, res) => {
 });
 
 // Admin: Update routing rules
-router.put('/routing/:ruleId', requireAuth, (req, res) => {
+router.put('/routing/:ruleId', isAuthenticated, (req, res) => {
   try {
     const { ruleId } = req.params;
     const updates = req.body;
@@ -287,7 +287,7 @@ router.put('/routing/:ruleId', requireAuth, (req, res) => {
 });
 
 // Admin: MID management
-router.post('/mid/:midId/:action', requireAuth, (req, res) => {
+router.post('/mid/:midId/:action', isAuthenticated, (req, res) => {
   try {
     const { midId, action } = req.params;
 
@@ -382,7 +382,7 @@ router.post('/webhook/:gatewayId', (req, res) => {
 });
 
 // Payment events (Server-Sent Events for real-time updates)
-router.get('/events', requireAuth, (req, res) => {
+router.get('/events', isAuthenticated, (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
