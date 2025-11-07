@@ -56,6 +56,9 @@ import WebSocketSettingsPage from "@/pages/websocket-settings";
 import StarzStudioAdmin from "@/pages/StarzStudioAdmin";
 import TransactionManagementPage from "@/pages/transaction-management";
 import VerificationManagementPage from "@/pages/verification-management";
+import VerificationDashboard from "@/pages/verification-dashboard";
+import CoStarVerificationPage from "@/pages/costar-verification";
+import ContentCreatorVerificationPage from "@/pages/creator-verification";
 import SubscriptionManagementPage from "@/pages/subscription-management";
 import ThemeGeneratorPage from "@/pages/theme-generator";
 import RadioBroadcastingPage from "@/pages/radio-broadcasting";
@@ -100,6 +103,10 @@ import CRMSystem from "@/pages/crm-system";
 import ERPSystem from "@/pages/erp-system";
 import EmailMarketing from "@/pages/email-marketing";
 import SocialMediaAutomation from "@/pages/social-media-automation";
+import DocumentManagement from "@/pages/document-management";
+import ESignWorkflow from "@/pages/esign-workflow";
+import AuditTrail from "@/pages/audit-trail";
+import DataLossPrevention from "@/pages/data-loss-prevention";
 
 function Router() {
   return (
@@ -133,6 +140,9 @@ function Router() {
           <Route path="/threats" component={ThreatsPage} />
           <Route path="/data" component={DataPage} />
           <Route path="/verification-2257" component={Verification2257} />
+          <Route path="/verification-dashboard" component={VerificationDashboard} />
+          <Route path="/costar-verification" component={CoStarVerificationPage} />
+          <Route path="/creator-verification" component={ContentCreatorVerificationPage} />
           <Route path="/chat-system" component={ChatSystem} />
           <Route path="/stream-management" component={StreamManagement} />
           <Route path="/payment-management" component={PaymentManagement} />
@@ -241,6 +251,10 @@ function Router() {
           <Route path="/erp-system" component={ERPSystem} />
           <Route path="/email-marketing" component={EmailMarketing} />
           <Route path="/social-media-automation" component={SocialMediaAutomation} />
+          <Route path="/document-management" component={DocumentManagement} />
+          <Route path="/esign-workflow" component={ESignWorkflow} />
+          <Route path="/audit-trail" component={AuditTrail} />
+          <Route path="/data-loss-prevention" component={DataLossPrevention} />
           <Route component={NotFound} />
         </Switch>
       </main>

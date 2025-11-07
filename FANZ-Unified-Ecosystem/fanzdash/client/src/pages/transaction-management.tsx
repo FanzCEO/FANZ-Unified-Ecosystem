@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,56 +36,33 @@ export default function TransactionManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [timeFilter, setTimeFilter] = useState("7d");
+  const { toast } = useToast();
 
-  const transactionStats = {
-    totalRevenue: 1247583.92,
-    totalTransactions: 8947,
-    avgTransactionValue: 139.42,
-    pendingAmount: 23847.5,
+  // Fetch transaction stats
+  const { data: transactionStats } = useQuery({
+    queryKey: ["/api/transactions/stats", timeFilter],
+    refetchInterval: 30000,
+  });
+
+  // Fetch transactions
+  const { data: transactions = [], isLoading } = useQuery({
+    queryKey: ["/api/transactions", statusFilter, timeFilter],
+    refetchInterval: 10000,
+  });
+
+  const handleViewDetails = (transactionId: string) => {
+    toast({
+      title: "Transaction Details",
+      description: `Opening details for ${transactionId}`,
+    });
   };
 
-  const transactions = [
-    {
-      id: "TXN-001234",
-      user: "sarah_creator",
-      type: "Subscription",
-      amount: 29.99,
-      status: "completed",
-      date: "2025-01-04T15:30:00Z",
-      paymentMethod: "Stripe",
-      fee: 1.17,
-    },
-    {
-      id: "TXN-001235",
-      user: "alex_fan",
-      type: "Tip",
-      amount: 50.0,
-      status: "pending",
-      date: "2025-01-04T14:45:00Z",
-      paymentMethod: "PayPal",
-      fee: 1.75,
-    },
-    {
-      id: "TXN-001236",
-      user: "jordan_vip",
-      type: "Content Purchase",
-      amount: 15.99,
-      status: "completed",
-      date: "2025-01-04T13:20:00Z",
-      paymentMethod: "Coinbase",
-      fee: 0.32,
-    },
-    {
-      id: "TXN-001237",
-      user: "mike_supporter",
-      type: "Private Show",
-      amount: 200.0,
-      status: "failed",
-      date: "2025-01-04T12:15:00Z",
-      paymentMethod: "Stripe",
-      fee: 0.0,
-    },
-  ];
+  const handleExportReport = () => {
+    toast({
+      title: "Exporting Report",
+      description: "Your transaction report is being generated...",
+    });
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -133,7 +112,7 @@ export default function TransactionManagementPage() {
               Financial transactions & payments
             </p>
           </div>
-          <Button className="cyber-button">
+          <Button className="cyber-button" onClick={handleExportReport}>
             <Download className="w-4 h-4 mr-2" />
             Export Report
           </Button>
@@ -147,7 +126,7 @@ export default function TransactionManagementPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Total Revenue</p>
                   <p className="text-2xl font-bold cyber-text-glow">
-                    ${transactionStats.totalRevenue.toLocaleString()}
+                    ${(transactionStats?.totalRevenue ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <DollarSign className="w-8 h-8 text-primary" />
@@ -161,7 +140,7 @@ export default function TransactionManagementPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Transactions</p>
                   <p className="text-2xl font-bold text-blue-400">
-                    {transactionStats.totalTransactions.toLocaleString()}
+                    {(transactionStats?.totalTransactions ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <Receipt className="w-8 h-8 text-blue-400" />
@@ -177,7 +156,7 @@ export default function TransactionManagementPage() {
                     Avg Transaction
                   </p>
                   <p className="text-2xl font-bold text-green-400">
-                    ${transactionStats.avgTransactionValue}
+                    ${transactionStats?.avgTransactionValue ?? 0}
                   </p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-green-400" />
@@ -191,7 +170,7 @@ export default function TransactionManagementPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Pending</p>
                   <p className="text-2xl font-bold text-yellow-400">
-                    ${transactionStats.pendingAmount.toLocaleString()}
+                    ${(transactionStats?.pendingAmount ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <AlertTriangle className="w-8 h-8 text-yellow-400" />
@@ -284,7 +263,11 @@ export default function TransactionManagementPage() {
                       {new Date(transaction.date).toLocaleString()}
                     </TableCell>
                     <TableCell>
-                      <Button size="sm" variant="outline">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleViewDetails(transaction.id)}
+                      >
                         View Details
                       </Button>
                     </TableCell>

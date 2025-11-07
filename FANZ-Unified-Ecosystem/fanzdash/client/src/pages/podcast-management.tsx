@@ -132,8 +132,26 @@ export default function PodcastManagementPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Mock data - in production this would come from APIs
-  const podcasts: Podcast[] = [
+  // Fetch podcasts from API
+  const { data: podcasts = [], isLoading: podcastsLoading } = useQuery<Podcast[]>({
+    queryKey: ["/api/podcasts"],
+    refetchInterval: 15000,
+  });
+
+  // Fetch episodes from API
+  const { data: episodes = [], isLoading: episodesLoading } = useQuery<Episode[]>({
+    queryKey: ["/api/podcasts/episodes"],
+    refetchInterval: 15000,
+  });
+
+  // Fetch analytics from API
+  const { data: analytics } = useQuery<PodcastAnalytics>({
+    queryKey: ["/api/podcasts/analytics"],
+    refetchInterval: 60000,
+  });
+
+  // Removed mock data - now fetching from API
+  const _podcasts_removed: Podcast[] = [
     {
       id: "pod-1",
       title: "Creator Conversations",
@@ -186,7 +204,8 @@ export default function PodcastManagementPage() {
     },
   ];
 
-  const episodes: Episode[] = [
+  // Removed mock episodes - now fetching from API above
+  const _episodes_removed: Episode[] = [
     {
       id: "ep-1",
       podcastId: "pod-1",
@@ -242,7 +261,8 @@ export default function PodcastManagementPage() {
     },
   ];
 
-  const analytics: PodcastAnalytics = {
+  // Removed mock analytics - now fetching from API above
+  const _analyticsRemoved: PodcastAnalytics = {
     totalListens: 24503,
     totalDownloads: 18742,
     averageListenDuration: "34:28",

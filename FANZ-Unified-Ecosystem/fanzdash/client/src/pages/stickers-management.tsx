@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,52 +13,44 @@ import {
 } from "@/components/ui/dialog";
 import { Sticker, Upload, Trash2, Edit, Plus, Search } from "lucide-react";
 import { SEOHeadTags } from "@/components/SEOHeadTags";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function StickersManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  const stickerStats = {
-    totalStickers: 2847,
-    totalPacks: 156,
-    activeUsers: 45230,
-    dailyUsage: 892143,
-  };
+  // Fetch sticker stats from API
+  const { data: stickerStats } = useQuery({
+    queryKey: ["/api/stickers/stats"],
+    refetchInterval: 30000,
+  });
 
-  const stickerPacks = [
-    {
-      id: 1,
-      name: "Cyberpunk Emojis",
-      stickers: 24,
-      category: "tech",
-      status: "active",
-      downloads: 5432,
+  // Fetch sticker packs from API
+  const { data: stickerPacks = [], isLoading } = useQuery({
+    queryKey: ["/api/stickers/packs", selectedCategory],
+    refetchInterval: 60000,
+  });
+
+  // Create sticker pack mutation
+  const createPackMutation = useMutation({
+    mutationFn: (data: any) => apiRequest("/api/stickers/packs", "POST", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/stickers/packs"] });
+      toast({ title: "Sticker pack created successfully" });
     },
-    {
-      id: 2,
-      name: "Creator Reactions",
-      stickers: 18,
-      category: "reactions",
-      status: "active",
-      downloads: 8901,
+  });
+
+  // Delete sticker pack mutation
+  const deletePackMutation = useMutation({
+    mutationFn: (id: string) => apiRequest(`/api/stickers/packs/${id}`, "DELETE"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/stickers/packs"] });
+      toast({ title: "Sticker pack deleted successfully" });
     },
-    {
-      id: 3,
-      name: "FanzDash Branded",
-      stickers: 12,
-      category: "brand",
-      status: "active",
-      downloads: 3210,
-    },
-    {
-      id: 4,
-      name: "Seasonal Collection",
-      stickers: 36,
-      category: "seasonal",
-      status: "draft",
-      downloads: 0,
-    },
-  ];
+  });
 
   return (
     <div className="min-h-screen p-6 cyber-bg">
@@ -108,7 +101,7 @@ export default function StickersManagementPage() {
                     Total Stickers
                   </p>
                   <p className="text-2xl font-bold cyber-text-glow">
-                    {stickerStats.totalStickers.toLocaleString()}
+                    {(stickerStats?.totalStickers ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <Sticker className="w-8 h-8 text-primary" />
@@ -122,7 +115,7 @@ export default function StickersManagementPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Sticker Packs</p>
                   <p className="text-2xl font-bold text-blue-400">
-                    {stickerStats.totalPacks}
+                    {stickerStats?.totalPacks ?? 0}
                   </p>
                 </div>
                 <Upload className="w-8 h-8 text-blue-400" />
@@ -136,7 +129,7 @@ export default function StickersManagementPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Active Users</p>
                   <p className="text-2xl font-bold text-green-400">
-                    {stickerStats.activeUsers.toLocaleString()}
+                    {(stickerStats?.activeUsers ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <Badge className="bg-green-500/20 text-green-400">Online</Badge>
@@ -150,7 +143,7 @@ export default function StickersManagementPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Daily Usage</p>
                   <p className="text-2xl font-bold text-yellow-400">
-                    {stickerStats.dailyUsage.toLocaleString()}
+                    {(stickerStats?.dailyUsage ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <Sticker className="w-8 h-8 text-yellow-400" />
@@ -208,7 +201,12 @@ export default function StickersManagementPage() {
                     <span>{pack.downloads.toLocaleString()}</span>
                   </div>
                   <div className="flex gap-2 pt-2">
-                    <Button size="sm" variant="outline" className="flex-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => toast({ title: "Edit Sticker Pack", description: `Opening editor for ${pack.name}` })}
+                    >
                       <Edit className="w-4 h-4 mr-1" />
                       Edit
                     </Button>
@@ -216,6 +214,8 @@ export default function StickersManagementPage() {
                       size="sm"
                       variant="outline"
                       className="flex-1 text-red-400 hover:text-red-300"
+                      onClick={() => deletePackMutation.mutate(pack.id)}
+                      disabled={deletePackMutation.isPending}
                     >
                       <Trash2 className="w-4 h-4 mr-1" />
                       Delete

@@ -82,61 +82,11 @@ export default function AdvertisingManagement() {
   );
   const queryClient = useQueryClient();
 
-  // Mock data demonstrating comprehensive advertising ecosystem
-  const campaigns = [
-    {
-      id: "1",
-      title: "Summer Creator Boost",
-      description: "Promote top creators during summer season",
-      type: "creator_promotion" as const,
-      status: "active" as const,
-      budget: "5000.00",
-      dailyBudget: "200.00",
-      spend: "1250.00",
-      impressions: 125000,
-      clicks: 2500,
-      conversions: 125,
-      startDate: "2024-06-01T00:00:00Z",
-      endDate: "2024-08-31T23:59:59Z",
-      targetAudience: { age: "18-35", interests: ["adult", "content"] },
-      advertiserId: "admin-1",
-    },
-    {
-      id: "2",
-      title: "Premium Subscription Banner",
-      description: "Drive premium subscription conversions",
-      type: "banner" as const,
-      status: "active" as const,
-      budget: "2000.00",
-      dailyBudget: "100.00",
-      spend: "780.00",
-      impressions: 78000,
-      clicks: 1560,
-      conversions: 89,
-      startDate: "2024-07-01T00:00:00Z",
-      endDate: "2024-09-30T23:59:59Z",
-      targetAudience: { age: "25-45", interests: ["premium", "subscriptions"] },
-      advertiserId: "admin-1",
-    },
-    {
-      id: "3",
-      title: "Live Stream Promotion",
-      description: "Boost live streaming engagement",
-      type: "video" as const,
-      status: "paused" as const,
-      budget: "3000.00",
-      dailyBudget: "150.00",
-      spend: "450.00",
-      impressions: 45000,
-      clicks: 900,
-      conversions: 67,
-      startDate: "2024-08-01T00:00:00Z",
-      endDate: "2024-10-31T23:59:59Z",
-      targetAudience: { age: "18-40", interests: ["live", "streaming"] },
-      advertiserId: "admin-2",
-    },
-  ];
-  const isLoading = false;
+  // Fetch advertising campaigns from API
+  const { data: campaigns = [], isLoading } = useQuery<AdCampaign[]>({
+    queryKey: ["/api/admin/ad-campaigns"],
+    refetchInterval: 30000,
+  });
 
   const { toast } = useToast();
 

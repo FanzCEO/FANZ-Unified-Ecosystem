@@ -635,7 +635,7 @@ export default function CreatorManagement() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-semibold">{selected Creator.username}</h3>
+                    <h3 className="text-xl font-semibold">{selectedCreator.username}</h3>
                     {selectedCreator.verified && <CheckCircle className="w-5 h-5 text-blue-500" />}
                   </div>
                   <div className="text-sm text-muted-foreground">{selectedCreator.email}</div>

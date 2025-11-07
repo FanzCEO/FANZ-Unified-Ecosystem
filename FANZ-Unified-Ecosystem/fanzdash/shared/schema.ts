@@ -3796,6 +3796,322 @@ export const insertGtmSettingsSchema = createInsertSchema(gtmSettings).omit({
   updatedAt: true,
 });
 
+// ===== ANALYTICS & TRACKING INTEGRATIONS =====
+
+export const analyticsConfigurations = pgTable("analytics_configurations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  platformId: varchar("platform_id").notNull(), // e.g., 'boyfanz', 'girlfanz', 'fanzdash'
+
+  // Google Analytics 4
+  ga4MeasurementId: varchar("ga4_measurement_id"),
+  ga4ApiSecret: text("ga4_api_secret"),
+  ga4StreamId: varchar("ga4_stream_id"),
+  ga4PropertyId: varchar("ga4_property_id"),
+  ga4Configuration: jsonb("ga4_configuration").default("{}"),
+
+  // Google Tag Manager
+  gtmContainerId: varchar("gtm_container_id"),
+  gtmEnvironment: varchar("gtm_environment").default("live"),
+  gtmConfiguration: jsonb("gtm_configuration").default("{}"),
+
+  // Social Media Pixels
+  facebookPixelId: varchar("facebook_pixel_id"),
+  tiktokPixelId: varchar("tiktok_pixel_id"),
+  twitterPixelId: varchar("twitter_pixel_id"),
+  redditPixelId: varchar("reddit_pixel_id"),
+  instagramPixelId: varchar("instagram_pixel_id"),
+  patreonClientId: varchar("patreon_client_id"),
+
+  // Pixel Configuration
+  pixelConfiguration: jsonb("pixel_configuration").default("{}"),
+  customPixels: jsonb("custom_pixels").default("[]"),
+
+  // Traffic Analysis
+  trafficAnalysisEnabled: boolean("traffic_analysis_enabled").default(true),
+  variableTracking: jsonb("variable_tracking").default("{}"),
+
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const socialOAuthConnections = pgTable("social_oauth_connections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  platformId: varchar("platform_id").notNull(), // FANZ platform
+
+  provider: varchar("provider").notNull(), // 'google', 'facebook', 'twitter', etc.
+  providerId: varchar("provider_id").notNull(), // User ID from provider
+  providerEmail: varchar("provider_email"),
+  providerUsername: varchar("provider_username"),
+
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  tokenExpiry: timestamp("token_expiry"),
+
+  scopes: jsonb("scopes").default("[]"),
+  profileData: jsonb("profile_data").default("{}"),
+
+  isActive: boolean("is_active").default(true),
+  lastUsed: timestamp("last_used"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const delegatedAccessPermissions = pgTable("delegated_access_permissions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  grantorId: varchar("grantor_id").references(() => users.id).notNull(),
+  granteeId: varchar("grantee_id").references(() => users.id).notNull(),
+  platformId: varchar("platform_id").notNull(),
+
+  accessType: varchar("access_type").notNull(), // 'admin', 'moderator', 'creator_delegate'
+  permissions: jsonb("permissions").notNull(), // Detailed permission rules
+
+  // Resource Access
+  canAccessContent: boolean("can_access_content").default(false),
+  canModerateContent: boolean("can_moderate_content").default(false),
+  canManageUsers: boolean("can_manage_users").default(false),
+  canViewAnalytics: boolean("can_view_analytics").default(false),
+  canManageSettings: boolean("can_manage_settings").default(false),
+  canManagePayments: boolean("can_manage_payments").default(false),
+
+  // Custom Rules
+  customRules: jsonb("custom_rules").default("{}"),
+  ipWhitelist: jsonb("ip_whitelist").default("[]"),
+  timeRestrictions: jsonb("time_restrictions").default("{}"),
+
+  expiresAt: timestamp("expires_at"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const workflowDefinitions = pgTable("workflow_definitions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  platformId: varchar("platform_id").notNull(),
+
+  name: varchar("name").notNull(),
+  description: text("description"),
+  category: varchar("category").notNull(), // 'content', 'moderation', 'analytics', 'custom'
+
+  // Workflow Configuration
+  triggers: jsonb("triggers").notNull(), // What starts the workflow
+  actions: jsonb("actions").notNull(), // What the workflow does
+  conditions: jsonb("conditions").default("{}"), // When to execute
+
+  // Visual Builder Data
+  nodeData: jsonb("node_data").default("{}"), // Visual workflow nodes
+  edgeData: jsonb("edge_data").default("{}"), // Connections between nodes
+
+  // Execution
+  executionOrder: jsonb("execution_order").default("[]"),
+  errorHandling: jsonb("error_handling").default("{}"),
+
+  // Scheduling
+  schedule: jsonb("schedule"), // Cron expression or specific times
+  timezone: varchar("timezone").default("UTC"),
+
+  // Statistics
+  executionCount: integer("execution_count").default(0),
+  lastExecuted: timestamp("last_executed"),
+  averageExecutionTime: integer("average_execution_time"), // milliseconds
+
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const scheduledContent = pgTable("scheduled_content", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  platformId: varchar("platform_id").notNull(),
+
+  contentType: varchar("content_type").notNull(), // 'post', 'story', 'reel', 'live'
+  contentData: jsonb("content_data").notNull(),
+
+  // Scheduling
+  scheduledFor: timestamp("scheduled_for").notNull(),
+  timezone: varchar("timezone").default("UTC"),
+  recurringPattern: jsonb("recurring_pattern"), // For repeated posts
+
+  // External Calendar Integration
+  externalCalendarId: varchar("external_calendar_id"),
+  externalEventId: varchar("external_event_id"),
+  calendarProvider: varchar("calendar_provider"), // 'google', 'apple', 'outlook'
+
+  // Publishing Status
+  status: varchar("status").notNull().default("pending"), // 'pending', 'published', 'failed', 'cancelled'
+  publishedAt: timestamp("published_at"),
+  failureReason: text("failure_reason"),
+
+  // Notifications
+  notifyBeforeMinutes: integer("notify_before_minutes").default(30),
+  notificationsSent: boolean("notifications_sent").default(false),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const externalCalendarIntegrations = pgTable("external_calendar_integrations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+
+  provider: varchar("provider").notNull(), // 'google', 'apple', 'outlook', 'ical'
+  providerAccountId: varchar("provider_account_id").notNull(),
+  providerEmail: varchar("provider_email"),
+
+  // OAuth Tokens
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  tokenExpiry: timestamp("token_expiry"),
+
+  // Calendar Selection
+  selectedCalendars: jsonb("selected_calendars").default("[]"),
+  syncEnabled: boolean("sync_enabled").default(true),
+  syncDirection: varchar("sync_direction").default("both"), // 'import', 'export', 'both'
+
+  // Sync Status
+  lastSyncAt: timestamp("last_sync_at"),
+  nextSyncAt: timestamp("next_sync_at"),
+  syncErrors: jsonb("sync_errors").default("[]"),
+
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const profileUrlSpots = pgTable("profile_url_spots", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  platformId: varchar("platform_id").notNull(),
+
+  spotType: varchar("spot_type").notNull(), // 'social', 'website', 'portfolio', 'store', 'custom'
+  spotName: varchar("spot_name").notNull(),
+  spotUrl: text("spot_url").notNull(),
+  spotIcon: varchar("spot_icon"), // Icon identifier or URL
+
+  displayOrder: integer("display_order").default(0),
+  isVisible: boolean("is_visible").default(true),
+  isVerified: boolean("is_verified").default(false),
+
+  clickCount: integer("click_count").default(0),
+  lastClickedAt: timestamp("last_clicked_at"),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const analyticsEvents = pgTable("analytics_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  platformId: varchar("platform_id").notNull(),
+  userId: varchar("user_id").references(() => users.id),
+
+  eventType: varchar("event_type").notNull(), // 'pageview', 'click', 'conversion', etc.
+  eventName: varchar("event_name").notNull(),
+  eventCategory: varchar("event_category"),
+
+  // Event Data
+  eventData: jsonb("event_data").default("{}"),
+  eventValue: decimal("event_value", { precision: 10, scale: 2 }),
+
+  // Session Info
+  sessionId: varchar("session_id"),
+  deviceType: varchar("device_type"),
+  browser: varchar("browser"),
+  os: varchar("os"),
+
+  // Location
+  country: varchar("country"),
+  region: varchar("region"),
+  city: varchar("city"),
+
+  // Referral
+  referrer: text("referrer"),
+  utmSource: varchar("utm_source"),
+  utmMedium: varchar("utm_medium"),
+  utmCampaign: varchar("utm_campaign"),
+  utmTerm: varchar("utm_term"),
+  utmContent: varchar("utm_content"),
+
+  // Tracking
+  pageUrl: text("page_url"),
+  pagePath: text("page_path"),
+  pageTitle: text("page_title"),
+
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Type Exports
+export type AnalyticsConfiguration = typeof analyticsConfigurations.$inferSelect;
+export type InsertAnalyticsConfiguration = typeof analyticsConfigurations.$inferInsert;
+export type SocialOAuthConnection = typeof socialOAuthConnections.$inferSelect;
+export type InsertSocialOAuthConnection = typeof socialOAuthConnections.$inferInsert;
+export type DelegatedAccessPermission = typeof delegatedAccessPermissions.$inferSelect;
+export type InsertDelegatedAccessPermission = typeof delegatedAccessPermissions.$inferInsert;
+export type WorkflowDefinition = typeof workflowDefinitions.$inferSelect;
+export type InsertWorkflowDefinition = typeof workflowDefinitions.$inferInsert;
+export type ScheduledContent = typeof scheduledContent.$inferSelect;
+export type InsertScheduledContent = typeof scheduledContent.$inferInsert;
+export type ExternalCalendarIntegration = typeof externalCalendarIntegrations.$inferSelect;
+export type InsertExternalCalendarIntegration = typeof externalCalendarIntegrations.$inferInsert;
+export type ProfileUrlSpot = typeof profileUrlSpots.$inferSelect;
+export type InsertProfileUrlSpot = typeof profileUrlSpots.$inferInsert;
+export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
+export type InsertAnalyticsEvent = typeof analyticsEvents.$inferInsert;
+
+// Insert Schemas
+export const insertAnalyticsConfigurationSchema = createInsertSchema(analyticsConfigurations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export const insertSocialOAuthConnectionSchema = createInsertSchema(socialOAuthConnections).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  lastUsed: true,
+});
+export const insertDelegatedAccessPermissionSchema = createInsertSchema(delegatedAccessPermissions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export const insertWorkflowDefinitionSchema = createInsertSchema(workflowDefinitions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  executionCount: true,
+  lastExecuted: true,
+  averageExecutionTime: true,
+});
+export const insertScheduledContentSchema = createInsertSchema(scheduledContent).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  publishedAt: true,
+});
+export const insertExternalCalendarIntegrationSchema = createInsertSchema(externalCalendarIntegrations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  lastSyncAt: true,
+  nextSyncAt: true,
+});
+export const insertProfileUrlSpotSchema = createInsertSchema(profileUrlSpots).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  clickCount: true,
+  lastClickedAt: true,
+});
+export const insertAnalyticsEventSchema = createInsertSchema(analyticsEvents).omit({
+  id: true,
+  createdAt: true,
+  timestamp: true,
+});
+
 // ===== EXISTING 2257 COMPLIANCE TYPES =====
 
 export type Form2257Record = typeof form2257Records.$inferSelect;
@@ -3804,3 +4120,8 @@ export type Form2257Amendment = typeof form2257Amendments.$inferSelect;
 export type InsertForm2257Amendment = typeof form2257Amendments.$inferInsert;
 export type ComplianceChecklist = typeof complianceChecklist.$inferSelect;
 export type InsertComplianceChecklist = typeof complianceChecklist.$inferInsert;
+
+// ===== VERIFICATION SYSTEM (2257 COMPLIANCE) =====
+
+// Re-export verification schemas from separate file
+export * from "../server/db/schema/verifications";

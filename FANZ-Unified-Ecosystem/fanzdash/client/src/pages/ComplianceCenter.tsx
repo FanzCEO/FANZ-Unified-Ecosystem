@@ -15,7 +15,9 @@ import {
   XCircle,
   TrendingUp,
 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface ComplianceStatus {
   totalEvents: number;
@@ -44,6 +46,7 @@ interface ApprovalData {
 }
 
 export default function ComplianceCenter() {
+  const { toast } = useToast();
   const { data: complianceStatus } = useQuery<ComplianceStatus>({
     queryKey: ["/api/compliance/status"],
     refetchInterval: 5000,
@@ -52,6 +55,26 @@ export default function ComplianceCenter() {
   const { data: approvalData } = useQuery<ApprovalData>({
     queryKey: ["/api/compliance/approvals"],
     refetchInterval: 10000,
+  });
+
+  const queryClient = useQueryClient();
+
+  const approveRequestMutation = useMutation({
+    mutationFn: (requestId: string) =>
+      apiRequest(`/api/compliance/approvals/${requestId}/approve`, "POST"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/approvals"] });
+      toast({ title: "Request approved", description: "Action has been approved successfully" });
+    },
+  });
+
+  const denyRequestMutation = useMutation({
+    mutationFn: (requestId: string) =>
+      apiRequest(`/api/compliance/approvals/${requestId}/deny`, "POST"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/approvals"] });
+      toast({ title: "Request denied", description: "Action has been denied", variant: "destructive" });
+    },
   });
 
   return (
@@ -266,6 +289,8 @@ export default function ComplianceCenter() {
                           size="sm"
                           variant="outline"
                           className="border-green-600 text-green-400"
+                          onClick={() => approveRequestMutation.mutate(approval.id)}
+                          disabled={approveRequestMutation.isPending}
                         >
                           Approve
                         </Button>
@@ -273,6 +298,8 @@ export default function ComplianceCenter() {
                           size="sm"
                           variant="outline"
                           className="border-red-600 text-red-400"
+                          onClick={() => denyRequestMutation.mutate(approval.id)}
+                          disabled={denyRequestMutation.isPending}
                         >
                           Deny
                         </Button>

@@ -91,112 +91,17 @@ export default function WithdrawalManagement() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Enhanced withdrawal requests data with adult-friendly providers
-  const withdrawalRequests: WithdrawalRequest[] = [
-    {
-      id: "1",
-      userId: "user_1",
-      username: "sarah_model",
-      profileUrl: "/sarah_model",
-      amount: "250.00",
-      gateway: "Paxum",
-      account: "sarah@paxum.com",
-      status: "pending",
-      date: "2025-01-15T10:00:00Z",
-      createdAt: "2025-01-15T10:00:00Z",
-    },
-    {
-      id: "2",
-      userId: "user_2",
-      username: "alex_creator",
-      profileUrl: "/alex_creator",
-      amount: "500.00",
-      gateway: "Paxum Bank",
-      account: "Paxum Bank (Dominica) - ****1234",
-      status: "paid",
-      datePaid: "2025-01-14T16:30:00Z",
-      date: "2025-01-13T15:30:00Z",
-      createdAt: "2025-01-13T15:30:00Z",
-    },
-    {
-      id: "3",
-      userId: "user_3",
-      username: "maya_performer",
-      profileUrl: "/maya_performer",
-      amount: "150.00",
-      gateway: "NOWPayments",
-      account: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-      status: "rejected",
-      rejectionReason: "Invalid crypto wallet address provided",
-      date: "2025-01-12T12:00:00Z",
-      createdAt: "2025-01-12T12:00:00Z",
-    },
-    {
-      id: "4",
-      userId: "user_4",
-      username: "jenny_cam",
-      profileUrl: "/jenny_cam",
-      amount: "750.00",
-      gateway: "Cosmo Payment",
-      account: "jenny.cam@cosmopayment.com",
-      status: "pending",
-      date: "2025-01-11T09:00:00Z",
-      createdAt: "2025-01-11T09:00:00Z",
-    },
-    {
-      id: "5",
-      userId: "user_5",
-      username: "mike_streamer",
-      profileUrl: "/mike_streamer",
-      amount: "320.00",
-      gateway: "ePayService",
-      account: "mike.stream@epayservices.com",
-      status: "paid",
-      datePaid: "2025-01-10T14:20:00Z",
-      date: "2025-01-09T14:20:00Z",
-      createdAt: "2025-01-09T14:20:00Z",
-    },
-    {
-      id: "6",
-      userId: "user_6",
-      username: "luna_artist",
-      profileUrl: "/luna_artist",
-      amount: "425.00",
-      gateway: "Skrill",
-      account: "luna.artist@skrill.com",
-      status: "paid",
-      datePaid: "2025-01-09T11:15:00Z",
-      date: "2025-01-08T11:15:00Z",
-      createdAt: "2025-01-08T11:15:00Z",
-    },
-    {
-      id: "7",
-      userId: "user_7",
-      username: "cam_queen",
-      profileUrl: "/cam_queen",
-      amount: "890.00",
-      gateway: "USDT/USDC",
-      account: "0x742d35Cc6532C02bAB897C2e4d2e5a6b",
-      status: "pending",
-      date: "2025-01-07T16:45:00Z",
-      createdAt: "2025-01-07T16:45:00Z",
-    },
-    {
-      id: "8",
-      userId: "user_8",
-      username: "content_star",
-      profileUrl: "/content_star",
-      amount: "275.50",
-      gateway: "Yoursafe",
-      account: "NL91 ABNA 0417 1643 00 (Yoursafe IBAN)",
-      status: "paid",
-      datePaid: "2025-01-06T13:20:00Z",
-      date: "2025-01-05T13:20:00Z",
-      createdAt: "2025-01-05T13:20:00Z",
-    },
-  ];
+  // Fetch withdrawal requests from API (uses fanz_money database - payouts table)
+  const { data: withdrawalRequests = [], isLoading } = useQuery<WithdrawalRequest[]>({
+    queryKey: ["/api/money/payouts", statusFilter, gatewayFilter],
+    refetchInterval: 10000,
+  });
 
-  const isLoading = false;
+  // Fetch withdrawal stats from API
+  const { data: withdrawalStats } = useQuery({
+    queryKey: ["/api/money/payouts/stats"],
+    refetchInterval: 30000,
+  });
 
   const refreshMutation = useMutation({
     mutationFn: () => apiRequest("/api/admin/withdrawals/refresh", "POST"),
@@ -250,23 +155,15 @@ export default function WithdrawalManagement() {
     return gateway === "Bank" ? "Bank Transfer" : gateway;
   };
 
-  const getStats = () => {
-    const totalRequests = withdrawalRequests.length;
-    const pendingRequests = withdrawalRequests.filter(
-      (r) => r.status === "pending",
-    ).length;
-    const totalAmount = withdrawalRequests.reduce(
-      (sum, r) => sum + parseFloat(r.amount),
-      0,
-    );
-    const pendingAmount = withdrawalRequests
+  // Use API stats if available, otherwise calculate from data
+  const stats = withdrawalStats || {
+    totalRequests: withdrawalRequests.length,
+    pendingRequests: withdrawalRequests.filter((r) => r.status === "pending").length,
+    totalAmount: withdrawalRequests.reduce((sum, r) => sum + parseFloat(r.amount || "0"), 0),
+    pendingAmount: withdrawalRequests
       .filter((r) => r.status === "pending")
-      .reduce((sum, r) => sum + parseFloat(r.amount), 0);
-
-    return { totalRequests, pendingRequests, totalAmount, pendingAmount };
+      .reduce((sum, r) => sum + parseFloat(r.amount || "0"), 0),
   };
-
-  const stats = getStats();
 
   const handleExport = () => {
     exportMutation.mutate({

@@ -96,8 +96,20 @@ export default function EmailManagement() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Mock email templates data
-  const emailTemplates: EmailTemplate[] = [
+  // Fetch email templates from API
+  const { data: emailTemplates = [], isLoading: templatesLoading } = useQuery<EmailTemplate[]>({
+    queryKey: ["/api/admin/email-templates"],
+    refetchInterval: 60000,
+  });
+
+  // Fetch email logs from API
+  const { data: emailLogs = [], isLoading: logsLoading } = useQuery<EmailLog[]>({
+    queryKey: ["/api/admin/email-logs"],
+    refetchInterval: 30000,
+  });
+
+  // Removed mock data - now using API data above
+  const _emailTemplates_removed: EmailTemplate[] = [
     {
       id: "1",
       templateName: "Welcome Email",
@@ -220,8 +232,8 @@ export default function EmailManagement() {
     },
   ];
 
-  // Mock email logs data
-  const emailLogs: EmailLog[] = [
+  // Removed mock data - now fetching from API
+  const _emailLogs_removed: EmailLog[] = [
     {
       id: "1",
       recipientEmail: "user@example.com",
@@ -258,8 +270,6 @@ export default function EmailManagement() {
       createdAt: "2025-01-15T14:00:00Z",
     },
   ];
-
-  const isLoading = false;
 
   const createTemplateMutation = useMutation({
     mutationFn: (data: any) =>

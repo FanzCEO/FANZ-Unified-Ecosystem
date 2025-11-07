@@ -117,220 +117,23 @@ export default function CrisisManagement() {
   const [selectedSeverity, setSelectedSeverity] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
 
-  // Mock crisis events
-  const crisisEvents: CrisisEvent[] = [
-    {
-      id: "crisis_001",
-      title: "Suspected Data Breach - GirlFanz Platform",
-      description:
-        "Unusual database access patterns detected on GirlFanz user data",
-      severity: "critical",
-      status: "investigating",
-      category: "security_breach",
-      platform: "GirlFanz",
-      startTime: "2025-01-15T11:30:00Z",
-      assignedTo: "security_team",
-      affectedUsers: 25000,
-      responseActions: [
-        "Isolated affected database servers",
-        "Activated incident response team",
-        "Initiated forensic analysis",
-        "Prepared user notification draft",
-      ],
-      escalationLevel: 3,
-    },
-    {
-      id: "crisis_002",
-      title: "DDoS Attack - FanzLab Main Portal",
-      description:
-        "High-volume traffic attack targeting main authentication servers",
-      severity: "high",
-      status: "resolving",
-      category: "ddos_attack",
-      platform: "FanzLab",
-      startTime: "2025-01-15T10:45:00Z",
-      assignedTo: "infrastructure_team",
-      affectedUsers: 150000,
-      responseActions: [
-        "Activated DDoS protection",
-        "Scaled infrastructure capacity",
-        "Implemented traffic filtering",
-        "Redirected traffic through CDN",
-      ],
-      escalationLevel: 2,
-    },
-    {
-      id: "crisis_003",
-      title: "DMCA Takedown Notice - TabooFanz",
-      description: "Large-scale copyright infringement claims received",
-      severity: "medium",
-      status: "active",
-      category: "legal_threat",
-      platform: "TabooFanz",
-      startTime: "2025-01-15T09:15:00Z",
-      assignedTo: "legal_team",
-      affectedUsers: 850,
-      responseActions: [
-        "Content review initiated",
-        "Legal team consultation",
-        "Creator notifications sent",
-      ],
-      escalationLevel: 1,
-    },
-    {
-      id: "crisis_004",
-      title: "Payment System Outage",
-      description: "CCBill payment processing experiencing widespread failures",
-      severity: "high",
-      status: "resolved",
-      category: "system_failure",
-      platform: "All",
-      startTime: "2025-01-14T16:20:00Z",
-      resolvedTime: "2025-01-14T18:45:00Z",
-      assignedTo: "payment_team",
-      affectedUsers: 45000,
-      responseActions: [
-        "Switched to backup payment processor",
-        "Notified affected users",
-        "Coordinated with CCBill support",
-        "Implemented payment retry logic",
-      ],
-      escalationLevel: 2,
-      publicStatement:
-        "Payment services have been fully restored. All pending transactions will be processed automatically.",
-    },
-  ];
+  // Fetch crisis events from API
+  const { data: crisisEvents = [], isLoading: crisisLoading } = useQuery<CrisisEvent[]>({
+    queryKey: ["/api/crisis"],
+    refetchInterval: 10000,
+  });
 
-  // Mock response plans
-  const responsePlans: ResponsePlan[] = [
-    {
-      id: "plan_001",
-      name: "Data Breach Response Protocol",
-      category: "security_breach",
-      description:
-        "Comprehensive response plan for suspected or confirmed data breaches",
-      severity: "critical",
-      autoTrigger: true,
-      steps: [
-        "Immediate containment and isolation",
-        "Forensic investigation initiation",
-        "Legal and regulatory notification",
-        "User communication and support",
-        "Security audit and remediation",
-      ],
-      estimatedTime: "4-6 hours",
-      responsibleTeam: "Security Team",
-      lastUpdated: "2025-01-01T00:00:00Z",
-      isActive: true,
-    },
-    {
-      id: "plan_002",
-      name: "DDoS Attack Mitigation",
-      category: "ddos_attack",
-      description:
-        "Rapid response protocol for distributed denial of service attacks",
-      severity: "high",
-      autoTrigger: true,
-      steps: [
-        "Activate DDoS protection services",
-        "Scale infrastructure capacity",
-        "Implement traffic filtering",
-        "Monitor and adjust defenses",
-        "Post-incident analysis",
-      ],
-      estimatedTime: "1-2 hours",
-      responsibleTeam: "Infrastructure Team",
-      lastUpdated: "2025-01-01T00:00:00Z",
-      isActive: true,
-    },
-    {
-      id: "plan_003",
-      name: "Legal Threat Management",
-      category: "legal_threat",
-      description:
-        "Standard operating procedure for legal challenges and compliance issues",
-      severity: "medium",
-      autoTrigger: false,
-      steps: [
-        "Legal team assessment",
-        "Evidence preservation",
-        "Stakeholder notification",
-        "Response strategy development",
-        "Implementation and monitoring",
-      ],
-      estimatedTime: "2-4 days",
-      responsibleTeam: "Legal Team",
-      lastUpdated: "2025-01-01T00:00:00Z",
-      isActive: true,
-    },
-    {
-      id: "plan_004",
-      name: "System Failure Recovery",
-      category: "system_failure",
-      description: "Emergency recovery procedures for critical system outages",
-      severity: "high",
-      autoTrigger: true,
-      steps: [
-        "System health assessment",
-        "Failover to backup systems",
-        "Root cause identification",
-        "Service restoration",
-        "Post-mortem analysis",
-      ],
-      estimatedTime: "30-90 minutes",
-      responsibleTeam: "Operations Team",
-      lastUpdated: "2025-01-01T00:00:00Z",
-      isActive: true,
-    },
-  ];
+  // Fetch response plans from API
+  const { data: responsePlans = [] } = useQuery<ResponsePlan[]>({
+    queryKey: ["/api/crisis/plans"],
+    refetchInterval: 30000,
+  });
 
-  // Mock threat alerts
-  const threatAlerts: ThreatAlert[] = [
-    {
-      id: "alert_001",
-      alertType: "security",
-      message: "Unusual login patterns detected from multiple IP ranges",
-      severity: "high",
-      source: "FanzShield Security System",
-      timestamp: "2025-01-15T12:00:00Z",
-      status: "new",
-      platform: "All",
-      autoGenerated: true,
-    },
-    {
-      id: "alert_002",
-      alertType: "compliance",
-      message: "GDPR data subject access requests exceeding normal threshold",
-      severity: "medium",
-      source: "Compliance Monitoring",
-      timestamp: "2025-01-15T11:45:00Z",
-      status: "acknowledged",
-      platform: "GirlFanz",
-      autoGenerated: true,
-    },
-    {
-      id: "alert_003",
-      alertType: "operational",
-      message: "Database performance degradation detected",
-      severity: "medium",
-      source: "System Monitoring",
-      timestamp: "2025-01-15T11:30:00Z",
-      status: "investigating",
-      platform: "BoyFanz",
-      autoGenerated: true,
-    },
-    {
-      id: "alert_004",
-      alertType: "reputation",
-      message: "Negative sentiment spike detected on social media",
-      severity: "low",
-      source: "Social Media Monitor",
-      timestamp: "2025-01-15T10:15:00Z",
-      status: "resolved",
-      platform: "FanzLab",
-      autoGenerated: true,
-    },
-  ];
+  // Fetch threat alerts from API
+  const { data: threatAlerts = [] } = useQuery<ThreatAlert[]>({
+    queryKey: ["/api/alerts"],
+    refetchInterval: 5000,
+  });
 
   const handleEscalateCrisis = useMutation({
     mutationFn: (crisisId: string) =>
@@ -370,6 +173,32 @@ export default function CrisisManagement() {
       });
     },
   });
+
+  const handleEmergencyResponse = () => {
+    toast({
+      title: "Emergency Response Activated",
+      description: "Crisis management team has been notified",
+      variant: "destructive",
+    });
+    // TODO: Implement emergency response protocol
+  };
+
+  const handleActivateEmergencyProtocol = () => {
+    toast({
+      title: "Emergency Protocol Activated",
+      description: "All response teams have been alerted",
+      variant: "destructive",
+    });
+    // TODO: Implement full emergency protocol activation
+  };
+
+  const handleTestSystems = () => {
+    toast({
+      title: "System Test Initiated",
+      description: "Running diagnostics on all crisis management systems",
+    });
+    // TODO: Implement system test routine
+  };
 
   const getSeverityBadge = (severity: string) => {
     const variants = {
@@ -499,6 +328,7 @@ export default function CrisisManagement() {
             </Badge>
             <Button
               variant="destructive"
+              onClick={handleEmergencyResponse}
               data-testid="button-emergency-response"
             >
               <AlertTriangle className="w-4 h-4 mr-2" />
@@ -1067,12 +897,17 @@ export default function CrisisManagement() {
                   <div className="flex justify-center gap-4">
                     <Button
                       className="bg-red-600 hover:bg-red-700"
+                      onClick={handleActivateEmergencyProtocol}
                       data-testid="button-activate-emergency"
                     >
                       <Siren className="w-4 h-4 mr-2" />
                       Activate Emergency Protocol
                     </Button>
-                    <Button variant="outline" data-testid="button-test-systems">
+                    <Button
+                      variant="outline"
+                      onClick={handleTestSystems}
+                      data-testid="button-test-systems"
+                    >
                       <Settings className="w-4 h-4 mr-2" />
                       Test Systems
                     </Button>

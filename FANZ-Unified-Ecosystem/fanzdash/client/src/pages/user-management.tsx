@@ -108,8 +108,26 @@ export default function UserManagement() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Mock user data
-  const users: User[] = [
+  // Fetch users from API
+  const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
+    queryKey: ["/api/users"],
+    refetchInterval: 15000,
+  });
+
+  // Fetch verifications from API
+  const { data: verifications = [] } = useQuery<UserVerification[]>({
+    queryKey: ["/api/users/verifications"],
+    refetchInterval: 10000,
+  });
+
+  // Fetch contact messages from API
+  const { data: contactMessages = [] } = useQuery<ContactMessage[]>({
+    queryKey: ["/api/contact/messages"],
+    refetchInterval: 10000,
+  });
+
+  // Remove this mock data block - now using real API data
+  const _removedMockUsers: User[] = [
     {
       id: "1",
       username: "sarah_model",
@@ -172,8 +190,8 @@ export default function UserManagement() {
     },
   ];
 
-  // Mock verification requests
-  const verificationRequests: UserVerification[] = [
+  // Removed mock verification requests - now using verifications from API query above
+  const _removedVerificationRequests: UserVerification[] = [
     {
       id: "1",
       userId: "2",
@@ -196,8 +214,8 @@ export default function UserManagement() {
     },
   ];
 
-  // Mock contact messages
-  const contactMessages: ContactMessage[] = [
+  // Removed mock contact messages - now using contactMessages from API query above
+  const _removedContactMessages: ContactMessage[] = [
     {
       id: "1",
       name: "Jane Smith",

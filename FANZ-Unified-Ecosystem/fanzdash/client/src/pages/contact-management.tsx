@@ -84,8 +84,14 @@ export default function ContactManagement() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Mock contact messages data
-  const contactMessages: ContactMessage[] = [
+  // Fetch contact messages from API
+  const { data: contactMessages = [], isLoading } = useQuery<ContactMessage[]>({
+    queryKey: ["/api/admin/contact-messages", statusFilter, priorityFilter],
+    refetchInterval: 30000,
+  });
+
+  // Removed mock data - now using API data above
+  const _contactMessages_removed: ContactMessage[] = [
     {
       id: "1",
       name: "Jane Smith",
@@ -161,8 +167,6 @@ export default function ContactManagement() {
       updatedAt: "2025-01-12T15:20:00Z",
     },
   ];
-
-  const isLoading = false;
 
   const updateMessageMutation = useMutation({
     mutationFn: (data: { messageId: string; updates: any }) =>

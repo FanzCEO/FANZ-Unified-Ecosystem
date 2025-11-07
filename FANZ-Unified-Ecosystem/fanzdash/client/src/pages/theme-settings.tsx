@@ -65,59 +65,11 @@ export default function ThemeSettings() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Mock theme settings data
-  const themeSettings: ThemeSettings = {
-    id: "1",
-    homeStyle: 0,
-    logoUrl: "/api/placeholder/200/60",
-    logoBlueUrl: "/api/placeholder/200/60",
-    faviconUrl: "/api/placeholder/32/32",
-    watermarkVideoUrl: "/api/placeholder/100/100",
-    indexImageTopUrl: "/api/placeholder/1920/600",
-    backgroundUrl: "/api/placeholder/1920/1080",
-    avatarDefaultUrl: "/api/placeholder/150/150",
-    coverDefaultUrl: "/api/placeholder/800/300",
-    primaryColor: "#8B5CF6",
-    themePwaColor: "#8B5CF6",
-    navbarBackgroundColor: "#1F2937",
-    navbarTextColor: "#F9FAFB",
-    footerBackgroundColor: "#111827",
-    footerTextColor: "#9CA3AF",
-    buttonStyle: "rounded",
-    customCss: `/* Custom CSS */
-.cyber-text-glow {
-  text-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
-}
-
-.cyber-border {
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
-}
-
-.hover\\:cyber-glow:hover {
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
-  transform: translateY(-2px);
-  transition: all 0.3s ease;
-}`,
-    customJs: `// Custom JavaScript
-console.log('FanzDash Theme Loaded');
-
-// Smooth scrolling for anchor links
-document.addEventListener('DOMContentLoaded', function() {
-  const links = document.querySelectorAll('a[href^="#"]');
-  links.forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
+  // Fetch theme settings from API
+  const { data: themeSettings, isLoading } = useQuery<ThemeSettings>({
+    queryKey: ["/api/admin/theme"],
+    refetchInterval: 60000,
   });
-});`,
-  };
-
-  const isLoading = false;
 
   const updateThemeMutation = useMutation({
     mutationFn: (data: Partial<ThemeSettings>) =>
@@ -151,7 +103,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   const handleThemeChange = (field: keyof ThemeSettings, value: any) => {
-    updateThemeMutation.mutate({ [field]: value });
+    if (themeSettings) {
+      updateThemeMutation.mutate({ [field]: value });
+    }
   };
 
   const handleImageUpload = (
@@ -174,6 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   const exportTheme = () => {
+    if (!themeSettings) return;
+
     const themeExport = {
       colors: {
         primaryColor: themeSettings.primaryColor,
@@ -344,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   <div className="space-y-2">
                     <Label htmlFor="main-logo">Main Logo</Label>
                     <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-4 text-center">
-                      {themeSettings.logoUrl ? (
+                      {themeSettings?.logoUrl ? (
                         <div className="space-y-2">
                           <img
                             src={themeSettings.logoUrl}

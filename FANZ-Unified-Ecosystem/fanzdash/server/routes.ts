@@ -95,6 +95,8 @@ import payoutRoutes from "./routes/payouts";
 import routingRoutes from "./routes/routing";
 import { domainRouter } from "./routing/DomainRouter";
 import complianceRoutes from "./routes/compliance";
+import verificationRoutes from "./routes/verification";
+import creatorVerificationRoutes from "./routes/creatorVerification";
 import aiRoutes from "./routes/ai";
 import paymentAdminRoutes from "./routes/paymentAdmin";
 import customContentRoutes from "./routes/customContentRequests";
@@ -308,6 +310,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount Compliance Monitoring System routes
   app.use('/api/compliance', complianceRoutes);
+
+  // Mount Co-Star Verification routes
+  app.use('/api/costar-verification', verificationRoutes);
+
+  // Mount Content Creator Verification routes
+  app.use('/api/creator-verification', creatorVerificationRoutes);
 
   // Mount AI Services routes (Hugging Face integration)
   app.use('/api/ai', aiRoutes);

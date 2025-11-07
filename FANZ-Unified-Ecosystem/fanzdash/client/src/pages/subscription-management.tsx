@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,96 +44,91 @@ import { SEOHeadTags } from "@/components/SEOHeadTags";
 export default function SubscriptionManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  const subscriptionStats = {
-    totalSubscriptions: 4263,
-    activeSubscriptions: 3847,
-    monthlyRevenue: 127850.0,
-    avgSubscriptionValue: 33.25,
+  // Fetch subscription stats
+  const { data: subscriptionStats } = useQuery({
+    queryKey: ["/api/subscriptions/stats"],
+    refetchInterval: 30000,
+  });
+
+  // Fetch subscription plans
+  const { data: subscriptionPlans = [], isLoading } = useQuery({
+    queryKey: ["/api/subscriptions/plans"],
+    refetchInterval: 60000,
+  });
+
+  // Fetch recent subscribers
+  const { data: recentSubscribers = [] } = useQuery({
+    queryKey: ["/api/subscriptions/recent", statusFilter],
+    refetchInterval: 10000,
+  });
+
+  // Create plan mutation
+  const createPlanMutation = useMutation({
+    mutationFn: (planData: any) =>
+      apiRequest("/api/subscriptions/plans", "POST", planData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/subscriptions/plans"] });
+      toast({
+        title: "Plan Created",
+        description: "Subscription plan created successfully",
+      });
+    },
+  });
+
+  // Edit plan mutation
+  const editPlanMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) =>
+      apiRequest(`/api/subscriptions/plans/${id}`, "PUT", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/subscriptions/plans"] });
+      toast({
+        title: "Plan Updated",
+        description: "Subscription plan updated successfully",
+      });
+    },
+  });
+
+  // Delete plan mutation
+  const deletePlanMutation = useMutation({
+    mutationFn: (id: string) =>
+      apiRequest(`/api/subscriptions/plans/${id}`, "DELETE"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/subscriptions/plans"] });
+      toast({
+        title: "Plan Deleted",
+        description: "Subscription plan deleted successfully",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleCreatePlan = () => {
+    toast({
+      title: "Create Plan",
+      description: "Plan creation form opened",
+    });
   };
 
-  const subscriptionPlans = [
-    {
-      id: "plan-001",
-      name: "Basic Plan",
-      price: 9.99,
-      interval: "monthly",
-      features: ["HD Content", "Basic Chat", "Mobile Access"],
-      subscribers: 1247,
-      status: "active",
-      revenue: 12443.53,
-    },
-    {
-      id: "plan-002",
-      name: "Premium Plan",
-      price: 24.99,
-      interval: "monthly",
-      features: [
-        "4K Content",
-        "Priority Chat",
-        "Exclusive Content",
-        "Video Calls",
-      ],
-      subscribers: 892,
-      status: "active",
-      revenue: 22291.08,
-    },
-    {
-      id: "plan-003",
-      name: "VIP Plan",
-      price: 49.99,
-      interval: "monthly",
-      features: [
-        "All Premium Features",
-        "1-on-1 Sessions",
-        "Custom Content",
-        "Priority Support",
-      ],
-      subscribers: 324,
-      status: "active",
-      revenue: 16196.76,
-    },
-    {
-      id: "plan-004",
-      name: "Annual Premium",
-      price: 199.99,
-      interval: "yearly",
-      features: ["All Premium Features", "2 Months Free", "Exclusive Events"],
-      subscribers: 156,
-      status: "active",
-      revenue: 31198.44,
-    },
-  ];
+  const handleEditPlan = (planId: string) => {
+    toast({
+      title: "Edit Plan",
+      description: `Opening editor for plan ${planId}`,
+    });
+  };
 
-  const recentSubscribers = [
-    {
-      id: "sub-001",
-      user: "alex_fan",
-      plan: "Premium Plan",
-      startDate: "2025-01-04T10:00:00Z",
-      nextBilling: "2025-02-04T10:00:00Z",
-      status: "active",
-      amount: 24.99,
-    },
-    {
-      id: "sub-002",
-      user: "sarah_supporter",
-      plan: "VIP Plan",
-      startDate: "2025-01-03T15:30:00Z",
-      nextBilling: "2025-02-03T15:30:00Z",
-      status: "active",
-      amount: 49.99,
-    },
-    {
-      id: "sub-003",
-      user: "jordan_member",
-      plan: "Basic Plan",
-      startDate: "2025-01-02T09:15:00Z",
-      nextBilling: "2025-02-02T09:15:00Z",
-      status: "cancelled",
-      amount: 9.99,
-    },
-  ];
+  const handleDeletePlan = (planId: string) => {
+    deletePlanMutation.mutate(planId);
+  };
+
+  const handleManageSubscription = (subscriptionId: string) => {
+    toast({
+      title: "Manage Subscription",
+      description: `Opening management for ${subscriptionId}`,
+    });
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -206,7 +204,7 @@ export default function SubscriptionManagementPage() {
                     Active Subscriptions
                   </p>
                   <p className="text-2xl font-bold cyber-text-glow">
-                    {subscriptionStats.activeSubscriptions.toLocaleString()}
+                    {(subscriptionStats?.activeSubscriptions ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <Users className="w-8 h-8 text-primary" />
@@ -222,7 +220,7 @@ export default function SubscriptionManagementPage() {
                     Total Subscriptions
                   </p>
                   <p className="text-2xl font-bold text-blue-400">
-                    {subscriptionStats.totalSubscriptions.toLocaleString()}
+                    {(subscriptionStats?.totalSubscriptions ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <CreditCard className="w-8 h-8 text-blue-400" />
@@ -238,7 +236,7 @@ export default function SubscriptionManagementPage() {
                     Monthly Revenue
                   </p>
                   <p className="text-2xl font-bold text-green-400">
-                    ${subscriptionStats.monthlyRevenue.toLocaleString()}
+                    ${(subscriptionStats?.monthlyRevenue ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <DollarSign className="w-8 h-8 text-green-400" />
@@ -252,7 +250,7 @@ export default function SubscriptionManagementPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Avg Value</p>
                   <p className="text-2xl font-bold text-yellow-400">
-                    ${subscriptionStats.avgSubscriptionValue}
+                    ${subscriptionStats?.avgSubscriptionValue ?? 0}
                   </p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-yellow-400" />
@@ -314,7 +312,12 @@ export default function SubscriptionManagementPage() {
                       </div>
 
                       <div className="flex gap-2 pt-2">
-                        <Button size="sm" variant="outline" className="flex-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => handleEditPlan(plan.id)}
+                        >
                           <Edit className="w-3 h-3 mr-1" />
                           Edit
                         </Button>
@@ -322,6 +325,8 @@ export default function SubscriptionManagementPage() {
                           size="sm"
                           variant="outline"
                           className="flex-1 text-red-400 hover:text-red-300"
+                          onClick={() => handleDeletePlan(plan.id)}
+                          disabled={deletePlanMutation.isPending}
                         >
                           <Trash2 className="w-3 h-3 mr-1" />
                           Delete
@@ -373,7 +378,11 @@ export default function SubscriptionManagementPage() {
                     </TableCell>
                     <TableCell>{getStatusBadge(subscription.status)}</TableCell>
                     <TableCell>
-                      <Button size="sm" variant="outline">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleManageSubscription(subscription.id)}
+                      >
                         Manage
                       </Button>
                     </TableCell>

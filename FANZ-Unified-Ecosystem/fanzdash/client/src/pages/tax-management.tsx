@@ -64,62 +64,11 @@ export default function TaxManagement() {
   const [editingTax, setEditingTax] = useState<TaxRate | null>(null);
   const queryClient = useQueryClient();
 
-  // Mock data demonstrating global tax compliance
-  const taxRates = [
-    {
-      id: "1",
-      name: "UK VAT",
-      rate: "0.20",
-      type: "vat" as const,
-      country: "United Kingdom",
-      state: null,
-      region: "European Union",
-      applicableServices: ["subscriptions", "tips", "content"],
-      isActive: true,
-      effectiveDate: "2024-01-01",
-      expiryDate: null,
-    },
-    {
-      id: "2",
-      name: "California Sales Tax",
-      rate: "0.0825",
-      type: "sales_tax" as const,
-      country: "United States",
-      state: "California",
-      region: "North America",
-      applicableServices: ["subscriptions", "content"],
-      isActive: true,
-      effectiveDate: "2024-01-01",
-      expiryDate: null,
-    },
-    {
-      id: "3",
-      name: "Canada GST/HST",
-      rate: "0.13",
-      type: "gst" as const,
-      country: "Canada",
-      state: "Ontario",
-      region: "North America",
-      applicableServices: ["subscriptions", "tips", "content"],
-      isActive: true,
-      effectiveDate: "2024-01-01",
-      expiryDate: null,
-    },
-    {
-      id: "4",
-      name: "Australia GST",
-      rate: "0.10",
-      type: "gst" as const,
-      country: "Australia",
-      state: null,
-      region: "Asia-Pacific",
-      applicableServices: ["subscriptions", "content"],
-      isActive: true,
-      effectiveDate: "2024-01-01",
-      expiryDate: null,
-    },
-  ];
-  const isLoading = false;
+  // Fetch tax rates from API
+  const { data: taxRates = [], isLoading } = useQuery<TaxRate[]>({
+    queryKey: ["/api/admin/tax-rates"],
+    refetchInterval: 60000,
+  });
 
   const { toast } = useToast();
 

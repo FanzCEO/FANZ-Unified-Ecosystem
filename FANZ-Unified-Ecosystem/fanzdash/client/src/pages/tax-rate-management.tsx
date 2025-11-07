@@ -100,8 +100,8 @@ export default function TaxRateManagement() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Mock tax rates data
-  const taxRates: TaxRate[] = [
+  // Removed mock data - now fetching from API
+  const _taxRates_removed: TaxRate[] = [
     {
       id: "1",
       name: "US Sales Tax",

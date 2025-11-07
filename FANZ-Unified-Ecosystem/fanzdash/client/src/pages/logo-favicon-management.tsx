@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SEOHeadTags, SEOBreadcrumbs } from "@/components/SEOHeadTags";
 import {
   adminPageSEO,
@@ -26,6 +27,7 @@ import {
   Tablet,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 interface LogoConfig {
   mainLogo: string;
@@ -57,33 +59,24 @@ interface LogoPreview {
 export default function LogoFaviconManagement() {
   const seoData = adminPageSEO.logoFaviconManagement;
   const breadcrumbs = generateAdminBreadcrumbs("logo-favicon-management");
-  const [config, setConfig] = useState<LogoConfig>({
-    mainLogo: "/assets/logo.png",
-    darkLogo: "/assets/logo-dark.png",
-    mobileLogo: "/assets/logo-mobile.png",
-    faviconIco: "/assets/favicon.ico",
-    favicon16: "/assets/favicon-16x16.png",
-    favicon32: "/assets/favicon-32x32.png",
-    favicon96: "/assets/favicon-96x96.png",
-    favicon192: "/assets/favicon-192x192.png",
-    appleTouch: "/assets/apple-touch-icon.png",
-    appleTouchSizes: [
-      "57x57",
-      "60x60",
-      "72x72",
-      "76x76",
-      "114x114",
-      "120x120",
-      "144x144",
-      "152x152",
-      "180x180",
-    ],
-    msTileColor: "#603cba",
-    msConfigXml: "/assets/browserconfig.xml",
-    safariPinnedTab: "/assets/safari-pinned-tab.svg",
-    themeColor: "#ffffff",
-    manifestJson: "/assets/manifest.json",
+  const queryClient = useQueryClient();
+
+  // Fetch logo config from API
+  const { data: config, isLoading } = useQuery<LogoConfig>({
+    queryKey: ["/api/admin/logo-config"],
+    refetchInterval: 60000,
   });
+
+  // Update logo config mutation
+  const updateConfigMutation = useMutation({
+    mutationFn: (data: Partial<LogoConfig>) =>
+      apiRequest("/api/admin/logo-config", "PATCH", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/logo-config"] });
+    },
+  });
+
+  const [localConfig, setLocalConfig] = useState<LogoConfig | undefined>(config);
 
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);

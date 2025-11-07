@@ -80,93 +80,17 @@ export default function StorageSettings() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Mock storage providers data
-  const storageProviders: StorageProvider[] = [
-    {
-      id: "1",
-      provider: "default",
-      name: "Local Storage",
-      isDefault: true,
-      isEnabled: true,
-      cdnEnabled: false,
-      forceHttps: true,
-      additionalConfig: {},
-    },
-    {
-      id: "2",
-      provider: "s3",
-      name: "Amazon S3",
-      isDefault: false,
-      isEnabled: true,
-      region: "us-east-1",
-      bucket: "fanzdash-content",
-      accessKey: process.env.VITE_AWS_ACCESS_KEY || '',
-      secretKey: process.env.VITE_AWS_SECRET_KEY || '',
-      endpoint: "s3.amazonaws.com",
-      cdnEnabled: true,
-      cdnUrl: "https://d123456789.cloudfront.net",
-      forceHttps: true,
-      additionalConfig: {},
-    },
-    {
-      id: "3",
-      provider: "dospace",
-      name: "DigitalOcean Spaces",
-      isDefault: false,
-      isEnabled: false,
-      region: "nyc3",
-      bucket: "fanzdash-spaces",
-      accessKey: process.env.VITE_DO_ACCESS_KEY || '',
-      secretKey: process.env.VITE_DO_SECRET_KEY || '',
-      endpoint: "nyc3.digitaloceanspaces.com",
-      cdnEnabled: true,
-      cdnUrl: "https://fanzdash-spaces.nyc3.cdn.digitaloceanspaces.com",
-      forceHttps: true,
-      additionalConfig: {},
-    },
-    {
-      id: "4",
-      provider: "wasabi",
-      name: "Wasabi Hot Cloud Storage",
-      isDefault: false,
-      isEnabled: false,
-      region: "us-east-1",
-      bucket: "fanzdash-wasabi",
-      accessKey: process.env.VITE_WASABI_ACCESS_KEY || '',
-      secretKey: process.env.VITE_WASABI_SECRET_KEY || '',
-      endpoint: "s3.wasabisys.com",
-      cdnEnabled: false,
-      forceHttps: true,
-      additionalConfig: {},
-    },
-    {
-      id: "5",
-      provider: "r2",
-      name: "Cloudflare R2",
-      isDefault: false,
-      isEnabled: false,
-      region: "auto",
-      bucket: "fanzdash-r2",
-      accessKey: process.env.VITE_R2_ACCESS_KEY || '',
-      secretKey: process.env.VITE_R2_SECRET_KEY || '',
-      endpoint: "1234567890abcdef.r2.cloudflarestorage.com",
-      cdnEnabled: true,
-      cdnUrl: "https://fanzdash.example.com",
-      forceHttps: true,
-      additionalConfig: {},
-    },
-  ];
+  // Fetch storage providers from API
+  const { data: storageProviders = [], isLoading } = useQuery<StorageProvider[]>({
+    queryKey: ["/api/admin/storage"],
+    refetchInterval: 30000,
+  });
 
-  // Mock storage stats
-  const storageStats: StorageStats = {
-    totalFiles: 25847,
-    totalSize: 512000000000, // 512 GB
-    bandwidthUsed: 1200000000000, // 1.2 TB
-    requestCount: 1250000,
-    cost: 89.5,
-  };
-
-  const isLoading = false;
+  // Fetch storage stats from API
+  const { data: storageStats } = useQuery<StorageStats>({
+    queryKey: ["/api/admin/storage/stats"],
+    refetchInterval: 60000,
+  });
 
   const updateProviderMutation = useMutation({
     mutationFn: (data: { id: string; updates: Partial<StorageProvider> }) =>
@@ -371,7 +295,7 @@ export default function StorageSettings() {
               <div>
                 <p className="text-sm font-medium">Total Files</p>
                 <p className="text-2xl font-bold">
-                  {storageStats.totalFiles.toLocaleString()}
+                  {storageStats?.totalFiles.toLocaleString() || "0"}
                 </p>
               </div>
             </div>
@@ -385,7 +309,7 @@ export default function StorageSettings() {
               <div>
                 <p className="text-sm font-medium">Storage Used</p>
                 <p className="text-2xl font-bold">
-                  {formatFileSize(storageStats.totalSize)}
+                  {storageStats ? formatFileSize(storageStats.totalSize) : "0 GB"}
                 </p>
               </div>
             </div>
@@ -399,7 +323,7 @@ export default function StorageSettings() {
               <div>
                 <p className="text-sm font-medium">Bandwidth</p>
                 <p className="text-2xl font-bold">
-                  {formatFileSize(storageStats.bandwidthUsed)}
+                  {storageStats ? formatFileSize(storageStats.bandwidthUsed) : "0 GB"}
                 </p>
               </div>
             </div>
@@ -413,7 +337,7 @@ export default function StorageSettings() {
               <div>
                 <p className="text-sm font-medium">Monthly Cost</p>
                 <p className="text-2xl font-bold">
-                  ${storageStats.cost.toFixed(2)}
+                  ${storageStats?.cost.toFixed(2) || "0.00"}
                 </p>
               </div>
             </div>
@@ -908,7 +832,7 @@ export default function StorageSettings() {
                   <Separator />
                   <div className="flex items-center justify-between font-medium">
                     <span>Total Monthly</span>
-                    <span>${storageStats.cost.toFixed(2)}</span>
+                    <span>${storageStats?.cost.toFixed(2) || "0.00"}</span>
                   </div>
                 </div>
               </CardContent>

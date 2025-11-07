@@ -109,119 +109,29 @@ export default function StoriesManagement() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Mock data
-  const storySettings: StorySettings = {
-    id: "1",
-    storyStatus: true,
-    storyImage: true,
-    storyText: true,
-    storyVideo: true,
-    maxVideoLength: 30,
-    autoDeleteAfter: 24,
-    allowDownload: false,
-  };
+  // Fetch story settings from API
+  const { data: storySettings } = useQuery<StorySettings>({
+    queryKey: ["/api/admin/stories/settings"],
+    refetchInterval: 60000,
+  });
 
-  const storyBackgrounds: StoryBackground[] = [
-    {
-      id: "1",
-      name: "Gradient Blue",
-      imageUrl: "/api/placeholder/400/800",
-      category: "gradients",
-      isActive: true,
-      createdAt: "2025-01-15T10:00:00Z",
-    },
-    {
-      id: "2",
-      name: "Sunset Beach",
-      imageUrl: "/api/placeholder/400/800",
-      category: "nature",
-      isActive: true,
-      createdAt: "2025-01-14T15:30:00Z",
-    },
-    {
-      id: "3",
-      name: "Neon City",
-      imageUrl: "/api/placeholder/400/800",
-      category: "urban",
-      isActive: true,
-      createdAt: "2025-01-13T12:00:00Z",
-    },
-  ];
+  // Fetch story backgrounds from API
+  const { data: storyBackgrounds = [] } = useQuery<StoryBackground[]>({
+    queryKey: ["/api/admin/stories/backgrounds"],
+    refetchInterval: 60000,
+  });
 
-  const storyFonts: StoryFont[] = [
-    {
-      id: "1",
-      name: "Roboto",
-      fontFamily: "Roboto, sans-serif",
-      googleFontName: "Roboto",
-      isActive: true,
-      createdAt: "2025-01-15T10:00:00Z",
-    },
-    {
-      id: "2",
-      name: "Open Sans",
-      fontFamily: "Open Sans, sans-serif",
-      googleFontName: "Open Sans",
-      isActive: true,
-      createdAt: "2025-01-14T15:30:00Z",
-    },
-    {
-      id: "3",
-      name: "Playfair Display",
-      fontFamily: "Playfair Display, serif",
-      googleFontName: "Playfair Display",
-      isActive: true,
-      createdAt: "2025-01-13T12:00:00Z",
-    },
-  ];
+  // Fetch story fonts from API
+  const { data: storyFonts = [] } = useQuery<StoryFont[]>({
+    queryKey: ["/api/admin/stories/fonts"],
+    refetchInterval: 60000,
+  });
 
-  const storyPosts: StoryPost[] = [
-    {
-      id: "1",
-      userId: "user_1",
-      username: "sarah_model",
-      title: "Behind the scenes",
-      mediaType: "image",
-      mediaUrl: "/api/placeholder/300/600",
-      backgroundImageUrl: storyBackgrounds[0].imageUrl,
-      duration: 24,
-      viewCount: 1250,
-      isActive: true,
-      expiresAt: "2025-01-16T10:00:00Z",
-      createdAt: "2025-01-15T10:00:00Z",
-    },
-    {
-      id: "2",
-      userId: "user_2",
-      username: "alex_creator",
-      textContent: "New content coming soon! 🔥",
-      mediaType: "text",
-      backgroundColor: "#FF6B6B",
-      fontFamily: "Roboto, sans-serif",
-      fontSize: 24,
-      textColor: "#FFFFFF",
-      duration: 24,
-      viewCount: 890,
-      isActive: true,
-      expiresAt: "2025-01-16T15:30:00Z",
-      createdAt: "2025-01-15T15:30:00Z",
-    },
-    {
-      id: "3",
-      userId: "user_3",
-      username: "maya_performer",
-      title: "Live stream preview",
-      mediaType: "video",
-      mediaUrl: "/api/placeholder/300/600",
-      duration: 24,
-      viewCount: 2100,
-      isActive: true,
-      expiresAt: "2025-01-16T12:00:00Z",
-      createdAt: "2025-01-15T12:00:00Z",
-    },
-  ];
-
-  const isLoading = false;
+  // Fetch story posts from API
+  const { data: storyPosts = [], isLoading } = useQuery<StoryPost[]>({
+    queryKey: ["/api/admin/stories/posts"],
+    refetchInterval: 10000,
+  });
 
   const updateSettingsMutation = useMutation({
     mutationFn: (data: Partial<StorySettings>) =>
@@ -424,7 +334,7 @@ export default function StoriesManagement() {
                 </div>
                 <Switch
                   id="story-status"
-                  checked={storySettings.storyStatus}
+                  checked={storySettings?.storyStatus ?? false}
                   onCheckedChange={(checked) =>
                     handleSettingsChange("storyStatus", checked)
                   }
@@ -444,7 +354,7 @@ export default function StoriesManagement() {
                   </div>
                   <Switch
                     id="story-image"
-                    checked={storySettings.storyImage}
+                    checked={storySettings?.storyImage ?? false}
                     onCheckedChange={(checked) =>
                       handleSettingsChange("storyImage", checked)
                     }
@@ -461,7 +371,7 @@ export default function StoriesManagement() {
                   </div>
                   <Switch
                     id="story-text"
-                    checked={storySettings.storyText}
+                    checked={storySettings?.storyText ?? false}
                     onCheckedChange={(checked) =>
                       handleSettingsChange("storyText", checked)
                     }
@@ -478,7 +388,7 @@ export default function StoriesManagement() {
                   </div>
                   <Switch
                     id="story-video"
-                    checked={storySettings.storyVideo}
+                    checked={storySettings?.storyVideo ?? false}
                     onCheckedChange={(checked) =>
                       handleSettingsChange("storyVideo", checked)
                     }
@@ -493,7 +403,7 @@ export default function StoriesManagement() {
                     Max Video Length (seconds)
                   </Label>
                   <Select
-                    value={storySettings.maxVideoLength.toString()}
+                    value={(storySettings?.maxVideoLength ?? 30).toString()}
                     onValueChange={(value) =>
                       handleSettingsChange("maxVideoLength", parseInt(value))
                     }
@@ -514,7 +424,7 @@ export default function StoriesManagement() {
                 <div className="space-y-2">
                   <Label htmlFor="auto-delete">Auto Delete After (hours)</Label>
                   <Select
-                    value={storySettings.autoDeleteAfter.toString()}
+                    value={(storySettings?.autoDeleteAfter ?? 24).toString()}
                     onValueChange={(value) =>
                       handleSettingsChange("autoDeleteAfter", parseInt(value))
                     }
@@ -542,7 +452,7 @@ export default function StoriesManagement() {
                 </div>
                 <Switch
                   id="allow-download"
-                  checked={storySettings.allowDownload}
+                  checked={storySettings?.allowDownload ?? false}
                   onCheckedChange={(checked) =>
                     handleSettingsChange("allowDownload", checked)
                   }
@@ -629,7 +539,7 @@ export default function StoriesManagement() {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          {storySettings.allowDownload && (
+                          {storySettings?.allowDownload && (
                             <Button
                               variant="outline"
                               size="sm"

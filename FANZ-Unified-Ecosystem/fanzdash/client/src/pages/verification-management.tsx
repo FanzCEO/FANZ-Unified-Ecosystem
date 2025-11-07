@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,56 +38,56 @@ export default function VerificationManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  const verificationStats = {
-    pendingReviews: 47,
-    approvedToday: 23,
-    rejectedToday: 5,
-    totalVerified: 8920,
+  // Fetch verification stats
+  const { data: verificationStats } = useQuery({
+    queryKey: ["/api/verification/stats"],
+    refetchInterval: 10000,
+  });
+
+  // Fetch verification requests
+  const { data: verificationRequests = [], isLoading } = useQuery({
+    queryKey: ["/api/verification/requests"],
+    refetchInterval: 5000,
+  });
+
+  // Approve verification mutation
+  const approveMutation = useMutation({
+    mutationFn: (requestId: string) =>
+      apiRequest(`/api/verification/${requestId}/approve`, "POST"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/verification/requests"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/verification/stats"] });
+      toast({
+        title: "Verification Approved",
+        description: "The verification request has been approved successfully",
+      });
+    },
+  });
+
+  // Reject verification mutation
+  const rejectMutation = useMutation({
+    mutationFn: (requestId: string) =>
+      apiRequest(`/api/verification/${requestId}/reject`, "POST"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/verification/requests"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/verification/stats"] });
+      toast({
+        title: "Verification Rejected",
+        description: "The verification request has been rejected",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleReview = (requestId: string) => {
+    toast({
+      title: "Opening Review",
+      description: `Opening detailed review for ${requestId}`,
+    });
   };
-
-  const verificationRequests = [
-    {
-      id: "VER-001234",
-      user: "sarah_creator",
-      type: "Identity Verification",
-      status: "pending",
-      submittedDate: "2025-01-04T10:30:00Z",
-      documentType: "Government ID",
-      priority: "high",
-      reviewedBy: null,
-    },
-    {
-      id: "VER-001235",
-      user: "alex_model",
-      type: "Age Verification",
-      status: "approved",
-      submittedDate: "2025-01-04T09:15:00Z",
-      documentType: "Passport",
-      priority: "normal",
-      reviewedBy: "admin_reviewer",
-    },
-    {
-      id: "VER-001236",
-      user: "jordan_creator",
-      type: "Address Verification",
-      status: "pending",
-      submittedDate: "2025-01-04T08:45:00Z",
-      documentType: "Utility Bill",
-      priority: "normal",
-      reviewedBy: null,
-    },
-    {
-      id: "VER-001237",
-      user: "mike_performer",
-      type: "Business Verification",
-      status: "rejected",
-      submittedDate: "2025-01-03T16:20:00Z",
-      documentType: "Business License",
-      priority: "low",
-      reviewedBy: "admin_reviewer",
-    },
-  ];
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -167,7 +170,7 @@ export default function VerificationManagementPage() {
                     Pending Reviews
                   </p>
                   <p className="text-2xl font-bold cyber-text-glow">
-                    {verificationStats.pendingReviews}
+                    {verificationStats?.pendingReviews ?? 0}
                   </p>
                 </div>
                 <Clock className="w-8 h-8 text-yellow-400" />
@@ -183,7 +186,7 @@ export default function VerificationManagementPage() {
                     Approved Today
                   </p>
                   <p className="text-2xl font-bold text-green-400">
-                    {verificationStats.approvedToday}
+                    {verificationStats?.approvedToday ?? 0}
                   </p>
                 </div>
                 <CheckCircle className="w-8 h-8 text-green-400" />
@@ -199,7 +202,7 @@ export default function VerificationManagementPage() {
                     Rejected Today
                   </p>
                   <p className="text-2xl font-bold text-red-400">
-                    {verificationStats.rejectedToday}
+                    {verificationStats?.rejectedToday ?? 0}
                   </p>
                 </div>
                 <XCircle className="w-8 h-8 text-red-400" />
@@ -215,7 +218,7 @@ export default function VerificationManagementPage() {
                     Total Verified
                   </p>
                   <p className="text-2xl font-bold text-blue-400">
-                    {verificationStats.totalVerified.toLocaleString()}
+                    {(verificationStats?.totalVerified ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <UserCheck className="w-8 h-8 text-blue-400" />
@@ -313,7 +316,11 @@ export default function VerificationManagementPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleReview(request.id)}
+                        >
                           <Eye className="w-3 h-3 mr-1" />
                           Review
                         </Button>
@@ -322,10 +329,17 @@ export default function VerificationManagementPage() {
                             <Button
                               size="sm"
                               className="bg-green-600 hover:bg-green-700"
+                              onClick={() => approveMutation.mutate(request.id)}
+                              disabled={approveMutation.isPending}
                             >
                               <CheckCircle className="w-3 h-3" />
                             </Button>
-                            <Button size="sm" variant="destructive">
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => rejectMutation.mutate(request.id)}
+                              disabled={rejectMutation.isPending}
+                            >
                               <XCircle className="w-3 h-3" />
                             </Button>
                           </>

@@ -83,22 +83,19 @@ export default function ShopManagement() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Mock shop settings
-  const shopSettings: ShopSettings = {
-    id: "1",
-    shopEnabled: true,
-    allowFreeItems: false,
-    allowExternalLinks: true,
-    digitalProductsEnabled: true,
-    customContentEnabled: true,
-    physicalProductsEnabled: false,
-    minPriceProduct: "5.00",
-    maxPriceProduct: "500.00",
-    commissionRate: "0.15",
-  };
+  // Fetch shop settings from API
+  const { data: shopSettings, isLoading: settingsLoading } = useQuery<ShopSettings>({
+    queryKey: ["/api/shop/settings"],
+    refetchInterval: 30000,
+  });
 
-  // Mock products data
-  const shopProducts: ShopProduct[] = [
+  // Fetch shop products from API
+  const { data: shopProducts = [], isLoading: productsLoading } = useQuery<ShopProduct[]>({
+    queryKey: ["/api/shop/products"],
+    refetchInterval: 15000,
+  });
+
+  const _removedMockProducts: ShopProduct[] = [
     {
       id: "1",
       sellerId: "creator_1",
