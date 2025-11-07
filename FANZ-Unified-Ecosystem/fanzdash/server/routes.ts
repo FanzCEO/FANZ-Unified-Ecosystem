@@ -105,6 +105,8 @@ import legalRoutes from "./routes/legal";
 import crmRoutes from "./routes/crm";
 import erpRoutes from "./routes/erp";
 import hrRoutes from "./routes/hr";
+import hrComplianceRoutes from "./routes/hrCompliance";
+import adaAccommodationRoutes from "./routes/adaAccommodation";
 
 // Store connected WebSocket clients
 let connectedModerators: Set<WebSocket> = new Set();
@@ -343,6 +345,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount HR routes (Human Resources with recruitment, payroll, performance)
   app.use('/api/hr', hrRoutes);
+
+  // Mount HR Compliance routes (Legal compliance, policies, training)
+  app.use('/api/hr-compliance', hrComplianceRoutes);
+
+  // Mount ADA Accommodation routes (ADA accommodation request management)
+  app.use('/api/ada-accommodation', adaAccommodationRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
