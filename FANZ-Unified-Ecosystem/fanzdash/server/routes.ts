@@ -108,6 +108,11 @@ import hrRoutes from "./routes/hr";
 import hrComplianceRoutes from "./routes/hrCompliance";
 import adaAccommodationRoutes from "./routes/adaAccommodation";
 
+// Import Microservices API Gateway
+import { apiGateway } from "./microservices/APIGateway";
+import { serviceRegistry } from "./microservices/ServiceRegistry";
+import microservicesGatewayRoutes from "./routes/microservicesGateway";
+
 // Store connected WebSocket clients
 let connectedModerators: Set<WebSocket> = new Set();
 
@@ -324,6 +329,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount AI Services routes (Hugging Face integration)
   app.use('/api/ai', aiRoutes);
+
+  // Mount Microservices API Gateway (200+ services across 94 platforms)
+  app.use('/api/gateway', microservicesGatewayRoutes);
 
   // Mount Payment Administration routes (Unified payment management)
   app.use('/api/payment-admin', paymentAdminRoutes);

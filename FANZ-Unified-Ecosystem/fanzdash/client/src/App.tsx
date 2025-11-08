@@ -90,6 +90,7 @@ import QuantumWarRoomSimple from "@/pages/QuantumWarRoomSimple";
 import AnalyticsDashboardPage from "@/pages/analytics-dashboard";
 import AdminConfigPage from "@/pages/admin-config";
 import PlatformManager from "@/pages/platform-manager";
+import MicroservicesDashboard from "@/pages/microservices-dashboard";
 import EcosystemSecurityManagement from "@/pages/ecosystem-security-management";
 import CreatorManagement from "@/pages/creator-management";
 import TubeManagement from "@/pages/tube-management";
@@ -238,6 +239,7 @@ function Router() {
           <Route path="/aeo-configuration" component={AEOConfiguration} />
           <Route path="/settings" component={SettingsPage} />
           <Route path="/platform-manager" component={PlatformManager} />
+          <Route path="/microservices" component={MicroservicesDashboard} />
           <Route path="/ecosystem-security" component={EcosystemSecurityManagement} />
           <Route path="/creator-management" component={CreatorManagement} />
           <Route path="/tube-management" component={TubeManagement} />
