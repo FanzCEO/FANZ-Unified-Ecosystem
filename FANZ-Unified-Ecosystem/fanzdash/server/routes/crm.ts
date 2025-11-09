@@ -4,6 +4,11 @@ import { body, query, param, validationResult } from 'express-validator';
 import { isAuthenticated, requireAdmin, requireModerator } from '../middleware/auth';
 import { documentVault } from '../vault/DocumentVault';
 import rateLimit from 'express-rate-limit';
+import {
+  emailTemplates,
+  proposalTemplates,
+  workflowTemplates
+} from '../services/crmTemplates';
 
 const router = express.Router();
 
@@ -715,6 +720,172 @@ router.get('/analytics/dashboard', isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('Error fetching analytics:', error);
     res.status(500).json({ error: 'Failed to fetch analytics' });
+  }
+});
+
+// ============ TEMPLATES ============
+
+/**
+ * GET /api/crm/templates/email
+ * Get all email templates
+ */
+router.get('/templates/email', isAuthenticated, async (req, res) => {
+  try {
+    const { category } = req.query;
+
+    let filtered = emailTemplates;
+    if (category) {
+      filtered = emailTemplates.filter(t => t.category === category);
+    }
+
+    res.json({
+      templates: filtered,
+      total: filtered.length
+    });
+  } catch (error) {
+    console.error('Error fetching email templates:', error);
+    res.status(500).json({ error: 'Failed to fetch email templates' });
+  }
+});
+
+/**
+ * GET /api/crm/templates/email/:id
+ * Get specific email template by ID
+ */
+router.get('/templates/email/:id', isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const template = emailTemplates.find(t => t.id === id);
+
+    if (!template) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+
+    res.json({ template });
+  } catch (error) {
+    console.error('Error fetching email template:', error);
+    res.status(500).json({ error: 'Failed to fetch email template' });
+  }
+});
+
+/**
+ * POST /api/crm/templates/email/:id/render
+ * Render an email template with provided variables
+ */
+router.post('/templates/email/:id/render',
+  isAuthenticated,
+  [
+    body('variables').isObject().withMessage('Variables must be an object')
+  ],
+  handleValidation,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { variables } = req.body;
+
+      const template = emailTemplates.find(t => t.id === id);
+      if (!template) {
+        return res.status(404).json({ error: 'Template not found' });
+      }
+
+      // Simple template variable substitution
+      let renderedSubject = template.subject;
+      let renderedBody = template.body;
+
+      Object.keys(variables).forEach(key => {
+        const regex = new RegExp(`{{${key}}}`, 'g');
+        renderedSubject = renderedSubject.replace(regex, variables[key]);
+        renderedBody = renderedBody.replace(regex, variables[key]);
+      });
+
+      res.json({
+        template: {
+          id: template.id,
+          name: template.name,
+          category: template.category
+        },
+        rendered: {
+          subject: renderedSubject,
+          body: renderedBody
+        },
+        missingVariables: template.variables.filter(v => !variables[v])
+      });
+    } catch (error) {
+      console.error('Error rendering email template:', error);
+      res.status(500).json({ error: 'Failed to render email template' });
+    }
+  }
+);
+
+/**
+ * GET /api/crm/templates/proposals
+ * Get all proposal templates
+ */
+router.get('/templates/proposals', isAuthenticated, async (req, res) => {
+  try {
+    res.json({
+      templates: proposalTemplates,
+      total: proposalTemplates.length
+    });
+  } catch (error) {
+    console.error('Error fetching proposal templates:', error);
+    res.status(500).json({ error: 'Failed to fetch proposal templates' });
+  }
+});
+
+/**
+ * GET /api/crm/templates/proposals/:id
+ * Get specific proposal template by ID
+ */
+router.get('/templates/proposals/:id', isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const template = proposalTemplates.find(t => t.id === id);
+
+    if (!template) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+
+    res.json({ template });
+  } catch (error) {
+    console.error('Error fetching proposal template:', error);
+    res.status(500).json({ error: 'Failed to fetch proposal template' });
+  }
+});
+
+/**
+ * GET /api/crm/templates/workflows
+ * Get all workflow templates
+ */
+router.get('/templates/workflows', isAuthenticated, async (req, res) => {
+  try {
+    res.json({
+      templates: workflowTemplates,
+      total: workflowTemplates.length
+    });
+  } catch (error) {
+    console.error('Error fetching workflow templates:', error);
+    res.status(500).json({ error: 'Failed to fetch workflow templates' });
+  }
+});
+
+/**
+ * GET /api/crm/templates/workflows/:id
+ * Get specific workflow template by ID
+ */
+router.get('/templates/workflows/:id', isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const template = workflowTemplates.find(t => t.id === id);
+
+    if (!template) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+
+    res.json({ template });
+  } catch (error) {
+    console.error('Error fetching workflow template:', error);
+    res.status(500).json({ error: 'Failed to fetch workflow template' });
   }
 });
 
