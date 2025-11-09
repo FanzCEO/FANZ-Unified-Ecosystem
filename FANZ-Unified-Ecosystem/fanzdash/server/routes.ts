@@ -110,6 +110,7 @@ import adaAccommodationRoutes from "./routes/adaAccommodation";
 import templateRoutes from "./routes/templates";
 import accessManagementRoutes from "./routes/accessManagement";
 import crisisManagementRoutes from "./routes/crisisManagement";
+import pluginManagementRoutes from "./routes/pluginManagement";
 
 // Import Microservices API Gateway
 import { apiGateway } from "./microservices/APIGateway";
@@ -371,6 +372,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount Crisis Management routes (Command center, active crises, threat alerts, response plans)
   app.use('/api/crisis', crisisManagementRoutes);
+
+  // Mount Plugin Management routes (AI-powered plugin installation and adaptation)
+  app.use('/api', pluginManagementRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
