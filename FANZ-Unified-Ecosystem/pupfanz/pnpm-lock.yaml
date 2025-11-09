@@ -220,7 +220,7 @@ importers:
         specifier: ^6.8.1
         version: 6.8.1
       passport:
-        specifier: '>=0.7.0'
+        specifier: ^0.7.0
         version: 0.7.0
       passport-local:
         specifier: ^1.0.0
