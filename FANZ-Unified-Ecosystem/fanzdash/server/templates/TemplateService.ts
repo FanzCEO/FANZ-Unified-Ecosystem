@@ -243,6 +243,52 @@ export class TemplateService {
       generatedDate: this.formatDate(new Date())
     };
   }
+
+  // ============================================
+  // WORKFLOW TEMPLATES
+  // ============================================
+
+  /**
+   * Render content creation workflow
+   */
+  async renderContentCreationWorkflow(variables: TemplateVariables): Promise<string> {
+    return templateEngine.renderAdvanced('workflows/content-creation-workflow.html', variables);
+  }
+
+  /**
+   * Render creator onboarding workflow
+   */
+  async renderCreatorOnboardingWorkflow(variables: TemplateVariables): Promise<string> {
+    return templateEngine.renderAdvanced('workflows/creator-onboarding-workflow.html', variables);
+  }
+
+  /**
+   * Render content approval workflow
+   */
+  async renderContentApprovalWorkflow(variables: TemplateVariables): Promise<string> {
+    return templateEngine.renderAdvanced('workflows/content-approval-workflow.html', variables);
+  }
+
+  /**
+   * Render payout request workflow
+   */
+  async renderPayoutRequestWorkflow(variables: TemplateVariables): Promise<string> {
+    return templateEngine.renderAdvanced('workflows/payout-request-workflow.html', variables);
+  }
+
+  /**
+   * Render marketing campaign workflow
+   */
+  async renderMarketingCampaignWorkflow(variables: TemplateVariables): Promise<string> {
+    return templateEngine.renderAdvanced('workflows/marketing-campaign-workflow.html', variables);
+  }
+
+  /**
+   * Render collaboration agreement workflow
+   */
+  async renderCollaborationAgreementWorkflow(variables: TemplateVariables): Promise<string> {
+    return templateEngine.renderAdvanced('workflows/collaboration-agreement-workflow.html', variables);
+  }
 }
 
 // Export singleton instance

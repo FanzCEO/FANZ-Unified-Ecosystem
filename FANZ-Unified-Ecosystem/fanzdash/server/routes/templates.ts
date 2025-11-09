@@ -260,4 +260,122 @@ router.post('/cache/clear', requireAdmin, (req: Request, res: Response) => {
   }
 });
 
+// ============================================
+// WORKFLOW TEMPLATE ROUTES
+// ============================================
+
+/**
+ * Render content creation workflow
+ * POST /api/templates/workflow/content-creation
+ */
+router.post('/workflow/content-creation', async (req: Request, res: Response) => {
+  try {
+    const { variables } = req.body;
+    const rendered = await templateService.renderContentCreationWorkflow(variables);
+
+    res.setHeader('Content-Type', 'text/html');
+    res.send(rendered);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * Render creator onboarding workflow
+ * POST /api/templates/workflow/onboarding
+ */
+router.post('/workflow/onboarding', async (req: Request, res: Response) => {
+  try {
+    const { variables } = req.body;
+    const rendered = await templateService.renderCreatorOnboardingWorkflow(variables);
+
+    res.setHeader('Content-Type', 'text/html');
+    res.send(rendered);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * Render content approval workflow
+ * POST /api/templates/workflow/approval
+ */
+router.post('/workflow/approval', async (req: Request, res: Response) => {
+  try {
+    const { variables } = req.body;
+    const rendered = await templateService.renderContentApprovalWorkflow(variables);
+
+    res.setHeader('Content-Type', 'text/html');
+    res.send(rendered);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * Render payout request workflow
+ * POST /api/templates/workflow/payout
+ */
+router.post('/workflow/payout', async (req: Request, res: Response) => {
+  try {
+    const { variables } = req.body;
+    const rendered = await templateService.renderPayoutRequestWorkflow(variables);
+
+    res.setHeader('Content-Type', 'text/html');
+    res.send(rendered);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * Render marketing campaign workflow
+ * POST /api/templates/workflow/marketing
+ */
+router.post('/workflow/marketing', async (req: Request, res: Response) => {
+  try {
+    const { variables } = req.body;
+    const rendered = await templateService.renderMarketingCampaignWorkflow(variables);
+
+    res.setHeader('Content-Type', 'text/html');
+    res.send(rendered);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * Render collaboration agreement workflow
+ * POST /api/templates/workflow/collaboration
+ */
+router.post('/workflow/collaboration', async (req: Request, res: Response) => {
+  try {
+    const { variables } = req.body;
+    const rendered = await templateService.renderCollaborationAgreementWorkflow(variables);
+
+    res.setHeader('Content-Type', 'text/html');
+    res.send(rendered);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 export default router;
