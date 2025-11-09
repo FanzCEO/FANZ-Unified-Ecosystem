@@ -170,5 +170,11 @@
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.9"
+  },
+  "pnpm": {
+    "overrides": {
+      "passport": ">=0.7.0",
+      "cookie": ">=0.7.0"
+    }
   }
 }
