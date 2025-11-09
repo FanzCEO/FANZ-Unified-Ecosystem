@@ -109,6 +109,7 @@ import hrComplianceRoutes from "./routes/hrCompliance";
 import adaAccommodationRoutes from "./routes/adaAccommodation";
 import templateRoutes from "./routes/templates";
 import accessManagementRoutes from "./routes/accessManagement";
+import crisisManagementRoutes from "./routes/crisisManagement";
 
 // Import Microservices API Gateway
 import { apiGateway } from "./microservices/APIGateway";
@@ -367,6 +368,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount Access Management routes (RBAC profiles, job templates, onboarding, team invitations)
   app.use('/api/access', accessManagementRoutes);
+
+  // Mount Crisis Management routes (Command center, active crises, threat alerts, response plans)
+  app.use('/api/crisis', crisisManagementRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
