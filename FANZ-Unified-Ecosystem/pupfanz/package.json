@@ -129,5 +129,12 @@
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
+  },
+  "pnpm": {
+    "overrides": {
+      "nanoid": "^5.0.9",
+      "parse-duration": "^2.1.3",
+      "esbuild": ">=0.25.0"
+    }
   }
 }
