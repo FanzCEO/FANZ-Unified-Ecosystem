@@ -47,6 +47,11 @@ import {
   Boxes,
   Settings,
   PieChart,
+  Mail,
+  Copy,
+  FileCode,
+  Workflow,
+  Eye,
 } from "lucide-react";
 
 interface InventoryItem {
@@ -175,6 +180,8 @@ export default function ERPSystem() {
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddProject, setShowAddProject] = useState(false);
   const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
+  const [templateType, setTemplateType] = useState<string>("");
 
   // Fetch inventory
   const { data: inventory = [] } = useQuery<InventoryItem[]>({
@@ -214,6 +221,22 @@ export default function ERPSystem() {
   // Fetch budgets
   const { data: budgets = [] } = useQuery<Budget[]>({
     queryKey: ["/api/erp/budgets"],
+  });
+
+  // Fetch templates (from CRM endpoints)
+  const { data: emailTemplates = [] } = useQuery<any[]>({
+    queryKey: ["/api/crm/templates/email"],
+    refetchInterval: 30000,
+  });
+
+  const { data: proposalTemplates = [] } = useQuery<any[]>({
+    queryKey: ["/api/crm/templates/proposals"],
+    refetchInterval: 30000,
+  });
+
+  const { data: workflowTemplates = [] } = useQuery<any[]>({
+    queryKey: ["/api/crm/templates/workflows"],
+    refetchInterval: 30000,
   });
 
   // Create inventory item mutation
@@ -358,6 +381,7 @@ export default function ERPSystem() {
             <TabsTrigger value="financials">Financials</TabsTrigger>
             <TabsTrigger value="purchasing">Purchasing</TabsTrigger>
             <TabsTrigger value="budgets">Budgets</TabsTrigger>
+            <TabsTrigger value="templates">Templates</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
@@ -987,6 +1011,102 @@ export default function ERPSystem() {
               </div>
             </Card>
           </TabsContent>
+
+          {/* Templates Tab - Same templates from CRM */}
+          <TabsContent value="templates" className="space-y-4">
+            <Card className="cyber-card p-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-cyan-400" />
+                  <h3 className="text-xl font-bold">Email Templates</h3>
+                  <Badge variant="outline">{emailTemplates.length}</Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {emailTemplates.map((template) => (
+                    <div key={template.id} className="cyber-card p-4 hover:bg-gray-800/50 transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-semibold">{template.name}</h4>
+                          <Badge variant="outline" className="mt-1 text-xs">{template.category}</Badge>
+                        </div>
+                        <FileCode className="h-5 w-5 text-cyan-400" />
+                      </div>
+                      <p className="text-sm text-gray-400 mb-3">Subject: {template.subject}</p>
+                      <p className="text-xs text-gray-500 mb-3 line-clamp-2">{template.body}</p>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => { setSelectedTemplate(template); setTemplateType("email"); }}>
+                          <Eye className="h-4 w-4 mr-1" />Preview
+                        </Button>
+                        <Button size="sm" onClick={() => { navigator.clipboard.writeText(template.body); toast({ title: "Template copied" }); }}>
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+
+            <Card className="cyber-card p-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-purple-400" />
+                  <h3 className="text-xl font-bold">Proposal Templates</h3>
+                  <Badge variant="outline">{proposalTemplates.length}</Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {proposalTemplates.map((template) => (
+                    <div key={template.id} className="cyber-card p-4 hover:bg-gray-800/50 transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-semibold">{template.name}</h4>
+                          <Badge variant="outline" className="mt-1 text-xs">{template.type}</Badge>
+                        </div>
+                        <FileText className="h-5 w-5 text-purple-400" />
+                      </div>
+                      <p className="text-sm text-gray-400 mb-3">{template.description}</p>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => { setSelectedTemplate(template); setTemplateType("proposal"); }}>
+                          <Eye className="h-4 w-4 mr-1" />Preview
+                        </Button>
+                        <Button size="sm" onClick={() => toast({ title: "Template ready" })}>Use Template</Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+
+            <Card className="cyber-card p-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Workflow className="h-5 w-5 text-green-400" />
+                  <h3 className="text-xl font-bold">Workflow Templates</h3>
+                  <Badge variant="outline">{workflowTemplates.length}</Badge>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {workflowTemplates.map((template) => (
+                    <div key={template.id} className="cyber-card p-4 hover:bg-gray-800/50 transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-semibold">{template.name}</h4>
+                          <Badge variant="outline" className="mt-1 text-xs">{template.trigger}</Badge>
+                        </div>
+                        <Workflow className="h-5 w-5 text-green-400" />
+                      </div>
+                      <p className="text-sm text-gray-400 mb-3">{template.description}</p>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => { setSelectedTemplate(template); setTemplateType("workflow"); }}>
+                          <Eye className="h-4 w-4 mr-1" />Preview
+                        </Button>
+                        <Button size="sm" onClick={() => toast({ title: "Workflow activated" })}>Activate</Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Add Inventory Item Dialog */}
@@ -1268,6 +1388,89 @@ export default function ERPSystem() {
                 <Button type="submit">Record Transaction</Button>
               </DialogFooter>
             </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Template Preview Dialog - Reused from CRM */}
+        <Dialog open={selectedTemplate !== null} onOpenChange={(open) => !open && setSelectedTemplate(null)}>
+          <DialogContent className="cyber-card max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                {templateType === "email" && <Mail className="h-5 w-5 text-cyan-400" />}
+                {templateType === "proposal" && <FileText className="h-5 w-5 text-purple-400" />}
+                {templateType === "workflow" && <Workflow className="h-5 w-5 text-green-400" />}
+                {selectedTemplate?.name}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              {templateType === "email" && selectedTemplate && (
+                <>
+                  <div>
+                    <Label>Subject</Label>
+                    <div className="cyber-card p-3 mt-1"><p className="text-sm">{selectedTemplate.subject}</p></div>
+                  </div>
+                  <div>
+                    <Label>Body</Label>
+                    <div className="cyber-card p-3 mt-1"><pre className="text-sm whitespace-pre-wrap font-sans">{selectedTemplate.body}</pre></div>
+                  </div>
+                  {selectedTemplate.variables?.length > 0 && (
+                    <div>
+                      <Label>Variables</Label>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {selectedTemplate.variables.map((v: string, idx: number) => (
+                          <Badge key={idx} variant="outline">{"{{"}{v}{"}}"}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+              {templateType === "proposal" && selectedTemplate && (
+                <>
+                  <div><Label>Description</Label><p className="text-sm text-gray-400 mt-1">{selectedTemplate.description}</p></div>
+                  {selectedTemplate.sections?.length > 0 && (
+                    <div>
+                      <Label>Sections</Label>
+                      <div className="space-y-3 mt-2">
+                        {selectedTemplate.sections.map((section: any, idx: number) => (
+                          <div key={idx} className="cyber-card p-4">
+                            <h4 className="font-semibold text-sm mb-2">{section.title}</h4>
+                            <pre className="text-xs text-gray-400 whitespace-pre-wrap font-sans">{section.content}</pre>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+              {templateType === "workflow" && selectedTemplate && (
+                <>
+                  <div><Label>Description</Label><p className="text-sm text-gray-400 mt-1">{selectedTemplate.description}</p></div>
+                  {selectedTemplate.steps?.length > 0 && (
+                    <div>
+                      <Label>Steps</Label>
+                      <div className="space-y-2 mt-2">
+                        {selectedTemplate.steps.map((step: any, idx: number) => (
+                          <div key={idx} className="cyber-card p-3 flex items-start gap-3">
+                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500/20 text-green-400 text-sm font-bold">{idx + 1}</div>
+                            <div className="flex-1">
+                              <p className="font-semibold text-sm">{step.action}</p>
+                              {step.condition && <p className="text-xs text-gray-400 mt-1">Condition: {step.condition}</p>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setSelectedTemplate(null)}>Close</Button>
+              <Button onClick={() => { if (templateType === "email") navigator.clipboard.writeText(selectedTemplate.body); toast({ title: templateType === "email" ? "Copied" : "Ready" }); setSelectedTemplate(null); }}>
+                <Copy className="h-4 w-4 mr-2" />{templateType === "email" ? "Copy" : "Use"}
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
