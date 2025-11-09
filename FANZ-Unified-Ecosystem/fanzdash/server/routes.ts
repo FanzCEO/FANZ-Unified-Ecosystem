@@ -107,6 +107,7 @@ import erpRoutes from "./routes/erp";
 import hrRoutes from "./routes/hr";
 import hrComplianceRoutes from "./routes/hrCompliance";
 import adaAccommodationRoutes from "./routes/adaAccommodation";
+import templateRoutes from "./routes/templates";
 
 // Import Microservices API Gateway
 import { apiGateway } from "./microservices/APIGateway";
@@ -359,6 +360,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount ADA Accommodation routes (ADA accommodation request management)
   app.use('/api/ada-accommodation', adaAccommodationRoutes);
+
+  // Mount Template Management routes (Financial, Email, SMS, Budget, Inventory templates)
+  app.use('/api/templates', templateRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
