@@ -49,6 +49,9 @@ import {
   Tag,
   MessageSquare,
   Activity,
+  Copy,
+  FileCode,
+  Workflow,
 } from "lucide-react";
 
 interface Lead {
@@ -162,6 +165,8 @@ export default function CRMSystem() {
   const [showAddClient, setShowAddClient] = useState(false);
   const [showAddDeal, setShowAddDeal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
+  const [templateType, setTemplateType] = useState<string>("");
 
   // Fetch leads
   const { data: leads = [] } = useQuery<Lead[]>({
@@ -196,6 +201,22 @@ export default function CRMSystem() {
   // Fetch proposals
   const { data: proposals = [] } = useQuery<Proposal[]>({
     queryKey: ["/api/crm/proposals"],
+    refetchInterval: 30000,
+  });
+
+  // Fetch templates
+  const { data: emailTemplates = [] } = useQuery<any[]>({
+    queryKey: ["/api/crm/templates/email"],
+    refetchInterval: 30000,
+  });
+
+  const { data: proposalTemplates = [] } = useQuery<any[]>({
+    queryKey: ["/api/crm/templates/proposals"],
+    refetchInterval: 30000,
+  });
+
+  const { data: workflowTemplates = [] } = useQuery<any[]>({
+    queryKey: ["/api/crm/templates/workflows"],
     refetchInterval: 30000,
   });
 
@@ -434,6 +455,7 @@ export default function CRMSystem() {
             <TabsTrigger value="proposals">Proposals</TabsTrigger>
             <TabsTrigger value="tasks">Tasks</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
+            <TabsTrigger value="templates">Templates</TabsTrigger>
           </TabsList>
 
           {/* Pipeline Tab */}
@@ -813,6 +835,235 @@ export default function CRMSystem() {
               </div>
             </Card>
           </TabsContent>
+
+          {/* Templates Tab */}
+          <TabsContent value="templates" className="space-y-4">
+            {/* Email Templates */}
+            <Card className="cyber-card p-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-5 w-5 text-cyan-400" />
+                    <h3 className="text-xl font-bold">Email Templates</h3>
+                    <Badge variant="outline">{emailTemplates.length}</Badge>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {emailTemplates.map((template) => (
+                    <div key={template.id} className="cyber-card p-4 hover:bg-gray-800/50 transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-semibold">{template.name}</h4>
+                          <Badge variant="outline" className="mt-1 text-xs">
+                            {template.category}
+                          </Badge>
+                        </div>
+                        <FileCode className="h-5 w-5 text-cyan-400" />
+                      </div>
+                      <p className="text-sm text-gray-400 mb-3">
+                        Subject: {template.subject}
+                      </p>
+                      <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+                        {template.body}
+                      </p>
+                      {template.variables && template.variables.length > 0 && (
+                        <div className="mb-3">
+                          <p className="text-xs text-gray-500 mb-1">Variables:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {template.variables.slice(0, 3).map((v: string, idx: number) => (
+                              <Badge key={idx} variant="outline" className="text-xs">
+                                {v}
+                              </Badge>
+                            ))}
+                            {template.variables.length > 3 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{template.variables.length - 3} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => {
+                            setSelectedTemplate(template);
+                            setTemplateType("email");
+                          }}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Preview
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            navigator.clipboard.writeText(template.body);
+                            toast({ title: "Template copied to clipboard" });
+                          }}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  {emailTemplates.length === 0 && (
+                    <div className="col-span-3 text-center text-gray-400 py-8">
+                      No email templates found
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+
+            {/* Proposal Templates */}
+            <Card className="cyber-card p-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-purple-400" />
+                    <h3 className="text-xl font-bold">Proposal Templates</h3>
+                    <Badge variant="outline">{proposalTemplates.length}</Badge>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {proposalTemplates.map((template) => (
+                    <div key={template.id} className="cyber-card p-4 hover:bg-gray-800/50 transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-semibold">{template.name}</h4>
+                          <Badge variant="outline" className="mt-1 text-xs">
+                            {template.type}
+                          </Badge>
+                        </div>
+                        <FileText className="h-5 w-5 text-purple-400" />
+                      </div>
+                      <p className="text-sm text-gray-400 mb-3">{template.description}</p>
+                      {template.sections && template.sections.length > 0 && (
+                        <div className="mb-3">
+                          <p className="text-xs text-gray-500 mb-1">Sections:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {template.sections.slice(0, 4).map((section: any, idx: number) => (
+                              <Badge key={idx} variant="outline" className="text-xs">
+                                {section.title}
+                              </Badge>
+                            ))}
+                            {template.sections.length > 4 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{template.sections.length - 4} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => {
+                            setSelectedTemplate(template);
+                            setTemplateType("proposal");
+                          }}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Preview
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            toast({ title: "Template ready to use" });
+                          }}
+                        >
+                          Use Template
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  {proposalTemplates.length === 0 && (
+                    <div className="col-span-2 text-center text-gray-400 py-8">
+                      No proposal templates found
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+
+            {/* Workflow Templates */}
+            <Card className="cyber-card p-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Workflow className="h-5 w-5 text-green-400" />
+                    <h3 className="text-xl font-bold">Workflow Templates</h3>
+                    <Badge variant="outline">{workflowTemplates.length}</Badge>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {workflowTemplates.map((template) => (
+                    <div key={template.id} className="cyber-card p-4 hover:bg-gray-800/50 transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-semibold">{template.name}</h4>
+                          <Badge variant="outline" className="mt-1 text-xs">
+                            {template.trigger}
+                          </Badge>
+                        </div>
+                        <Workflow className="h-5 w-5 text-green-400" />
+                      </div>
+                      <p className="text-sm text-gray-400 mb-3">{template.description}</p>
+                      {template.steps && template.steps.length > 0 && (
+                        <div className="mb-3">
+                          <p className="text-xs text-gray-500 mb-1">Steps ({template.steps.length}):</p>
+                          <div className="space-y-1">
+                            {template.steps.slice(0, 3).map((step: any, idx: number) => (
+                              <div key={idx} className="flex items-start gap-2 text-xs">
+                                <span className="text-gray-500">{idx + 1}.</span>
+                                <span className="text-gray-400">{step.action}</span>
+                              </div>
+                            ))}
+                            {template.steps.length > 3 && (
+                              <p className="text-xs text-gray-500">
+                                +{template.steps.length - 3} more steps
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => {
+                            setSelectedTemplate(template);
+                            setTemplateType("workflow");
+                          }}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Preview
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            toast({ title: "Workflow activated" });
+                          }}
+                        >
+                          Activate
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  {workflowTemplates.length === 0 && (
+                    <div className="col-span-2 text-center text-gray-400 py-8">
+                      No workflow templates found
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Add Lead Dialog */}
@@ -1099,6 +1350,152 @@ export default function CRMSystem() {
                 </Button>
               </DialogFooter>
             </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Template Preview Dialog */}
+        <Dialog
+          open={selectedTemplate !== null}
+          onOpenChange={(open) => !open && setSelectedTemplate(null)}
+        >
+          <DialogContent className="cyber-card max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                {templateType === "email" && <Mail className="h-5 w-5 text-cyan-400" />}
+                {templateType === "proposal" && <FileText className="h-5 w-5 text-purple-400" />}
+                {templateType === "workflow" && <Workflow className="h-5 w-5 text-green-400" />}
+                {selectedTemplate?.name}
+              </DialogTitle>
+              <DialogDescription>
+                {templateType === "email" && `Category: ${selectedTemplate?.category}`}
+                {templateType === "proposal" && `Type: ${selectedTemplate?.type}`}
+                {templateType === "workflow" && `Trigger: ${selectedTemplate?.trigger}`}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-4">
+              {/* Email Template Preview */}
+              {templateType === "email" && selectedTemplate && (
+                <>
+                  <div>
+                    <Label className="text-sm font-semibold">Subject</Label>
+                    <div className="cyber-card p-3 mt-1">
+                      <p className="text-sm">{selectedTemplate.subject}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-semibold">Body</Label>
+                    <div className="cyber-card p-3 mt-1">
+                      <pre className="text-sm whitespace-pre-wrap font-sans">
+                        {selectedTemplate.body}
+                      </pre>
+                    </div>
+                  </div>
+                  {selectedTemplate.variables && selectedTemplate.variables.length > 0 && (
+                    <div>
+                      <Label className="text-sm font-semibold">Variables</Label>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {selectedTemplate.variables.map((v: string, idx: number) => (
+                          <Badge key={idx} variant="outline">
+                            {"{{"}{v}{"}}"}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Proposal Template Preview */}
+              {templateType === "proposal" && selectedTemplate && (
+                <>
+                  <div>
+                    <Label className="text-sm font-semibold">Description</Label>
+                    <p className="text-sm text-gray-400 mt-1">
+                      {selectedTemplate.description}
+                    </p>
+                  </div>
+                  {selectedTemplate.sections && selectedTemplate.sections.length > 0 && (
+                    <div>
+                      <Label className="text-sm font-semibold">Sections</Label>
+                      <div className="space-y-3 mt-2">
+                        {selectedTemplate.sections.map((section: any, idx: number) => (
+                          <div key={idx} className="cyber-card p-4">
+                            <h4 className="font-semibold text-sm mb-2">{section.title}</h4>
+                            <pre className="text-xs text-gray-400 whitespace-pre-wrap font-sans">
+                              {section.content}
+                            </pre>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Workflow Template Preview */}
+              {templateType === "workflow" && selectedTemplate && (
+                <>
+                  <div>
+                    <Label className="text-sm font-semibold">Description</Label>
+                    <p className="text-sm text-gray-400 mt-1">
+                      {selectedTemplate.description}
+                    </p>
+                  </div>
+                  {selectedTemplate.steps && selectedTemplate.steps.length > 0 && (
+                    <div>
+                      <Label className="text-sm font-semibold">Workflow Steps</Label>
+                      <div className="space-y-2 mt-2">
+                        {selectedTemplate.steps.map((step: any, idx: number) => (
+                          <div key={idx} className="cyber-card p-3 flex items-start gap-3">
+                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500/20 text-green-400 text-sm font-bold flex-shrink-0">
+                              {idx + 1}
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-semibold text-sm">{step.action}</p>
+                              {step.condition && (
+                                <p className="text-xs text-gray-400 mt-1">
+                                  Condition: {step.condition}
+                                </p>
+                              )}
+                              {step.delay && (
+                                <Badge variant="outline" className="mt-2 text-xs">
+                                  Delay: {step.delay}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            <DialogFooter className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setSelectedTemplate(null)}
+              >
+                Close
+              </Button>
+              <Button
+                onClick={() => {
+                  if (templateType === "email" && selectedTemplate) {
+                    navigator.clipboard.writeText(selectedTemplate.body);
+                    toast({ title: "Template copied to clipboard" });
+                  } else {
+                    toast({ title: "Template ready to use" });
+                  }
+                  setSelectedTemplate(null);
+                }}
+                className="bg-gradient-to-r from-cyan-500 to-blue-500"
+              >
+                <Copy className="h-4 w-4 mr-2" />
+                {templateType === "email" ? "Copy Template" : "Use Template"}
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
