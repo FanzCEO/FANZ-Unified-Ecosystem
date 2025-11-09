@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import {
   Scale,
   Shield,
@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 export default function LegalLibrary() {
-  const [, navigate] = useNavigate();
+  const [, setLocation] = useLocation();
   return (
     <div className="min-h-screen bg-black text-white p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -206,7 +206,7 @@ export default function LegalLibrary() {
                   <Button
                     variant="outline"
                     className="border-red-500 text-red-400 hover:bg-red-500/10"
-                    onClick={() => navigate('/content-moderation-hub')}
+                    onClick={() => setLocation('/content-moderation-hub')}
                   >
                     <Shield className="w-4 h-4 mr-2" />
                     CSAM Report
@@ -214,7 +214,7 @@ export default function LegalLibrary() {
                   <Button
                     variant="outline"
                     className="border-orange-500 text-orange-400 hover:bg-orange-500/10"
-                    onClick={() => navigate('/content-moderation-hub')}
+                    onClick={() => setLocation('/content-moderation-hub')}
                   >
                     <FileText className="w-4 h-4 mr-2" />
                     DMCA Takedown
@@ -222,7 +222,7 @@ export default function LegalLibrary() {
                   <Button
                     variant="outline"
                     className="border-purple-500 text-purple-400 hover:bg-purple-500/10"
-                    onClick={() => navigate('/legal-hold-management')}
+                    onClick={() => setLocation('/legal-hold-management')}
                   >
                     <Lock className="w-4 h-4 mr-2" />
                     Legal Hold
@@ -230,7 +230,7 @@ export default function LegalLibrary() {
                   <Button
                     variant="outline"
                     className="border-cyan-500 text-cyan-400 hover:bg-cyan-500/10"
-                    onClick={() => navigate('/crisis-management')}
+                    onClick={() => setLocation('/crisis-management')}
                   >
                     <Eye className="w-4 h-4 mr-2" />
                     Crisis Escalation
