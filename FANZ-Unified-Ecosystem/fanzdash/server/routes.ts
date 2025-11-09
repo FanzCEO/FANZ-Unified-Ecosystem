@@ -112,6 +112,7 @@ import accessManagementRoutes from "./routes/accessManagement";
 import crisisManagementRoutes from "./routes/crisisManagement";
 import pluginManagementRoutes from "./routes/pluginManagement";
 import usersRoutes from "./routes/users";
+import auditRoutes from "./routes/audit";
 
 // Import Microservices API Gateway
 import { apiGateway } from "./microservices/APIGateway";
@@ -379,6 +380,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount User Management routes (Admin and moderator account management)
   app.use('/api/users', usersRoutes);
+
+  // Mount Audit Log routes (System action tracking and security monitoring)
+  app.use('/api/audit', auditRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
