@@ -108,6 +108,7 @@ import hrRoutes from "./routes/hr";
 import hrComplianceRoutes from "./routes/hrCompliance";
 import adaAccommodationRoutes from "./routes/adaAccommodation";
 import templateRoutes from "./routes/templates";
+import accessManagementRoutes from "./routes/accessManagement";
 
 // Import Microservices API Gateway
 import { apiGateway } from "./microservices/APIGateway";
@@ -363,6 +364,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount Template Management routes (Financial, Email, SMS, Budget, Inventory templates)
   app.use('/api/templates', templateRoutes);
+
+  // Mount Access Management routes (RBAC profiles, job templates, onboarding, team invitations)
+  app.use('/api/access', accessManagementRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
