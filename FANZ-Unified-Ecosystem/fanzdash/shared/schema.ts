@@ -4125,3 +4125,192 @@ export type InsertComplianceChecklist = typeof complianceChecklist.$inferInsert;
 
 // Re-export verification schemas from separate file
 export * from "../server/db/schema/verifications";
+
+// ===== ADD-ON MANAGEMENT SYSTEM =====
+
+// Add-On Registry - Master list of all available add-ons
+export const addOnRegistry = pgTable("addon_registry", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  addonKey: varchar("addon_key").unique().notNull(), // e.g., 'whatsapp_2fa', 'interactive_toys'
+  name: varchar("name").notNull(), // Display name
+  description: text("description"),
+  category: varchar("category").notNull(), // 'authentication', 'payment', 'content', 'ai', 'social', etc.
+  sourceProduct: varchar("source_product"), // 'xFans', 'xCams', 'xModel', etc.
+  marketValue: decimal("market_value", { precision: 10, scale: 2 }), // If purchased separately
+
+  // Implementation status
+  implementationStatus: varchar("implementation_status").notNull().default("not_implemented"), // 'implemented', 'partial', 'not_implemented'
+  version: varchar("version").default("1.0.0"),
+
+  // Technical details
+  requiredDependencies: jsonb("required_dependencies").$type<string[]>().default([]),
+  apiEndpoints: jsonb("api_endpoints").$type<string[]>().default([]),
+  databaseTables: jsonb("database_tables").$type<string[]>().default([]),
+  frontendComponents: jsonb("frontend_components").$type<string[]>().default([]),
+
+  // Business logic
+  requiresSetup: boolean("requires_setup").default(false),
+  setupInstructions: text("setup_instructions"),
+  documentationUrl: text("documentation_url"),
+
+  // Availability
+  isAvailable: boolean("is_available").default(true),
+  minimumPlatformVersion: varchar("minimum_platform_version"),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Platform Add-On Configuration - Which add-ons are enabled for which platforms
+export const platformAddOns = pgTable("platform_addons", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  platformId: varchar("platform_id").notNull(), // 'boyfanz', 'girlfanz', etc.
+  addonId: varchar("addon_id").references(() => addOnRegistry.id).notNull(),
+
+  // Enable/Disable
+  isEnabled: boolean("is_enabled").default(false),
+  enabledAt: timestamp("enabled_at"),
+  enabledBy: varchar("enabled_by").references(() => users.id),
+
+  // Configuration
+  config: jsonb("config").default("{}"), // Add-on specific configuration
+
+  // Usage tracking
+  firstUsedAt: timestamp("first_used_at"),
+  lastUsedAt: timestamp("last_used_at"),
+  usageCount: integer("usage_count").default(0),
+
+  // Performance
+  averageResponseTime: integer("average_response_time"), // in ms
+  errorCount: integer("error_count").default(0),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Add-On Usage Analytics
+export const addOnUsageAnalytics = pgTable("addon_usage_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  platformId: varchar("platform_id").notNull(),
+  addonId: varchar("addon_id").references(() => addOnRegistry.id).notNull(),
+
+  // Time period
+  periodStart: timestamp("period_start").notNull(),
+  periodEnd: timestamp("period_end").notNull(),
+  periodType: varchar("period_type").notNull(), // 'hourly', 'daily', 'weekly', 'monthly'
+
+  // Usage metrics
+  totalRequests: integer("total_requests").default(0),
+  successfulRequests: integer("successful_requests").default(0),
+  failedRequests: integer("failed_requests").default(0),
+  averageResponseTime: integer("average_response_time"),
+  peakResponseTime: integer("peak_response_time"),
+
+  // User metrics
+  uniqueUsers: integer("unique_users").default(0),
+  newUsers: integer("new_users").default(0),
+  activeUsers: integer("active_users").default(0),
+
+  // Business metrics
+  revenueGenerated: decimal("revenue_generated", { precision: 12, scale: 2 }),
+  conversions: integer("conversions").default(0),
+
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Add-On Dependencies - Track relationships between add-ons
+export const addOnDependencies = pgTable("addon_dependencies", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  addonId: varchar("addon_id").references(() => addOnRegistry.id).notNull(),
+  dependsOnAddonId: varchar("depends_on_addon_id").references(() => addOnRegistry.id).notNull(),
+  dependencyType: varchar("dependency_type").notNull(), // 'required', 'optional', 'conflicts_with'
+  minimumVersion: varchar("minimum_version"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Feature Flags - Granular feature control
+export const featureFlags = pgTable("feature_flags", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  flagKey: varchar("flag_key").unique().notNull(), // e.g., 'enable_wheel_of_fortune'
+  flagName: varchar("flag_name").notNull(),
+  description: text("description"),
+
+  // Relationship to add-ons
+  addonId: varchar("addon_id").references(() => addOnRegistry.id),
+
+  // Flag configuration
+  isEnabled: boolean("is_enabled").default(false),
+  enabledPlatforms: jsonb("enabled_platforms").$type<string[]>().default([]), // Platform IDs
+  disabledPlatforms: jsonb("disabled_platforms").$type<string[]>().default([]),
+
+  // Rollout strategy
+  rolloutPercentage: integer("rollout_percentage").default(0), // 0-100
+  rolloutStrategy: varchar("rollout_strategy").default("all"), // 'all', 'percentage', 'whitelist'
+  whitelistedUserIds: jsonb("whitelisted_user_ids").$type<string[]>().default([]),
+
+  // Scheduling
+  scheduledEnabledAt: timestamp("scheduled_enabled_at"),
+  scheduledDisabledAt: timestamp("scheduled_disabled_at"),
+
+  // Metadata
+  createdBy: varchar("created_by").references(() => users.id),
+  lastModifiedBy: varchar("last_modified_by").references(() => users.id),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Add-On Feedback/Reviews
+export const addOnFeedback = pgTable("addon_feedback", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  addonId: varchar("addon_id").references(() => addOnRegistry.id).notNull(),
+  platformId: varchar("platform_id").notNull(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+
+  rating: integer("rating"), // 1-5
+  feedback: text("feedback"),
+  feedbackType: varchar("feedback_type"), // 'bug', 'feature_request', 'improvement', 'praise'
+
+  isResolved: boolean("is_resolved").default(false),
+  resolvedBy: varchar("resolved_by").references(() => users.id),
+  resolvedAt: timestamp("resolved_at"),
+  resolution: text("resolution"),
+
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Type exports for Add-On System
+export type AddOnRegistry = typeof addOnRegistry.$inferSelect;
+export type InsertAddOnRegistry = typeof addOnRegistry.$inferInsert;
+export type PlatformAddOn = typeof platformAddOns.$inferSelect;
+export type InsertPlatformAddOn = typeof platformAddOns.$inferInsert;
+export type AddOnUsageAnalytics = typeof addOnUsageAnalytics.$inferSelect;
+export type InsertAddOnUsageAnalytics = typeof addOnUsageAnalytics.$inferInsert;
+export type AddOnDependency = typeof addOnDependencies.$inferSelect;
+export type InsertAddOnDependency = typeof addOnDependencies.$inferInsert;
+export type FeatureFlag = typeof featureFlags.$inferSelect;
+export type InsertFeatureFlag = typeof featureFlags.$inferInsert;
+export type AddOnFeedback = typeof addOnFeedback.$inferSelect;
+export type InsertAddOnFeedback = typeof addOnFeedback.$inferInsert;
+
+// Insert schemas
+export const insertAddOnRegistrySchema = createInsertSchema(addOnRegistry).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPlatformAddOnSchema = createInsertSchema(platformAddOns).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  enabledAt: true,
+  firstUsedAt: true,
+  lastUsedAt: true,
+});
+
+export const insertFeatureFlagSchema = createInsertSchema(featureFlags).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});

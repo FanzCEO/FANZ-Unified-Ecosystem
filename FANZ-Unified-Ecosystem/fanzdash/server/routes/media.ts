@@ -3,11 +3,12 @@ import multer from 'multer';
 import { enhancedMediaHub } from '../media/EnhancedMediaHub.js';
 import rateLimit from 'express-rate-limit';
 import { body, validationResult } from 'express-validator';
+import { createSecureUploadMiddleware } from '../middleware/fileScanningMiddleware';
 
 const router = express.Router();
 
-// Configure multer for file uploads (in-memory storage for processing)
-const upload = multer({
+// Configure secure upload with virus scanning for media files
+const upload = createSecureUploadMiddleware({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 500 * 1024 * 1024, // 500MB limit
@@ -20,7 +21,7 @@ const upload = multer({
       'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
       'audio/mp3', 'audio/wav', 'audio/aac', 'audio/ogg'
     ];
-    
+
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {

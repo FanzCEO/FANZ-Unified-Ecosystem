@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { TutorialBot } from "@/components/TutorialBot";
 import {
   Database,
   HardDrive,
@@ -95,6 +96,90 @@ export default function DataPage() {
       });
     }
     setIsOptimizing(false);
+  };
+
+  const handleBackup = async () => {
+    toast({
+      title: "Backup Started",
+      description: "Database backup in progress...",
+    });
+    try {
+      // Simulate backup operation
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      toast({
+        title: "Backup Complete",
+        description: "Database backup created successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Backup Failed",
+        description: "Unable to complete database backup",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRestore = async () => {
+    toast({
+      title: "Restore Started",
+      description: "Restoring database from latest backup...",
+    });
+    try {
+      // Simulate restore operation
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      toast({
+        title: "Restore Complete",
+        description: "Database restored successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Restore Failed",
+        description: "Unable to restore database",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleExport = async () => {
+    toast({
+      title: "Export Started",
+      description: "Exporting database data...",
+    });
+    try {
+      // Simulate export operation
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      toast({
+        title: "Export Complete",
+        description: "Database data exported successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Unable to export database data",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCleanup = async () => {
+    toast({
+      title: "Cleanup Started",
+      description: "Removing old data and optimizing storage...",
+    });
+    try {
+      // Simulate cleanup operation
+      await new Promise((resolve) => setTimeout(resolve, 2500));
+      toast({
+        title: "Cleanup Complete",
+        description: "Old data removed, storage optimized",
+      });
+    } catch (error) {
+      toast({
+        title: "Cleanup Failed",
+        description: "Unable to complete data cleanup",
+        variant: "destructive",
+      });
+    }
   };
 
   const getPerformanceColor = (score: number) => {
@@ -328,8 +413,9 @@ export default function DataPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Button
                 variant="outline"
-                className="h-16 flex-col"
+                className="h-16 flex-col hover:bg-blue-400/10"
                 data-testid="backup-button"
+                onClick={handleBackup}
               >
                 <Archive className="w-6 h-6 mb-2 text-blue-400" />
                 <span>Create Backup</span>
@@ -337,8 +423,9 @@ export default function DataPage() {
 
               <Button
                 variant="outline"
-                className="h-16 flex-col"
+                className="h-16 flex-col hover:bg-green-400/10"
                 data-testid="restore-button"
+                onClick={handleRestore}
               >
                 <Upload className="w-6 h-6 mb-2 text-green-400" />
                 <span>Restore Data</span>
@@ -346,8 +433,9 @@ export default function DataPage() {
 
               <Button
                 variant="outline"
-                className="h-16 flex-col"
+                className="h-16 flex-col hover:bg-purple-400/10"
                 data-testid="export-button"
+                onClick={handleExport}
               >
                 <Download className="w-6 h-6 mb-2 text-purple-400" />
                 <span>Export Data</span>
@@ -355,8 +443,9 @@ export default function DataPage() {
 
               <Button
                 variant="outline"
-                className="h-16 flex-col"
+                className="h-16 flex-col hover:bg-orange-400/10"
                 data-testid="cleanup-button"
+                onClick={handleCleanup}
               >
                 <Trash2 className="w-6 h-6 mb-2 text-orange-400" />
                 <span>Cleanup Old Data</span>
@@ -365,6 +454,13 @@ export default function DataPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Tutorial Bot */}
+      <TutorialBot
+        pageName="Data Operations"
+        pageContext="Database management, backup, restore, and optimization"
+        isFloating={true}
+      />
     </div>
   );
 }

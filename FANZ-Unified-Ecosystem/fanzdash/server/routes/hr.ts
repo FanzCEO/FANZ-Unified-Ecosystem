@@ -4,11 +4,12 @@ import { body, query, param, validationResult } from 'express-validator';
 import { isAuthenticated, requireAdmin, requireModerator } from '../middleware/auth';
 import { documentVault } from '../vault/DocumentVault';
 import rateLimit from 'express-rate-limit';
+import { createSecureUploadMiddleware } from '../middleware/fileScanningMiddleware';
 
 const router = express.Router();
 
-// Configure multer
-const upload = multer({
+// Configure secure upload with virus scanning
+const upload = createSecureUploadMiddleware({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB

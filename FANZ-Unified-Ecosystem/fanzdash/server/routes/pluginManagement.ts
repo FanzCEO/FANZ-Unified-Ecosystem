@@ -17,11 +17,13 @@ import {
   validatePluginSecurity,
   resolvePluginDependencies,
 } from "../services/pluginManagementService";
+import { createSecureUploadMiddleware } from "../middleware/fileScanningMiddleware";
 
 const router = Router();
 
-// Configure multer for plugin uploads
-const upload = multer({
+// Configure secure upload with virus scanning for plugin uploads
+// CRITICAL: Plugins are executable code and must be thoroughly scanned
+const upload = createSecureUploadMiddleware({
   dest: "./server/plugins/uploads/",
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
   fileFilter: (req, file, cb) => {

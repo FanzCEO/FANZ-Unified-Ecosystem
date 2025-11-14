@@ -9,11 +9,12 @@ import {
   proposalTemplates,
   workflowTemplates
 } from '../services/crmTemplates';
+import { createSecureUploadMiddleware } from '../middleware/fileScanningMiddleware';
 
 const router = express.Router();
 
-// Configure multer for file uploads (memory storage for encryption)
-const upload = multer({
+// Configure secure upload with virus scanning (memory storage for encryption)
+const upload = createSecureUploadMiddleware({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB max

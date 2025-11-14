@@ -1,7 +1,7 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
 import { isAuthenticated, requireAdmin } from '../middleware/auth';
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 
 const router = express.Router();
 
@@ -105,7 +105,7 @@ router.post(
       }
 
       // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await argon2.hash(password);
 
       const newUser = {
         id: `user_${Date.now()}`,

@@ -77,7 +77,7 @@ This proposal includes:
 • Terms and conditions
 
 **Key Highlights:**
-• Estimated Value: ${{deal_value}}
+• Estimated Value: \${{deal_value}}
 • Timeline: {{timeline}}
 • Start Date: {{start_date}}
 
@@ -153,7 +153,7 @@ Best,
 This is a friendly reminder that Invoice #{{invoice_number}} is due on {{due_date}}.
 
 **Invoice Details:**
-• Amount Due: ${{amount_due}}
+• Amount Due: \${{amount_due}}
 • Due Date: {{due_date}}
 • Services: {{services}}
 
@@ -215,12 +215,12 @@ We will deliver {{solution_description}} over a {{timeline}} period.
       },
       {
         title: 'Investment',
-        content: `**Total Investment:** ${{total_amount}}
+        content: `**Total Investment:** \${{total_amount}}
 
 **Payment Schedule:**
-• Deposit (50%): ${{deposit_amount}} - Due upon signing
-• Milestone Payment (25%): ${{milestone_payment}} - Due {{milestone_date}}
-• Final Payment (25%): ${{final_payment}} - Due upon completion
+• Deposit (50%): \${{deposit_amount}} - Due upon signing
+• Milestone Payment (25%): \${{milestone_payment}} - Due {{milestone_date}}
+• Final Payment (25%): \${{final_payment}} - Due upon completion
 
 **Included Services:**
 • {{included_service_1}}
@@ -267,8 +267,8 @@ We will deliver {{solution_description}} over a {{timeline}} period.
       },
       {
         title: 'Investment & ROI',
-        content: `**Monthly Retainer:** ${{monthly_amount}}
-**Total Investment:** ${{total_amount}} ({{duration}} months)
+        content: `**Monthly Retainer:** \${{monthly_amount}}
+**Total Investment:** \${{total_amount}} ({{duration}} months)
 
 **Expected ROI:**
 • {{roi_metric_1}}: {{roi_value_1}}

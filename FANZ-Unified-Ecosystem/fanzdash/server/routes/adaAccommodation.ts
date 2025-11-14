@@ -5,11 +5,12 @@ import { accommodationManager } from '../hr/ADAAccommodationManager';
 import rateLimit from 'express-rate-limit';
 import multer from 'multer';
 import { documentVault } from '../vault/DocumentVault';
+import { createSecureUploadMiddleware } from '../middleware/fileScanningMiddleware';
 
 const router = express.Router();
 
-// Configure multer for medical documentation uploads
-const upload = multer({
+// Configure secure upload with virus scanning for medical documentation
+const upload = createSecureUploadMiddleware({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit for medical docs

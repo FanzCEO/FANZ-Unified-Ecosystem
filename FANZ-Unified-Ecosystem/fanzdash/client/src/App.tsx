@@ -85,6 +85,7 @@ import FutureTechManager from "@/pages/FutureTechManager";
 import AICFODashboard from "@/pages/AICFODashboard";
 import ComplianceCenter from "@/pages/ComplianceCenter";
 import LegalLibrary from "@/pages/legal-library";
+import WikiPage from "@/pages/wiki";
 import QuantumWarRoom from "@/pages/QuantumWarRoom";
 import QuantumWarRoomSimple from "@/pages/QuantumWarRoomSimple";
 import AnalyticsDashboardPage from "@/pages/analytics-dashboard";
@@ -108,6 +109,8 @@ import DocumentManagement from "@/pages/document-management";
 import ESignWorkflow from "@/pages/esign-workflow";
 import AuditTrail from "@/pages/audit-trail";
 import DataLossPrevention from "@/pages/data-loss-prevention";
+import FileSecurityDashboard from "@/pages/file-security-dashboard";
+import BlacklistManagement from "@/pages/blacklist-management";
 
 function Router() {
   return (
@@ -180,6 +183,7 @@ function Router() {
           <Route path="/starz-studio" component={StarzStudioAdmin} />
           <Route path="/compliance-center" component={ComplianceCenter} />
           <Route path="/legal-library" component={LegalLibrary} />
+          <Route path="/wiki" component={WikiPage} />
           <Route path="/quantum-war-room" component={QuantumWarRoomSimple} />
           <Route path="/quantum-war-room-full" component={QuantumWarRoom} />
           <Route path="/blog" component={BlogManagement} />
@@ -257,6 +261,8 @@ function Router() {
           <Route path="/esign-workflow" component={ESignWorkflow} />
           <Route path="/audit-trail" component={AuditTrail} />
           <Route path="/data-loss-prevention" component={DataLossPrevention} />
+          <Route path="/file-security-dashboard" component={FileSecurityDashboard} />
+          <Route path="/blacklist-management" component={BlacklistManagement} />
           <Route component={NotFound} />
         </Switch>
       </main>

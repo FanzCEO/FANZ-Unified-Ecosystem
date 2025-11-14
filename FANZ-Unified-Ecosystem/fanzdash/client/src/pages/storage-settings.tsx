@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { TutorialBot } from "@/components/TutorialBot";
 import {
   HardDrive,
   Cloud,
@@ -51,6 +52,25 @@ interface StorageProvider {
     | "r2"
     | "pushr"
     | "idrive"
+    | "linode"
+    | "gcs"
+    | "azure"
+    | "oracle"
+    | "alibaba"
+    | "ibm"
+    | "scaleway"
+    | "ovh"
+    | "rackspace"
+    | "filebase"
+    | "storj"
+    | "minio"
+    | "contabo"
+    | "hetzner"
+    | "bunny"
+    | "upcloud"
+    | "arvancloud"
+    | "dreamhost"
+    | "ionos"
     | "default";
   name: string;
   isDefault: boolean;
@@ -63,6 +83,16 @@ interface StorageProvider {
   cdnEnabled: boolean;
   cdnUrl?: string;
   forceHttps: boolean;
+  encryptionEnabled: boolean;
+  encryptionAlgorithm?: "AES-256" | "AES-128" | "ChaCha20";
+  encryptionKey?: string;
+  routingPriority: number;
+  routingRules?: {
+    fileTypes?: string[];
+    minSize?: number;
+    maxSize?: number;
+    contentTypes?: string[];
+  };
   additionalConfig: Record<string, any>;
 }
 
@@ -149,53 +179,71 @@ export default function StorageSettings() {
   };
 
   const getProviderIcon = (provider: string) => {
-    switch (provider) {
-      case "default":
-        return <HardDrive className="h-5 w-5 text-gray-600" />;
-      case "s3":
-        return <Cloud className="h-5 w-5 text-orange-500" />;
-      case "dospace":
-        return <Cloud className="h-5 w-5 text-blue-500" />;
-      case "wasabi":
-        return <Cloud className="h-5 w-5 text-green-500" />;
-      case "backblaze":
-        return <Cloud className="h-5 w-5 text-red-500" />;
-      case "vultr":
-        return <Cloud className="h-5 w-5 text-purple-500" />;
-      case "r2":
-        return <Cloud className="h-5 w-5 text-yellow-500" />;
-      case "pushr":
-        return <Cloud className="h-5 w-5 text-pink-500" />;
-      case "idrive":
-        return <Cloud className="h-5 w-5 text-indigo-500" />;
-      default:
-        return <Cloud className="h-5 w-5" />;
-    }
+    const iconMap: Record<string, JSX.Element> = {
+      default: <HardDrive className="h-5 w-5 text-gray-600" />,
+      s3: <Cloud className="h-5 w-5 text-orange-500" />,
+      dospace: <Cloud className="h-5 w-5 text-blue-500" />,
+      wasabi: <Cloud className="h-5 w-5 text-green-500" />,
+      backblaze: <Cloud className="h-5 w-5 text-red-500" />,
+      vultr: <Cloud className="h-5 w-5 text-purple-500" />,
+      r2: <Cloud className="h-5 w-5 text-yellow-500" />,
+      pushr: <Cloud className="h-5 w-5 text-pink-500" />,
+      idrive: <Cloud className="h-5 w-5 text-indigo-500" />,
+      linode: <Cloud className="h-5 w-5 text-teal-500" />,
+      gcs: <Cloud className="h-5 w-5 text-blue-600" />,
+      azure: <Cloud className="h-5 w-5 text-sky-500" />,
+      oracle: <Cloud className="h-5 w-5 text-red-600" />,
+      alibaba: <Cloud className="h-5 w-5 text-orange-600" />,
+      ibm: <Cloud className="h-5 w-5 text-blue-700" />,
+      scaleway: <Cloud className="h-5 w-5 text-purple-600" />,
+      ovh: <Cloud className="h-5 w-5 text-blue-800" />,
+      rackspace: <Cloud className="h-5 w-5 text-red-700" />,
+      filebase: <Cloud className="h-5 w-5 text-emerald-500" />,
+      storj: <Cloud className="h-5 w-5 text-cyan-500" />,
+      minio: <HardDrive className="h-5 w-5 text-pink-600" />,
+      contabo: <Cloud className="h-5 w-5 text-blue-900" />,
+      hetzner: <Cloud className="h-5 w-5 text-rose-500" />,
+      bunny: <Cloud className="h-5 w-5 text-orange-400" />,
+      upcloud: <Cloud className="h-5 w-5 text-violet-500" />,
+      arvancloud: <Cloud className="h-5 w-5 text-lime-500" />,
+      dreamhost: <Cloud className="h-5 w-5 text-green-600" />,
+      ionos: <Cloud className="h-5 w-5 text-blue-400" />,
+    };
+    return iconMap[provider] || <Cloud className="h-5 w-5" />;
   };
 
   const getProviderColor = (provider: string) => {
-    switch (provider) {
-      case "default":
-        return "bg-gray-50 border-gray-200";
-      case "s3":
-        return "bg-orange-50 border-orange-200";
-      case "dospace":
-        return "bg-blue-50 border-blue-200";
-      case "wasabi":
-        return "bg-green-50 border-green-200";
-      case "backblaze":
-        return "bg-red-50 border-red-200";
-      case "vultr":
-        return "bg-purple-50 border-purple-200";
-      case "r2":
-        return "bg-yellow-50 border-yellow-200";
-      case "pushr":
-        return "bg-pink-50 border-pink-200";
-      case "idrive":
-        return "bg-indigo-50 border-indigo-200";
-      default:
-        return "bg-gray-50 border-gray-200";
-    }
+    const colorMap: Record<string, string> = {
+      default: "bg-gray-50 border-gray-200",
+      s3: "bg-orange-50 border-orange-200",
+      dospace: "bg-blue-50 border-blue-200",
+      wasabi: "bg-green-50 border-green-200",
+      backblaze: "bg-red-50 border-red-200",
+      vultr: "bg-purple-50 border-purple-200",
+      r2: "bg-yellow-50 border-yellow-200",
+      pushr: "bg-pink-50 border-pink-200",
+      idrive: "bg-indigo-50 border-indigo-200",
+      linode: "bg-teal-50 border-teal-200",
+      gcs: "bg-blue-50 border-blue-300",
+      azure: "bg-sky-50 border-sky-200",
+      oracle: "bg-red-50 border-red-300",
+      alibaba: "bg-orange-50 border-orange-300",
+      ibm: "bg-blue-50 border-blue-400",
+      scaleway: "bg-purple-50 border-purple-300",
+      ovh: "bg-blue-50 border-blue-500",
+      rackspace: "bg-red-50 border-red-400",
+      filebase: "bg-emerald-50 border-emerald-200",
+      storj: "bg-cyan-50 border-cyan-200",
+      minio: "bg-pink-50 border-pink-300",
+      contabo: "bg-blue-50 border-blue-600",
+      hetzner: "bg-rose-50 border-rose-200",
+      bunny: "bg-orange-50 border-orange-100",
+      upcloud: "bg-violet-50 border-violet-200",
+      arvancloud: "bg-lime-50 border-lime-200",
+      dreamhost: "bg-green-50 border-green-300",
+      ionos: "bg-blue-50 border-blue-100",
+    };
+    return colorMap[provider] || "bg-gray-50 border-gray-200";
   };
 
   const formatFileSize = (bytes: number) => {
@@ -214,7 +262,7 @@ export default function StorageSettings() {
   };
 
   const getSetupInstructions = (provider: string) => {
-    const instructions = {
+    const instructions: Record<string, { title: string; steps: string[]; docsUrl: string }> = {
       s3: {
         title: "Amazon S3 Setup",
         steps: [
@@ -232,7 +280,7 @@ export default function StorageSettings() {
           "Create DigitalOcean account",
           "Go to Spaces section in control panel",
           "Create a new Space in desired region",
-          "Generate API key in API section",
+          "Generate API key (Spaces access keys)",
           "Configure CORS settings if needed",
         ],
         docsUrl: "https://docs.digitalocean.com/products/spaces/",
@@ -243,10 +291,32 @@ export default function StorageSettings() {
           "Create Wasabi account",
           "Create a new bucket",
           "Generate access key and secret key",
-          "Note: Trial accounts may not support public files",
-          "Contact support@wasabi.com to enable public files",
+          "Note endpoint format: s3.wasabisys.com or regional endpoints",
+          "Configure bucket policies for public access if needed",
         ],
-        docsUrl: "https://wasabi.com/wp-content/themes/wasabi/docs/",
+        docsUrl: "https://docs.wasabi.com/",
+      },
+      backblaze: {
+        title: "Backblaze B2 Cloud Storage Setup",
+        steps: [
+          "Create Backblaze account",
+          "Navigate to B2 Cloud Storage",
+          "Create a new bucket",
+          "Generate application key with appropriate permissions",
+          "Note the endpoint and key ID for configuration",
+        ],
+        docsUrl: "https://www.backblaze.com/b2/docs/",
+      },
+      vultr: {
+        title: "Vultr Object Storage Setup",
+        steps: [
+          "Create Vultr account",
+          "Navigate to Object Storage section",
+          "Create a new object storage subscription",
+          "Generate S3-compatible access keys",
+          "Note your endpoint URL (e.g., ewr1.vultrobjects.com)",
+        ],
+        docsUrl: "https://docs.vultr.com/vultr-object-storage",
       },
       r2: {
         title: "Cloudflare R2 Setup",
@@ -254,14 +324,245 @@ export default function StorageSettings() {
           "Create Cloudflare account",
           "Navigate to R2 Object Storage",
           "Create a new R2 bucket",
-          "Generate R2 API token",
-          "Configure custom domain if needed",
+          "Generate R2 API token with read/write permissions",
+          "Configure custom domain or use auto-generated URL",
         ],
         docsUrl: "https://developers.cloudflare.com/r2/",
       },
+      linode: {
+        title: "Linode Object Storage Setup",
+        steps: [
+          "Create Linode account",
+          "Navigate to Object Storage in Cloud Manager",
+          "Create a new bucket in desired cluster",
+          "Generate access key and secret key",
+          "Endpoint format: <cluster>.linodeobjects.com",
+        ],
+        docsUrl: "https://www.linode.com/docs/products/storage/object-storage/",
+      },
+      gcs: {
+        title: "Google Cloud Storage Setup",
+        steps: [
+          "Create Google Cloud Platform account",
+          "Create a new project and enable Cloud Storage API",
+          "Create a storage bucket",
+          "Create service account with Storage Admin role",
+          "Generate and download JSON key file (use as credentials)",
+        ],
+        docsUrl: "https://cloud.google.com/storage/docs",
+      },
+      azure: {
+        title: "Azure Blob Storage Setup",
+        steps: [
+          "Create Microsoft Azure account",
+          "Create a storage account",
+          "Create a container (blob container)",
+          "Get account name and access key from Access Keys section",
+          "Endpoint format: <account>.blob.core.windows.net",
+        ],
+        docsUrl: "https://docs.microsoft.com/en-us/azure/storage/blobs/",
+      },
+      oracle: {
+        title: "Oracle Cloud Object Storage Setup",
+        steps: [
+          "Create Oracle Cloud account",
+          "Navigate to Object Storage",
+          "Create a new bucket",
+          "Generate Customer Secret Keys (S3-compatible)",
+          "Note your namespace and region endpoint",
+        ],
+        docsUrl: "https://docs.oracle.com/en-us/iaas/Content/Object/home.htm",
+      },
+      alibaba: {
+        title: "Alibaba Cloud OSS Setup",
+        steps: [
+          "Create Alibaba Cloud account",
+          "Enable Object Storage Service (OSS)",
+          "Create a new bucket",
+          "Create AccessKey ID and AccessKey Secret in RAM",
+          "Configure bucket ACL and CORS if needed",
+        ],
+        docsUrl: "https://www.alibabacloud.com/help/en/oss/",
+      },
+      ibm: {
+        title: "IBM Cloud Object Storage Setup",
+        steps: [
+          "Create IBM Cloud account",
+          "Create Object Storage service instance",
+          "Create a bucket with desired resiliency",
+          "Generate HMAC credentials (S3-compatible)",
+          "Note endpoint URL for your bucket's location",
+        ],
+        docsUrl: "https://cloud.ibm.com/docs/cloud-object-storage",
+      },
+      scaleway: {
+        title: "Scaleway Object Storage Setup",
+        steps: [
+          "Create Scaleway account",
+          "Navigate to Object Storage",
+          "Create a new bucket in desired region",
+          "Generate API access key and secret key",
+          "Endpoint format: s3.<region>.scw.cloud",
+        ],
+        docsUrl: "https://www.scaleway.com/en/docs/storage/object/",
+      },
+      ovh: {
+        title: "OVHcloud Object Storage Setup",
+        steps: [
+          "Create OVHcloud account",
+          "Create Public Cloud project",
+          "Enable Object Storage (S3-compatible)",
+          "Generate S3 credentials in user management",
+          "Create container and note endpoint URL",
+        ],
+        docsUrl: "https://docs.ovh.com/gb/en/storage/object-storage/",
+      },
+      rackspace: {
+        title: "Rackspace Cloud Files Setup",
+        steps: [
+          "Create Rackspace account",
+          "Navigate to Cloud Files",
+          "Create a container",
+          "Generate API key from Account Settings",
+          "Note your username and region",
+        ],
+        docsUrl: "https://docs.rackspace.com/support/how-to/cloud-files/",
+      },
+      filebase: {
+        title: "Filebase (Web3 Storage) Setup",
+        steps: [
+          "Create Filebase account",
+          "Create a new bucket",
+          "Select decentralized network (IPFS, Storj, Sia, Skynet)",
+          "Generate S3-compatible access key and secret",
+          "Endpoint: s3.filebase.com",
+        ],
+        docsUrl: "https://docs.filebase.com/",
+      },
+      storj: {
+        title: "Storj DCS (Decentralized) Setup",
+        steps: [
+          "Create Storj account",
+          "Create a new bucket",
+          "Generate S3 gateway credentials",
+          "Note gateway endpoint URL",
+          "Configure encryption passphrase for decentralized storage",
+        ],
+        docsUrl: "https://docs.storj.io/",
+      },
+      minio: {
+        title: "MinIO (Self-Hosted) Setup",
+        steps: [
+          "Install MinIO server on your infrastructure",
+          "Start MinIO with desired configuration",
+          "Access MinIO console and create bucket",
+          "Create access key and secret key",
+          "Endpoint is your MinIO server URL (e.g., localhost:9000)",
+        ],
+        docsUrl: "https://min.io/docs/minio/linux/index.html",
+      },
+      contabo: {
+        title: "Contabo Object Storage Setup",
+        steps: [
+          "Create Contabo account",
+          "Order Object Storage in Customer Control Panel",
+          "Create a bucket via S3 API or control panel",
+          "Generate access credentials",
+          "Endpoint format: eu2.contabostorage.com",
+        ],
+        docsUrl: "https://contabo.com/en/object-storage/",
+      },
+      hetzner: {
+        title: "Hetzner Object Storage Setup",
+        steps: [
+          "Create Hetzner Cloud account",
+          "Enable Object Storage in Cloud Console",
+          "Create a new bucket",
+          "Generate S3-compatible credentials",
+          "Endpoint format: fsn1.your-objectstorage.com",
+        ],
+        docsUrl: "https://docs.hetzner.com/storage/object-storage/",
+      },
+      bunny: {
+        title: "Bunny.net Storage Setup",
+        steps: [
+          "Create Bunny.net account",
+          "Navigate to Storage Zones",
+          "Create a new storage zone",
+          "Generate FTP/API password",
+          "Note API access key and storage zone name",
+        ],
+        docsUrl: "https://docs.bunny.net/docs/storage",
+      },
+      upcloud: {
+        title: "UpCloud Object Storage Setup",
+        steps: [
+          "Create UpCloud account",
+          "Enable Object Storage in control panel",
+          "Create a new bucket",
+          "Generate S3-compatible access keys",
+          "Endpoint format: <region>.object.upcloud.com",
+        ],
+        docsUrl: "https://upcloud.com/products/object-storage",
+      },
+      arvancloud: {
+        title: "ArvanCloud Object Storage Setup",
+        steps: [
+          "Create ArvanCloud account",
+          "Navigate to Cloud Storage (S3-compatible)",
+          "Create a new bucket",
+          "Generate access key and secret key",
+          "Endpoint: s3.ir-thr-at1.arvanstorage.com",
+        ],
+        docsUrl: "https://www.arvancloud.com/en/products/cloud-storage",
+      },
+      dreamhost: {
+        title: "DreamHost DreamObjects Setup",
+        steps: [
+          "Create DreamHost account with DreamObjects",
+          "Navigate to DreamObjects in panel",
+          "Create a new bucket",
+          "Generate API keys (S3-compatible)",
+          "Endpoint: objects-us-east-1.dream.io",
+        ],
+        docsUrl: "https://help.dreamhost.com/hc/en-us/sections/203167008-DreamObjects",
+      },
+      ionos: {
+        title: "IONOS Cloud Object Storage Setup",
+        steps: [
+          "Create IONOS Cloud account",
+          "Navigate to Object Storage",
+          "Create a new bucket",
+          "Generate S3-compatible access credentials",
+          "Endpoint format: s3-<region>.ionoscloud.com",
+        ],
+        docsUrl: "https://docs.ionos.com/cloud/managed-services/s3-object-storage",
+      },
+      pushr: {
+        title: "Pushr CDN Storage Setup",
+        steps: [
+          "Create Pushr account",
+          "Navigate to Storage section",
+          "Create a new storage zone",
+          "Generate API credentials",
+          "Configure CDN and storage settings",
+        ],
+        docsUrl: "https://pushr.com/",
+      },
+      idrive: {
+        title: "IDrive e2 Cloud Storage Setup",
+        steps: [
+          "Create IDrive e2 account",
+          "Create a new bucket",
+          "Generate access key and secret key",
+          "Endpoint format: <endpoint-code>.idrivee2.com",
+          "Configure bucket policies as needed",
+        ],
+        docsUrl: "https://www.idrive.com/e2/",
+      },
     };
 
-    return instructions[provider as keyof typeof instructions];
+    return instructions[provider];
   };
 
   return (
@@ -604,6 +905,251 @@ export default function StorageSettings() {
                         )}
                       </div>
 
+                      {/* Encryption Settings */}
+                      <div className="space-y-4 border-t pt-4">
+                        <div className="flex items-center space-x-2">
+                          <Shield className="h-5 w-5 text-green-600" />
+                          <Label className="text-base font-semibold">
+                            Encryption Settings
+                          </Label>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <Label htmlFor={`${provider.provider}-encryption`}>
+                              Enable End-to-End Encryption
+                            </Label>
+                            <p className="text-sm text-muted-foreground">
+                              Encrypt all files before upload (AES-256)
+                            </p>
+                          </div>
+                          <Switch
+                            id={`${provider.provider}-encryption`}
+                            checked={provider.encryptionEnabled || false}
+                            onCheckedChange={(checked) =>
+                              handleProviderUpdate(
+                                provider.id,
+                                "encryptionEnabled",
+                                checked,
+                              )
+                            }
+                            data-testid={`switch-${provider.provider}-encryption`}
+                          />
+                        </div>
+
+                        {provider.encryptionEnabled && (
+                          <div className="space-y-4 bg-green-50 p-4 rounded-lg border border-green-200">
+                            <div className="space-y-2">
+                              <Label htmlFor={`${provider.provider}-encryption-algo`}>
+                                Encryption Algorithm
+                              </Label>
+                              <Select
+                                value={provider.encryptionAlgorithm || "AES-256"}
+                                onValueChange={(value: any) =>
+                                  handleProviderUpdate(
+                                    provider.id,
+                                    "encryptionAlgorithm",
+                                    value,
+                                  )
+                                }
+                              >
+                                <SelectTrigger data-testid={`select-${provider.provider}-encryption-algo`}>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="AES-256">AES-256 (Most Secure)</SelectItem>
+                                  <SelectItem value="AES-128">AES-128 (Balanced)</SelectItem>
+                                  <SelectItem value="ChaCha20">ChaCha20 (Fast)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label htmlFor={`${provider.provider}-encryption-key`}>
+                                Encryption Key (Optional - Auto-generated if blank)
+                              </Label>
+                              <div className="relative">
+                                <Input
+                                  id={`${provider.provider}-encryption-key`}
+                                  type={showSecrets[`${provider.id}-enc`] ? "text" : "password"}
+                                  value={provider.encryptionKey || ""}
+                                  onChange={(e) =>
+                                    handleProviderUpdate(
+                                      provider.id,
+                                      "encryptionKey",
+                                      e.target.value,
+                                    )
+                                  }
+                                  placeholder="Leave blank for auto-generated key"
+                                  data-testid={`input-${provider.provider}-encryption-key`}
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
+                                  onClick={() =>
+                                    setShowSecrets((prev) => ({
+                                      ...prev,
+                                      [`${provider.id}-enc`]: !prev[`${provider.id}-enc`],
+                                    }))
+                                  }
+                                >
+                                  {showSecrets[`${provider.id}-enc`] ? (
+                                    <EyeOff className="h-3 w-3" />
+                                  ) : (
+                                    <Eye className="h-3 w-3" />
+                                  )}
+                                </Button>
+                              </div>
+                              <p className="text-xs text-green-700 flex items-center space-x-1">
+                                <Shield className="h-3 w-3" />
+                                <span>Files are encrypted client-side before upload</span>
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Flow Routing Settings */}
+                      <div className="space-y-4 border-t pt-4">
+                        <div className="flex items-center space-x-2">
+                          <Globe className="h-5 w-5 text-blue-600" />
+                          <Label className="text-base font-semibold">
+                            Flow Routing Rules
+                          </Label>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor={`${provider.provider}-priority`}>
+                            Routing Priority (0-100)
+                          </Label>
+                          <div className="flex items-center space-x-4">
+                            <Input
+                              id={`${provider.provider}-priority`}
+                              type="number"
+                              min="0"
+                              max="100"
+                              value={provider.routingPriority || 50}
+                              onChange={(e) =>
+                                handleProviderUpdate(
+                                  provider.id,
+                                  "routingPriority",
+                                  parseInt(e.target.value),
+                                )
+                              }
+                              className="w-24"
+                              data-testid={`input-${provider.provider}-priority`}
+                            />
+                            <p className="text-sm text-muted-foreground">
+                              Higher priority = preferred for automatic routing
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                          <div className="space-y-2">
+                            <Label htmlFor={`${provider.provider}-file-types`}>
+                              Preferred File Types (comma-separated)
+                            </Label>
+                            <Input
+                              id={`${provider.provider}-file-types`}
+                              type="text"
+                              value={provider.routingRules?.fileTypes?.join(",") || ""}
+                              onChange={(e) =>
+                                handleProviderUpdate(
+                                  provider.id,
+                                  "routingRules",
+                                  {
+                                    ...provider.routingRules,
+                                    fileTypes: e.target.value.split(",").map(t => t.trim()).filter(Boolean),
+                                  },
+                                )
+                              }
+                              placeholder="mp4,mov,avi (for video files)"
+                              data-testid={`input-${provider.provider}-file-types`}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor={`${provider.provider}-content-types`}>
+                              Content MIME Types (comma-separated)
+                            </Label>
+                            <Input
+                              id={`${provider.provider}-content-types`}
+                              type="text"
+                              value={provider.routingRules?.contentTypes?.join(",") || ""}
+                              onChange={(e) =>
+                                handleProviderUpdate(
+                                  provider.id,
+                                  "routingRules",
+                                  {
+                                    ...provider.routingRules,
+                                    contentTypes: e.target.value.split(",").map(t => t.trim()).filter(Boolean),
+                                  },
+                                )
+                              }
+                              placeholder="video/*,image/*"
+                              data-testid={`input-${provider.provider}-content-types`}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor={`${provider.provider}-min-size`}>
+                              Min File Size (MB)
+                            </Label>
+                            <Input
+                              id={`${provider.provider}-min-size`}
+                              type="number"
+                              min="0"
+                              value={provider.routingRules?.minSize || ""}
+                              onChange={(e) =>
+                                handleProviderUpdate(
+                                  provider.id,
+                                  "routingRules",
+                                  {
+                                    ...provider.routingRules,
+                                    minSize: e.target.value ? parseInt(e.target.value) : undefined,
+                                  },
+                                )
+                              }
+                              placeholder="0"
+                              data-testid={`input-${provider.provider}-min-size`}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor={`${provider.provider}-max-size`}>
+                              Max File Size (MB)
+                            </Label>
+                            <Input
+                              id={`${provider.provider}-max-size`}
+                              type="number"
+                              min="0"
+                              value={provider.routingRules?.maxSize || ""}
+                              onChange={(e) =>
+                                handleProviderUpdate(
+                                  provider.id,
+                                  "routingRules",
+                                  {
+                                    ...provider.routingRules,
+                                    maxSize: e.target.value ? parseInt(e.target.value) : undefined,
+                                  },
+                                )
+                              }
+                              placeholder="No limit"
+                              data-testid={`input-${provider.provider}-max-size`}
+                            />
+                          </div>
+                        </div>
+
+                        <p className="text-sm text-blue-700 flex items-center space-x-1">
+                          <AlertTriangle className="h-4 w-4" />
+                          <span>
+                            Files matching these rules will automatically route to this provider
+                          </span>
+                        </p>
+                      </div>
+
                       {/* Actions */}
                       <div className="flex items-center justify-between pt-4 border-t">
                         <div className="flex items-center space-x-4">
@@ -840,6 +1386,13 @@ export default function StorageSettings() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Tutorial Bot */}
+      <TutorialBot
+        pageName="Storage Settings"
+        pageContext="Configure cloud storage providers, encryption, and file routing"
+        isFloating={true}
+      />
     </div>
   );
 }

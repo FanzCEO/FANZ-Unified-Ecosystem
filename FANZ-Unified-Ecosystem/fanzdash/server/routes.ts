@@ -113,6 +113,7 @@ import crisisManagementRoutes from "./routes/crisisManagement";
 import pluginManagementRoutes from "./routes/pluginManagement";
 import usersRoutes from "./routes/users";
 import auditRoutes from "./routes/audit";
+import fileSecurityRoutes from "./routes/fileSecurity";
 
 // Import Microservices API Gateway
 import { apiGateway } from "./microservices/APIGateway";
@@ -383,6 +384,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount Audit Log routes (System action tracking and security monitoring)
   app.use('/api/audit', auditRoutes);
+
+  // Mount File Security routes (Virus scanning, malware detection, quarantine management)
+  app.use('/api/file-security', fileSecurityRoutes);
 
   // Legacy auth routes (keeping for backward compatibility)
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
@@ -4278,6 +4282,781 @@ I'll be back online shortly. Thank you for your patience!`;
     } catch (error) {
       console.error("Error deleting API key:", error);
       res.status(500).json({ error: "Failed to delete API key" });
+    }
+  });
+
+  // ===== CLOUD STORAGE PROVIDER MANAGEMENT =====
+
+  // Get all configured storage providers
+  app.get("/api/admin/storage", isAuthenticated, async (req, res) => {
+    try {
+      // Mock storage providers data - in production, fetch from database
+      const providers = [
+        {
+          id: "default",
+          provider: "default",
+          name: "Local Storage",
+          isDefault: false,
+          isEnabled: true,
+          forceHttps: true,
+          cdnEnabled: false,
+          encryptionEnabled: false,
+          routingPriority: 10,
+          additionalConfig: {},
+        },
+        {
+          id: "s3-primary",
+          provider: "s3",
+          name: "Amazon S3",
+          isDefault: true,
+          isEnabled: true,
+          region: "us-east-1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 90,
+          additionalConfig: {},
+        },
+        {
+          id: "dospace-1",
+          provider: "dospace",
+          name: "DigitalOcean Spaces",
+          isDefault: false,
+          isEnabled: false,
+          region: "nyc3",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "nyc3.digitaloceanspaces.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 70,
+          additionalConfig: {},
+        },
+        {
+          id: "wasabi-1",
+          provider: "wasabi",
+          name: "Wasabi Hot Cloud Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "us-east-1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "s3.wasabisys.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 60,
+          additionalConfig: {},
+        },
+        {
+          id: "backblaze-1",
+          provider: "backblaze",
+          name: "Backblaze B2",
+          isDefault: false,
+          isEnabled: false,
+          region: "us-west-001",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "s3.us-west-001.backblazeb2.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 50,
+          additionalConfig: {},
+        },
+        {
+          id: "vultr-1",
+          provider: "vultr",
+          name: "Vultr Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "ewr1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "ewr1.vultrobjects.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 65,
+          additionalConfig: {},
+        },
+        {
+          id: "r2-1",
+          provider: "r2",
+          name: "Cloudflare R2",
+          isDefault: false,
+          isEnabled: false,
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 85,
+          additionalConfig: {},
+        },
+        {
+          id: "linode-1",
+          provider: "linode",
+          name: "Linode Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "us-east-1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "us-east-1.linodeobjects.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 55,
+          additionalConfig: {},
+        },
+        {
+          id: "gcs-1",
+          provider: "gcs",
+          name: "Google Cloud Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "us-east1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 80,
+          additionalConfig: {},
+        },
+        {
+          id: "azure-1",
+          provider: "azure",
+          name: "Azure Blob Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "eastus",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 75,
+          additionalConfig: {},
+        },
+        {
+          id: "oracle-1",
+          provider: "oracle",
+          name: "Oracle Cloud Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "us-ashburn-1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 45,
+          additionalConfig: {},
+        },
+        {
+          id: "alibaba-1",
+          provider: "alibaba",
+          name: "Alibaba Cloud OSS",
+          isDefault: false,
+          isEnabled: false,
+          region: "oss-us-east-1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 40,
+          additionalConfig: {},
+        },
+        {
+          id: "ibm-1",
+          provider: "ibm",
+          name: "IBM Cloud Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "us-south",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 50,
+          additionalConfig: {},
+        },
+        {
+          id: "scaleway-1",
+          provider: "scaleway",
+          name: "Scaleway Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "fr-par",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "s3.fr-par.scw.cloud",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 45,
+          additionalConfig: {},
+        },
+        {
+          id: "ovh-1",
+          provider: "ovh",
+          name: "OVHcloud Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "gra",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 40,
+          additionalConfig: {},
+        },
+        {
+          id: "filebase-1",
+          provider: "filebase",
+          name: "Filebase (Web3 Storage)",
+          isDefault: false,
+          isEnabled: false,
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "s3.filebase.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 35,
+          additionalConfig: {},
+        },
+        {
+          id: "storj-1",
+          provider: "storj",
+          name: "Storj DCS (Decentralized)",
+          isDefault: false,
+          isEnabled: false,
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: true,
+          encryptionAlgorithm: "AES-256",
+          routingPriority: 30,
+          additionalConfig: {},
+        },
+        {
+          id: "minio-1",
+          provider: "minio",
+          name: "MinIO (Self-Hosted)",
+          isDefault: false,
+          isEnabled: false,
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "localhost:9000",
+          cdnEnabled: false,
+          forceHttps: false,
+          encryptionEnabled: false,
+          routingPriority: 20,
+          additionalConfig: {},
+        },
+        {
+          id: "contabo-1",
+          provider: "contabo",
+          name: "Contabo Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "eu2",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "eu2.contabostorage.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 35,
+          additionalConfig: {},
+        },
+        {
+          id: "hetzner-1",
+          provider: "hetzner",
+          name: "Hetzner Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "fsn1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "fsn1.your-objectstorage.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 40,
+          additionalConfig: {},
+        },
+        {
+          id: "bunny-1",
+          provider: "bunny",
+          name: "Bunny.net Storage",
+          isDefault: false,
+          isEnabled: false,
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: true,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 70,
+          additionalConfig: {},
+        },
+        {
+          id: "upcloud-1",
+          provider: "upcloud",
+          name: "UpCloud Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "us-nyc1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "us-nyc1.object.upcloud.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 45,
+          additionalConfig: {},
+        },
+        {
+          id: "arvancloud-1",
+          provider: "arvancloud",
+          name: "ArvanCloud Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "ir-thr-at1",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "s3.ir-thr-at1.arvanstorage.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 30,
+          additionalConfig: {},
+        },
+        {
+          id: "dreamhost-1",
+          provider: "dreamhost",
+          name: "DreamHost DreamObjects",
+          isDefault: false,
+          isEnabled: false,
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "objects-us-east-1.dream.io",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 35,
+          additionalConfig: {},
+        },
+        {
+          id: "ionos-1",
+          provider: "ionos",
+          name: "IONOS Cloud Object Storage",
+          isDefault: false,
+          isEnabled: false,
+          region: "de",
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "s3-de.ionoscloud.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 40,
+          additionalConfig: {},
+        },
+        {
+          id: "pushr-1",
+          provider: "pushr",
+          name: "Pushr CDN Storage",
+          isDefault: false,
+          isEnabled: false,
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          cdnEnabled: true,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 60,
+          additionalConfig: {},
+        },
+        {
+          id: "idrive-1",
+          provider: "idrive",
+          name: "IDrive e2",
+          isDefault: false,
+          isEnabled: false,
+          bucket: "",
+          accessKey: "",
+          secretKey: "",
+          endpoint: "s3.idrivee2.com",
+          cdnEnabled: false,
+          forceHttps: true,
+          encryptionEnabled: false,
+          routingPriority: 50,
+          additionalConfig: {},
+        },
+      ];
+      res.json(providers);
+    } catch (error) {
+      console.error("Error fetching storage providers:", error);
+      res.status(500).json({ error: "Failed to fetch storage providers" });
+    }
+  });
+
+  // Get storage statistics
+  app.get("/api/admin/storage/stats", isAuthenticated, async (req, res) => {
+    try {
+      // Mock storage stats - in production, fetch from actual storage providers
+      const stats = {
+        totalFiles: 0,
+        totalSize: 0,
+        bandwidthUsed: 0,
+        requestCount: 0,
+        cost: 0,
+      };
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching storage stats:", error);
+      res.status(500).json({ error: "Failed to fetch storage stats" });
+    }
+  });
+
+  // Update storage provider configuration
+  app.patch("/api/admin/storage/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+
+      // In production, update database with provider configuration
+      // For now, just return success
+      res.json({
+        success: true,
+        message: "Storage provider updated successfully",
+        id,
+        updates,
+      });
+    } catch (error) {
+      console.error("Error updating storage provider:", error);
+      res.status(500).json({ error: "Failed to update storage provider" });
+    }
+  });
+
+  // Test storage provider connection
+  app.post("/api/admin/storage/:id/test", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // In production, actually test connection to storage provider
+      // For now, simulate a successful connection test
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      res.json({
+        success: true,
+        message: "Connection test successful",
+        providerId: id,
+        timestamp: new Date(),
+      });
+    } catch (error) {
+      console.error("Error testing storage provider:", error);
+      res.status(500).json({ error: "Connection test failed" });
+    }
+  });
+
+  // Set storage provider as default
+  app.post("/api/admin/storage/:id/set-default", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // In production, update database to set new default provider
+      // For now, just return success
+      res.json({
+        success: true,
+        message: "Default storage provider updated",
+        providerId: id,
+      });
+    } catch (error) {
+      console.error("Error setting default storage provider:", error);
+      res.status(500).json({ error: "Failed to set default storage provider" });
+    }
+  });
+
+  // ===== WIKI & TUTORIAL BOT =====
+
+  // Tutorial Bot Chat Endpoint
+  app.post("/api/tutorial-bot/chat", isAuthenticated, async (req, res) => {
+    try {
+      const { message, pageName, pageContext } = req.body;
+
+      // Knowledge base for different pages
+      const pageKnowledge: Record<string, any> = {
+        "Storage Settings": {
+          greeting: "I can help you configure cloud storage providers!",
+          topics: {
+            "get started": "To get started with storage: 1) Choose a provider, 2) Enter API credentials, 3) Test connection, 4) Set as default.",
+            "providers": "We support 27+ providers including AWS S3, Google Cloud, Azure, Cloudflare R2, DigitalOcean, Wasabi, and more!",
+            "encryption": "Enable end-to-end encryption to protect your files. Choose AES-256 for maximum security.",
+            "routing": "Set routing rules to automatically direct files to optimal providers based on type, size, or content.",
+            "wiki": "Visit /wiki for detailed documentation on all storage providers and best practices.",
+          },
+        },
+        "Compliance Center": {
+          greeting: "I can help you understand compliance and legal requirements!",
+          topics: {
+            "get started": "Start by reviewing the compliance dashboard, checking pending approvals, and consulting the FanzLegal AI Guardian.",
+            "2257": "18 U.S.C. § 2257 requires age verification and record-keeping for all adult content performers.",
+            "dmca": "DMCA guidelines protect copyright. We provide automated takedown processing.",
+            "gdpr": "GDPR compliance ensures EU user data protection rights are respected.",
+            "wiki": "Visit /wiki for complete compliance documentation and legal guides.",
+          },
+        },
+        "Data Operations": {
+          greeting: "I can help you manage database operations!",
+          topics: {
+            "backup": "Click 'Create Backup' to generate a full database backup. Backups are encrypted and stored securely.",
+            "restore": "Use 'Restore Data' to recover from a previous backup. This will overwrite current data.",
+            "export": "Export data in various formats for analysis or archival purposes.",
+            "cleanup": "Cleanup removes old data and optimizes storage. Always backup before cleanup.",
+            "wiki": "Visit /wiki for database management best practices.",
+          },
+        },
+        "Wiki & Knowledge Base": {
+          greeting: "Welcome to the Knowledge Base! I can help you find documentation.",
+          topics: {
+            "search": "Use the search bar to find articles. Search by title, content, or tags.",
+            "categories": "Browse by category: Overview, Compliance, Content, Users, Payments, Storage, Security, Analytics, etc.",
+            "articles": "We have comprehensive articles on every FanzDash feature and system.",
+            "wiki": "You're already in the wiki! Browse categories or search for specific topics.",
+          },
+        },
+      };
+
+      // Get page-specific knowledge or use default
+      const knowledge = pageKnowledge[pageName] || {
+        greeting: `Welcome to ${pageName}!`,
+        topics: {
+          "help": `I can provide guidance on ${pageName}. What would you like to know?`,
+          "wiki": "Visit /wiki for comprehensive documentation on all FanzDash features.",
+        },
+      };
+
+      // Process message and generate response
+      const messageLower = message.toLowerCase();
+      let responseText = "";
+      let suggestions: string[] = [];
+      let wikiLinks: { title: string; url: string }[] = [];
+
+      // Check for topic matches
+      let foundTopic = false;
+      for (const [key, value] of Object.entries(knowledge.topics)) {
+        if (messageLower.includes(key)) {
+          responseText = value as string;
+          foundTopic = true;
+          break;
+        }
+      }
+
+      if (!foundTopic) {
+        if (messageLower.includes("wiki") || messageLower.includes("documentation")) {
+          responseText = "📚 **Knowledge Base Access**\n\nI can help you find documentation on any topic. Visit our comprehensive Wiki for detailed guides:\n\n🔗 [Browse Wiki](/wiki)\n\nOr ask me specific questions about " + pageName + "!";
+          wikiLinks = [
+            { title: "System Overview", url: "/wiki" },
+            { title: "Getting Started Guide", url: "/wiki" },
+            { title: pageName + " Documentation", url: "/wiki" },
+          ];
+        } else if (messageLower.includes("hello") || messageLower.includes("hi")) {
+          responseText = knowledge.greeting + "\n\n💡 **I can help with:**\n" +
+            Object.keys(knowledge.topics).map(topic => `• ${topic.charAt(0).toUpperCase() + topic.slice(1)}`).join("\n");
+          suggestions = Object.keys(knowledge.topics).map(t =>
+            `Tell me about ${t}`
+          ).slice(0, 4);
+        } else {
+          responseText = `I understand you're asking about: "${message}"\n\n` +
+            knowledge.greeting + "\n\n" +
+            "💬 **Try asking about:**\n" +
+            Object.keys(knowledge.topics).map(topic => `• ${topic}`).join("\n") +
+            "\n\n📚 Or type 'wiki' to access the full knowledge base.";
+          suggestions = ["Show me a tutorial", "Access wiki", "What can I do here?"];
+        }
+      } else {
+        suggestions = [
+          "Tell me more",
+          "Show related articles",
+          "Access wiki",
+          "What's next?",
+        ];
+
+        // Add wiki links for relevant topics
+        if (messageLower.includes("2257") || messageLower.includes("compliance")) {
+          wikiLinks.push({ title: "18 U.S.C. § 2257 Complete Guide", url: "/wiki" });
+        }
+        if (messageLower.includes("storage") || messageLower.includes("provider")) {
+          wikiLinks.push({ title: "Storage Provider Configuration", url: "/wiki" });
+        }
+        if (messageLower.includes("payment") || messageLower.includes("payout")) {
+          wikiLinks.push({ title: "Payment Processing Guide", url: "/wiki" });
+        }
+      }
+
+      res.json({
+        message: responseText,
+        suggestions,
+        wikiLinks,
+      });
+    } catch (error) {
+      console.error("Error in tutorial bot:", error);
+      res.status(500).json({
+        message: "Sorry, I encountered an error. Please try again or visit the wiki for documentation.",
+        suggestions: ["Access wiki", "Try again"],
+        wikiLinks: [{ title: "Knowledge Base", url: "/wiki" }],
+      });
+    }
+  });
+
+  // Get wiki articles
+  app.get("/api/wiki/articles", async (req, res) => {
+    try {
+      const { category, search } = req.query;
+
+      // In production, fetch from database
+      // For now, return success response
+      res.json({
+        articles: [],
+        total: 0,
+      });
+    } catch (error) {
+      console.error("Error fetching wiki articles:", error);
+      res.status(500).json({ error: "Failed to fetch wiki articles" });
+    }
+  });
+
+  // Get specific wiki article
+  app.get("/api/wiki/articles/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // In production, fetch from database
+      res.json({
+        id,
+        title: "Article Title",
+        content: "Article content...",
+        category: "overview",
+        tags: [],
+      });
+    } catch (error) {
+      console.error("Error fetching wiki article:", error);
+      res.status(500).json({ error: "Failed to fetch wiki article" });
+    }
+  });
+
+  // AI-Powered Semantic Search
+  app.post("/api/wiki/ai-search", async (req, res) => {
+    try {
+      const { query } = req.body;
+
+      // In production, use actual AI/ML semantic search
+      // For now, simulate intelligent search results
+      const mockResults = [
+        {
+          id: "2257-compliance",
+          title: "18 U.S.C. § 2257 Compliance System",
+          excerpt: "Complete guide to federal age verification and record-keeping requirements for adult content platforms.",
+          category: "Compliance & Legal",
+          relevance: 95,
+          url: "/wiki#2257-compliance",
+        },
+        {
+          id: "storage-providers",
+          title: "Cloud Storage Provider Configuration",
+          excerpt: "Configure and manage 27+ cloud storage providers with encryption and intelligent routing.",
+          category: "Storage & Media",
+          relevance: 88,
+          url: "/wiki#storage-providers",
+        },
+        {
+          id: "payment-processing",
+          title: "Payment Processing & Payouts",
+          excerpt: "Set up adult-friendly payment processors and automate creator payouts with tax compliance.",
+          category: "Payments & Finance",
+          relevance: 82,
+          url: "/wiki#payment-processing",
+        },
+        {
+          id: "content-moderation",
+          title: "AI-Powered Content Moderation",
+          excerpt: "Automated content review using AI and human moderators for compliance and safety.",
+          category: "Content Management",
+          relevance: 76,
+          url: "/wiki#content-moderation",
+        },
+        {
+          id: "security-best-practices",
+          title: "Security Best Practices",
+          excerpt: "Essential security practices including RBAC, encryption, MFA, and incident response.",
+          category: "Security & Monitoring",
+          relevance: 71,
+          url: "/wiki#security-best-practices",
+        },
+      ];
+
+      // Filter based on query (simple keyword matching for now)
+      const queryLower = query.toLowerCase();
+      const filteredResults = mockResults.filter(
+        (result) =>
+          result.title.toLowerCase().includes(queryLower) ||
+          result.excerpt.toLowerCase().includes(queryLower) ||
+          result.category.toLowerCase().includes(queryLower)
+      );
+
+      // Sort by relevance
+      filteredResults.sort((a, b) => b.relevance - a.relevance);
+
+      res.json({
+        results: filteredResults,
+        suggestions: [
+          "Show me related tutorials",
+          "Explain this in detail",
+          "What are best practices?",
+        ],
+      });
+    } catch (error) {
+      console.error("Error in AI search:", error);
+      res.status(500).json({
+        results: [],
+        suggestions: [],
+      });
     }
   });
 

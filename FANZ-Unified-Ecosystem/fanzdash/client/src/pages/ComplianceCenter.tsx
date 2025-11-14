@@ -18,6 +18,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 
 interface ComplianceStatus {
   totalEvents: number;
@@ -47,6 +48,7 @@ interface ApprovalData {
 
 export default function ComplianceCenter() {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const { data: complianceStatus } = useQuery<ComplianceStatus>({
     queryKey: ["/api/compliance/status"],
     refetchInterval: 5000,
@@ -335,32 +337,36 @@ export default function ComplianceCenter() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Button
               variant="outline"
-              className="border-blue-600 text-blue-400"
+              className="border-blue-600 text-blue-400 hover:bg-blue-600/10"
               size="sm"
+              onClick={() => setLocation("/universal-2257")}
             >
               <Scale className="h-4 w-4 mr-2" />
               18 U.S.C. § 2257
             </Button>
             <Button
               variant="outline"
-              className="border-purple-600 text-purple-400"
+              className="border-purple-600 text-purple-400 hover:bg-purple-600/10"
               size="sm"
+              onClick={() => setLocation("/legal-library")}
             >
               <Gavel className="h-4 w-4 mr-2" />
               DMCA Guidelines
             </Button>
             <Button
               variant="outline"
-              className="border-green-600 text-green-400"
+              className="border-green-600 text-green-400 hover:bg-green-600/10"
               size="sm"
+              onClick={() => setLocation("/compliance-monitoring")}
             >
               <Shield className="h-4 w-4 mr-2" />
               GDPR Compliance
             </Button>
             <Button
               variant="outline"
-              className="border-orange-600 text-orange-400"
+              className="border-orange-600 text-orange-400 hover:bg-orange-600/10"
               size="sm"
+              onClick={() => setLocation("/legal-library")}
             >
               <Users className="h-4 w-4 mr-2" />
               Platform Policies

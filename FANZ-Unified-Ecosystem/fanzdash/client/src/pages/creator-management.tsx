@@ -59,6 +59,7 @@ interface Creator {
   joinedDate: string;
   rating: number;
   bio?: string;
+  story?: string;
   socialMedia?: {
     twitter?: string;
     instagram?: string;

@@ -12,6 +12,7 @@
 import express from 'express';
 import multer from 'multer';
 import rateLimit from 'express-rate-limit';
+import { createSecureUploadMiddleware } from '../middleware/fileScanningMiddleware';
 
 // Upload API
 import * as uploadAPI from '../api/media/upload.js';
@@ -27,8 +28,8 @@ import * as deviceAPI from '../api/mobile/device-registration.js';
 
 const router = express.Router();
 
-// Configure multer for chunk uploads
-const upload = multer({
+// Configure secure upload with virus scanning for chunk uploads
+const upload = createSecureUploadMiddleware({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB per chunk

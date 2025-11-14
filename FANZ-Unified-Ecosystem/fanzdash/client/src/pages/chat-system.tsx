@@ -13,6 +13,16 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -22,6 +32,9 @@ import {
   Phone,
   Video,
   Settings,
+  Bell,
+  Volume2,
+  Eye,
 } from "lucide-react";
 
 interface ChatRoom {
@@ -60,6 +73,15 @@ export default function ChatSystem() {
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState({
+    notifications: true,
+    soundEnabled: true,
+    showTypingIndicators: true,
+    autoScroll: true,
+    showTimestamps: true,
+    darkMode: true,
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: rooms = [], isLoading: roomsLoading } = useQuery<ChatRoom[]>({
@@ -231,7 +253,11 @@ export default function ChatSystem() {
             >
               🚨 Emergency Room
             </Button>
-            <Button variant="outline" className="border-cyan-500 text-cyan-400">
+            <Button
+              variant="outline"
+              className="border-cyan-500 text-cyan-400"
+              onClick={() => setShowSettings(true)}
+            >
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>
@@ -447,6 +473,163 @@ export default function ChatSystem() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Settings Dialog */}
+        <Dialog open={showSettings} onOpenChange={setShowSettings}>
+          <DialogContent className="bg-gray-900 border-cyan-500/20">
+            <DialogHeader>
+              <DialogTitle className="text-cyan-400 flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Communication Settings
+              </DialogTitle>
+              <DialogDescription className="text-gray-400">
+                Configure your chat preferences and notifications
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6 py-4">
+              {/* Notifications */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Bell className="w-5 h-5 text-cyan-400" />
+                  <div>
+                    <Label htmlFor="notifications" className="text-white">
+                      Notifications
+                    </Label>
+                    <p className="text-xs text-gray-400">
+                      Receive notifications for new messages
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  id="notifications"
+                  checked={settings.notifications}
+                  onCheckedChange={(checked) =>
+                    setSettings({ ...settings, notifications: checked })
+                  }
+                />
+              </div>
+
+              <Separator className="bg-gray-700" />
+
+              {/* Sound */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Volume2 className="w-5 h-5 text-cyan-400" />
+                  <div>
+                    <Label htmlFor="sound" className="text-white">
+                      Sound Effects
+                    </Label>
+                    <p className="text-xs text-gray-400">
+                      Play sound for incoming messages
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  id="sound"
+                  checked={settings.soundEnabled}
+                  onCheckedChange={(checked) =>
+                    setSettings({ ...settings, soundEnabled: checked })
+                  }
+                />
+              </div>
+
+              <Separator className="bg-gray-700" />
+
+              {/* Typing Indicators */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Eye className="w-5 h-5 text-cyan-400" />
+                  <div>
+                    <Label htmlFor="typing" className="text-white">
+                      Typing Indicators
+                    </Label>
+                    <p className="text-xs text-gray-400">
+                      Show when others are typing
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  id="typing"
+                  checked={settings.showTypingIndicators}
+                  onCheckedChange={(checked) =>
+                    setSettings({ ...settings, showTypingIndicators: checked })
+                  }
+                />
+              </div>
+
+              <Separator className="bg-gray-700" />
+
+              {/* Auto Scroll */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <MessageCircle className="w-5 h-5 text-cyan-400" />
+                  <div>
+                    <Label htmlFor="autoscroll" className="text-white">
+                      Auto Scroll
+                    </Label>
+                    <p className="text-xs text-gray-400">
+                      Automatically scroll to new messages
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  id="autoscroll"
+                  checked={settings.autoScroll}
+                  onCheckedChange={(checked) =>
+                    setSettings({ ...settings, autoScroll: checked })
+                  }
+                />
+              </div>
+
+              <Separator className="bg-gray-700" />
+
+              {/* Show Timestamps */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <MessageCircle className="w-5 h-5 text-cyan-400" />
+                  <div>
+                    <Label htmlFor="timestamps" className="text-white">
+                      Show Timestamps
+                    </Label>
+                    <p className="text-xs text-gray-400">
+                      Display message timestamps
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  id="timestamps"
+                  checked={settings.showTimestamps}
+                  onCheckedChange={(checked) =>
+                    setSettings({ ...settings, showTimestamps: checked })
+                  }
+                />
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                className="border-gray-600 text-gray-400"
+                onClick={() => setShowSettings(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-cyan-500 hover:bg-cyan-600"
+                onClick={() => {
+                  toast({
+                    title: "Settings Saved",
+                    description: "Your preferences have been updated",
+                  });
+                  setShowSettings(false);
+                }}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
