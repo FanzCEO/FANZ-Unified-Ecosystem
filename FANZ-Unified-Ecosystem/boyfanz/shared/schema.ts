@@ -2653,16 +2653,16 @@ export const insertProfileSchema = createInsertSchema(profiles).pick({
   displayName: true,
   bio: true,
   avatarUrl: true,
-  publicFlags: true,
+  flags: true,
 });
 
 export const insertMediaAssetSchema = createInsertSchema(mediaAssets).pick({
   title: true,
   description: true,
-  s3Key: true,
+  storageKey: true,
   mimeType: true,
-  size: true,
-  checksum: true,
+  fileSize: true,
+  checksumSha256: true,
 });
 
 export const insertPayoutRequestSchema = createInsertSchema(payouts).pick({
@@ -2762,14 +2762,11 @@ export const insertCreatorProfileSchema = createInsertSchema(
 
 export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({
   id: true,
-  fanId: true,
-  creatorId: true,
-  stripeSubscriptionId: true,
+  fanProfileId: true,
   status: true,
-  monthlyPriceCents: true,
   currentPeriodStart: true,
   currentPeriodEnd: true,
-  cancelledAt: true,
+  canceledAt: true,
   createdAt: true,
   updatedAt: true,
 });
@@ -3033,7 +3030,6 @@ export const insertSubscriptionPlanSchema = createInsertSchema(
   id: true,
   createdAt: true,
   updatedAt: true,
-  currentSubscribers: true,
 });
 export type InsertSubscriptionPlanType = z.infer<
   typeof insertSubscriptionPlanSchema

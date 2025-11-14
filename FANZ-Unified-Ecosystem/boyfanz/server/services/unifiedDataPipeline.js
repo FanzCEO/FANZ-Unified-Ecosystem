@@ -619,9 +619,10 @@ class UnifiedDataPipeline extends EventEmitter {
     }, this.config.flushInterval);
 
     // Process aggregations
-    setInterval(() => {
-      this.processAggregations();
-    }, this.config.aggregationWindow);
+    // TODO: Implement processAggregations method
+    // setInterval(() => {
+    //   this.processAggregations();
+    // }, this.config.aggregationWindow);
 
     // Cleanup old data
     setInterval(() => {

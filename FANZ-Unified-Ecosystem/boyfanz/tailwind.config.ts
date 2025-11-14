@@ -63,10 +63,13 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)"],
+        sans: ["Inter", "sans-serif"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
-        display: ["var(--font-display)"],
+        display: ["Bebas Neue", "Teko", "sans-serif"],
+        heading: ["Bebas Neue", "Teko", "sans-serif"],
+        industrial: ["Anton", "Barlow Condensed", "sans-serif"],
+        fight: ["Russo One", "Righteous", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
@@ -121,10 +124,26 @@ export default {
         },
         "glow": {
           "0%, 100%": {
-            "box-shadow": "0 0 8px rgba(255, 0, 0, 0.2)",
+            "box-shadow": "0 0 15px rgba(255, 0, 0, 0.5), 0 0 30px rgba(255, 0, 0, 0.3)",
           },
           "50%": {
-            "box-shadow": "0 0 12px rgba(255, 0, 0, 0.3)",
+            "box-shadow": "0 0 25px rgba(255, 0, 0, 0.7), 0 0 50px rgba(255, 0, 0, 0.4)",
+          },
+        },
+        "neon-flicker": {
+          "0%, 18%, 22%, 25%, 53%, 57%, 100%": {
+            opacity: "1",
+          },
+          "20%, 24%, 55%": {
+            opacity: "0.7",
+          },
+        },
+        "fight-pulse": {
+          "0%, 100%": {
+            "text-shadow": "0 0 10px rgba(255, 0, 0, 1), 0 0 20px rgba(255, 0, 0, 0.8)",
+          },
+          "50%": {
+            "text-shadow": "0 0 20px rgba(255, 0, 0, 1), 0 0 40px rgba(255, 0, 0, 0.9)",
           },
         },
       },
@@ -136,15 +155,20 @@ export default {
         "fade-in": "fade-in 0.3s ease-out",
         "slide-in-right": "slide-in-right 0.3s ease-out",
         glow: "glow 2s ease-in-out infinite",
+        "neon-flicker": "neon-flicker 8s ease-in-out infinite",
+        "fight-pulse": "fight-pulse 3s ease-in-out infinite",
       },
       backdropBlur: {
         xs: "2px",
       },
       boxShadow: {
-        glow: "0 0 8px rgba(255, 0, 0, 0.2)",
-        "glow-lg": "0 0 12px rgba(255, 0, 0, 0.3)",
-        "golden-glow": "0 0 8px rgba(255, 215, 0, 0.3)",
-        neon: "0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor",
+        glow: "0 0 15px rgba(255, 0, 0, 0.5), 0 0 30px rgba(255, 0, 0, 0.3)",
+        "glow-lg": "0 0 25px rgba(255, 0, 0, 0.7), 0 0 50px rgba(255, 0, 0, 0.4)",
+        "glow-xl": "0 0 40px rgba(255, 0, 0, 0.8), 0 0 80px rgba(255, 0, 0, 0.5)",
+        "golden-glow": "0 0 15px rgba(255, 215, 0, 0.4), 0 0 30px rgba(255, 215, 0, 0.2)",
+        neon: "0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor",
+        "fight-ring": "0 0 20px rgba(255, 0, 0, 0.6), 0 0 40px rgba(255, 0, 0, 0.3), inset 0 0 15px rgba(255, 0, 0, 0.1)",
+        steel: "0 8px 32px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 0, 0, 0.1)",
       },
       textShadow: {
         neon: "0 0 10px currentColor",
@@ -158,29 +182,39 @@ export default {
     function({ addUtilities }: { addUtilities: any }) {
       const newUtilities = {
         '.text-shadow-neon': {
-          textShadow: '0 0 10px currentColor',
+          textShadow: '0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.6), 0 0 30px rgba(255, 0, 0, 0.4)',
         },
         '.text-shadow-neon-strong': {
-          textShadow: '0 0 10px currentColor, 0 0 20px currentColor',
+          textShadow: '0 0 5px #fff, 0 0 10px rgba(255, 0, 0, 1), 0 0 20px rgba(255, 0, 0, 0.8), 0 0 40px rgba(255, 0, 0, 0.6)',
         },
         '.text-shadow-golden': {
-          textShadow: '0 0 8px rgba(255, 215, 0, 0.7)',
+          textShadow: '0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6)',
+        },
+        '.text-shadow-fight': {
+          textShadow: '0 0 20px rgba(255, 0, 0, 0.6), 0 0 40px rgba(255, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.8)',
         },
         '.bg-gradient-neon': {
-          background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%)',
+          background: 'linear-gradient(135deg, #ff0000 0%, hsl(45, 90%, 60%) 100%)',
         },
         '.bg-gradient-red-golden': {
-          background: 'linear-gradient(135deg, hsl(0, 100%, 50%) 0%, hsl(45, 80%, 60%) 100%)',
+          background: 'linear-gradient(135deg, #ff0000 0%, hsl(45, 90%, 60%) 100%)',
+        },
+        '.bg-gradient-fight': {
+          background: 'linear-gradient(135deg, rgba(20, 0, 0, 0.9) 0%, rgba(10, 0, 0, 0.95) 100%)',
         },
         '.border-gradient-neon': {
-          border: '1px solid transparent',
-          backgroundImage: 'linear-gradient(var(--background), var(--background)), linear-gradient(135deg, var(--primary), var(--secondary), var(--accent))',
+          border: '2px solid transparent',
+          backgroundImage: 'linear-gradient(#000, #000), linear-gradient(135deg, #ff0000, hsl(45, 90%, 60%))',
           backgroundOrigin: 'border-box',
           backgroundClip: 'content-box, border-box',
         },
         '.border-golden-glow': {
-          border: '1px solid hsl(45, 80%, 60%)',
-          boxShadow: '0 0 15px rgba(255, 215, 0, 0.3)',
+          border: '2px solid hsl(45, 90%, 60%)',
+          boxShadow: '0 0 20px rgba(255, 215, 0, 0.4), 0 0 40px rgba(255, 215, 0, 0.2)',
+        },
+        '.border-blood-glow': {
+          border: '2px solid #ff0000',
+          boxShadow: '0 0 20px rgba(255, 0, 0, 0.5), 0 0 40px rgba(255, 0, 0, 0.3)',
         },
       }
       addUtilities(newUtilities)
