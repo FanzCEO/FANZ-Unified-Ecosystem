@@ -160,7 +160,7 @@
     "autoprefixer": "^10.4.22",
     "babel-jest": "^30.2.0",
     "drizzle-kit": "^0.31.7",
-    "esbuild": "^0.25.12",
+    "esbuild": "^0.27.0",
     "jest": "^30.2.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.18",
