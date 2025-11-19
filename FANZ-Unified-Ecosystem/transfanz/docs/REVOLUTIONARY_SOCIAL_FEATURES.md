@@ -297,7 +297,7 @@ GET    /api/social/health               # System health check
 
 ```javascript
 const meetupData = {
-  title: "BoyFanz Creator Networking Night",
+  title: "UtransFanz Creator Networking Night",
   description: "Monthly networking event for top creators",
   type: "CREATOR_MEETUP",
   format: "HYBRID",

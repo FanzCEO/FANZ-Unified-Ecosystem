@@ -2,7 +2,7 @@
 
 ## Adult-Friendly Payment Processors Only
 
-BoyFanz exclusively uses payment processors that explicitly support adult content:
+Uguyz exclusively uses payment processors that explicitly support adult content:
 
 ### Approved Card Processors
 - **CCBill** - Industry leader for adult content
