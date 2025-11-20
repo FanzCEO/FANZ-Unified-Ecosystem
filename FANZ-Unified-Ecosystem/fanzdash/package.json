@@ -200,7 +200,8 @@
       "xmldom": "^0.8.10",
       "esbuild": "^0.25.11",
       "passport": "^0.7.0",
-      "passport-oauth": "npm:passport-oauth@latest"
+      "passport-oauth": "npm:passport-oauth@latest",
+      "glob": ">=10.5.0"
     }
   },
   "overrides": {
