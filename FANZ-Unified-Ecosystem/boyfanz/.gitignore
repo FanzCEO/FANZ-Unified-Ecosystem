@@ -29,3 +29,15 @@ id_rsa*
 *.log
 security-reports/
 
+
+# Credentials and secrets - DO NOT COMMIT
+.env
+.env.*
+.env.production.ready
+COMPLETE_CREDENTIALS.md
+*_credentials*
+*.key
+*.pem
+ssh-*.expect
+*-env.expect
+auto-deploy.sh

@@ -190,7 +190,7 @@ importers:
         specifier: ^1.6.7
         version: 1.6.7
       nanoid:
-        specifier: ^5.1.6
+        specifier: ^5.0.9
         version: 5.1.6
       next-themes:
         specifier: ^0.4.6
@@ -199,7 +199,7 @@ importers:
         specifier: ^6.8.1
         version: 6.8.1
       passport:
-        specifier: ^0.7.0
+        specifier: '>=0.7.0'
         version: 0.7.0
       passport-local:
         specifier: ^1.0.0
@@ -308,7 +308,7 @@ importers:
         specifier: ^0.31.7
         version: 0.31.7
       esbuild:
-        specifier: ^0.27.0
+        specifier: '>=0.25.0'
         version: 0.27.0
       postcss:
         specifier: ^8.5.6
