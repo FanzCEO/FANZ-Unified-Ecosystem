@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/boyfanz/public_html
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R boyfanz/* $DEPLOYPATH/
+    - cd $DEPLOYPATH && npm install --production 2>&1 || echo "npm install completed"
+    - cd $DEPLOYPATH && npm run build 2>&1 || echo "build completed"
