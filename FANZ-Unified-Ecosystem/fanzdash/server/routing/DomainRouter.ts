@@ -59,16 +59,16 @@ export class DomainRouter extends EventEmitter {
   private initializePlatforms(): void {
     const defaultPlatforms: PlatformConfig[] = [
       {
-        id: 'boyfanz',
-        name: 'BoyFanz',
-        domains: ['boyfanz.com', 'www.boyfanz.com', 'boyfanz.app'],
-        basePath: '/boyfanz',
+        id: 'FanzDash',
+        name: 'FanzDash',
+        domains: ['FanzDash.com', 'www.FanzDash.com', 'FanzDash.app'],
+        basePath: '/FanzDash',
         clusterId: 'bfz-cluster-001',
         theme: {
           primaryColor: '#1e40af',
           secondaryColor: '#3b82f6',
-          logo: '/assets/logos/boyfanz-logo.svg',
-          favicon: '/assets/favicons/boyfanz.ico'
+          logo: '/assets/logos/FanzDash-logo.svg',
+          favicon: '/assets/favicons/FanzDash.ico'
         },
         features: ['streaming', 'messaging', 'tips', 'subscriptions', 'media'],
         ageVerification: true,
@@ -318,7 +318,7 @@ export class DomainRouter extends EventEmitter {
     let platform = this.domainCache.get(hostname);
     if (platform) return platform;
 
-    // Handle subdomains (e.g., api.boyfanz.com)
+    // Handle subdomains (e.g., api.FanzDash.com)
     const domainParts = hostname.split('.');
     if (domainParts.length > 2) {
       const rootDomain = domainParts.slice(-2).join('.');

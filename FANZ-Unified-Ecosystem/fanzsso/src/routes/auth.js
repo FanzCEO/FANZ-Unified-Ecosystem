@@ -26,7 +26,7 @@ router.post('/login', async (req, res) => {
       id: 'demo-user-123',
       email: email,
       name: 'Demo User',
-      platforms: ['boyfanz', 'girlfanz', 'pupfanz', 'taboofanz'],
+      platforms: ['FanzSSO', 'girlfanz', 'pupfanz', 'taboofanz'],
       creator_status: 'active',
       age_verified: true,
       roles: ['user']
@@ -86,7 +86,7 @@ router.post('/login', async (req, res) => {
 router.get('/platforms/:platform/authorize', (req, res) => {
   const { platform } = req.params;
   const validPlatforms = [
-    'boyfanz', 'girlfanz', 'pupfanz', 'taboofanz', 
+    'FanzSSO', 'girlfanz', 'pupfanz', 'taboofanz', 
     'transfanz', 'daddiesfanz', 'cougarfanz'
   ];
 

@@ -203,7 +203,7 @@ When adapting plugins, you must:
 2. Adapt database connections to PostgreSQL
 3. Convert authentication to FANZ session system
 4. Update file paths to FANZ structure
-5. Add platform filtering (boyfanz, girlfanz, etc.)
+5. Add platform filtering (FanzDash, girlfanz, etc.)
 6. Add error handling and logging
 7. Ensure security best practices
 8. Make code production-ready
@@ -510,7 +510,7 @@ export async function getInstalledPlugins(): Promise<Plugin[]> {
       installDate: "2025-01-01T00:00:00Z",
       lastUpdate: "2025-01-10T10:00:00Z",
       dependencies: ["user_service", "auth_service"],
-      platforms: ["FanzLab", "BoyFanz", "GirlFanz", "All"],
+      platforms: ["FanzLab", "FanzDash", "GirlFanz", "All"],
       apiEndpoint: "/api/v2/gateway",
       configurable: true,
       essential: true,

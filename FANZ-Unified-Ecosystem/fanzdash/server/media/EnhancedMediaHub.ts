@@ -122,7 +122,7 @@ export class EnhancedMediaHub extends EventEmitter {
   private initializePlatformConnectors(): void {
     // Initialize connectors for each platform in the FANZ ecosystem
     const platforms = [
-      { id: 'boyfanz', name: 'BoyFanz', apiEndpoint: 'https://boyfanz.com/api' },
+      { id: 'FanzDash', name: 'FanzDash', apiEndpoint: 'https://FanzDash.com/api' },
       { id: 'girlfanz', name: 'GirlFanz', apiEndpoint: 'https://girlfanz.com/api' },
       { id: 'pupfanz', name: 'PupFanz', apiEndpoint: 'https://pupfanz.com/api' },
       { id: 'transfanz', name: 'TransFanz', apiEndpoint: 'https://transfanz.com/api' },

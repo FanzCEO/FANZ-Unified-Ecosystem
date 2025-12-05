@@ -38,7 +38,7 @@ function generateId(prefix: string): string {
 // ============================================================================
 
 const PLATFORMS = [
-  'boyfanz', 'girlfanz', 'pupfanz', 'gayfanz', 'bearfanz',
+  'FanzDash', 'girlfanz', 'pupfanz', 'gayfanz', 'bearfanz',
   'cougarfanz', 'dlbroz', 'southernfanz', 'taboofanz',
   'femmefanz', 'fanzuncut', 'guyz', 'transfanz'
 ];

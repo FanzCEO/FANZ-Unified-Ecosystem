@@ -33,7 +33,7 @@ export default function OnboardingFlow({ user, onComplete }: OnboardingFlowProps
     },
     onSuccess: () => {
       toast({
-        title: "Welcome to BoyFanz!",
+        title: "Welcome to Guyz!",
         description: "Your profile is now set up. Start exploring the playground!",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
@@ -50,7 +50,7 @@ export default function OnboardingFlow({ user, onComplete }: OnboardingFlowProps
 
   const steps = [
     {
-      title: "Welcome to BoyFanz",
+      title: "Welcome to Guyz",
       description: "Every Man's Playground",
       component: WelcomeStep
     },
@@ -95,7 +95,7 @@ export default function OnboardingFlow({ user, onComplete }: OnboardingFlowProps
           <div className="h-16 w-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center glow-effect mx-auto mb-4">
             <i className="fas fa-fire text-2xl text-primary-foreground"></i>
           </div>
-          <h1 className="text-3xl font-display font-bold text-primary tracking-wider mb-2">BoyFanz</h1>
+          <h1 className="text-3xl font-display font-bold text-primary tracking-wider mb-2">Guyz</h1>
           <Badge variant="secondary" className="font-display font-bold text-sm tracking-wide uppercase">
             Every Man's Playground
           </Badge>
@@ -185,7 +185,7 @@ function WelcomeStep({ user }: { user: any; formData: any; setFormData: any }) {
           Welcome to the ultimate playground, {user?.firstName || 'Creator'}!
         </h3>
         <p className="text-muted-foreground font-body text-lg max-w-lg mx-auto">
-          BoyFanz isn't just another platform - it's <span className="text-primary font-semibold">Every Man's Playground</span> where 
+          Guyz isn't just another platform - it's <span className="text-primary font-semibold">Every Man's Playground</span> where 
           creators dominate, fans connect, and legends are born. Ready to claim your territory?
         </p>
         
@@ -345,7 +345,7 @@ function CompletionStep({ formData }: { formData: any; setFormData: any; user: a
         </h3>
         
         <p className="text-lg text-muted-foreground max-w-md mx-auto">
-          Your kingdom awaits. Time to show the world what you're made of and build your empire on BoyFanz.
+          Your kingdom awaits. Time to show the world what you're made of and build your empire on Guyz.
         </p>
         
         <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-6 border border-primary/20 mt-6">

@@ -127,7 +127,7 @@ export class TemplateService {
         dueDate: this.formatDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000))
       },
       platform: {
-        name: 'BoyFanz'
+        name: 'FanzDash'
       },
       creator: {
         name: 'Alex Morgan',
@@ -198,7 +198,7 @@ export class TemplateService {
       },
       platformEarnings: [
         {
-          name: 'BoyFanz',
+          name: 'FanzDash',
           initial: 'BF',
           subscribers: 158,
           subscriptionRevenue: this.formatCurrency(1580),

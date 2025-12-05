@@ -291,7 +291,7 @@ export class CommandCenterService {
     // In production, these would query real systems
     return {
       platformUptime: {
-        'boyfanz': { status: 'operational', uptime: 99.95 },
+        'FanzDash': { status: 'operational', uptime: 99.95 },
         'girlfanz': { status: 'operational', uptime: 99.98 },
         'gayfanz': { status: 'operational', uptime: 99.92 }
       },

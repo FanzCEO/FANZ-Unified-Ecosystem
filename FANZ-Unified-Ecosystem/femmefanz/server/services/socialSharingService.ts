@@ -680,8 +680,8 @@ class SocialSharingService {
     previewUrl: string;
   }> {
     // Generate share content with vintage effects
-    const shareUrl = `https://share.boyfanz.com/${content.id}/${template.id}`;
-    const previewUrl = `https://cdn.boyfanz.com/previews/social_${Date.now()}.jpg`;
+    const shareUrl = `https://share.FemmeFanz.com/${content.id}/${template.id}`;
+    const previewUrl = `https://cdn.FemmeFanz.com/previews/social_${Date.now()}.jpg`;
 
     // Apply vintage effects and generate preview
     await this.applyVintageEffects(content, template, customizations?.vintageEffects);
@@ -691,7 +691,7 @@ class SocialSharingService {
 
   private generateTrackingParameters(userId: string, shareId: string): Record<string, string> {
     return {
-      utm_source: 'boyfanz',
+      utm_source: 'FemmeFanz',
       utm_medium: 'social',
       utm_campaign: shareId,
       utm_content: userId,

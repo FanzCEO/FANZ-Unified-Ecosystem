@@ -144,7 +144,7 @@ const userSchema = new Schema({
   platforms: [{
     platform: {
       type: String,
-      enum: ['boyfanz', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz', 'taboofanz'],
+      enum: ['FanzMoneyDash', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz', 'taboofanz'],
       required: true
     },
     platformUserId: String,

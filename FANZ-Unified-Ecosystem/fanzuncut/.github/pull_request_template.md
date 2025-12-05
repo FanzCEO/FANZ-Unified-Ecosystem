@@ -34,7 +34,7 @@
 - [ ] ♿ Accessibility Improvement
 
 **Platforms Affected:**
-- [ ] BoyFanz
+- [ ] FanzUncut
 - [ ] GirlFanz
 - [ ] PupFanz  
 - [ ] TabooFanz

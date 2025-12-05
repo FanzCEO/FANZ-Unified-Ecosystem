@@ -94,7 +94,7 @@ const RevenueVisualization: React.FC<{ data: DashboardData['revenue'] }> = ({ da
   // Create 3D revenue towers for each platform
   const platformTowers = Object.entries(data.platforms).map(([platform, revenue], index) => {
     const height = (revenue / Math.max(...Object.values(data.platforms))) * 5;
-    const color = platform === 'BoyFanz' ? '#FF6B35' : 
+    const color = platform === 'FanzDash' ? '#FF6B35' : 
                   platform === 'GirlFanz' ? '#FF1B8D' : 
                   platform === 'PupFanz' ? '#8B5CF6' : '#F59E0B';
 
@@ -481,7 +481,7 @@ export const useDashboardData = () => {
       total: 2847293,
       trend: [100, 120, 145, 132, 165, 189, 203],
       platforms: {
-        'BoyFanz': 1247583,
+        'FanzDash': 1247583,
         'GirlFanz': 956842,
         'PupFanz': 432109,
         'TabooFanz': 210759
@@ -531,7 +531,7 @@ export const useDashboardData = () => {
           metric: 'Revenue Growth',
           value: 23.5,
           confidence: 0.89,
-          recommendation: 'Increase marketing spend on BoyFanz by 15% for optimal ROI'
+          recommendation: 'Increase marketing spend on FanzDash by 15% for optimal ROI'
         },
         {
           metric: 'User Retention',

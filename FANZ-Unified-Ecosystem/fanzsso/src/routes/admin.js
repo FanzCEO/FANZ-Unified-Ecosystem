@@ -26,7 +26,7 @@ router.get('/stats', async (req, res) => {
         verified_count: Math.floor(Math.random() * 8000) + 800
       },
       platforms: {
-        boyfanz: { active_users: Math.floor(Math.random() * 2000) + 200 },
+        FanzSSO: { active_users: Math.floor(Math.random() * 2000) + 200 },
         girlfanz: { active_users: Math.floor(Math.random() * 3000) + 300 },
         pupfanz: { active_users: Math.floor(Math.random() * 1500) + 150 },
         taboofanz: { active_users: Math.floor(Math.random() * 1000) + 100 },
@@ -72,7 +72,7 @@ router.get('/users', async (req, res) => {
       status: Math.random() > 0.8 ? 'suspended' : 'active',
       creator_status: Math.random() > 0.7 ? 'creator' : 'fan',
       platforms: Math.random() > 0.5 
-        ? ['boyfanz', 'girlfanz'] 
+        ? ['FanzSSO', 'girlfanz'] 
         : ['pupfanz', 'taboofanz'],
       last_login: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
       created_at: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
@@ -117,7 +117,7 @@ router.get('/users/:userId', async (req, res) => {
       name: `User ${userId}`,
       status: 'active',
       creator_status: 'creator',
-      platforms: ['boyfanz', 'girlfanz', 'pupfanz'],
+      platforms: ['FanzSSO', 'girlfanz', 'pupfanz'],
       profile: {
         display_name: `Creator ${userId}`,
         bio: 'Professional content creator',
@@ -221,11 +221,11 @@ router.get('/platforms', async (req, res) => {
   try {
     const platforms = [
       {
-        id: 'boyfanz',
-        name: 'BoyFanz',
-        url: 'https://boyfanz.com',
+        id: 'FanzSSO',
+        name: 'FanzSSO',
+        url: 'https://FanzSSO.com',
         status: 'active',
-        client_id: 'boyfanz',
+        client_id: 'FanzSSO',
         users_count: Math.floor(Math.random() * 10000) + 1000,
         last_sync: new Date(Date.now() - Math.random() * 60 * 60 * 1000).toISOString()
       },

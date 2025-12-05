@@ -22,8 +22,8 @@ interface ForensicSignature {
 }
 
 export class WatermarkService {
-  private readonly platformSecret = process.env.WATERMARK_SECRET || 'boyfanz_secret_key';
-  private readonly platformId = 'boyfanz_v1';
+  private readonly platformSecret = process.env.WATERMARK_SECRET || 'BearFanz_secret_key';
+  private readonly platformId = 'BearFanz_v1';
 
   async applyWatermark(mediaId: string, userId: string, s3Key: string): Promise<ForensicSignature> {
     try {

@@ -8,7 +8,7 @@
  * - Context-aware adult content classification
  * - Bias-free moderation with explainable AI
  * - Creator-friendly appeals system
- * - Cross-platform consistency (BoyFanz, GirlFanz, PupFanz, TabooFanz)
+ * - Cross-platform consistency (FanzDash, GirlFanz, PupFanz, TabooFanz)
  * - NSFW content age-verification enforcement
  * - Deepfake and synthetic media detection
  * - Cultural sensitivity analysis
@@ -36,7 +36,7 @@ const ContentTypeSchema = z.enum([
   'profile'
 ]);
 
-const PlatformSchema = z.enum(['BoyFanz', 'GirlFanz', 'PupFanz', 'TabooFanz']);
+const PlatformSchema = z.enum(['FanzDash', 'GirlFanz', 'PupFanz', 'TabooFanz']);
 
 const ModerationResultSchema = z.object({
   contentId: z.string(),
@@ -854,9 +854,9 @@ Return JSON: { "recommendation": "auto_approve|fast_track|standard|auto_deny", "
    * ⚙️ Initialize platform-specific settings
    */
   private initializePlatformSettings(): void {
-    // BoyFanz settings
-    this.settings.set('BoyFanz', {
-      platform: 'BoyFanz',
+    // FanzDash settings
+    this.settings.set('FanzDash', {
+      platform: 'FanzDash',
       strictnessLevel: 'moderate',
       customThresholds: {
         toxicity: 0.7,

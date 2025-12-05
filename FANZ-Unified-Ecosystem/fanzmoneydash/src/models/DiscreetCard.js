@@ -120,7 +120,7 @@ const discreetCardSchema = new Schema({
     name: {
       type: String,
       enum: [
-        'boyfanz', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz',
+        'FanzMoneyDash', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz',
         'taboofanz', 'femmefanz', 'transfanz', 'fanzuncut', 'southernfanz',
         'bearfanz', 'dlbroz', 'guyz'
       ],

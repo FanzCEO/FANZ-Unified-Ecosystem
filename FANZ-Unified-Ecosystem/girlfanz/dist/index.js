@@ -2209,22 +2209,73 @@ var init_schema = __esm({
 });
 
 // server/db.ts
-import { Pool, neonConfig } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import ws from "ws";
-var pool, db;
+async function initializeDatabase() {
+  try {
+    if (isSqlite) {
+      try {
+        const Database = (await import("better-sqlite3")).default;
+        const { drizzle } = await import("drizzle-orm/better-sqlite3");
+        const sqlite = new Database(dbUrl.replace("sqlite:", ""));
+        db = drizzle(sqlite, { schema: schema_exports });
+        console.log(`\u{1F5C4}\uFE0F Connected to SQLite database: ${dbUrl.replace("sqlite:", "")}`);
+      } catch (sqliteError) {
+        console.warn(`\u26A0\uFE0F SQLite connection failed, falling back to mock database:`, sqliteError.message);
+        db = {
+          select: () => ({ from: () => ({ limit: () => [] }) }),
+          insert: () => ({ values: () => ({ returning: () => [] }) }),
+          update: () => ({ set: () => ({ where: () => ({ returning: () => [] }) }) }),
+          delete: () => ({ where: () => ({ returning: () => [] }) })
+        };
+      }
+    } else if (isPostgres) {
+      const pg = await import("pg");
+      const { drizzle } = await import("drizzle-orm/node-postgres");
+      pool = new pg.default.Pool({
+        connectionString: dbUrl,
+        max: 10,
+        // Maximum pool size
+        idleTimeoutMillis: 3e4,
+        // 30 seconds idle timeout
+        connectionTimeoutMillis: 5e3,
+        // 5 seconds connection timeout
+        allowExitOnIdle: false
+        // Keep pool alive
+      });
+      pool.on("connect", (client) => {
+        client.query(`SET search_path TO ${platformId}, shared, public`);
+      });
+      db = drizzle(pool, { schema: schema_exports });
+      console.log(`\u{1F418} Connected to PostgreSQL database (schema: ${platformId})`);
+    } else {
+      throw new Error(`Unsupported database URL: ${dbUrl}`);
+    }
+  } catch (error) {
+    console.error(`\u274C Database connection failed:`, error.message);
+    console.log(`\u{1F527} Using mock database for development`);
+    db = {
+      select: () => ({ from: () => ({ limit: () => [] }) }),
+      insert: () => ({ values: () => ({ returning: () => [] }) }),
+      update: () => ({ set: () => ({ where: () => ({ returning: () => [] }) }) }),
+      delete: () => ({ where: () => ({ returning: () => [] }) })
+    };
+  }
+}
+var dbUrl, isSqlite, isPostgres, platformId, db, pool;
 var init_db = __esm({
-  "server/db.ts"() {
+  async "server/db.ts"() {
     "use strict";
     init_schema();
-    neonConfig.webSocketConstructor = ws;
     if (!process.env.DATABASE_URL) {
       throw new Error(
         "DATABASE_URL must be set. Did you forget to provision a database?"
       );
     }
-    pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    db = drizzle({ client: pool, schema: schema_exports });
+    dbUrl = process.env.DATABASE_URL;
+    isSqlite = dbUrl.startsWith("sqlite:");
+    isPostgres = dbUrl.startsWith("postgresql:") || dbUrl.startsWith("postgres:");
+    platformId = process.env.PLATFORM_ID || "girlfanz";
+    pool = null;
+    await initializeDatabase();
   }
 });
 
@@ -2237,10 +2288,10 @@ __export(storage_exports, {
 import { eq, desc, and, or, sql as sql2 } from "drizzle-orm";
 var DatabaseStorage, storage;
 var init_storage = __esm({
-  "server/storage.ts"() {
+  async "server/storage.ts"() {
     "use strict";
     init_schema();
-    init_db();
+    await init_db();
     DatabaseStorage = class {
       // User operations
       async getUser(id) {
@@ -3690,9 +3741,9 @@ async function setupAuth(app2) {
 }
 var JWT_SECRET, BCRYPT_ROUNDS, emailTransporter, isAuthenticated;
 var init_auth = __esm({
-  "server/auth.ts"() {
+  async "server/auth.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     if (!process.env.JWT_SECRET) {
       console.error("CRITICAL: JWT_SECRET environment variable must be set for production use!");
       console.error("Generate a secure secret with: openssl rand -base64 64");
@@ -4080,9 +4131,9 @@ function createCCBillService() {
 }
 var CCBillService;
 var init_ccbill = __esm({
-  "server/payments/ccbill.ts"() {
+  async "server/payments/ccbill.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     CCBillService = class {
       constructor(config) {
         this.config = config;
@@ -4428,7 +4479,7 @@ var init_verifymy = __esm({
         }
       }
       async handleAgeVerificationComplete(transactionId, userId, status, data) {
-        const { storage: storage2 } = await Promise.resolve().then(() => (init_storage(), storage_exports));
+        const { storage: storage2 } = await init_storage().then(() => storage_exports);
         const isVerified = status === "verified";
         const confidence = data.confidence || 0;
         await storage2.createKycVerification({
@@ -4463,7 +4514,7 @@ var init_verifymy = __esm({
         });
       }
       async handleIdentityVerificationComplete(transactionId, userId, status, data) {
-        const { storage: storage2 } = await Promise.resolve().then(() => (init_storage(), storage_exports));
+        const { storage: storage2 } = await init_storage().then(() => storage_exports);
         const isVerified = status === "verified";
         const confidence = data.confidence || 0;
         await storage2.createKycVerification({
@@ -4499,7 +4550,7 @@ var init_verifymy = __esm({
         });
       }
       async handleContentModerationComplete(transactionId, data) {
-        const { storage: storage2 } = await Promise.resolve().then(() => (init_storage(), storage_exports));
+        const { storage: storage2 } = await init_storage().then(() => storage_exports);
         const { mediaId, approved, confidence, flagged } = data;
         if (mediaId) {
           const newStatus = approved ? "approved" : "rejected";
@@ -4528,9 +4579,9 @@ var init_verifymy = __esm({
 import crypto4 from "crypto";
 var ContentFingerprintingService, contentFingerprintingService;
 var init_fingerprinting = __esm({
-  "server/services/fingerprinting.ts"() {
+  async "server/services/fingerprinting.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     ContentFingerprintingService = class {
       constructor() {
         this.algorithms = ["md5", "sha256", "perceptual_hash"];
@@ -4714,9 +4765,9 @@ var init_fingerprinting = __esm({
 // server/services/payouts.ts
 var CreatorPayoutService, creatorPayoutService;
 var init_payouts = __esm({
-  "server/services/payouts.ts"() {
+  async "server/services/payouts.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     CreatorPayoutService = class {
       constructor() {
         this.PLATFORM_FEE_RATE = 0;
@@ -4951,9 +5002,9 @@ var init_payouts = __esm({
 // server/services/content-creation.ts
 var ContentCreationService, contentCreationService;
 var init_content_creation = __esm({
-  "server/services/content-creation.ts"() {
+  async "server/services/content-creation.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     init_objectStorage();
     ContentCreationService = class {
       constructor() {
@@ -5177,9 +5228,9 @@ var init_content_creation = __esm({
 // server/services/ai-editor.ts
 var ASPECT_RATIO_CONFIGS, AIEditorService, aiEditorService;
 var init_ai_editor = __esm({
-  "server/services/ai-editor.ts"() {
+  async "server/services/ai-editor.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     init_objectStorage();
     ASPECT_RATIO_CONFIGS = [
       { ratio: "9:16", platform: "tiktok", width: 1080, height: 1920 },
@@ -5470,9 +5521,9 @@ import QRCode from "qrcode";
 import { nanoid } from "nanoid";
 var PLATFORM_CONFIGS, DistributionService, distributionService;
 var init_distribution = __esm({
-  "server/services/distribution.ts"() {
+  async "server/services/distribution.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     init_objectStorage();
     PLATFORM_CONFIGS = {
       instagram: {
@@ -5764,9 +5815,9 @@ var init_distribution = __esm({
 import crypto5 from "crypto";
 var VerificationService, verificationService;
 var init_verification = __esm({
-  "server/services/verification.ts"() {
+  async "server/services/verification.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     init_verifymy();
     VerificationService = class {
       // Warn 30 days before expiry
@@ -6100,11 +6151,11 @@ import { WebSocket } from "ws";
 import crypto6 from "crypto";
 var StreamingService, streamingService;
 var init_streaming = __esm({
-  "server/services/streaming.ts"() {
+  async "server/services/streaming.ts"() {
     "use strict";
-    init_storage();
-    init_verification();
-    init_ai_editor();
+    await init_storage();
+    await init_verification();
+    await init_ai_editor();
     StreamingService = class {
       constructor() {
         this.sessions = /* @__PURE__ */ new Map();
@@ -6691,11 +6742,11 @@ function initStreamWebSocketHandler(wss) {
 }
 var StreamWebSocketHandler, streamWebSocketHandler;
 var init_stream_handler = __esm({
-  "server/websocket/stream-handler.ts"() {
+  async "server/websocket/stream-handler.ts"() {
     "use strict";
-    init_streaming();
-    init_storage();
-    init_verification();
+    await init_streaming();
+    await init_storage();
+    await init_verification();
     StreamWebSocketHandler = class {
       constructor(wss) {
         this.connections = /* @__PURE__ */ new Map();
@@ -6704,124 +6755,124 @@ var init_stream_handler = __esm({
         this.setupHeartbeat();
       }
       // Handle new WebSocket connection
-      async handleConnection(ws2, request) {
+      async handleConnection(ws, request) {
         console.log("New WebSocket connection for streaming");
-        ws2.isAlive = true;
-        ws2.on("pong", () => {
-          ws2.isAlive = true;
+        ws.isAlive = true;
+        ws.on("pong", () => {
+          ws.isAlive = true;
         });
-        ws2.on("message", async (message) => {
+        ws.on("message", async (message) => {
           try {
             const data = JSON.parse(message.toString());
-            await this.handleMessage(ws2, data);
+            await this.handleMessage(ws, data);
           } catch (error) {
             console.error("WebSocket message error:", error);
-            this.sendError(ws2, "Invalid message format");
+            this.sendError(ws, "Invalid message format");
           }
         });
-        ws2.on("close", () => {
-          this.handleDisconnection(ws2);
+        ws.on("close", () => {
+          this.handleDisconnection(ws);
         });
-        ws2.on("error", (error) => {
+        ws.on("error", (error) => {
           console.error("WebSocket error:", error);
-          this.handleDisconnection(ws2);
+          this.handleDisconnection(ws);
         });
-        this.sendMessage(ws2, {
+        this.sendMessage(ws, {
           type: "connection_established",
           data: { message: "Connected to streaming service" }
         });
       }
       // Handle incoming messages
-      async handleMessage(ws2, message) {
+      async handleMessage(ws, message) {
         const { type, sessionId, userId, data } = message;
         if (type === "authenticate") {
-          return this.handleAuthentication(ws2, data);
+          return this.handleAuthentication(ws, data);
         }
-        if (!ws2.userId) {
-          return this.sendError(ws2, "Authentication required");
+        if (!ws.userId) {
+          return this.sendError(ws, "Authentication required");
         }
         try {
           switch (type) {
             case "create_stream":
-              await this.handleCreateStream(ws2, data);
+              await this.handleCreateStream(ws, data);
               break;
             case "join_stream":
-              await this.handleJoinStream(ws2, sessionId, ws2.userId, data);
+              await this.handleJoinStream(ws, sessionId, ws.userId, data);
               break;
             case "leave_stream":
-              await this.handleLeaveStream(ws2, sessionId, ws2.userId);
+              await this.handleLeaveStream(ws, sessionId, ws.userId);
               break;
             case "start_stream":
-              await this.handleStartStream(ws2, sessionId);
+              await this.handleStartStream(ws, sessionId);
               break;
             case "end_stream":
-              await this.handleEndStream(ws2, sessionId);
+              await this.handleEndStream(ws, sessionId);
               break;
             case "invite_costar":
-              await this.handleInviteCoStar(ws2, sessionId, data);
+              await this.handleInviteCoStar(ws, sessionId, data);
               break;
             case "remove_costar":
-              await this.handleRemoveCoStar(ws2, sessionId, data.userId);
+              await this.handleRemoveCoStar(ws, sessionId, data.userId);
               break;
             case "send_chat":
-              await this.handleChatMessage(ws2, sessionId, data);
+              await this.handleChatMessage(ws, sessionId, data);
               break;
             case "send_gift":
-              await this.handleGift(ws2, sessionId, data);
+              await this.handleGift(ws, sessionId, data);
               break;
             case "send_reaction":
-              await this.handleReaction(ws2, sessionId, data);
+              await this.handleReaction(ws, sessionId, data);
               break;
             case "webrtc_offer":
             case "webrtc_answer":
             case "webrtc_ice_candidate":
-              await this.handleWebRTCSignaling(ws2, sessionId, type, data);
+              await this.handleWebRTCSignaling(ws, sessionId, type, data);
               break;
             case "update_stream_settings":
-              await this.handleUpdateStreamSettings(ws2, sessionId, data);
+              await this.handleUpdateStreamSettings(ws, sessionId, data);
               break;
             case "toggle_audio":
-              await this.handleToggleAudio(ws2, sessionId, data.enabled);
+              await this.handleToggleAudio(ws, sessionId, data.enabled);
               break;
             case "toggle_video":
-              await this.handleToggleVideo(ws2, sessionId, data.enabled);
+              await this.handleToggleVideo(ws, sessionId, data.enabled);
               break;
             case "apply_filter":
-              await this.handleApplyFilter(ws2, sessionId, data);
+              await this.handleApplyFilter(ws, sessionId, data);
               break;
             case "set_virtual_background":
-              await this.handleSetVirtualBackground(ws2, sessionId, data);
+              await this.handleSetVirtualBackground(ws, sessionId, data);
               break;
             case "request_highlight":
-              await this.handleRequestHighlight(ws2, sessionId, data);
+              await this.handleRequestHighlight(ws, sessionId, data);
               break;
             case "get_stream_analytics":
-              await this.handleGetAnalytics(ws2, sessionId);
+              await this.handleGetAnalytics(ws, sessionId);
               break;
             case "pin_message":
-              await this.handlePinMessage(ws2, sessionId, data.messageId);
+              await this.handlePinMessage(ws, sessionId, data.messageId);
               break;
             case "moderate_user":
-              await this.handleModerateUser(ws2, sessionId, data);
+              await this.handleModerateUser(ws, sessionId, data);
               break;
             default:
-              this.sendError(ws2, `Unknown message type: ${type}`);
+              this.sendError(ws, `Unknown message type: ${type}`);
           }
         } catch (error) {
           console.error(`Error handling ${type}:`, error);
-          this.sendError(ws2, error instanceof Error ? error.message : "Operation failed");
+          this.sendError(ws, error instanceof Error ? error.message : "Operation failed");
         }
       }
       // Authentication handler
-      async handleAuthentication(ws2, data) {
+      async handleAuthentication(ws, data) {
         const { userId, token } = data;
         const user = await storage.getUser(userId);
         if (!user) {
-          return this.sendError(ws2, "Invalid user");
+          return this.sendError(ws, "Invalid user");
         }
-        ws2.userId = userId;
-        this.connections.set(userId, ws2);
-        this.sendMessage(ws2, {
+        ws.userId = userId;
+        this.connections.set(userId, ws);
+        this.sendMessage(ws, {
           type: "authenticated",
           data: {
             userId,
@@ -6831,13 +6882,13 @@ var init_stream_handler = __esm({
         });
       }
       // Stream creation handler
-      async handleCreateStream(ws2, data) {
-        if (!ws2.userId) {
-          return this.sendError(ws2, "Authentication required");
+      async handleCreateStream(ws, data) {
+        if (!ws.userId) {
+          return this.sendError(ws, "Authentication required");
         }
-        const session3 = await streamingService.createStream(ws2.userId, data);
-        ws2.sessionId = session3.id;
-        this.sendMessage(ws2, {
+        const session3 = await streamingService.createStream(ws.userId, data);
+        ws.sessionId = session3.id;
+        this.sendMessage(ws, {
           type: "stream_created",
           data: {
             sessionId: session3.id,
@@ -6848,25 +6899,25 @@ var init_stream_handler = __esm({
         });
       }
       // Join stream handler
-      async handleJoinStream(ws2, sessionId, userId, data) {
+      async handleJoinStream(ws, sessionId, userId, data) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        ws2.sessionId = sessionId;
+        ws.sessionId = sessionId;
         if (data.role === "costar" || session3.participants.has(userId)) {
           const participant = session3.participants.get(userId);
           if (participant) {
-            participant.connection = ws2;
+            participant.connection = ws;
           }
           if (data.role === "costar") {
             const verification = await verificationService.getUserVerificationStatus(userId);
             if (!verification.verified) {
-              return this.sendError(ws2, "Verification required to join as co-star");
+              return this.sendError(ws, "Verification required to join as co-star");
             }
             await streamingService.addCoStar(sessionId, userId, true);
           }
-          this.sendMessage(ws2, {
+          this.sendMessage(ws, {
             type: "joined_as_participant",
             data: {
               sessionId,
@@ -6881,8 +6932,8 @@ var init_stream_handler = __esm({
             }
           });
         } else {
-          await streamingService.addViewer(sessionId, userId, ws2);
-          this.sendMessage(ws2, {
+          await streamingService.addViewer(sessionId, userId, ws);
+          this.sendMessage(ws, {
             type: "joined_as_viewer",
             data: {
               sessionId,
@@ -6894,7 +6945,7 @@ var init_stream_handler = __esm({
         }
       }
       // Leave stream handler
-      async handleLeaveStream(ws2, sessionId, userId) {
+      async handleLeaveStream(ws, sessionId, userId) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) return;
         if (session3.participants.has(userId)) {
@@ -6902,23 +6953,23 @@ var init_stream_handler = __esm({
         } else {
           await streamingService.removeViewer(sessionId, userId);
         }
-        ws2.sessionId = void 0;
-        this.sendMessage(ws2, {
+        ws.sessionId = void 0;
+        this.sendMessage(ws, {
           type: "left_stream",
           data: { sessionId }
         });
       }
       // Start stream handler
-      async handleStartStream(ws2, sessionId) {
+      async handleStartStream(ws, sessionId) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        if (ws2.userId !== session3.creatorId) {
-          return this.sendError(ws2, "Only host can start the stream");
+        if (ws.userId !== session3.creatorId) {
+          return this.sendError(ws, "Only host can start the stream");
         }
         await streamingService.startStream(sessionId);
-        this.sendMessage(ws2, {
+        this.sendMessage(ws, {
           type: "stream_started",
           data: {
             sessionId,
@@ -6927,16 +6978,16 @@ var init_stream_handler = __esm({
         });
       }
       // End stream handler
-      async handleEndStream(ws2, sessionId) {
+      async handleEndStream(ws, sessionId) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        if (ws2.userId !== session3.creatorId) {
-          return this.sendError(ws2, "Only host can end the stream");
+        if (ws.userId !== session3.creatorId) {
+          return this.sendError(ws, "Only host can end the stream");
         }
         await streamingService.endStream(sessionId);
-        this.sendMessage(ws2, {
+        this.sendMessage(ws, {
           type: "stream_ended",
           data: {
             sessionId,
@@ -6946,13 +6997,13 @@ var init_stream_handler = __esm({
         });
       }
       // Invite co-star handler
-      async handleInviteCoStar(ws2, sessionId, data) {
+      async handleInviteCoStar(ws, sessionId, data) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        if (ws2.userId !== session3.creatorId) {
-          return this.sendError(ws2, "Only host can invite co-stars");
+        if (ws.userId !== session3.creatorId) {
+          return this.sendError(ws, "Only host can invite co-stars");
         }
         await streamingService.addCoStar(
           sessionId,
@@ -6970,19 +7021,19 @@ var init_stream_handler = __esm({
             }
           });
         }
-        this.sendMessage(ws2, {
+        this.sendMessage(ws, {
           type: "costar_invited",
           data: { userId: data.userId }
         });
       }
       // Remove co-star handler
-      async handleRemoveCoStar(ws2, sessionId, coStarId) {
+      async handleRemoveCoStar(ws, sessionId, coStarId) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        if (ws2.userId !== session3.creatorId) {
-          return this.sendError(ws2, "Only host can remove co-stars");
+        if (ws.userId !== session3.creatorId) {
+          return this.sendError(ws, "Only host can remove co-stars");
         }
         await streamingService.removeCoStar(sessionId, coStarId);
         const removedWs = this.connections.get(coStarId);
@@ -6992,27 +7043,27 @@ var init_stream_handler = __esm({
             data: { sessionId }
           });
         }
-        this.sendMessage(ws2, {
+        this.sendMessage(ws, {
           type: "costar_removed",
           data: { userId: coStarId }
         });
       }
       // Chat message handler
-      async handleChatMessage(ws2, sessionId, data) {
-        if (!ws2.userId) return;
+      async handleChatMessage(ws, sessionId, data) {
+        if (!ws.userId) return;
         await streamingService.sendChatMessage(
           sessionId,
-          ws2.userId,
+          ws.userId,
           data.message,
           data.messageType || "text"
         );
       }
       // Gift handler
-      async handleGift(ws2, sessionId, data) {
-        if (!ws2.userId) return;
+      async handleGift(ws, sessionId, data) {
+        if (!ws.userId) return;
         await streamingService.sendGift(
           sessionId,
-          ws2.userId,
+          ws.userId,
           data.receiverId,
           data.giftType,
           data.giftValue,
@@ -7021,88 +7072,88 @@ var init_stream_handler = __esm({
         );
       }
       // Reaction handler
-      async handleReaction(ws2, sessionId, data) {
-        if (!ws2.userId) return;
+      async handleReaction(ws, sessionId, data) {
+        if (!ws.userId) return;
         await streamingService.sendReaction(
           sessionId,
-          ws2.userId,
+          ws.userId,
           data.reactionType,
           data.intensity || 1
         );
       }
       // WebRTC signaling handler
-      async handleWebRTCSignaling(ws2, sessionId, signalType, data) {
-        if (!ws2.userId) return;
+      async handleWebRTCSignaling(ws, sessionId, signalType, data) {
+        if (!ws.userId) return;
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        if (!session3.participants.has(ws2.userId)) {
-          return this.sendError(ws2, "Not a participant in this stream");
+        if (!session3.participants.has(ws.userId)) {
+          return this.sendError(ws, "Not a participant in this stream");
         }
-        await streamingService.handleSignaling(sessionId, ws2.userId, {
+        await streamingService.handleSignaling(sessionId, ws.userId, {
           type: signalType,
           ...data
         });
       }
       // Update stream settings handler
-      async handleUpdateStreamSettings(ws2, sessionId, data) {
+      async handleUpdateStreamSettings(ws, sessionId, data) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        if (ws2.userId !== session3.creatorId) {
-          return this.sendError(ws2, "Only host can update settings");
+        if (ws.userId !== session3.creatorId) {
+          return this.sendError(ws, "Only host can update settings");
         }
         await storage.updateLiveStream(session3.streamId, data);
-        this.sendMessage(ws2, {
+        this.sendMessage(ws, {
           type: "settings_updated",
           data
         });
       }
       // Toggle audio handler
-      async handleToggleAudio(ws2, sessionId, enabled) {
-        if (!ws2.userId) return;
+      async handleToggleAudio(ws, sessionId, enabled) {
+        if (!ws.userId) return;
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        const participant = session3.participants.get(ws2.userId);
+        const participant = session3.participants.get(ws.userId);
         if (!participant) {
-          return this.sendError(ws2, "Not a participant");
+          return this.sendError(ws, "Not a participant");
         }
         participant.audioEnabled = enabled;
         this.broadcastToParticipants(session3, {
           type: "audio_toggled",
           data: {
-            userId: ws2.userId,
+            userId: ws.userId,
             enabled
           }
         });
       }
       // Toggle video handler
-      async handleToggleVideo(ws2, sessionId, enabled) {
-        if (!ws2.userId) return;
+      async handleToggleVideo(ws, sessionId, enabled) {
+        if (!ws.userId) return;
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        const participant = session3.participants.get(ws2.userId);
+        const participant = session3.participants.get(ws.userId);
         if (!participant) {
-          return this.sendError(ws2, "Not a participant");
+          return this.sendError(ws, "Not a participant");
         }
         participant.videoEnabled = enabled;
         this.broadcastToParticipants(session3, {
           type: "video_toggled",
           data: {
-            userId: ws2.userId,
+            userId: ws.userId,
             enabled
           }
         });
       }
       // Apply filter handler
-      async handleApplyFilter(ws2, sessionId, data) {
-        this.sendMessage(ws2, {
+      async handleApplyFilter(ws, sessionId, data) {
+        this.sendMessage(ws, {
           type: "filter_applied",
           data: {
             filterType: data.filterType,
@@ -7111,17 +7162,17 @@ var init_stream_handler = __esm({
         });
       }
       // Set virtual background handler
-      async handleSetVirtualBackground(ws2, sessionId, data) {
-        this.sendMessage(ws2, {
+      async handleSetVirtualBackground(ws, sessionId, data) {
+        this.sendMessage(ws, {
           type: "virtual_background_set",
           data
         });
       }
       // Request highlight handler
-      async handleRequestHighlight(ws2, sessionId, data) {
+      async handleRequestHighlight(ws, sessionId, data) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3 || session3.status !== "live") {
-          return this.sendError(ws2, "Stream not active");
+          return this.sendError(ws, "Stream not active");
         }
         const timestamp2 = Math.floor((Date.now() - (session3.startedAt?.getTime() || 0)) / 1e3);
         await storage.createStreamHighlight({
@@ -7132,31 +7183,31 @@ var init_stream_handler = __esm({
           highlightType: "manual",
           score: 75
         });
-        this.sendMessage(ws2, {
+        this.sendMessage(ws, {
           type: "highlight_created",
           data: { timestamp: timestamp2 }
         });
       }
       // Get analytics handler
-      async handleGetAnalytics(ws2, sessionId) {
+      async handleGetAnalytics(ws, sessionId) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        this.sendMessage(ws2, {
+        this.sendMessage(ws, {
           type: "analytics",
           data: session3.analytics
         });
       }
       // Pin message handler
-      async handlePinMessage(ws2, sessionId, messageId) {
+      async handlePinMessage(ws, sessionId, messageId) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        const participant = session3.participants.get(ws2.userId);
+        const participant = session3.participants.get(ws.userId);
         if (!participant || participant.role !== "host" && participant.role !== "moderator") {
-          return this.sendError(ws2, "Insufficient permissions");
+          return this.sendError(ws, "Insufficient permissions");
         }
         const message = session3.chatMessages.find((m) => m.id === messageId);
         if (message) {
@@ -7168,14 +7219,14 @@ var init_stream_handler = __esm({
         }
       }
       // Moderate user handler
-      async handleModerateUser(ws2, sessionId, data) {
+      async handleModerateUser(ws, sessionId, data) {
         const session3 = streamingService.getSession(sessionId);
         if (!session3) {
-          return this.sendError(ws2, "Stream not found");
+          return this.sendError(ws, "Stream not found");
         }
-        const participant = session3.participants.get(ws2.userId);
+        const participant = session3.participants.get(ws.userId);
         if (!participant || participant.role !== "host" && participant.role !== "moderator") {
-          return this.sendError(ws2, "Insufficient permissions");
+          return this.sendError(ws, "Insufficient permissions");
         }
         if (data.action === "ban" || data.action === "timeout") {
           await streamingService.removeViewer(sessionId, data.userId);
@@ -7191,36 +7242,36 @@ var init_stream_handler = __esm({
             bannedWs.close();
           }
         }
-        this.sendMessage(ws2, {
+        this.sendMessage(ws, {
           type: "user_moderated",
           data
         });
       }
       // Disconnection handler
-      handleDisconnection(ws2) {
-        if (ws2.userId && ws2.sessionId) {
-          const session3 = streamingService.getSession(ws2.sessionId);
+      handleDisconnection(ws) {
+        if (ws.userId && ws.sessionId) {
+          const session3 = streamingService.getSession(ws.sessionId);
           if (session3) {
-            if (session3.participants.has(ws2.userId)) {
-              const participant = session3.participants.get(ws2.userId);
+            if (session3.participants.has(ws.userId)) {
+              const participant = session3.participants.get(ws.userId);
               if (participant) {
                 participant.connection = void 0;
               }
             } else {
-              streamingService.removeViewer(ws2.sessionId, ws2.userId);
+              streamingService.removeViewer(ws.sessionId, ws.userId);
             }
           }
-          this.connections.delete(ws2.userId);
+          this.connections.delete(ws.userId);
         }
       }
       // Helper methods
-      sendMessage(ws2, message) {
-        if (ws2.readyState === WebSocket2.OPEN) {
-          ws2.send(JSON.stringify(message));
+      sendMessage(ws, message) {
+        if (ws.readyState === WebSocket2.OPEN) {
+          ws.send(JSON.stringify(message));
         }
       }
-      sendError(ws2, error) {
-        this.sendMessage(ws2, {
+      sendError(ws, error) {
+        this.sendMessage(ws, {
           type: "error",
           data: { error }
         });
@@ -7248,13 +7299,13 @@ var init_stream_handler = __esm({
       }
       setupHeartbeat() {
         this.pingInterval = setInterval(() => {
-          this.wss.clients.forEach((ws2) => {
-            if (ws2.isAlive === false) {
-              ws2.terminate();
+          this.wss.clients.forEach((ws) => {
+            if (ws.isAlive === false) {
+              ws.terminate();
               return;
             }
-            ws2.isAlive = false;
-            ws2.ping();
+            ws.isAlive = false;
+            ws.ping();
           });
         }, 3e4);
       }
@@ -7272,9 +7323,9 @@ var init_stream_handler = __esm({
 // server/services/ai-processor.ts
 var AIProcessorService, aiProcessorService;
 var init_ai_processor = __esm({
-  "server/services/ai-processor.ts"() {
+  async "server/services/ai-processor.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     init_objectStorage();
     AIProcessorService = class {
       constructor() {
@@ -7659,9 +7710,9 @@ var init_ai_processor = __esm({
 // server/services/format-converter.ts
 var PLATFORM_CONFIGS2, FormatConverterService, formatConverterService;
 var init_format_converter = __esm({
-  "server/services/format-converter.ts"() {
+  async "server/services/format-converter.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     init_objectStorage();
     PLATFORM_CONFIGS2 = {
       tiktok: {
@@ -7840,10 +7891,10 @@ var init_format_converter = __esm({
         const session3 = await storage.getContentSession(sessionId);
         if (!session3) throw new Error("Session not found");
         const results = [];
-        const conversionPromises = options.platforms.map(async (platformId) => {
-          const config = PLATFORM_CONFIGS2[platformId];
+        const conversionPromises = options.platforms.map(async (platformId2) => {
+          const config = PLATFORM_CONFIGS2[platformId2];
           if (!config) {
-            console.warn(`Unknown platform: ${platformId}`);
+            console.warn(`Unknown platform: ${platformId2}`);
             return null;
           }
           return this.convertForPlatform(session3, config, options);
@@ -8090,9 +8141,9 @@ var init_format_converter = __esm({
 // server/services/asset-generator.ts
 var AssetGeneratorService, assetGeneratorService;
 var init_asset_generator = __esm({
-  "server/services/asset-generator.ts"() {
+  async "server/services/asset-generator.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     init_objectStorage();
     AssetGeneratorService = class {
       constructor() {
@@ -8610,9 +8661,9 @@ var init_asset_generator = __esm({
 // server/services/content-analyzer.ts
 var ContentAnalyzerService, contentAnalyzerService;
 var init_content_analyzer = __esm({
-  "server/services/content-analyzer.ts"() {
+  async "server/services/content-analyzer.ts"() {
     "use strict";
-    init_storage();
+    await init_storage();
     ContentAnalyzerService = class {
       constructor() {
         // Trend database (mock data - in production, this would be from a trend API)
@@ -9865,7 +9916,7 @@ async function registerRoutes(app2) {
   });
   const connections = /* @__PURE__ */ new Map();
   const streamHandler = initStreamWebSocketHandler(wss);
-  wss.on("connection", (ws2, req) => {
+  wss.on("connection", (ws, req) => {
     let userId = null;
     console.log("WebSocket connection attempt from:", req.socket.remoteAddress);
     const url = new URL(req.url, `http://${req.headers.host}`);
@@ -9874,36 +9925,36 @@ async function registerRoutes(app2) {
     if (token) {
       console.log("WebSocket connection with token:", token.substring(0, 10) + "...");
       userId = token;
-      connections.set(userId, ws2);
-      ws2.send(JSON.stringify({
+      connections.set(userId, ws);
+      ws.send(JSON.stringify({
         type: "auth_success",
         userId
       }));
       console.log("WebSocket authenticated via token");
     }
     if (purpose === "stream") {
-      streamHandler.handleConnection(ws2, req);
+      streamHandler.handleConnection(ws, req);
       return;
     }
-    ws2.on("message", async (data) => {
+    ws.on("message", async (data) => {
       try {
         const message = JSON.parse(data.toString());
         console.log("WebSocket message received:", message.type, userId ? `from user ${userId}` : "(unauthenticated)");
         if (message.type && message.type.startsWith("stream_") || ["create_stream", "join_stream", "leave_stream", "send_gift", "send_reaction"].includes(message.type)) {
-          streamHandler.handleConnection(ws2, req);
+          streamHandler.handleConnection(ws, req);
           return;
         }
         if (message.type === "auth") {
           userId = message.userId;
-          connections.set(userId, ws2);
+          connections.set(userId, ws);
           console.log(`User ${userId} successfully authenticated via WebSocket`);
-          ws2.send(JSON.stringify({
+          ws.send(JSON.stringify({
             type: "auth_success",
             userId
           }));
         }
         if (message.type === "ping") {
-          ws2.send(JSON.stringify({ type: "pong" }));
+          ws.send(JSON.stringify({ type: "pong" }));
         }
         if (message.type === "chat_message" && userId) {
           const messageData = {
@@ -9924,7 +9975,7 @@ async function registerRoutes(app2) {
         console.error("WebSocket message error:", error);
       }
     });
-    ws2.on("close", () => {
+    ws.on("close", () => {
       if (userId) {
         connections.delete(userId);
         console.log(`User ${userId} disconnected from WebSocket`);
@@ -9932,9 +9983,9 @@ async function registerRoutes(app2) {
     });
   });
   function broadcastToUser(userId, message) {
-    const ws2 = connections.get(userId);
-    if (ws2 && ws2.readyState === WebSocket3.OPEN) {
-      ws2.send(JSON.stringify(message));
+    const ws = connections.get(userId);
+    if (ws && ws.readyState === WebSocket3.OPEN) {
+      ws.send(JSON.stringify(message));
     }
   }
   const ccbillService = createCCBillService();
@@ -11666,27 +11717,27 @@ async function registerRoutes(app2) {
 }
 var limiter;
 var init_routes = __esm({
-  "server/routes.ts"() {
+  async "server/routes.ts"() {
     "use strict";
-    init_storage();
-    init_auth();
+    await init_storage();
+    await init_auth();
     init_objectStorage();
     init_objectAcl();
     init_schema();
-    init_ccbill();
+    await init_ccbill();
     init_verifymy();
-    init_fingerprinting();
-    init_payouts();
-    init_content_creation();
-    init_ai_editor();
-    init_distribution();
-    init_verification();
-    init_streaming();
-    init_stream_handler();
-    init_ai_processor();
-    init_format_converter();
-    init_asset_generator();
-    init_content_analyzer();
+    await init_fingerprinting();
+    await init_payouts();
+    await init_content_creation();
+    await init_ai_editor();
+    await init_distribution();
+    await init_verification();
+    await init_streaming();
+    await init_stream_handler();
+    await init_ai_processor();
+    await init_format_converter();
+    await init_asset_generator();
+    await init_content_analyzer();
     limiter = rateLimit({
       windowMs: 60 * 1e3,
       // 1 minute
@@ -11705,14 +11756,14 @@ import { Strategy as CustomStrategy } from "passport-custom";
 import session2 from "express-session";
 import memoizee from "memoizee";
 import connectPgSimple from "connect-pg-simple";
-import { Pool as Pool2 } from "pg";
+import { Pool } from "pg";
 var PgSession, pool2, getClient, router, replitAuth_default;
 var init_replitAuth = __esm({
-  "server/replitAuth.ts"() {
+  async "server/replitAuth.ts"() {
     "use strict";
-    init_db();
+    await init_db();
     PgSession = connectPgSimple(session2);
-    pool2 = new Pool2({
+    pool2 = new Pool({
       connectionString: process.env.DATABASE_URL
     });
     getClient = memoizee(
@@ -11844,10 +11895,10 @@ function log(message, source = "express") {
 }
 var __filename, __dirname, app;
 var init_start = __esm({
-  "server/start.ts"() {
+  async "server/start.ts"() {
     "use strict";
-    init_routes();
-    init_replitAuth();
+    await init_routes();
+    await init_replitAuth();
     __filename = fileURLToPath(import.meta.url);
     __dirname = dirname(__filename);
     app = express();
@@ -12013,7 +12064,7 @@ var init_start = __esm({
 
 // server/index.ts
 console.log("\u{1F680} Loading GirlFanz server from start.ts...");
-Promise.resolve().then(() => (init_start(), start_exports)).then(() => {
+init_start().then(() => start_exports).then(() => {
   console.log("\u2705 Server initialized");
 }).catch((err) => {
   console.error("\u274C Failed to start server:", err);

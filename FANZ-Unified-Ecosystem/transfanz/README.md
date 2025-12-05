@@ -1,7 +1,7 @@
-# BoyFanz-3 - FANZ Ecosystem
+# TransFanz-3 - FANZ Ecosystem
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Security](https://github.com/FanzCEO/BoyFanz-3/workflows/Security/badge.svg)](https://github.com/FanzCEO/BoyFanz-3/security)
+[![Security](https://github.com/FanzCEO/TransFanz-3/workflows/Security/badge.svg)](https://github.com/FanzCEO/TransFanz-3/security)
 [![WCAG 2.2 AA](https://img.shields.io/badge/Accessibility-WCAG%202.2%20AA-green.svg)](https://www.w3.org/WAI/WCAG22/quickref/)
 
 > **Creator-First. Privacy-First. Innovation-First.**  
@@ -9,7 +9,7 @@
 
 ## 🌟 About
 
-BoyFanz-3 is a core component of the FANZ ecosystem, built with our creator-first principles:
+TransFanz-3 is a core component of the FANZ ecosystem, built with our creator-first principles:
 
 - **🎯 Creator Autonomy** - Full control over content and earnings
 - **💰 Maximum Earnings** - Industry-leading creator payouts  
@@ -27,8 +27,8 @@ BoyFanz-3 is a core component of the FANZ ecosystem, built with our creator-firs
 
 ```bash
 # Clone repository
-git clone https://github.com/FanzCEO/BoyFanz-3.git
-cd BoyFanz-3
+git clone https://github.com/FanzCEO/TransFanz-3.git
+cd TransFanz-3
 
 # Install dependencies
 pnpm install
@@ -128,7 +128,7 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 This repository is part of the larger FANZ ecosystem:
 
 - **[FANZ Unified Ecosystem](https://github.com/FanzCEO/FANZ-Unified-Ecosystem)** - Main ecosystem repository
-- **[BoyFanz](https://boyfanz.com)** - Male creator platform
+- **[TransFanz](https://TransFanz.com)** - Male creator platform
 - **[GirlFanz](https://girlfanz.com)** - Female creator platform  
 - **[PupFanz](https://pupfanz.com)** - Pet/furry creator community
 - **[TabooFanz](https://taboofanz.com)** - Adult content platform

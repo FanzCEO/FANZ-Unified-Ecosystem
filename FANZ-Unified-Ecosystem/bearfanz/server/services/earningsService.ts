@@ -989,7 +989,7 @@ export class EarningsService {
     availableBalance: number;
     pendingBalance: number;
     feeBreakdown: {
-      boyfanzFee: number; // Always $0
+      BearFanzFee: number; // Always $0
       processorFee: number;
       taxWithholding?: number;
     };
@@ -1000,7 +1000,7 @@ export class EarningsService {
       // This would query actual transaction data
       const grossEarnings = (user as any)?.totalEarnings || 0;
       const processorFees = grossEarnings * this.PAYMENT_PROCESSOR_FEE;
-      const platformFees = 0; // BoyFanz takes 0%
+      const platformFees = 0; // BearFanz takes 0%
       const netEarnings = grossEarnings - processorFees - platformFees;
       
       return {
@@ -1011,7 +1011,7 @@ export class EarningsService {
         availableBalance: (user as any)?.availableBalance || 0,
         pendingBalance: (user as any)?.pendingBalance || 0,
         feeBreakdown: {
-          boyfanzFee: 0, // Always $0 - 100% earnings
+          BearFanzFee: 0, // Always $0 - 100% earnings
           processorFee: processorFees
         }
       };

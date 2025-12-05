@@ -140,7 +140,7 @@ const FANZ_BRANDS = [
   "BearFanz",
   "GayFanz",
   "Guyz",
-  "BoyFanz",
+  "FanzDash",
   "DLBroz",
   "PupFanz",
   "CougarFanz",

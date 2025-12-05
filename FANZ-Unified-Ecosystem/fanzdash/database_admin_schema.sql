@@ -95,7 +95,7 @@ CREATE INDEX IF NOT EXISTS idx_live_streams_created_at ON live_streams(created_a
 -- ===== PLATFORM THEMES TABLE =====
 CREATE TABLE IF NOT EXISTS platform_themes (
     id SERIAL PRIMARY KEY,
-    tenant_id VARCHAR(50) NOT NULL,         -- Tenant identifier (e.g., 'boyfanz', 'girlfanz')
+    tenant_id VARCHAR(50) NOT NULL,         -- Tenant identifier (e.g., 'FanzDash', 'girlfanz')
     primary_color VARCHAR(7) DEFAULT '#007bff',    -- Primary brand color
     secondary_color VARCHAR(7) DEFAULT '#6c757d',  -- Secondary color  
     accent_color VARCHAR(7) DEFAULT '#ffc107',     -- Accent color

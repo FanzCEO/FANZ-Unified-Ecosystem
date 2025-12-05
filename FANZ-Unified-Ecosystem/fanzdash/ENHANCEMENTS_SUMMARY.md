@@ -301,7 +301,7 @@
 All features support the complete FANZ ecosystem (94+ platforms):
 
 **Major Platforms:**
-- BoyFanz, GirlFanz, TransFanz, BearFanz, PupFanz
+- FanzDash, GirlFanz, TransFanz, BearFanz, PupFanz
 - CougarFanz, FemmeFanz, FanzUncut, FanzDiscreet
 - TabooFanz, FanzClips, FanzEliteTube, FanzLanding
 

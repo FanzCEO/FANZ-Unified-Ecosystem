@@ -243,7 +243,7 @@ global.testHelpers = {
       identity: { verified: true, verifiedAt: new Date() }
     },
     platforms: [{
-      platform: 'boyfanz',
+      platform: 'FanzMoneyDash',
       platformUserId: 'platform-123',
       status: 'active'
     }],
@@ -278,7 +278,7 @@ global.testHelpers = {
       role: 'creator'
     },
     platform: {
-      name: 'boyfanz',
+      name: 'FanzMoneyDash',
       userId: 'platform-123'
     },
     timestamps: {

@@ -23,7 +23,7 @@ export class RevolutionaryFinanceOS extends EventEmitter {
       creatorId,
       timeRange,
       platforms: [
-        'boyfanz', 'girlfanz', 'pupfanz', 'taboofanz',
+        'FanzDash', 'girlfanz', 'pupfanz', 'taboofanz',
         'onlyfans', 'patreon', 'twitch', 'youtube',
         'instagram', 'tiktok', 'twitter', 'custom_platforms'
       ],

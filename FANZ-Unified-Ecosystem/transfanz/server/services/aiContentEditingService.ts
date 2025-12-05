@@ -648,25 +648,25 @@ class AIContentEditingService {
   private async renderGIF(asset: any, params: any): Promise<string> {
     // Mock GIF rendering
     await this.simulateProcessing(3000); // 3 seconds
-    return `https://cdn.boyfanz.com/generated/gifs/gif_${Date.now()}.gif`;
+    return `https://cdn.TransFanz.com/generated/gifs/gif_${Date.now()}.gif`;
   }
 
   private async renderTrailer(assets: any[], params: any, analysis: any): Promise<string> {
     // Mock trailer rendering
     await this.simulateProcessing(15000); // 15 seconds
-    return `https://cdn.boyfanz.com/generated/trailers/trailer_${Date.now()}.mp4`;
+    return `https://cdn.TransFanz.com/generated/trailers/trailer_${Date.now()}.mp4`;
   }
 
   private async performAutoEdit(asset: any, params: any, analysis: any): Promise<string> {
     // Mock auto-editing
     await this.simulateProcessing(20000); // 20 seconds
-    return `https://cdn.boyfanz.com/generated/edited/edited_${Date.now()}.mp4`;
+    return `https://cdn.TransFanz.com/generated/edited/edited_${Date.now()}.mp4`;
   }
 
   private async enhanceAsset(asset: any, params: any): Promise<string> {
     // Mock enhancement
     await this.simulateProcessing(10000); // 10 seconds
-    return `https://cdn.boyfanz.com/generated/enhanced/enhanced_${Date.now()}.${asset.type === 'video' ? 'mp4' : 'jpg'}`;
+    return `https://cdn.TransFanz.com/generated/enhanced/enhanced_${Date.now()}.${asset.type === 'video' ? 'mp4' : 'jpg'}`;
   }
 
   // ===== HELPER METHODS =====

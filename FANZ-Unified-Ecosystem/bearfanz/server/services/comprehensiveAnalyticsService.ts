@@ -741,7 +741,7 @@ class ComprehensiveAnalyticsService {
         threshold: 5,
         severity: 'critical' as const,
         channels: ['email' as const],
-        recipients: ['admin@boyfanz.com']
+        recipients: ['admin@BearFanz.com']
       },
       {
         name: 'Low Database Performance',
@@ -750,7 +750,7 @@ class ComprehensiveAnalyticsService {
         threshold: 80,
         severity: 'warning' as const,
         channels: ['email' as const],
-        recipients: ['tech@boyfanz.com']
+        recipients: ['tech@BearFanz.com']
       }
     ];
 

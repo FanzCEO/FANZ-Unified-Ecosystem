@@ -18,7 +18,7 @@ export interface UserProfile {
 }
 
 export interface PlatformAccess {
-  platform: 'BoyFanz' | 'GirlFanz' | 'PupFanz' | 'TransFanz' | 'TabooFanz' | 'FanzTube' | 'FanzClips';
+  platform: 'FanzDash' | 'GirlFanz' | 'PupFanz' | 'TransFanz' | 'TabooFanz' | 'FanzTube' | 'FanzClips';
   hasAccess: boolean;
   subscriptionExpiry?: Date;
   accessLevel: 'viewer' | 'creator' | 'moderator' | 'admin';
@@ -57,7 +57,7 @@ export class FanzSSO {
   private initializePlatformRules(): void {
     // Initialize approved domains from user rules
     const approvedDomains = [
-      'boyfanz.com', 'girlfanz.com', 'pupfanz.com', 'transfanz.com', 'taboofanz.com',
+      'FanzDash.com', 'girlfanz.com', 'pupfanz.com', 'transfanz.com', 'taboofanz.com',
       'fanz.tube', 'fanzclips.com', 'fanzmeet.com', 'fanzshop.com',
       // Add all approved domains from rules
     ];
@@ -65,7 +65,7 @@ export class FanzSSO {
     this.platformRules = {
       platformDomains: {},
       accessRules: {
-        'BoyFanz': {
+        'FanzDash': {
           allowedTiers: ['premium', 'vip'],
           requiresVerification: true,
           ageRestriction: 18

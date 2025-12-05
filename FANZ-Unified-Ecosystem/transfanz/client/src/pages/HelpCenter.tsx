@@ -129,7 +129,7 @@ export function HelpCenter() {
             </div>
             
             <h1 className="text-5xl font-bold text-white mb-6 bg-gradient-to-r from-red-400 to-yellow-400 bg-clip-text text-transparent">
-              BoyFanz Help Center
+              TransFanz Help Center
             </h1>
             
             <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
@@ -141,7 +141,7 @@ export function HelpCenter() {
             <div className="max-w-4xl mx-auto">
               <AISearchInterface 
                 onSearch={handleSearch}
-                placeholder="Ask me anything about BoyFanz..."
+                placeholder="Ask me anything about TransFanz..."
                 showSuggestions={true}
               />
             </div>
@@ -324,7 +324,7 @@ export function HelpCenter() {
             {[
               { 
                 title: 'Getting Started', 
-                description: 'New to BoyFanz? Start here for setup guides and basics.',
+                description: 'New to TransFanz? Start here for setup guides and basics.',
                 icon: PlayCircle,
                 count: 24,
                 color: 'from-blue-500 to-cyan-500'

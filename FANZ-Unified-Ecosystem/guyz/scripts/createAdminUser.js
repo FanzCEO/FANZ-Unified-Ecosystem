@@ -23,7 +23,7 @@ class AdminUserManager {
       console.log('🔧 Creating admin user...');
       
       const adminData = {
-        email: userData.email || 'admin@boyfanz.com',
+        email: userData.email || 'admin@Guyz.com',
         password: userData.password || 'FanzAdmin2024!',
         username: userData.username || 'fanzadmin',
         displayName: userData.displayName || 'FANZ Administrator',
@@ -64,10 +64,10 @@ class AdminUserManager {
         isEmailVerified: adminData.isEmailVerified,
         isAgeVerified: adminData.isAgeVerified,
         metadata: adminData.metadata,
-        avatar: 'https://cdn.boyfanz.com/assets/admin-avatar.png',
+        avatar: 'https://cdn.Guyz.com/assets/admin-avatar.png',
         bio: 'FANZ Platform Administrator - Ensuring creator success and platform excellence',
         location: 'Platform Operations Center',
-        website: 'https://boyfanz.com/admin',
+        website: 'https://Guyz.com/admin',
         socialLinks: {
           twitter: '@FanzAdmin',
           linkedin: 'fanz-admin'
@@ -409,7 +409,7 @@ class AdminUserManager {
     try {
       // Step 1: Create admin user
       const adminUser = await this.createAdminUser({
-        email: 'admin@boyfanz.com',
+        email: 'admin@Guyz.com',
         username: 'fanzadmin',
         displayName: 'FANZ Administrator',
         password: 'FanzAdmin2024!'
@@ -469,7 +469,7 @@ if (process.argv[1] === import.meta.url.replace('file://', '')) {
     .then(result => {
       if (result.success) {
         console.log('\n🎉 Admin user creation and testing completed successfully!');
-        console.log(`📧 Admin Email: admin@boyfanz.com`);
+        console.log(`📧 Admin Email: admin@Guyz.com`);
         console.log(`👤 Admin Username: fanzadmin`);
         console.log(`🔑 Admin Password: FanzAdmin2024!`);
         console.log(`🆔 Admin ID: ${result.adminUser.id}`);

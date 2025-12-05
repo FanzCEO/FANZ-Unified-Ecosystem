@@ -30,7 +30,7 @@ app.use(helmet({
 // CORS configuration for FANZ platforms
 app.use(cors({
   origin: [
-    'https://boyfanz.com',
+    'https://FanzSSO.com',
     'https://girlfanz.com', 
     'https://pupfanz.com',
     'https://taboofanz.com',
@@ -78,7 +78,7 @@ app.get('/health', (req, res) => {
     version: '1.0.0',
     timestamp: new Date().toISOString(),
     platforms: [
-      'BoyFanz', 'GirlFanz', 'PupFanz', 'TabooFanz', 
+      'FanzSSO', 'GirlFanz', 'PupFanz', 'TabooFanz', 
       'TransFanz', 'DaddyFanz', 'CougarFanz'
     ]
   });

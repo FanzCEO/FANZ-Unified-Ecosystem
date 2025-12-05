@@ -26,7 +26,7 @@ export default function Home() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <h1 className="text-2xl font-heading text-primary underground-glow font-bold">
-                BoyFanz
+                FemmeFanz
               </h1>
               <span className="text-sm text-text-secondary font-body">
                 Every Man&apos;s Playground
@@ -196,7 +196,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-lg font-heading text-primary underground-glow mb-4">BoyFanz</h3>
+              <h3 className="text-lg font-heading text-primary underground-glow mb-4">FemmeFanz</h3>
               <p className="text-text-secondary text-sm">
                 Every Man&apos;s Playground. The underground community for authentic masculine expression.
               </p>
@@ -227,7 +227,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-border mt-12 pt-8 text-center text-sm text-text-secondary">
-            <p>© 2025 BoyFanz. Every Man&apos;s Playground. 18+ Only.</p>
+            <p>© 2025 FemmeFanz. Every Man&apos;s Playground. 18+ Only.</p>
           </div>
         </div>
       </footer>

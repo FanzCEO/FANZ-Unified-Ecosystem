@@ -70,7 +70,7 @@ These v6.8 additions expand the scope we need to map into services:
 
 ⸻
 
-⚡ Bottom line: BoyFanz’s current stack has gone far beyond the original Sponzy. Ads, crypto, taxes, calls, and announcements are already integrated — so in the polyglot rebuild, we need to spin up at least three new microservices (ads-svc, calls-svc, cms-svc) and enrich commerce-svc, payout-svc, and moderation-svc with these extra integrations.
+⚡ Bottom line: FanzDash’s current stack has gone far beyond the original Sponzy. Ads, crypto, taxes, calls, and announcements are already integrated — so in the polyglot rebuild, we need to spin up at least three new microservices (ads-svc, calls-svc, cms-svc) and enrich commerce-svc, payout-svc, and moderation-svc with these extra integrations.
 
 ⸻
 

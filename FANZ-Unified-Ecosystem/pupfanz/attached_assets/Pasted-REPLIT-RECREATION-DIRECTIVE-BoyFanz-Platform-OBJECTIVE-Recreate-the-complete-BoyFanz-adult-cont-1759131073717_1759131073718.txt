@@ -1,6 +1,6 @@
-REPLIT RECREATION DIRECTIVE - BoyFanz Platform
+REPLIT RECREATION DIRECTIVE - PupFanz Platform
 🎯 OBJECTIVE
-Recreate the complete BoyFanz adult content creator platform architecture in Replit with all core functionality, infrastructure, and compliance features. Theme and color scheme to be customized separately.
+Recreate the complete PupFanz adult content creator platform architecture in Replit with all core functionality, infrastructure, and compliance features. Theme and color scheme to be customized separately.
 🏗️ CORE ARCHITECTURE REQUIREMENTS
 Backend Stack
 Runtime: Node.js 20+ with TypeScript
@@ -336,11 +336,11 @@ PAYOUTS_PROVIDER=Paxum
 PAXUM_API_USER=your_paxum_user
 PAXUM_API_PASSWORD=your_paxum_password
 # Object Storage (Adult-Friendly CDN)
-CDN_BASE=https://cdn.boyfanz.com
-STORAGE_BUCKET=boyfanz-media
+CDN_BASE=https://cdn.PupFanz.com
+STORAGE_BUCKET=PupFanz-media
 STORAGE_REGION=us-east-1
 # Monitoring & Observability
-OTEL_SERVICE_NAME=boyfanz-web
+OTEL_SERVICE_NAME=PupFanz-web
 OTEL_EXPORTER_OTLP_ENDPOINT=https://otel-collector.example.com:4317
 # Security & Compliance
 KYC_PROVIDER=VerifyMy

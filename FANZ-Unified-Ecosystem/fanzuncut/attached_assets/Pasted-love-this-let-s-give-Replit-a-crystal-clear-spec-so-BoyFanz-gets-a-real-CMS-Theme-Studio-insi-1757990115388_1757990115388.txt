@@ -1,4 +1,4 @@
-love this. let’s give Replit a crystal-clear spec so BoyFanz gets a **real CMS + Theme Studio** inside the admin panel—Shopify vibes, but creator-economy native.
+love this. let’s give Replit a crystal-clear spec so FanzUncut gets a **real CMS + Theme Studio** inside the admin panel—Shopify vibes, but creator-economy native.
 
 I’ll outline **DB → API → file structure → admin UI → preview/publish flow → security → deploy steps**. This plugs straight into your existing **ThemeManager** (it already expects `/api/themes` endpoints, activation, etc.) and follows the same admin-gated pattern you used in **UserManagement** and **ModerationQueue**.
 

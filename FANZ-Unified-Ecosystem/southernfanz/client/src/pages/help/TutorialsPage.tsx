@@ -127,7 +127,7 @@ export function TutorialsPage() {
             </h1>
             
             <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Step-by-step guided tutorials to master every feature of BoyFanz. Learn at your own pace.
+              Step-by-step guided tutorials to master every feature of SouthernFanz. Learn at your own pace.
             </p>
 
             {/* Search Interface */}

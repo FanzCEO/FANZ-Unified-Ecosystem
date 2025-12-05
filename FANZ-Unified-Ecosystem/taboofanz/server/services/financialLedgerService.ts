@@ -46,7 +46,7 @@ class FinancialLedgerService {
         metadata: {
           ...params.metadata,
           idempotencyKey,
-          platform: 'boyfanz',
+          platform: 'TabooFanz',
           version: '1.0'
         }
       };

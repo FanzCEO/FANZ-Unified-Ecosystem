@@ -32,7 +32,7 @@ const validateCreatorRegistration = [
   body('userId').isString().notEmpty().withMessage('User ID is required'),
   body('displayName').isString().notEmpty().withMessage('Display name is required'),
   body('platforms').isArray().optional(),
-  body('platforms.*').isIn(['boyfanz', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz', 'fanztube', 'fanzclips']).withMessage('Invalid platform')
+  body('platforms.*').isIn(['FanzDash', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz', 'fanztube', 'fanzclips']).withMessage('Invalid platform')
 ];
 
 const validatePayoutMethod = [
@@ -973,7 +973,7 @@ if (process.env.NODE_ENV === 'development') {
       const testUserId = `test-user-${Date.now()}`;
       const creatorId = await creatorPayoutSystem.registerCreator(testUserId, {
         displayName: 'Test Creator',
-        platforms: ['boyfanz', 'girlfanz'],
+        platforms: ['FanzDash', 'girlfanz'],
         preferences: {
           minimumPayout: 50,
           currency: 'USD',
@@ -1001,7 +1001,7 @@ if (process.env.NODE_ENV === 'development') {
       // Add test revenue
       await creatorPayoutSystem.recordRevenue({
         creatorId,
-        platform: 'boyfanz',
+        platform: 'FanzDash',
         amount: 100,
         type: 'tip',
         sourceTransactionId: `test-tx-${Date.now()}`,

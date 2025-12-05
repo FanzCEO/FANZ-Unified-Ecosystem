@@ -91,7 +91,7 @@ interface PlatformConfig {
 // All 94 FANZ Platforms organized by category
 const ALL_PLATFORMS = {
   "Adult Entertainment": [
-    "BoyFanz", "GayFanz", "BearFanz", "CougarFanz", "PupFanz", "DLBroz", "Guyz",
+    "FanzDash", "GayFanz", "BearFanz", "CougarFanz", "PupFanz", "DLBroz", "Guyz",
     "FanzClips", "DaddyFanz", "TwinFanz", "MuscleF", "LatinFanz", "AsianFanz",
     "BBWFanz", "MatureFanz", "FanzCock", "FanzXXX"
   ],

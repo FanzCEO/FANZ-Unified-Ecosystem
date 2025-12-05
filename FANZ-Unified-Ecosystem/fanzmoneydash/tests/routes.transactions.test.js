@@ -275,7 +275,7 @@ describe('Transactions Routes Test Suite', () => {
           currency: 'USD'
         },
         platform: {
-          name: 'boyfanz',
+          name: 'FanzMoneyDash',
           userId: 'platform-user-123'
         },
         metadata: {

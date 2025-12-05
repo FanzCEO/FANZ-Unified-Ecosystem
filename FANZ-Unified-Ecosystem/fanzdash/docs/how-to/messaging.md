@@ -602,7 +602,7 @@ Fans can tell when you're genuine
 - 🤖 **AI Assistant:** Ask "How do I send a paid message?"
 - 📚 **Video Tutorial:** [Watch 3-min messaging guide]
 - 💬 **Live Support:** Mon-Fri 9am-9pm EST
-- 📧 **Email:** support@boyfanz.com
+- 📧 **Email:** support@FanzDash.com
 
 ---
 

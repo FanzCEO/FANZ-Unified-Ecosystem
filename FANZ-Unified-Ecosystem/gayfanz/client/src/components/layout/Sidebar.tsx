@@ -85,12 +85,12 @@ export default function Sidebar({ user }: SidebarProps) {
       <div className="flex h-16 md:h-20 items-center px-4 md:px-6 border-b border-border">
         <div className="flex items-center gap-2 md:gap-3">
           <img 
-            src="/boyfanz-logo.png" 
-            alt="BoyFanz Logo" 
+            src="/GayFanz-logo.png" 
+            alt="GayFanz Logo" 
             className="h-8 md:h-12 w-auto"
           />
           <div className="flex flex-col">
-            <span className="font-display font-bold text-lg md:text-xl neon-sign tracking-wider">BoyFanz</span>
+            <span className="font-display font-bold text-lg md:text-xl neon-sign tracking-wider">GayFanz</span>
             <span className="text-xs neon-sign-golden font-heading font-semibold tracking-wide uppercase hidden sm:block">Every Man's Playground</span>
           </div>
         </div>

@@ -407,7 +407,7 @@ router.get('/health', (req, res) => {
       'Platform theme management'
     ],
     supportedPlatforms: [
-      'BoyFanz', 'GirlFanz', 'PupFanz', 'TransFanz', 
+      'FanzDash', 'GirlFanz', 'PupFanz', 'TransFanz', 
       'TabooFanz', 'FanzTube', 'FanzClips'
     ],
     routingFeatures: [

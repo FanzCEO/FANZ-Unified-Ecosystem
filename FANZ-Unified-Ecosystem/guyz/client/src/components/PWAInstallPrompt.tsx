@@ -1,5 +1,5 @@
-// BoyFanz PWA Installation Prompt Component
-// Custom installation prompt with BoyFanz underground aesthetic
+// Guyz PWA Installation Prompt Component
+// Custom installation prompt with Guyz underground aesthetic
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -50,7 +50,7 @@ export function PWAInstallPrompt({ onDismiss }: PWAInstallPromptProps) {
       if (success) {
         setIsVisible(false);
         // Track successful installation
-        console.log('🎉 BoyFanz PWA installed successfully');
+        console.log('🎉 Guyz PWA installed successfully');
       }
     } catch (error) {
       console.error('❌ Installation failed:', error);
@@ -91,7 +91,7 @@ export function PWAInstallPrompt({ onDismiss }: PWAInstallPromptProps) {
             </div>
             <div>
               <h3 className="font-bold text-white text-sm">
-                Install BoyFanz App
+                Install Guyz App
               </h3>
               <p className="text-red-200 text-xs">
                 Every Man's Playground

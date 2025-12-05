@@ -2,9 +2,9 @@
 
 This file provides guidance to WARP (warp.dev) when working with code in this repository.
 
-## TL;DR - BoyFanz Platform Backend (FANZ Ecosystem)
+## TL;DR - FanzUncut Platform Backend (FANZ Ecosystem)
 
-**BoyFanz-3** is a production-ready Node.js/TypeScript backend serving the BoyFanz adult content creator platform (`boyfanz.com`). Built as part of the FANZ Unlimited Network ecosystem with API Gateway, multi-cloud infrastructure, adult-friendly payment processing, real-time monitoring, and mobile backend (ClubCentral app) support.
+**FanzUncut-3** is a production-ready Node.js/TypeScript backend serving the FanzUncut adult content creator platform (`FanzUncut.com`). Built as part of the FANZ Unlimited Network ecosystem with API Gateway, multi-cloud infrastructure, adult-friendly payment processing, real-time monitoring, and mobile backend (ClubCentral app) support.
 
 ## 🚀 Quickstart (5 minutes)
 
@@ -47,7 +47,7 @@ warp run deps:sync     # ✅ Sync pnpm lockfile and modules
 ## 🏗️ Architecture Overview
 
 ```
-[Web/App (BoyFanz)]  [FanzClub/ClubCentral]  [Creator Studio]  [Fan Dash]
+[Web/App (FanzUncut)]  [FanzClub/ClubCentral]  [Creator Studio]  [Fan Dash]
                 \         |                    |                /
                               [ API Gateway / Edge ]
                                        |
@@ -91,7 +91,7 @@ env/.env.prod          # Production environment variables
 ```
 
 ### Domain Mapping (Production)
-- **BoyFanz**: `boyfanz.com` (primary platform)
+- **FanzUncut**: `FanzUncut.com` (primary platform)
 - **Related platforms**: GirlFanz (`girlfanz.com`), PupFanz (`pupfanz.com`), TransFanz (`transfanz.com`), TabooFanz (`taboofanz.com`)
 
 ### Required Environment Variables
@@ -106,12 +106,12 @@ JWT_SECRET=your-64-character-secret
 SESSION_SECRET=your-32-character-secret
 
 # Observability (OpenTelemetry)
-OTEL_SERVICE_NAME=boyfanz-web
+OTEL_SERVICE_NAME=FanzUncut-web
 OTEL_EXPORTER_OTLP_ENDPOINT=https://otel-collector.example.com:4317
 
 # Storage & CDN
-CDN_BASE=https://cdn.boyfanz.com
-STORAGE_BUCKET=boyfanz-media
+CDN_BASE=https://cdn.FanzUncut.com
+STORAGE_BUCKET=FanzUncut-media
 STORAGE_REGION=us-east-1
 
 # Payments (Adult-Friendly Only)
@@ -212,7 +212,7 @@ warp run payments:smoke    # Test payment gateway integration
 ### OpenTelemetry Integration
 ```bash
 # Required in all start scripts
-export OTEL_SERVICE_NAME="boyfanz-web"
+export OTEL_SERVICE_NAME="FanzUncut-web"
 export OTEL_EXPORTER_OTLP_ENDPOINT="https://otel-collector.example.com:4317"
 ```
 
@@ -229,7 +229,7 @@ export OTEL_EXPORTER_OTLP_ENDPOINT="https://otel-collector.example.com:4317"
 
 ## 📢 Ads Platform Integration
 
-### Required Ad Placements (BoyFanz)
+### Required Ad Placements (FanzUncut)
 ```bash
 HEADER              # 970×90 / responsive banner
 FOOTER              # 728×90 / responsive 
@@ -380,7 +380,7 @@ warp run qa:check        # Complete quality gate
 
 ### B. FANZ Network Domains
 **Core Platforms**:
-- BoyFanz: `boyfanz.com`
+- FanzUncut: `FanzUncut.com`
 - GirlFanz: `girlfanz.com` 
 - PupFanz: `pupfanz.com`
 - TransFanz: `transfanz.com`
@@ -396,8 +396,8 @@ warp run qa:check        # Complete quality gate
 ### D. Key External References
 - **FanzDash**: Super admin control center and security hub
 - **Policy Documentation**: https://Fanz.Foundation/knowledge-base
-- **Developer APIs**: https://developers.boyfanz.com
-- **Status Monitoring**: https://status.boyfanz.com
+- **Developer APIs**: https://developers.FanzUncut.com
+- **Status Monitoring**: https://status.FanzUncut.com
 
 ---
 

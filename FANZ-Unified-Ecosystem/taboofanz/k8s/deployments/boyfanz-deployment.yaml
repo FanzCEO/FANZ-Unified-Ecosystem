@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: boyfanz
+  name: TabooFanz
   namespace: fanz-ecosystem
   labels:
-    app: boyfanz
+    app: TabooFanz
     platform: fanz
     tier: frontend
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: boyfanz
+      app: TabooFanz
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -20,13 +20,13 @@ spec:
   template:
     metadata:
       labels:
-        app: boyfanz
+        app: TabooFanz
         platform: fanz
         tier: frontend
     spec:
       containers:
-      - name: boyfanz
-        image: registry.digitalocean.com/fanz/boyfanz:latest
+      - name: TabooFanz
+        image: registry.digitalocean.com/fanz/TabooFanz:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
@@ -35,7 +35,7 @@ spec:
           name: websocket
         env:
         - name: PLATFORM_NAME
-          value: "BoyFanz"
+          value: "TabooFanz"
         - name: PLATFORM_PORT
           value: "5001"
         envFrom:

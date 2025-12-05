@@ -121,7 +121,7 @@ router.post('/webhooks/fanzdash', webhookLimiter, processFanzDashWebhook);
  *         required: true
  *         schema:
  *           type: string
- *           enum: [boyfanz, girlfanz, pupfanz, daddiesfanz, cougarfanz, taboofanz]
+ *           enum: [FanzMoneyDash, girlfanz, pupfanz, daddiesfanz, cougarfanz, taboofanz]
  *         description: Platform name
  *     requestBody:
  *       required: true
@@ -483,7 +483,7 @@ router.post('/sync/earnings', apiLimiter, authenticateToken, async (req, res) =>
  *             properties:
  *               platform:
  *                 type: string
- *                 enum: [fanzdash, boyfanz, girlfanz, pupfanz, daddiesfanz, cougarfanz, taboofanz]
+ *                 enum: [fanzdash, FanzMoneyDash, girlfanz, pupfanz, daddiesfanz, cougarfanz, taboofanz]
  *               event:
  *                 type: string
  *               data:
@@ -604,7 +604,7 @@ router.get('/status', apiLimiter, authenticateToken, async (req, res) => {
     // In a real implementation, you would track these metrics
     const webhooksReceived = {
       fanzdash: 0,
-      boyfanz: 0,
+      FanzMoneyDash: 0,
       girlfanz: 0,
       pupfanz: 0,
       daddiesfanz: 0,

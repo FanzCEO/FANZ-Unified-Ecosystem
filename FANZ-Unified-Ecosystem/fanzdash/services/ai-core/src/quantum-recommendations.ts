@@ -65,7 +65,7 @@ const UserContextSchema = z.object({
 const ContentItemSchema = z.object({
   id: z.string(),
   creatorId: z.string(),
-  platform: z.enum(['BoyFanz', 'GirlFanz', 'PupFanz', 'TabooFanz']),
+  platform: z.enum(['FanzDash', 'GirlFanz', 'PupFanz', 'TabooFanz']),
   contentType: z.enum(['image', 'video', 'stream', 'story', 'message']),
   tags: z.array(z.string()),
   emotionalTone: z.enum(['playful', 'romantic', 'intense', 'casual', 'artistic']),

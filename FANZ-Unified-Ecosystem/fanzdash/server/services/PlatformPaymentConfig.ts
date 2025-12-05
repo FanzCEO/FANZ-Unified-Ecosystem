@@ -79,7 +79,7 @@ export interface PlatformPaymentConfig {
 // All 94 FANZ Platforms
 export const ALL_PLATFORMS = [
   // Original Core Platforms
-  'boyfanz', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz',
+  'FanzDash', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz',
   'bearfanz', 'cougarfanz', 'gayfanz', 'femmefanz', 'guyz',
   'dlbroz', 'southernfanz', 'fanzuncut',
 

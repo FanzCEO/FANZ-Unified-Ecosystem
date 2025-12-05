@@ -12,7 +12,7 @@
 
 INSERT INTO analytics_configurations (platform_id, tenant_id, ga4_measurement_id, ga4_enabled, gtm_container_id, gtm_enabled, tracking_enabled, debug_mode)
 VALUES
-  ('BoyFanz', 'fanz_main', 'G-BOYFANZ001', true, 'GTM-BOYFANZ', true, true, true),
+  ('FanzDash', 'fanz_main', 'G-FanzDash001', true, 'GTM-FanzDash', true, true, true),
   ('GirlFanz', 'fanz_main', 'G-GIRLFANZ001', true, 'GTM-GIRLFANZ', true, true, true),
   ('TransFanz', 'fanz_main', 'G-TRANSFANZ001', true, 'GTM-TRANSFANZ', true, true, true),
   ('BearFanz', 'fanz_main', 'G-BEARFANZ001', true, 'GTM-BEARFANZ', true, true, true),
@@ -32,8 +32,8 @@ ON CONFLICT (platform_id, tenant_id) DO NOTHING;
 
 INSERT INTO analytics_events (platform_id, tenant_id, user_id, session_id, event_name, event_data, utm_source, utm_medium, utm_campaign, user_agent, ip_address, country, created_at)
 VALUES
-  ('BoyFanz', 'fanz_main', 'user_001', 'session_001', 'page_view', '{"page":"/profile","title":"Profile Page"}'::jsonb, 'google', 'cpc', 'spring_2025', 'Mozilla/5.0', '192.168.1.1', 'US', NOW() - INTERVAL '1 day'),
-  ('BoyFanz', 'fanz_main', 'user_001', 'session_001', 'purchase', '{"amount":9.99,"currency":"USD","items":[{"name":"Premium Subscription"}]}'::jsonb, 'google', 'cpc', 'spring_2025', 'Mozilla/5.0', '192.168.1.1', 'US', NOW() - INTERVAL '1 day'),
+  ('FanzDash', 'fanz_main', 'user_001', 'session_001', 'page_view', '{"page":"/profile","title":"Profile Page"}'::jsonb, 'google', 'cpc', 'spring_2025', 'Mozilla/5.0', '192.168.1.1', 'US', NOW() - INTERVAL '1 day'),
+  ('FanzDash', 'fanz_main', 'user_001', 'session_001', 'purchase', '{"amount":9.99,"currency":"USD","items":[{"name":"Premium Subscription"}]}'::jsonb, 'google', 'cpc', 'spring_2025', 'Mozilla/5.0', '192.168.1.1', 'US', NOW() - INTERVAL '1 day'),
   ('GirlFanz', 'fanz_main', 'user_002', 'session_002', 'page_view', '{"page":"/","title":"Home"}'::jsonb, 'facebook', 'social', 'awareness_2025', 'Chrome/120.0', '192.168.1.2', 'CA', NOW() - INTERVAL '2 hours'),
   ('TransFanz', 'fanz_main', 'user_003', 'session_003', 'sign_up', '{"method":"email"}'::jsonb, 'twitter', 'social', 'pride_month', 'Safari/17.0', '192.168.1.3', 'UK', NOW() - INTERVAL '1 hour'),
   ('BearFanz', 'fanz_main', 'user_004', 'session_004', 'content_view', '{"content_type":"video","content_id":"bear_video_123"}'::jsonb, 'direct', 'none', NULL, 'Firefox/120.0', '192.168.1.4', 'DE', NOW() - INTERVAL '30 minutes');
@@ -44,9 +44,9 @@ VALUES
 
 INSERT INTO profile_url_spots (user_id, tenant_id, platform_id, url, title, description, display_order, is_visible, click_count)
 VALUES
-  ('user_001', 'fanz_main', 'BoyFanz', 'https://instagram.com/boystar', 'Instagram', 'Follow me on Instagram', 1, true, 342),
-  ('user_001', 'fanz_main', 'BoyFanz', 'https://twitter.com/boystar', 'Twitter/X', 'Latest updates', 2, true, 156),
-  ('user_001', 'fanz_main', 'BoyFanz', 'https://patreon.com/boystar', 'Patreon', 'Exclusive content', 3, true, 89),
+  ('user_001', 'fanz_main', 'FanzDash', 'https://instagram.com/boystar', 'Instagram', 'Follow me on Instagram', 1, true, 342),
+  ('user_001', 'fanz_main', 'FanzDash', 'https://twitter.com/boystar', 'Twitter/X', 'Latest updates', 2, true, 156),
+  ('user_001', 'fanz_main', 'FanzDash', 'https://patreon.com/boystar', 'Patreon', 'Exclusive content', 3, true, 89),
   ('user_002', 'fanz_main', 'GirlFanz', 'https://tiktok.com/@girlstar', 'TikTok', 'Fun videos', 1, true, 567),
   ('user_002', 'fanz_main', 'GirlFanz', 'https://youtube.com/@girlstar', 'YouTube', 'Subscribe!', 2, true, 234);
 
@@ -56,7 +56,7 @@ VALUES
 
 INSERT INTO delegated_access_permissions (grantor_id, grantee_id, platform_id, tenant_id, access_type, permissions, ip_whitelist, is_active, expires_at)
 VALUES
-  ('creator_001', 'manager_001', 'BoyFanz', 'fanz_main', 'admin', 
+  ('creator_001', 'manager_001', 'FanzDash', 'fanz_main', 'admin', 
    '{"content:*": true, "users:view": true, "analytics:*": true, "settings:*": true}'::jsonb, 
    ARRAY['192.168.1.100', '10.0.0.1'], 
    true, 
@@ -98,7 +98,7 @@ LIMIT 1;
 
 INSERT INTO workflow_definitions (user_id, platform_id, tenant_id, name, description, category, node_data, edge_data, is_active)
 VALUES
-  ('creator_001', 'BoyFanz', 'fanz_main', 'New Subscriber Welcome', 'Automatically welcome new subscribers', 'engagement',
+  ('creator_001', 'FanzDash', 'fanz_main', 'New Subscriber Welcome', 'Automatically welcome new subscribers', 'engagement',
    '[
      {"id":"1","type":"trigger","data":{"type":"event","event":"new_subscriber"}},
      {"id":"2","type":"action","data":{"type":"send_email","config":{"subject":"Welcome!","template":"welcome_email"}}},
@@ -159,7 +159,7 @@ LIMIT 1;
 
 INSERT INTO scheduled_content (user_id, platform_id, tenant_id, title, content_type, content_data, scheduled_for, timezone, recurring_pattern, status)
 VALUES
-  ('creator_001', 'BoyFanz', 'fanz_main', 'Morning Motivation Post', 'social_post',
+  ('creator_001', 'FanzDash', 'fanz_main', 'Morning Motivation Post', 'social_post',
    '{"message":"Good morning everyone! 💪","image_url":"https://example.com/morning.jpg","hashtags":["motivation","fitness"]}'::jsonb,
    NOW() + INTERVAL '1 day' + TIME '09:00',
    'America/New_York',

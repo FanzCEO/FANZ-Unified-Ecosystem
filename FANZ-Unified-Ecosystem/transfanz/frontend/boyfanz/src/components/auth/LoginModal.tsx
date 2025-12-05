@@ -85,9 +85,9 @@ export function LoginModal({ isOpen, onClose, onSwitchToSignup }: LoginModalProp
         <div className="bg-background/50 p-4 rounded-lg border border-border">
           <h4 className="font-semibold text-text mb-2">Demo Accounts:</h4>
           <div className="space-y-1 text-sm text-text-secondary">
-            <div><strong>Admin:</strong> admin@boyfanz.com / admin123</div>
-            <div><strong>Creator:</strong> creator@boyfanz.com / creator123</div>
-            <div><strong>Fan:</strong> fan@boyfanz.com / fan123</div>
+            <div><strong>Admin:</strong> admin@TransFanz.com / admin123</div>
+            <div><strong>Creator:</strong> creator@TransFanz.com / creator123</div>
+            <div><strong>Fan:</strong> fan@TransFanz.com / fan123</div>
           </div>
         </div>
 

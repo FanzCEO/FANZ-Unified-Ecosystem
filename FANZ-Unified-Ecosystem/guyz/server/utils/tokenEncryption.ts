@@ -26,7 +26,7 @@ function getEncryptionKey(): Buffer {
   }
   
   // Generate deterministic key for development
-  const seed = 'boyfanz-oauth-dev-key-seed';
+  const seed = 'Guyz-oauth-dev-key-seed';
   return crypto.pbkdf2Sync(seed, 'salt', 100000, KEY_LENGTH, 'sha256');
 }
 

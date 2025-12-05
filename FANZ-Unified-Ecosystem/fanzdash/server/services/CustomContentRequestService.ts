@@ -10,7 +10,7 @@ import { escrowService } from '../payments/EscrowService';
 export interface CustomContentRequest {
   id: string;
   requestNumber: string; // Human-readable request number
-  platformId: string; // Which platform (boyfanz, girlfanz, etc)
+  platformId: string; // Which platform (FanzDash, girlfanz, etc)
 
   // Parties
   fanUserId: string;

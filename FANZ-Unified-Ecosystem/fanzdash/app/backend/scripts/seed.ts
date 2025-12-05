@@ -12,11 +12,11 @@ console.log('🌱 Seeding enterprise database...');
 
 async function seed() {
   // Create tenants
-  const [boyfanzTenant, fanzcommerceTenant] = await db.insert(tenants).values([
+  const [FanzDashTenant, fanzcommerceTenant] = await db.insert(tenants).values([
     {
-      slug: 'boyfanz',
-      name: 'BoyFanz',
-      ssoDomain: 'boyfanz.com',
+      slug: 'FanzDash',
+      name: 'FanzDash',
+      ssoDomain: 'FanzDash.com',
       status: 'active'
     },
     {
@@ -27,7 +27,7 @@ async function seed() {
     }
   ]).returning();
 
-  console.log('✅ Created tenants:', boyfanzTenant.name, fanzcommerceTenant.name);
+  console.log('✅ Created tenants:', FanzDashTenant.name, fanzcommerceTenant.name);
 
   // Create superadmin
   const hashedPassword = await hashPassword('Super!234');
@@ -170,7 +170,7 @@ async function seed() {
     {
       flagKey: 'ads_serving',
       valueJson: { enabled: true },
-      tenantId: boyfanzTenant.id,
+      tenantId: FanzDashTenant.id,
       platform: 'fanzroulette',
       rolloutPercent: 50 // 50% rollout
     }

@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [boyfanz, girlfanz, pupfanz, transfanz, taboofanz]
+        platform: [DLBroz, girlfanz, pupfanz, transfanz, taboofanz]
     
     steps:
       - name: Checkout code
@@ -73,7 +73,7 @@ jobs:
 
       - name: Update deployment images
         run: |
-          kubectl set image deployment/boyfanz boyfanz=${{ env.REGISTRY }}/boyfanz:latest -n fanz-ecosystem
+          kubectl set image deployment/DLBroz DLBroz=${{ env.REGISTRY }}/DLBroz:latest -n fanz-ecosystem
           kubectl set image deployment/girlfanz girlfanz=${{ env.REGISTRY }}/girlfanz:latest -n fanz-ecosystem
           kubectl set image deployment/pupfanz pupfanz=${{ env.REGISTRY }}/pupfanz:latest -n fanz-ecosystem
           kubectl set image deployment/transfanz transfanz=${{ env.REGISTRY }}/transfanz:latest -n fanz-ecosystem
@@ -81,7 +81,7 @@ jobs:
 
       - name: Wait for rollout to complete
         run: |
-          kubectl rollout status deployment/boyfanz -n fanz-ecosystem --timeout=10m
+          kubectl rollout status deployment/DLBroz -n fanz-ecosystem --timeout=10m
           kubectl rollout status deployment/girlfanz -n fanz-ecosystem --timeout=10m
           kubectl rollout status deployment/pupfanz -n fanz-ecosystem --timeout=10m
           kubectl rollout status deployment/transfanz -n fanz-ecosystem --timeout=10m

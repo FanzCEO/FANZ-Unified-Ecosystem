@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  /* CORE THEME - EXACT MATCH TO BOYFANZ LOGO */
+  /* CORE THEME - EXACT MATCH TO FemmeFanz LOGO */
   --background: hsl(0, 0%, 2%); /* Ultra dark smoky black #050505 */
   --foreground: hsl(0, 0%, 92%);
   --card: hsl(0, 0%, 5%); /* Darker card background */
@@ -28,7 +28,7 @@
   --radius: 0.25rem;
   
   /* LOGO-EXACT COLOR PALETTE */
-  --neon-red: hsl(0, 100%, 50%); /* #ff0000 - Exact red from BOYFANZ text */
+  --neon-red: hsl(0, 100%, 50%); /* #ff0000 - Exact red from FemmeFanz text */
   --neon-red-glow: hsl(0, 100%, 45%); /* Deeper red for outer glow */
   --golden-bronze: hsl(40, 65%, 55%); /* #d4a959 - Banana golden tone */
   --golden-bronze-dark: hsl(35, 55%, 45%); /* #b8860b - Darker bronze shadow */
@@ -558,7 +558,7 @@
     inset 0 0 15px rgba(212, 169, 89, 0.03);
 }
 
-/* LOGO-MATCHED NEON TYPOGRAPHY - EXACT BOYFANZ GLOW */
+/* LOGO-MATCHED NEON TYPOGRAPHY - EXACT FemmeFanz GLOW */
 
 /* Large display text - matches logo red intensity */
 .neon-display {

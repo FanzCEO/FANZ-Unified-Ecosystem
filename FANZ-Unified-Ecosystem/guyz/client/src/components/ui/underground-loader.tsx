@@ -158,7 +158,7 @@ export function UndergroundLoader({
             {progress < 30 && "🚪 Checking the door..."}
             {progress >= 30 && progress < 60 && "🎵 Feeling the bass drop..."}
             {progress >= 60 && progress < 90 && "🍸 Bartender preparing your experience..."}
-            {progress >= 90 && "✨ Welcome to BoyFanz Underground"}
+            {progress >= 90 && "✨ Welcome to Guyz Underground"}
           </div>
         </div>
       </div>
@@ -191,7 +191,7 @@ function FullExperienceContent({
 }: any) {
   return (
     <div className="text-center space-y-8">
-      {/* Neon BoyFanz logo */}
+      {/* Neon Guyz logo */}
       <div className="relative">
         <h1 
           className="text-6xl font-black uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-pink-500 to-cyan-500"
@@ -200,10 +200,10 @@ function FullExperienceContent({
             filter: `brightness(${0.8 + atmosphereIntensity * 0.4})`
           }}
         >
-          BOYFANZ
+          Guyz
         </h1>
         <div className="absolute inset-0 text-6xl font-black uppercase tracking-wider text-red-500 opacity-50 blur-sm animate-pulse">
-          BOYFANZ
+          Guyz
         </div>
       </div>
 
@@ -263,7 +263,7 @@ function QuickLoadContent({ progress }: { progress: number }) {
   return (
     <div className="text-center space-y-6">
       <div className="text-4xl font-bold text-red-400 uppercase tracking-widest animate-pulse">
-        BoyFanz
+        Guyz
       </div>
       <div className="w-48 h-2 bg-gray-800 rounded-full overflow-hidden mx-auto">
         <div 
@@ -324,10 +324,10 @@ function SmokeFadeContent() {
     <div className="text-center space-y-8">
       <div className="relative">
         <div className="text-5xl font-bold text-red-400 opacity-90 animate-pulse">
-          BoyFanz
+          Guyz
         </div>
         <div className="absolute inset-0 text-5xl font-bold text-red-400 blur-md opacity-50 animate-pulse">
-          BoyFanz
+          Guyz
         </div>
       </div>
       <div className="text-gray-400 text-lg uppercase tracking-widest">

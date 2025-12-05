@@ -116,7 +116,7 @@ const sessionTtl = <span class="cstat-no" title="statement not covered" >7 * 24 
 const pgStore = <span class="cstat-no" title="statement not covered" >connectPg(session);</span>
 &nbsp;
 export const sessionMiddleware = <span class="cstat-no" title="statement not covered" >session({</span>
-  secret: process.env.SESSION_SECRET || 'boyfanz-secret-key-change-in-production',
+  secret: process.env.SESSION_SECRET || 'FanzUncut-secret-key-change-in-production',
   store: new pgStore({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: false,

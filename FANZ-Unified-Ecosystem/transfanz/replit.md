@@ -1,8 +1,8 @@
-# BoyFanz-3 - FANZ Unlimited Network Ecosystem
+# TransFanz-3 - FANZ Unlimited Network Ecosystem
 
 ## Overview
 
-BoyFanz-3 is the flagship platform of the FANZ Unlimited Network, a multi-platform adult content creator economy ecosystem. This Node.js/TypeScript backend powers BoyFanz.com and serves as the foundation for the broader FANZ network, which includes GirlFanz, PupFanz, TransFanz, and TabooFanz platforms.
+TransFanz-3 is the flagship platform of the FANZ Unlimited Network, a multi-platform adult content creator economy ecosystem. This Node.js/TypeScript backend powers TransFanz.com and serves as the foundation for the broader FANZ network, which includes GirlFanz, PupFanz, TransFanz, and TabooFanz platforms.
 
 The system is built as a creator-first platform with enterprise-grade infrastructure supporting content monetization, compliance, security, and cross-platform integration. The architecture emphasizes creator autonomy, maximum earnings (100% payout model), and robust safety features.
 
@@ -49,7 +49,7 @@ Preferred communication style: Simple, everyday language.
 
 **FANZ Ecosystem Platforms**
 The system supports five specialized content platforms operating on separate ports:
-- BoyFanz (Port 5001) - Men's content platform
+- TransFanz (Port 5001) - Men's content platform
 - GirlFanz (Port 5002) - Women's content platform
 - PupFanz (Port 5003) - Pet play community
 - TransFanz (Port 5004) - Trans content platform
@@ -261,8 +261,8 @@ npm run start
 ### Domain Setup (Post-Deployment)
 1. Deploy app on Replit first
 2. Configure custom domain DNS:
-   - Testing: `fanz.boyfanz.com`
-   - Production: `BoyFanz.com`
+   - Testing: `fanz.TransFanz.com`
+   - Production: `TransFanz.com`
    - Add A record pointing to Replit server IP
    - Add TXT record for domain verification
 
@@ -272,7 +272,7 @@ npm run start
 - ✅ **Dockerfile** - Multi-stage build for optimized container images
 - ✅ **Docker Compose** - Local multi-service testing with all 5 platforms
 - ✅ **Kubernetes Configs** - Full k8s deployment for Digital Ocean:
-  - Deployments for all 5 platforms (BoyFanz, GirlFanz, PupFanz, TransFanz, TabooFanz)
+  - Deployments for all 5 platforms (TransFanz, GirlFanz, PupFanz, TransFanz, TabooFanz)
   - Services and Ingress with SSL/TLS support
   - Horizontal Pod Autoscaling (HPA) - scales 2-10 pods based on CPU/memory
   - Persistent Volume Claims for media storage

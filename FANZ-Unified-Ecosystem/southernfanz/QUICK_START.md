@@ -8,7 +8,7 @@ Deploy your entire FANZ multi-platform ecosystem in under 30 minutes.
 
 - Digital Ocean account
 - GitHub account with repo access
-- 5 registered domains (boyfanz.com, girlfanz.com, pupfanz.com, transfanz.com, taboofanz.com)
+- 5 registered domains (SouthernFanz.com, girlfanz.com, pupfanz.com, transfanz.com, taboofanz.com)
 
 ---
 
@@ -41,8 +41,8 @@ doctl registry login
 
 ```bash
 # Clone repository
-git clone https://github.com/FanzCEO/BoyFanzV1.git
-cd BoyFanzV1
+git clone https://github.com/FanzCEO/SouthernFanzV1.git
+cd SouthernFanzV1
 
 # Create secrets file
 cp .env.production.template .env.production
@@ -93,7 +93,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: admin@boyfanz.com
+    email: admin@SouthernFanz.com
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
@@ -119,8 +119,8 @@ For **each domain**, add DNS A records:
 
 | Domain | Type | Name | Value |
 |--------|------|------|-------|
-| boyfanz.com | A | @ | `<LOAD_BALANCER_IP>` |
-| boyfanz.com | A | www | `<LOAD_BALANCER_IP>` |
+| SouthernFanz.com | A | @ | `<LOAD_BALANCER_IP>` |
+| SouthernFanz.com | A | www | `<LOAD_BALANCER_IP>` |
 | girlfanz.com | A | @ | `<LOAD_BALANCER_IP>` |
 | girlfanz.com | A | www | `<LOAD_BALANCER_IP>` |
 | pupfanz.com | A | @ | `<LOAD_BALANCER_IP>` |
@@ -134,7 +134,7 @@ For **each domain**, add DNS A records:
 
 ## Step 5: Configure GitHub CI/CD (5 min)
 
-Go to: `https://github.com/FanzCEO/BoyFanzV1/settings/secrets/actions`
+Go to: `https://github.com/FanzCEO/SouthernFanzV1/settings/secrets/actions`
 
 Add secrets:
 
@@ -161,7 +161,7 @@ kubectl get services -n fanz-ecosystem
 kubectl get ingress -n fanz-ecosystem
 
 # Test health endpoints
-curl https://boyfanz.com/api/health
+curl https://SouthernFanz.com/api/health
 curl https://girlfanz.com/api/health
 curl https://pupfanz.com/api/health
 curl https://transfanz.com/api/health
@@ -170,7 +170,7 @@ curl https://taboofanz.com/api/health
 
 Expected response:
 ```json
-{"status": "healthy", "platform": "BoyFanz"}
+{"status": "healthy", "platform": "SouthernFanz"}
 ```
 
 ---
@@ -179,7 +179,7 @@ Expected response:
 
 Your platforms are now live at:
 
-- 🔵 **BoyFanz**: https://boyfanz.com
+- 🔵 **SouthernFanz**: https://SouthernFanz.com
 - 🌸 **GirlFanz**: https://girlfanz.com
 - 🐾 **PupFanz**: https://pupfanz.com
 - 🏳️‍⚧️ **TransFanz**: https://transfanz.com
@@ -196,7 +196,7 @@ Test everything locally before deploying:
 docker-compose up -d
 
 # Access locally:
-# BoyFanz:   http://localhost:5001
+# SouthernFanz:   http://localhost:5001
 # GirlFanz:  http://localhost:5002
 # PupFanz:   http://localhost:5003
 # TransFanz: http://localhost:5004
@@ -209,10 +209,10 @@ docker-compose up -d
 
 ```bash
 # View logs
-kubectl logs -f deployment/boyfanz -n fanz-ecosystem
+kubectl logs -f deployment/SouthernFanz -n fanz-ecosystem
 
 # Scale manually
-kubectl scale deployment boyfanz --replicas=5 -n fanz-ecosystem
+kubectl scale deployment SouthernFanz --replicas=5 -n fanz-ecosystem
 
 # Auto-scaling is configured:
 # - CPU > 70% → adds pods
@@ -233,12 +233,12 @@ kubectl logs <pod-name> -n fanz-ecosystem
 ### SSL not working?
 ```bash
 kubectl get certificates -n fanz-ecosystem
-kubectl describe certificate boyfanz-tls -n fanz-ecosystem
+kubectl describe certificate SouthernFanz-tls -n fanz-ecosystem
 ```
 
 ### Need to rollback?
 ```bash
-kubectl rollout undo deployment/boyfanz -n fanz-ecosystem
+kubectl rollout undo deployment/SouthernFanz -n fanz-ecosystem
 ```
 
 ---
@@ -246,7 +246,7 @@ kubectl rollout undo deployment/boyfanz -n fanz-ecosystem
 ## Support
 
 - **Full Guide**: See `DEPLOYMENT_GUIDE.md`
-- **GitHub Issues**: https://github.com/FanzCEO/BoyFanzV1/issues
+- **GitHub Issues**: https://github.com/FanzCEO/SouthernFanzV1/issues
 - **Digital Ocean Docs**: https://docs.digitalocean.com/products/kubernetes/
 
 ---

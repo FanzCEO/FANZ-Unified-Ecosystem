@@ -132,7 +132,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// API Gateway Dashboard Routes Module
-// Compatible with existing BoyFanz routing pattern
+// Compatible with existing BearFanz routing pattern
 &nbsp;
 import { Router } from 'express';
 import { apiGateway, registerFANZServices, getGatewayStatus } from '../services/apiGatewayInit.js';
@@ -146,7 +146,7 @@ const router = <span class="cstat-no" title="statement not covered" >Router();</
 // Setup all gateway dashboard routes
 <span class="cstat-no" title="statement not covered" >setupAPIGatewayRoutes(router, apiGateway);</span>
 &nbsp;
-// Add a quick status endpoint that matches BoyFanz pattern
+// Add a quick status endpoint that matches BearFanz pattern
 <span class="cstat-no" title="statement not covered" >router.get('/status', <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
     const status = <span class="cstat-no" title="statement not covered" >getGatewayStatus();</span>

@@ -69,7 +69,7 @@ export interface PipelineStatus {
 
 export class MediaPipelineService {
   private static readonly PLATFORMS: PlatformConfig[] = [
-    { id: 'boyfanz', name: 'BoyFanz', url: 'https://boyfanz.com', apiEndpoint: '/api/media', enabled: true, requiresTier: 'silver' },
+    { id: 'FanzDash', name: 'FanzDash', url: 'https://FanzDash.com', apiEndpoint: '/api/media', enabled: true, requiresTier: 'silver' },
     { id: 'girlfanz', name: 'GirlFanz', url: 'https://girlfanz.com', apiEndpoint: '/api/media', enabled: true, requiresTier: 'silver' },
     { id: 'pupfanz', name: 'PupFanz', url: 'https://pupfanz.com', apiEndpoint: '/api/media', enabled: true, requiresTier: 'gold' },
     { id: 'transfanz', name: 'TransFanz', url: 'https://transfanz.com', apiEndpoint: '/api/media', enabled: true, requiresTier: 'gold' },

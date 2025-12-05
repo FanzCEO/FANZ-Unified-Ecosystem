@@ -32,7 +32,7 @@
 **Goal:** Build all 5 platform web interfaces
 
 **Deliverables:**
-- [ ] **BoyFanz.com** - Dark underground aesthetic
+- [ ] **TransFanz.com** - Dark underground aesthetic
 - [ ] **GirlFanz.com** - Elegant feminine design
 - [ ] **PupFanz.com** - Playful community theme
 - [ ] **TransFanz.com** - Inclusive modern design
@@ -123,7 +123,7 @@
   "designTokens": "CSS Custom Properties",
   "componentLibrary": "shadcn/ui + Custom Components",
   "themes": {
-    "BoyFanz": "Dark underground with blood-red neon",
+    "TransFanz": "Dark underground with blood-red neon",
     "GirlFanz": "Elegant pink and gold palette",
     "PupFanz": "Playful orange and blue",
     "TransFanz": "Pride colors with modern styling",
@@ -138,7 +138,7 @@
 
 ## 🎨 Platform-Specific Design Requirements
 
-### 🔥 BoyFanz.com - "Every Man's Playground"
+### 🔥 TransFanz.com - "Every Man's Playground"
 **Theme:** Dark underground fight club aesthetic
 ```scss
 $primary-colors: (
@@ -286,7 +286,7 @@ components/
 ├── ui/                 # shadcn/ui components
 ├── shared/            # Cross-platform components
 ├── platform/          # Platform-specific components
-│   ├── BoyFanz/
+│   ├── TransFanz/
 │   ├── GirlFanz/
 │   ├── PupFanz/
 │   ├── TransFanz/
@@ -353,7 +353,7 @@ components/
 2. **Initialize Platform Projects**
    ```bash
    # Create Next.js apps for each platform
-   npx create-next-app@latest apps/boyfanz --typescript --tailwind
+   npx create-next-app@latest apps/TransFanz --typescript --tailwind
    npx create-next-app@latest apps/girlfanz --typescript --tailwind
    # ... repeat for all platforms
    ```

@@ -27,7 +27,7 @@ async function testSubscriptionPlans() {
   try {
     // Test basic subscription plan
     const basicPlanData = {
-      name: 'BoyFanz Premium',
+      name: 'SouthernFanz Premium',
       description: 'Get exclusive access to premium content and direct messaging',
       pricing: {
         monthly: 19.99,
@@ -89,7 +89,7 @@ async function testSubscriptionPlans() {
 
     // Test VIP subscription plan
     const vipPlanData = {
-      name: 'BoyFanz VIP Elite',
+      name: 'SouthernFanz VIP Elite',
       description: 'Ultimate VIP experience with exclusive perks and personal interactions',
       pricing: {
         monthly: 99.99,
@@ -154,8 +154,8 @@ async function testPayPerViewContent() {
       title: 'Exclusive Behind-the-Scenes: Photo Shoot Day',
       description: 'Get an intimate look at my latest professional photo shoot with never-before-seen footage and candid moments.',
       contentType: 'VIDEO',
-      mediaUrl: 'https://cdn.boyfanz.com/content/exclusive-bts-photoshoot-2024.mp4',
-      thumbnailUrl: 'https://cdn.boyfanz.com/thumbnails/bts-photoshoot-thumb.jpg',
+      mediaUrl: 'https://cdn.SouthernFanz.com/content/exclusive-bts-photoshoot-2024.mp4',
+      thumbnailUrl: 'https://cdn.SouthernFanz.com/thumbnails/bts-photoshoot-thumb.jpg',
       pricing: {
         amount: 24.99,
         currency: 'USD',
@@ -178,7 +178,7 @@ async function testPayPerViewContent() {
       categories: ['Premium Content', 'Behind-the-Scenes', 'Photography'],
       exclusivity: {
         isExclusive: true,
-        platform: 'BOYFANZ',
+        platform: 'SouthernFanz',
         exclusivityPeriod: '30_DAYS'
       }
     };
@@ -202,8 +202,8 @@ async function testPayPerViewContent() {
       title: 'Beach Vacation Photo Set (50+ Photos)',
       description: 'Exclusive high-resolution photos from my recent beach vacation. Over 50 professional and candid shots.',
       contentType: 'PHOTO_SET',
-      mediaUrl: 'https://cdn.boyfanz.com/photosets/beach-vacation-2024/',
-      thumbnailUrl: 'https://cdn.boyfanz.com/thumbnails/beach-vacation-preview.jpg',
+      mediaUrl: 'https://cdn.SouthernFanz.com/photosets/beach-vacation-2024/',
+      thumbnailUrl: 'https://cdn.SouthernFanz.com/thumbnails/beach-vacation-preview.jpg',
       pricing: {
         amount: 15.99,
         currency: 'USD',
@@ -226,7 +226,7 @@ async function testPayPerViewContent() {
       categories: ['Photo Sets', 'Outdoor', 'Vacation'],
       exclusivity: {
         isExclusive: false,
-        platform: 'BOYFANZ'
+        platform: 'SouthernFanz'
       }
     };
 
@@ -248,8 +248,8 @@ async function testPayPerViewContent() {
       title: 'Private Live Stream: Q&A and Personal Chat',
       description: 'Join me for an intimate 60-minute live stream where we can chat, answer your questions, and have some fun together!',
       contentType: 'LIVE_STREAM',
-      mediaUrl: 'https://stream.boyfanz.com/live/private-qa-session',
-      thumbnailUrl: 'https://cdn.boyfanz.com/thumbnails/live-stream-qa.jpg',
+      mediaUrl: 'https://stream.SouthernFanz.com/live/private-qa-session',
+      thumbnailUrl: 'https://cdn.SouthernFanz.com/thumbnails/live-stream-qa.jpg',
       pricing: {
         amount: 49.99,
         currency: 'USD',
@@ -272,7 +272,7 @@ async function testPayPerViewContent() {
       categories: ['Live Streams', 'Interactive', 'Q&A'],
       exclusivity: {
         isExclusive: true,
-        platform: 'BOYFANZ',
+        platform: 'SouthernFanz',
         exclusivityPeriod: 'LIVE_ONLY'
       }
     };
@@ -407,8 +407,8 @@ async function testMerchandiseStore() {
       storeName: "Jake's Official Store",
       description: 'Exclusive merchandise, collectibles, and personalized items from your favorite creator!',
       branding: {
-        logo: 'https://cdn.boyfanz.com/stores/jake-official-logo.png',
-        bannerImage: 'https://cdn.boyfanz.com/stores/jake-store-banner.jpg',
+        logo: 'https://cdn.SouthernFanz.com/stores/jake-official-logo.png',
+        bannerImage: 'https://cdn.SouthernFanz.com/stores/jake-store-banner.jpg',
         colorScheme: {
           primary: '#FF6B35',
           secondary: '#F7931E',
@@ -462,9 +462,9 @@ async function testMerchandiseStore() {
         category: 'Apparel',
         type: 'PHYSICAL',
         images: [
-          'https://cdn.boyfanz.com/products/logo-tshirt-black.jpg',
-          'https://cdn.boyfanz.com/products/logo-tshirt-white.jpg',
-          'https://cdn.boyfanz.com/products/logo-tshirt-navy.jpg'
+          'https://cdn.SouthernFanz.com/products/logo-tshirt-black.jpg',
+          'https://cdn.SouthernFanz.com/products/logo-tshirt-white.jpg',
+          'https://cdn.SouthernFanz.com/products/logo-tshirt-navy.jpg'
         ],
         pricing: {
           basePrice: 24.99,
@@ -486,7 +486,7 @@ async function testMerchandiseStore() {
         description: 'Personally signed 8x10 high-quality print from my latest professional photo shoot. Limited to 100 copies.',
         category: 'Collectibles',
         type: 'PHYSICAL',
-        images: ['https://cdn.boyfanz.com/products/signed-print-limited.jpg'],
+        images: ['https://cdn.SouthernFanz.com/products/signed-print-limited.jpg'],
         pricing: {
           basePrice: 49.99,
           salePrice: 39.99,
@@ -508,7 +508,7 @@ async function testMerchandiseStore() {
         description: 'Digital collection of 5 exclusive videos never shared anywhere else. Instant download after purchase.',
         category: 'Digital Content',
         type: 'DIGITAL',
-        images: ['https://cdn.boyfanz.com/products/digital-video-bundle.jpg'],
+        images: ['https://cdn.SouthernFanz.com/products/digital-video-bundle.jpg'],
         pricing: {
           basePrice: 89.99,
           salePrice: null,

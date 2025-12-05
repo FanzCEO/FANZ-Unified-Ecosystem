@@ -47,11 +47,11 @@ interface DashboardData {
 
 export default function AnalyticsDashboard() {
   const [platforms] = useState([
-    "BoyFanz", "GirlFanz", "TransFanz", "BearFanz", "PupFanz",
+    "FanzDash", "GirlFanz", "TransFanz", "BearFanz", "PupFanz",
     "CougarFanz", "FemmeFanz", "FanzUncut", "FanzDiscreet", "TabooFanz",
     "FanzClips", "FanzEliteTube", "FanzLanding"
   ]);
-  const [selectedPlatform, setSelectedPlatform] = useState("BoyFanz");
+  const [selectedPlatform, setSelectedPlatform] = useState("FanzDash");
   const [config, setConfig] = useState<AnalyticsConfig | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(false);

@@ -145,7 +145,7 @@ export function EnhancedNavigation({ user, className }: NavigationProps) {
                 <span className="text-white font-bold text-sm">BF</span>
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">
-                BoyFanz
+                GayFanz
               </span>
             </Link>
           </div>

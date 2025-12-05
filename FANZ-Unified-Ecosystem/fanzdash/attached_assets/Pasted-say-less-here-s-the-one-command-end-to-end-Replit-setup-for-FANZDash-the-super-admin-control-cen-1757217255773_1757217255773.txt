@@ -260,7 +260,7 @@ Core tables (with indexes):
 
 Seeds (scripts/seed.ts):
 	•	1 superadmin@fanzdash.app / Super!234
-	•	2 tenants (boyfanz, fanzcommerce)
+	•	2 tenants (FanzDash, fanzcommerce)
 	•	2 reviewers (moderation), 1 finance admin, 1 security admin
 	•	sample policies (adult-media-default.rego), sample ads + placements
 	•	sample payout reqs, KYC entries, 2257 docs

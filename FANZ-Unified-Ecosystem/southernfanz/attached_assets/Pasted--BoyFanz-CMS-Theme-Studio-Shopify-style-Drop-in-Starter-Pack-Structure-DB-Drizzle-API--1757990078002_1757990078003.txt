@@ -1,4 +1,4 @@
-# BoyFanz CMS + Theme Studio (Shopify-style) – Drop-in Starter Pack
+# SouthernFanz CMS + Theme Studio (Shopify-style) – Drop-in Starter Pack
 
 > Structure, DB (Drizzle), API (Express + Zod), S3 assets, Preview/Publish service, and Admin UI (React + shadcn). Paste these into your repo on Replit. Replace placeholders (e.g., bucket names) in `.env`.
 
@@ -781,4 +781,4 @@ export default withRole('admin')(AdminCMSEditor);
 - Replace the placeholder auth with your real `useAuth()` + server session/JWT.
 - Add a simple public renderer that consumes the **active theme** + **theme settings** and injects CSS vars.
 
-That’s the complete CMS + Theme Studio backbone. Plug it in, set env vars, and you’ve got a Shopify-like admin to control BoyFanz themes and pages from inside your Admin panel.
+That’s the complete CMS + Theme Studio backbone. Plug it in, set env vars, and you’ve got a Shopify-like admin to control SouthernFanz themes and pages from inside your Admin panel.

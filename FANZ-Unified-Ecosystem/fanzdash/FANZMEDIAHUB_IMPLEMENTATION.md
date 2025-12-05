@@ -768,7 +768,7 @@ export default function DMCAControlCenter() {
       method: 'POST',
       body: JSON.stringify({
         platforms: ['youtube', 'twitter', 'reddit'],
-        searchTerms: ['fanz', 'boyfanz', 'girlfanz'],
+        searchTerms: ['fanz', 'FanzDash', 'girlfanz'],
       }),
     });
     setScanning(false);

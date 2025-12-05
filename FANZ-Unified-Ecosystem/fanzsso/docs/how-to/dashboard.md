@@ -245,7 +245,7 @@ Quick access to fan engagement lets you:
 - 🤖 **AI Assistant:** Click the chat bubble (bottom right) for instant help
 - 📚 **Help Center:** Browse all guides and FAQs
 - 💬 **Live Support:** Available Mon-Fri 9am-9pm EST
-- 📧 **Email Support:** support@boyfanz.com (24-48hr response)
+- 📧 **Email Support:** support@FanzSSO.com (24-48hr response)
 
 ---
 

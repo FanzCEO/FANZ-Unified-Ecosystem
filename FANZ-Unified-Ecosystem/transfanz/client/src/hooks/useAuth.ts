@@ -143,7 +143,7 @@ export function useAuth() {
     onSuccess: (user: any) => {
       queryClient.setQueryData(["/api/auth/user"], user);
       toast({
-        title: "Welcome to BoyFanz!",
+        title: "Welcome to TransFanz!",
         description: "Your account has been created successfully.",
       });
     },

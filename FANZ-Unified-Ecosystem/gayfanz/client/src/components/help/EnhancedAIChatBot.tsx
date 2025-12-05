@@ -72,7 +72,7 @@ export function EnhancedAIChatBot({
       const welcomeMessage: ChatMessage = {
         id: 'welcome',
         type: 'bot',
-        content: initialMessage || "Hi! I'm your AI assistant. I can help you find information, guide you through tutorials, or assist with any questions about BoyFanz. What would you like to know?",
+        content: initialMessage || "Hi! I'm your AI assistant. I can help you find information, guide you through tutorials, or assist with any questions about GayFanz. What would you like to know?",
         timestamp: new Date(),
         metadata: {
           confidence: 1.0,

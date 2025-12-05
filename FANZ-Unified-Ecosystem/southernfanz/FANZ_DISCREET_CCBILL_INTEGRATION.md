@@ -65,7 +65,7 @@ FanzDiscreet is a financial privacy feature that leverages **CCBill's** proven a
 ┌─────────────────────────────────────────────────────────────────┐
 │             FanzMoney Wallet (Internal Ledger)                  │
 │    • Balance credited to user's FanzMoneyDash account          │
-│    • Spendable across BoyFanz, GirlFanz, PupFanz, etc.        │
+│    • Spendable across SouthernFanz, GirlFanz, PupFanz, etc.        │
 │    • Full audit trail internally, discreet externally          │
 └─────────────────────────────────────────────────────────────────┘
 ```

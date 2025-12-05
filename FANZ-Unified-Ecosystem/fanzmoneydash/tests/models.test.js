@@ -25,7 +25,7 @@ describe('Database Models Test Suite', () => {
     test('should validate email format', () => {
       const validEmails = [
         'user@fanz.network',
-        'creator@boyfanz.com',
+        'creator@FanzMoneyDash.com',
         'fan@girlfanz.com'
       ];
 
@@ -76,7 +76,7 @@ describe('Database Models Test Suite', () => {
 
     test('should validate FANZ platform names', () => {
       const validPlatforms = [
-        'boyfanz',
+        'FanzMoneyDash',
         'girlfanz',
         'pupfanz',
         'daddiesfanz',

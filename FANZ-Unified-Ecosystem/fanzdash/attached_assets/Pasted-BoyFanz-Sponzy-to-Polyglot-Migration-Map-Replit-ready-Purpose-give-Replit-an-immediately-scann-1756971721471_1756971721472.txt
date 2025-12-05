@@ -1,11 +1,11 @@
-BoyFanz → Sponzy‑to‑Polyglot Migration Map (Replit‑ready)
+FanzDash → Sponzy‑to‑Polyglot Migration Map (Replit‑ready)
 
-Purpose: give Replit an immediately scannable blueprint showing (A) what the current Sponzy/Laravel app typically contains for BoyFanz, and (B) the one‑to‑one carve‑out into polyglot services with stable contracts, events, and admin flows, with integrations for getstream.io, Coconut.co, adult‑friendly GPT/AI, VR/AR, and explicitly excluding Stripe/PayPal.
+Purpose: give Replit an immediately scannable blueprint showing (A) what the current Sponzy/Laravel app typically contains for FanzDash, and (B) the one‑to‑one carve‑out into polyglot services with stable contracts, events, and admin flows, with integrations for getstream.io, Coconut.co, adult‑friendly GPT/AI, VR/AR, and explicitly excluding Stripe/PayPal.
 
 ⸻
 
 0) Notes & assumptions
-	•	I couldn’t open Sponzy.zip in this interface, so below is the canonical Sponzy/Laravel structure and feature map commonly used by BoyFanz, plus the FUN‑specific deltas.
+	•	I couldn’t open Sponzy.zip in this interface, so below is the canonical Sponzy/Laravel structure and feature map commonly used by FanzDash, plus the FUN‑specific deltas.
 	•	Where your FUN wishlist adds or changes scope (geo‑collab, tiers/points, AI companions, AR, extra processors, storage, streaming), I mark it with [FUN+].
 	•	Payment processors: No Stripe or PayPal. Only alt‑friendly gateways (BitPay, Authorize.Net, RocketGate, SegPay, Paxum, etc.).
 
@@ -89,7 +89,7 @@ Purpose: give Replit an immediately scannable blueprint showing (A) what the cur
 
 ⸻
 
-This revised map positions BoyFanz not just as Sponzy‑migrated, but as a next‑gen creator hub with realtime feeds, streaming/encoding, AI/VR capabilities, and bulletproof adult‑industry‑safe commerce without Stripe/PayPal.
+This revised map positions FanzDash not just as Sponzy‑migrated, but as a next‑gen creator hub with realtime feeds, streaming/encoding, AI/VR capabilities, and bulletproof adult‑industry‑safe commerce without Stripe/PayPal.
 
 ⸻
 

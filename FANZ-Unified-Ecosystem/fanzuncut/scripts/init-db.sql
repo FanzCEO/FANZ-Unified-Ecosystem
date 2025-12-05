@@ -24,6 +24,6 @@ ALTER USER fanzuser SET search_path = public, auth, profiles, content, payments;
 -- Log successful initialization
 DO $$
 BEGIN
-    RAISE NOTICE 'FANZ database initialized successfully for BoyFanz platform';
+    RAISE NOTICE 'FANZ database initialized successfully for FanzUncut platform';
 END
 $$;

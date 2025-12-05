@@ -214,7 +214,7 @@ const getFilterOptionsForCategory = (category: string): FilterOption[] => {
           type: "multiselect" as const,
           options: [
             "FanzLab",
-            "BoyFanz",
+            "FanzDash",
             "GirlFanz",
             "DaddyFanz",
             "PupFanz",

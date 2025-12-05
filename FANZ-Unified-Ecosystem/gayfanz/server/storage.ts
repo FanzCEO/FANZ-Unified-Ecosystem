@@ -2782,7 +2782,7 @@ export class DatabaseStorage implements IStorage {
     // Anonymize user PII while preserving transaction records for compliance
     await db.update(users)
       .set({
-        email: `deleted_user_${userId}@boyfanz.com`,
+        email: `deleted_user_${userId}@GayFanz.com`,
         username: `deleted_user_${userId}`,
         updatedAt: new Date()
       })
@@ -3964,7 +3964,7 @@ export class DatabaseStorage implements IStorage {
       {
         id: 'setting_1',
         key: 'app_name',
-        value: 'BoyFanz',
+        value: 'GayFanz',
         type: 'string',
         category: 'general',
         description: 'Application name',
@@ -4000,7 +4000,7 @@ export class DatabaseStorage implements IStorage {
   async getSystemSetting(key: string): Promise<any | undefined> {
     // Mock implementation
     const settings: { [key: string]: any } = {
-      'app_name': { key: 'app_name', value: 'BoyFanz', type: 'string' },
+      'app_name': { key: 'app_name', value: 'GayFanz', type: 'string' },
       'maintenance_mode': { key: 'maintenance_mode', value: 'false', type: 'boolean' }
     };
     return settings[key];
@@ -4046,12 +4046,12 @@ export class DatabaseStorage implements IStorage {
       id: 'email_settings_1',
       smtpHost: 'smtp.example.com',
       smtpPort: 587,
-      smtpUsername: 'noreply@boyfanz.com',
+      smtpUsername: 'noreply@GayFanz.com',
       smtpPassword: '****',
       smtpSecure: true,
-      fromEmail: 'noreply@boyfanz.com',
-      fromName: 'BoyFanz',
-      replyToEmail: 'support@boyfanz.com',
+      fromEmail: 'noreply@GayFanz.com',
+      fromName: 'GayFanz',
+      replyToEmail: 'support@GayFanz.com',
       maxSendRate: 100,
       isActive: true,
       lastTestedAt: new Date()

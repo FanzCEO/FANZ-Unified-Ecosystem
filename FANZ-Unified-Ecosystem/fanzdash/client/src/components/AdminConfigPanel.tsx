@@ -24,10 +24,10 @@ import {
 
 export default function AdminConfigPanel() {
   const [platforms] = useState([
-    "BoyFanz", "GirlFanz", "TransFanz", "BearFanz", "PupFanz",
+    "FanzDash", "GirlFanz", "TransFanz", "BearFanz", "PupFanz",
     "CougarFanz", "FemmeFanz", "FanzUncut", "FanzDiscreet", "TabooFanz",
   ]);
-  const [selectedPlatform, setSelectedPlatform] = useState("BoyFanz");
+  const [selectedPlatform, setSelectedPlatform] = useState("FanzDash");
   const [oauthConnections, setOauthConnections] = useState<any[]>([]);
   const [permissions, setPermissions] = useState<any[]>([]);
   const [workflows, setWorkflows] = useState<any[]>([]);

@@ -7,10 +7,10 @@ const oidcConfig = {
   // Basic provider configuration
   clients: [
     {
-      client_id: 'boyfanz',
-      client_secret: process.env.BOYFANZ_CLIENT_SECRET || 'dev-secret-boyfanz',
+      client_id: 'FanzSSO',
+      client_secret: process.env.FanzSSO_CLIENT_SECRET || 'dev-secret-FanzSSO',
       redirect_uris: [
-        'https://boyfanz.com/auth/callback',
+        'https://FanzSSO.com/auth/callback',
         'http://localhost:3000/auth/callback'
       ],
       grant_types: ['authorization_code', 'refresh_token'],

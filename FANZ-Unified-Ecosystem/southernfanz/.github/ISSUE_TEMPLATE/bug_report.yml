@@ -33,7 +33,7 @@ body:
       label: Platform
       description: Which FANZ platform is affected?
       options:
-        - BoyFanz
+        - SouthernFanz
         - GirlFanz  
         - PupFanz
         - TabooFanz

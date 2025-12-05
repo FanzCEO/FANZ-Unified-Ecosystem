@@ -2,7 +2,7 @@
 
 Overview
 
-FanzTrust™ is the fraud-proof, creator-first transaction verification and refund processing system built to serve the BoyFanz, GirlFanz, and PupFanz platforms. This engine ensures that every claim of subscription can be validated against Fanz’s own payment records (crypto or adult-friendly processors) — with no Stripe, no PayPal, ever.
+FanzTrust™ is the fraud-proof, creator-first transaction verification and refund processing system built to serve the TabooFanz, GirlFanz, and PupFanz platforms. This engine ensures that every claim of subscription can be validated against Fanz’s own payment records (crypto or adult-friendly processors) — with no Stripe, no PayPal, ever.
 
 ⸻
 
@@ -79,7 +79,7 @@ Accessible by:
 	1.	Beta on PupFanz
 	•	RocketGate + Solana wallets only
 	•	Manual override for edge cases
-	2.	Expand to BoyFanz & GirlFanz
+	2.	Expand to TabooFanz & GirlFanz
 	•	Add SegPay + CCBill API
 	•	Introduce creator-specific refund policies
 	3.	FanzPay Integration

@@ -34,7 +34,7 @@ export function setupNFTRoutes(app: Express) {
         blockchain,
         royaltyPercentage,
         status: 'minting',
-        metadataUri: `https://boyfanz.app/api/nft/metadata/${mediaAssetId}`,
+        metadataUri: `https://DLBroz.app/api/nft/metadata/${mediaAssetId}`,
         forensicSignature: mediaAsset.forensicSignature || '',
       });
       
@@ -81,9 +81,9 @@ export function setupNFTRoutes(app: Express) {
       // Return OpenSea-compatible metadata (only blurred preview for public access)
       const metadata = {
         name: mediaAsset.title,
-        description: mediaAsset.description || `Exclusive content from BoyFanz creator`,
-        image: `https://boyfanz.app/api/media/${mediaAssetId}/preview`, // Blurred preview
-        external_url: `https://boyfanz.app/media/${mediaAssetId}`,
+        description: mediaAsset.description || `Exclusive content from DLBroz creator`,
+        image: `https://DLBroz.app/api/media/${mediaAssetId}/preview`, // Blurred preview
+        external_url: `https://DLBroz.app/media/${mediaAssetId}`,
         attributes: [
           {
             trait_type: "Content Type",

@@ -2,7 +2,7 @@
 
 **Platform:** UbearFanz
 **Deployed:** Sat Nov 15 12:54:47 EST 2025
-**Source:** BoyFanz master template
+**Source:** BearFanz master template
 **Version:** 1.0
 
 ## Files Deployed

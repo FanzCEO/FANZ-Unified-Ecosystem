@@ -1,17 +1,17 @@
-// BoyFanz Progressive Web App Service Worker
+// GayFanz Progressive Web App Service Worker
 // Advanced caching strategies, offline support, and background sync
 
-const CACHE_NAME = 'boyfanz-v1.0.0';
-const OFFLINE_CACHE = 'boyfanz-offline-v1.0.0';
-const DYNAMIC_CACHE = 'boyfanz-dynamic-v1.0.0';
-const IMAGE_CACHE = 'boyfanz-images-v1.0.0';
-const API_CACHE = 'boyfanz-api-v1.0.0';
+const CACHE_NAME = 'GayFanz-v1.0.0';
+const OFFLINE_CACHE = 'GayFanz-offline-v1.0.0';
+const DYNAMIC_CACHE = 'GayFanz-dynamic-v1.0.0';
+const IMAGE_CACHE = 'GayFanz-images-v1.0.0';
+const API_CACHE = 'GayFanz-api-v1.0.0';
 
 // Static assets to precache (App Shell) - Production compatible paths only
 const STATIC_ASSETS = [
   '/',
   '/offline.html',
-  '/boyfanz-logo.png',
+  '/GayFanz-logo.png',
   '/underground-bg.jpg',
   '/pwa-icons/icon-192x192.png',
   '/pwa-icons/icon-512x512.png',
@@ -43,7 +43,7 @@ const SYNC_TAGS = {
 
 // Install event - cache static assets with error handling
 self.addEventListener('install', (event) => {
-  console.log('🚀 BoyFanz SW: Installing service worker');
+  console.log('🚀 GayFanz SW: Installing service worker');
   
   event.waitUntil(
     Promise.all([
@@ -53,7 +53,7 @@ self.addEventListener('install', (event) => {
       // Create offline cache
       caches.open(OFFLINE_CACHE).then((cache) => {
         return cache.add('/offline.html').catch((error) => {
-          console.warn('⚠️ BoyFanz SW: Failed to cache offline.html:', error);
+          console.warn('⚠️ GayFanz SW: Failed to cache offline.html:', error);
           return Promise.resolve(); // Don't fail installation
         });
       }),
@@ -61,10 +61,10 @@ self.addEventListener('install', (event) => {
       // Discover and cache additional assets if in production
       discoverAndCacheAssets()
     ]).then(() => {
-      console.log('✅ BoyFanz SW: Installation complete');
+      console.log('✅ GayFanz SW: Installation complete');
       return self.skipWaiting();
     }).catch((error) => {
-      console.error('❌ BoyFanz SW: Installation failed:', error);
+      console.error('❌ GayFanz SW: Installation failed:', error);
       // Don't prevent installation - skip waiting anyway
       return self.skipWaiting();
     })
@@ -75,7 +75,7 @@ self.addEventListener('install', (event) => {
 async function cacheAssetsWithErrorHandling(cacheName, assets) {
   try {
     const cache = await caches.open(cacheName);
-    console.log('📦 BoyFanz SW: Caching app shell assets');
+    console.log('📦 GayFanz SW: Caching app shell assets');
     
     // Cache each asset individually to prevent one failure from breaking all
     const cachePromises = assets.map(async (asset) => {
@@ -83,27 +83,27 @@ async function cacheAssetsWithErrorHandling(cacheName, assets) {
         const response = await fetch(asset);
         if (response.ok) {
           await cache.put(asset, response);
-          console.log('✅ BoyFanz SW: Cached:', asset);
+          console.log('✅ GayFanz SW: Cached:', asset);
         } else {
-          console.warn(`⚠️ BoyFanz SW: Failed to fetch ${asset}: ${response.status}`);
+          console.warn(`⚠️ GayFanz SW: Failed to fetch ${asset}: ${response.status}`);
         }
       } catch (error) {
-        console.warn(`⚠️ BoyFanz SW: Error caching ${asset}:`, error.message);
+        console.warn(`⚠️ GayFanz SW: Error caching ${asset}:`, error.message);
         // Continue with other assets
       }
     });
     
     await Promise.allSettled(cachePromises);
-    console.log('📦 BoyFanz SW: App shell caching completed');
+    console.log('📦 GayFanz SW: App shell caching completed');
   } catch (error) {
-    console.error('❌ BoyFanz SW: Failed to open cache:', error);
+    console.error('❌ GayFanz SW: Failed to open cache:', error);
   }
 }
 
 // Discover and cache build assets dynamically
 async function discoverAndCacheAssets() {
   if (isDevelopment) {
-    console.log('🔧 BoyFanz SW: Development mode - skipping asset discovery');
+    console.log('🔧 GayFanz SW: Development mode - skipping asset discovery');
     return;
   }
   
@@ -123,7 +123,7 @@ async function discoverAndCacheAssets() {
         ...jsMatches.map(match => match.match(/src="([^"]+)"/)[1])
       ];
       
-      console.log('🔍 BoyFanz SW: Discovered assets:', discoveredAssets);
+      console.log('🔍 GayFanz SW: Discovered assets:', discoveredAssets);
       
       // Cache discovered assets
       for (const asset of discoveredAssets) {
@@ -131,21 +131,21 @@ async function discoverAndCacheAssets() {
           const response = await fetch(asset);
           if (response.ok) {
             await cache.put(asset, response);
-            console.log('✅ BoyFanz SW: Cached discovered asset:', asset);
+            console.log('✅ GayFanz SW: Cached discovered asset:', asset);
           }
         } catch (error) {
-          console.warn(`⚠️ BoyFanz SW: Failed to cache ${asset}:`, error.message);
+          console.warn(`⚠️ GayFanz SW: Failed to cache ${asset}:`, error.message);
         }
       }
     }
   } catch (error) {
-    console.warn('⚠️ BoyFanz SW: Asset discovery failed:', error.message);
+    console.warn('⚠️ GayFanz SW: Asset discovery failed:', error.message);
   }
 }
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('🔄 BoyFanz SW: Activating service worker');
+  console.log('🔄 GayFanz SW: Activating service worker');
   
   event.waitUntil(
     Promise.all([
@@ -158,7 +158,7 @@ self.addEventListener('activate', (event) => {
                 cacheName !== DYNAMIC_CACHE &&
                 cacheName !== IMAGE_CACHE &&
                 cacheName !== API_CACHE) {
-              console.log('🗑️ BoyFanz SW: Deleting old cache:', cacheName);
+              console.log('🗑️ GayFanz SW: Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
           })
@@ -168,7 +168,7 @@ self.addEventListener('activate', (event) => {
       // Take control of all clients
       self.clients.claim()
     ]).then(() => {
-      console.log('✅ BoyFanz SW: Activation complete');
+      console.log('✅ GayFanz SW: Activation complete');
     })
   );
 });
@@ -211,7 +211,7 @@ async function handleApiRequest(request) {
     
     return networkResponse;
   } catch (error) {
-    console.log('🌐 BoyFanz SW: Network failed, trying cache for:', url.pathname);
+    console.log('🌐 GayFanz SW: Network failed, trying cache for:', url.pathname);
     
     // Fall back to cache
     const cachedResponse = await caches.match(request);
@@ -253,7 +253,7 @@ async function handleImageRequest(request) {
     
     return networkResponse;
   } catch (error) {
-    console.log('🖼️ BoyFanz SW: Image request failed:', request.url);
+    console.log('🖼️ GayFanz SW: Image request failed:', request.url);
     // Return placeholder image for offline
     return new Response('', { status: 404 });
   }
@@ -293,7 +293,7 @@ async function handleNavigationRequest(request) {
     
     return networkResponse;
   } catch (error) {
-    console.log('🔍 BoyFanz SW: Navigation failed, checking cache');
+    console.log('🔍 GayFanz SW: Navigation failed, checking cache');
     
     // Try cached version
     const cachedResponse = await caches.match(request);
@@ -308,7 +308,7 @@ async function handleNavigationRequest(request) {
 
 // Background Sync for offline actions
 self.addEventListener('sync', (event) => {
-  console.log('🔄 BoyFanz SW: Background sync:', event.tag);
+  console.log('🔄 GayFanz SW: Background sync:', event.tag);
   
   switch (event.tag) {
     case SYNC_TAGS.SEND_MESSAGE:
@@ -328,7 +328,7 @@ self.addEventListener('sync', (event) => {
 
 // Push Notification Handler
 self.addEventListener('push', (event) => {
-  console.log('📬 BoyFanz SW: Push notification received');
+  console.log('📬 GayFanz SW: Push notification received');
   
   let notificationData = {};
   
@@ -337,7 +337,7 @@ self.addEventListener('push', (event) => {
       notificationData = event.data.json();
     } catch (error) {
       notificationData = {
-        title: 'BoyFanz',
+        title: 'GayFanz',
         body: event.data.text() || 'New notification',
         icon: '/pwa-icons/icon-192x192.png'
       };
@@ -345,7 +345,7 @@ self.addEventListener('push', (event) => {
   }
   
   const {
-    title = 'BoyFanz',
+    title = 'GayFanz',
     body = 'New notification',
     icon = '/pwa-icons/icon-192x192.png',
     badge = '/pwa-icons/badge-72x72.png',
@@ -365,13 +365,13 @@ self.addEventListener('push', (event) => {
       url: data.url || '/',
       timestamp: Date.now()
     },
-    tag: tag || 'boyfanz-notification',
+    tag: tag || 'GayFanz-notification',
     requireInteraction,
     vibrate: [100, 50, 100],
     actions: actions.length > 0 ? actions : [
       {
         action: 'open',
-        title: 'Open BoyFanz',
+        title: 'Open GayFanz',
         icon: '/pwa-icons/icon-72x72.png'
       },
       {
@@ -393,7 +393,7 @@ self.addEventListener('push', (event) => {
 
 // Notification Click Handler
 self.addEventListener('notificationclick', (event) => {
-  console.log('📱 BoyFanz SW: Notification clicked:', event.action);
+  console.log('📱 GayFanz SW: Notification clicked:', event.action);
   
   event.notification.close();
   
@@ -424,7 +424,7 @@ self.addEventListener('notificationclick', (event) => {
 
 // Message Handler for communication with main thread
 self.addEventListener('message', (event) => {
-  console.log('💬 BoyFanz SW: Message received:', event.data);
+  console.log('💬 GayFanz SW: Message received:', event.data);
   
   const { type, payload } = event.data;
   
@@ -471,9 +471,9 @@ async function queueOfflineAction(action) {
       synced: false
     });
     
-    console.log('📥 BoyFanz SW: Action queued for sync:', action.type);
+    console.log('📥 GayFanz SW: Action queued for sync:', action.type);
   } catch (error) {
-    console.error('❌ BoyFanz SW: Failed to queue action:', error);
+    console.error('❌ GayFanz SW: Failed to queue action:', error);
   }
 }
 
@@ -498,39 +498,39 @@ async function syncQueuedMessages() {
           if (response.ok) {
             message.synced = true;
             await store.put(message);
-            console.log('✅ BoyFanz SW: Message synced:', message.id);
+            console.log('✅ GayFanz SW: Message synced:', message.id);
           }
         } catch (error) {
-          console.error('❌ BoyFanz SW: Failed to sync message:', error);
+          console.error('❌ GayFanz SW: Failed to sync message:', error);
         }
       }
     }
   } catch (error) {
-    console.error('❌ BoyFanz SW: Message sync failed:', error);
+    console.error('❌ GayFanz SW: Message sync failed:', error);
   }
 }
 
 async function syncQueuedLikes() {
   // Similar implementation for likes
-  console.log('👍 BoyFanz SW: Syncing queued likes');
+  console.log('👍 GayFanz SW: Syncing queued likes');
 }
 
 async function syncQueuedUploads() {
   // Similar implementation for content uploads
-  console.log('📤 BoyFanz SW: Syncing queued uploads');
+  console.log('📤 GayFanz SW: Syncing queued uploads');
 }
 
 async function syncProfileUpdates() {
   // Similar implementation for profile updates
-  console.log('👤 BoyFanz SW: Syncing profile updates');
+  console.log('👤 GayFanz SW: Syncing profile updates');
 }
 
 async function clearSpecificCache(cacheName) {
   try {
     const deleted = await caches.delete(cacheName);
-    console.log(`🗑️ BoyFanz SW: Cache ${cacheName} ${deleted ? 'deleted' : 'not found'}`);
+    console.log(`🗑️ GayFanz SW: Cache ${cacheName} ${deleted ? 'deleted' : 'not found'}`);
   } catch (error) {
-    console.error('❌ BoyFanz SW: Failed to clear cache:', error);
+    console.error('❌ GayFanz SW: Failed to clear cache:', error);
   }
 }
 
@@ -540,13 +540,13 @@ async function updateAppBadge(count) {
       await navigator.setAppBadge(count);
     }
   } catch (error) {
-    console.error('❌ BoyFanz SW: Failed to update badge:', error);
+    console.error('❌ GayFanz SW: Failed to update badge:', error);
   }
 }
 
 async function openDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('BoyFanzPWA', 1);
+    const request = indexedDB.open('GayFanzPWA', 1);
     
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
@@ -563,4 +563,4 @@ async function openDB() {
   });
 }
 
-console.log('🚀 BoyFanz SW: Service Worker script loaded');
+console.log('🚀 GayFanz SW: Service Worker script loaded');

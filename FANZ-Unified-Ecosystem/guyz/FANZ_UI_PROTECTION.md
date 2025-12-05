@@ -18,7 +18,7 @@ This document serves as a protection lock for the current FANZ UI/UX design syst
 - "Welcome Back" login flow
 - Premium feature highlights (FOR STARZ, FOR FANZ sections)
 - "WE RESPECT YOUR PRIVACY" footer messaging
-- BoyFanz branding and color scheme
+- Guyz branding and color scheme
 - Form styling and button designs
 
 **VISUAL IDENTITY:**

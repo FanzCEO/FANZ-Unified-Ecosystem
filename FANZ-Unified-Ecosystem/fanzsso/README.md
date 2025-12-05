@@ -24,7 +24,7 @@ pnpm test
 ```
 
 ## Part of FANZ Network
-- [BoyFanz](https://boyfanz.com) - Gay content platform
+- [FanzSSO](https://FanzSSO.com) - Gay content platform
 - [GirlFanz](https://girlfanz.com) - Female content platform  
 - [PupFanz](https://pupfanz.com) - Fetish & kink platform
 - [TabooFanz](https://taboofanz.com) - Taboo content platform

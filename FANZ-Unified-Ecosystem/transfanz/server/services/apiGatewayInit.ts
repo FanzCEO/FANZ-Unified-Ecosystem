@@ -126,7 +126,7 @@ export function registerFANZServices() {
 
   // Register core platform services
   const platforms = [
-    { id: 'boyfanz', name: 'BoyFanz', port: 5001 },
+    { id: 'TransFanz', name: 'TransFanz', port: 5001 },
     { id: 'girlfanz', name: 'GirlFanz', port: 5002 },
     { id: 'pupfanz', name: 'PupFanz', port: 5003 },
     { id: 'transfanz', name: 'TransFanz', port: 5004 },

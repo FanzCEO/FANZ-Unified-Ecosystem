@@ -77,7 +77,7 @@ export class FanzPayService {
         userId: request.userId,
         amountCents: request.amountCents,
         currency: request.currency,
-        description: `BoyFanz wallet deposit`,
+        description: `FemmeFanz wallet deposit`,
         metadata: request.metadata,
         paymentMethod: request.paymentMethod,
       }, request.paymentProvider);

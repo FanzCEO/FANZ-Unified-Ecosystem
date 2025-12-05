@@ -1,4 +1,4 @@
-# BoyFanz CMS + Theme Studio (Shopify-style) – Drop-in Starter Pack
+# FanzUncut CMS + Theme Studio (Shopify-style) – Drop-in Starter Pack
 
 > Structure, DB (Drizzle), API (Express + Zod), S3 assets, Preview/Publish service, and Admin UI (React + shadcn). Paste these into your repo on Replit. Replace placeholders (e.g., bucket names) in `.env`.
 

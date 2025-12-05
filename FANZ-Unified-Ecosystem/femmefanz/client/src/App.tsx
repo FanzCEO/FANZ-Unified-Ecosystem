@@ -114,18 +114,18 @@ function Router() {
     
     // Setup network status handling
     const handleOnline = () => {
-      console.log('🌐 BoyFanz: Back online');
+      console.log('🌐 FemmeFanz: Back online');
       document.body.classList.remove('offline');
       
       // Trigger sync of queued actions
       offlineStorage.getPendingActions().then(actions => {
-        console.log(`🔄 BoyFanz: ${actions.length} actions to sync`);
+        console.log(`🔄 FemmeFanz: ${actions.length} actions to sync`);
         // The service worker will handle the actual syncing
       });
     };
     
     const handleOffline = () => {
-      console.log('📵 BoyFanz: Gone offline');
+      console.log('📵 FemmeFanz: Gone offline');
       document.body.classList.add('offline');
     };
     
@@ -176,7 +176,7 @@ function Router() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading BoyFanz...</p>
+          <p className="text-muted-foreground">Loading FemmeFanz...</p>
         </div>
       </div>
     );

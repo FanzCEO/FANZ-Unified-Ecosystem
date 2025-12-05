@@ -1,4 +1,4 @@
-// BoyFanz PWA Utilities
+// FemmeFanz PWA Utilities
 // Handles PWA installation, push subscriptions, and offline functionality
 
 interface BeforeInstallPromptEvent extends Event {
@@ -15,7 +15,7 @@ interface PushSubscriptionOptions {
   applicationServerKey: string | Uint8Array;
 }
 
-class BoyFanzPWAManager {
+class FemmeFanzPWAManager {
   private deferredPrompt: BeforeInstallPromptEvent | null = null;
   private swRegistration: ServiceWorkerRegistration | null = null;
   private pushSubscription: PushSubscription | null = null;
@@ -44,7 +44,7 @@ class BoyFanzPWAManager {
       // Setup app badge support
       this.setupAppBadge();
       
-      console.log('🚀 BoyFanz PWA Manager initialized successfully');
+      console.log('🚀 FemmeFanz PWA Manager initialized successfully');
     } catch (error) {
       console.error('❌ PWA Manager initialization failed:', error);
     }
@@ -378,7 +378,7 @@ class BoyFanzPWAManager {
         animation: slideIn 0.5s ease-out;
       ">
         <div style="font-weight: 600; margin-bottom: 8px;">
-          📱 Install BoyFanz App
+          📱 Install FemmeFanz App
         </div>
         <div style="font-size: 14px; margin-bottom: 12px; opacity: 0.9;">
           Get the full app experience with offline support and push notifications.
@@ -543,7 +543,7 @@ class BoyFanzPWAManager {
 }
 
 // Global PWA Manager instance
-export const pwaManager = new BoyFanzPWAManager();
+export const pwaManager = new FemmeFanzPWAManager();
 
 // Export types
 export type { BeforeInstallPromptEvent, PushSubscriptionOptions };

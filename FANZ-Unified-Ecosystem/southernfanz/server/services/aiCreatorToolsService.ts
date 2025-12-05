@@ -473,7 +473,7 @@ class AICreatorToolsService {
     // Simulated file upload - real implementation would upload to storage
     const filename = `captions_${Date.now()}.vtt`;
     console.log(`📁 Uploading WebVTT file: ${filename}`);
-    return `https://cdn.boyfanz.com/captions/${filename}`;
+    return `https://cdn.SouthernFanz.com/captions/${filename}`;
   }
 
   // Helper methods with mock implementations

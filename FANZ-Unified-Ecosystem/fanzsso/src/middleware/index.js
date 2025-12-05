@@ -95,7 +95,7 @@ const requirePlatformAccess = (platform) => {
 // CORS middleware (if needed beyond express cors)
 const corsHeaders = (req, res, next) => {
   const allowedOrigins = [
-    'https://boyfanz.com',
+    'https://FanzSSO.com',
     'https://girlfanz.com',
     'https://pupfanz.com',
     'https://taboofanz.com',

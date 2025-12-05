@@ -2,7 +2,7 @@
 
 **Platform:** UsouthernFanz
 **Deployed:** Sat Nov 15 12:54:48 EST 2025
-**Source:** BoyFanz master template
+**Source:** SouthernFanz master template
 **Version:** 1.0
 
 ## Files Deployed

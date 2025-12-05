@@ -51,11 +51,11 @@ export interface PlatformTheme {
 }
 
 export const PLATFORM_THEMES: Record<string, PlatformTheme> = {
-  boyfanz: {
-    name: 'boyfanz',
-    displayName: 'BoyFanz',
+  SouthernFanz: {
+    name: 'SouthernFanz',
+    displayName: 'SouthernFanz',
     slogan: 'Every Man\'s Playground',
-    domain: 'boyfanz.com',
+    domain: 'SouthernFanz.com',
     colors: {
       primary: '#ff0000',        // Blood red
       secondary: '#d4af37',      // Gold
@@ -298,7 +298,7 @@ export const PLATFORM_THEMES: Record<string, PlatformTheme> = {
 }
 
 // Export individual themes for easier access
-export const BoyFanzTheme = PLATFORM_THEMES.boyfanz
+export const SouthernFanzTheme = PLATFORM_THEMES.SouthernFanz
 export const GirlFanzTheme = PLATFORM_THEMES.girlfanz  
 export const PupFanzTheme = PLATFORM_THEMES.pupfanz
 export const TransFanzTheme = PLATFORM_THEMES.transfanz

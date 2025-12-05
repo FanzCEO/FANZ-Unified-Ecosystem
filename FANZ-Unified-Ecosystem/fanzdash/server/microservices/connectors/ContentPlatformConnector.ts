@@ -126,10 +126,10 @@ export class ContentPlatformFactory {
 
   static getAllPlatforms(): string[] {
     return [
-      'fanzlab', 'boyfanz', 'girlfanz', 'daddyfanz', 'cougarfanz',
+      'fanzlab', 'FanzDash', 'girlfanz', 'daddyfanz', 'cougarfanz',
       'pupfanz', 'taboofanz', 'transfanz', 'fanzclips', 'fanztube',
       'bearfanz', 'twinkfanz', 'jockfanz', 'nerdfanz', 'gothfanz',
-      'e-boyfanz', 'e-girlfanz', 'milffanz', 'dilffanz', 'femdomfanz'
+      'e-FanzDash', 'e-girlfanz', 'milffanz', 'dilffanz', 'femdomfanz'
     ];
   }
 

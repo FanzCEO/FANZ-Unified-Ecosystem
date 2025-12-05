@@ -2,7 +2,7 @@
 
 **Platform:** UgirlFanz
 **Deployed:** Sat Nov 15 12:18:01 EST 2025
-**Source:** BoyFanz master template
+**Source:** GirlFanz master template
 **Version:** 1.0
 
 ## Files Deployed

@@ -31,7 +31,7 @@ body:
       label: Platform
       description: Which FANZ platform(s) would this feature benefit?
       options:
-        - BoyFanz
+        - GayFanz
         - GirlFanz  
         - PupFanz
         - TabooFanz

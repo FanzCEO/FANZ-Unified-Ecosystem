@@ -19,7 +19,7 @@ export default function AIChatBot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Welcome to BoyFanz AI Assistant! I can help you with platform questions, tutorials, and walkthroughs. What would you like to know?',
+      content: 'Welcome to BearFanz AI Assistant! I can help you with platform questions, tutorials, and walkthroughs. What would you like to know?',
       sender: 'ai',
       timestamp: new Date()
     }
@@ -64,7 +64,7 @@ export default function AIChatBot() {
     let message = '';
     switch (action) {
       case 'help':
-        message = 'How can I help you with the BoyFanz platform?';
+        message = 'How can I help you with the BearFanz platform?';
         break;
       case 'wiki':
         message = 'Show me information from the AI wiki';

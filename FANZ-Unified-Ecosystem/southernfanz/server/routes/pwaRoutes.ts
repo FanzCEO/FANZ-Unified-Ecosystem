@@ -1,4 +1,4 @@
-// BoyFanz PWA Backend API Routes
+// SouthernFanz PWA Backend API Routes
 // Handles push subscriptions, offline sync, installation analytics, and PWA features
 
 import express, { type Request, Response } from "express";
@@ -23,7 +23,7 @@ import { isAuthenticated } from "../middleware/auth";
 const router = express.Router();
 
 // VAPID Keys Configuration (In production, store these securely)
-const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:admin@boyfanz.com';
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:admin@SouthernFanz.com';
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 

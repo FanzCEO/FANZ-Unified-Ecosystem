@@ -2,7 +2,7 @@
 
 **Platform:** UFanzsso
 **Deployed:** Sat Nov 15 12:54:49 EST 2025
-**Source:** BoyFanz master template
+**Source:** FanzSSO master template
 **Version:** 1.0
 
 ## Files Deployed

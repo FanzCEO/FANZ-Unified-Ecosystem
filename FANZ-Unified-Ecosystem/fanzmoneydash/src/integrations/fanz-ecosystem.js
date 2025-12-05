@@ -24,7 +24,7 @@ export class FanzEcosystemIntegration {
         clientSecret: process.env.SSO_CLIENT_SECRET
       },
       platforms: {
-        boyfanz: process.env.WEBHOOK_BOYFANZ || 'https://api.boyfanz.com/webhooks/money-dash',
+        FanzMoneyDash: process.env.WEBHOOK_FanzMoneyDash || 'https://api.FanzMoneyDash.com/webhooks/money-dash',
         girlfanz: process.env.WEBHOOK_GIRLFANZ || 'https://api.girlfanz.com/webhooks/money-dash',
         pupfanz: process.env.WEBHOOK_PUPFANZ || 'https://api.pupfanz.com/webhooks/money-dash',
         daddiesfanz: process.env.WEBHOOK_DADDIESFANZ || 'https://api.daddiesfanz.com/webhooks/money-dash',
@@ -87,7 +87,7 @@ export class FanzEcosystemIntegration {
     if (!url) return 'unknown';
     if (url.includes('dash.fanz.network')) return 'fanzdash';
     if (url.includes('sso.fanz.network')) return 'sso';
-    if (url.includes('boyfanz.com')) return 'boyfanz';
+    if (url.includes('FanzMoneyDash.com')) return 'FanzMoneyDash';
     if (url.includes('girlfanz.com')) return 'girlfanz';
     if (url.includes('pupfanz.com')) return 'pupfanz';
     if (url.includes('daddiesfanz.com')) return 'daddiesfanz';

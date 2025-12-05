@@ -1,4 +1,4 @@
-absolutely, Josh — let’s turn BoyFanz from “nice dashboard” into a **real platform** you can boot on Replit and scale. Below is a concrete, drop-in **technical blueprint** (DB schema + API map + routing/RBAC + media + payments + admin). It lines up with the stack you already declared (React + Vite + Tailwind/shadcn, Express + TS, Drizzle + Postgres, Uppy → S3, Sharp, WS, TanStack Query, Wouter)— and plugs directly into what you’ve started for **UserManagement**, **ThemeManager**, and **ModerationQueue** (we’ll wire those to real APIs).
+absolutely, Josh — let’s turn GayFanz from “nice dashboard” into a **real platform** you can boot on Replit and scale. Below is a concrete, drop-in **technical blueprint** (DB schema + API map + routing/RBAC + media + payments + admin). It lines up with the stack you already declared (React + Vite + Tailwind/shadcn, Express + TS, Drizzle + Postgres, Uppy → S3, Sharp, WS, TanStack Query, Wouter)— and plugs directly into what you’ve started for **UserManagement**, **ThemeManager**, and **ModerationQueue** (we’ll wire those to real APIs).
 
 ---
 
@@ -244,4 +244,4 @@ I can generate:
 
 Say the word and I’ll drop **ready-to-paste TypeScript files** tailored to your repo layout. 🔧🔥
 
-**This is how BoyFanz stops “looking like a platform” and actually becomes one.**
+**This is how GayFanz stops “looking like a platform” and actually becomes one.**

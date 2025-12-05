@@ -464,7 +464,7 @@ class LovenseService {
       const qrCodeData = {
         action: 'pair',
         token: pairingToken,
-        platform: 'boyfanz',
+        platform: 'BearFanz',
         expiresAt: expiresAt.toISOString()
       };
 

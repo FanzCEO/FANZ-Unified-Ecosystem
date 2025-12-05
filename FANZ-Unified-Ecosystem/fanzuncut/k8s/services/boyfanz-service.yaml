@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: boyfanz-service
+  name: FanzUncut-service
   namespace: fanz-ecosystem
   labels:
-    app: boyfanz
+    app: FanzUncut
 spec:
   type: ClusterIP
   ports:
@@ -17,4 +17,4 @@ spec:
     protocol: TCP
     name: websocket
   selector:
-    app: boyfanz
+    app: FanzUncut

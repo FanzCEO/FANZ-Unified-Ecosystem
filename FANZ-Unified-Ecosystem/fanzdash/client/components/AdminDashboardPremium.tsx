@@ -121,7 +121,7 @@ export function AdminDashboardPremium() {
           systemHealth: 'healthy'
         },
         platforms: {
-          boyfanz: { name: 'BoyFanz', isActive: true, users: 25840, creators: 1834, revenue24h: 12400, transactions24h: 340, lastUpdate: new Date() },
+          FanzDash: { name: 'FanzDash', isActive: true, users: 25840, creators: 1834, revenue24h: 12400, transactions24h: 340, lastUpdate: new Date() },
           girlfanz: { name: 'GirlFanz', isActive: true, users: 34200, creators: 2450, revenue24h: 15800, transactions24h: 420, lastUpdate: new Date() },
           pupfanz: { name: 'PupFanz', isActive: true, users: 18500, creators: 1250, revenue24h: 8900, transactions24h: 280, lastUpdate: new Date() },
           transfanz: { name: 'TransFanz', isActive: true, users: 22300, creators: 1800, revenue24h: 11400, transactions24h: 310, lastUpdate: new Date() },
@@ -163,7 +163,7 @@ export function AdminDashboardPremium() {
           ],
           criticalAlerts: [],
           performanceHighlights: [
-            'BoyFanz engagement increased 15%',
+            'FanzDash engagement increased 15%',
             'New creator onboarding up 22%'
           ],
           riskAssessment: 'Overall risk level: LOW - No critical issues detected'
@@ -177,7 +177,7 @@ export function AdminDashboardPremium() {
           forecastAccuracy: 94.2
         },
         recommendations: {
-          immediate: ['Monitor BoyFanz growth surge', 'Review payout processing'],
+          immediate: ['Monitor FanzDash growth surge', 'Review payout processing'],
           shortTerm: ['Optimize creator acquisition', 'Enhance mobile experience'],
           longTerm: ['Expand international markets', 'Develop NFT marketplace']
         }
@@ -257,7 +257,7 @@ export function AdminDashboardPremium() {
 
   const getPlatformThemeColor = (platformId: string) => {
     const themes: Record<string, string> = {
-      boyfanz: 'from-red-500/20 to-pink-500/20 border-red-500/30',
+      FanzDash: 'from-red-500/20 to-pink-500/20 border-red-500/30',
       girlfanz: 'from-pink-500/20 to-purple-500/20 border-pink-500/30',
       pupfanz: 'from-green-500/20 to-emerald-500/20 border-green-500/30',
       transfanz: 'from-teal-500/20 to-cyan-500/20 border-teal-500/30',

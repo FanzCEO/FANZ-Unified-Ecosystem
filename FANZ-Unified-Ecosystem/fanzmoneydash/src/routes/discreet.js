@@ -188,7 +188,7 @@ router.post('/purchase', [
     .notEmpty()
     .withMessage('Payment token is required'),
   body('platform')
-    .isIn(['boyfanz', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz', 'taboofanz', 'femmefanz', 'transfanz', 'fanzuncut', 'southernfanz', 'bearfanz', 'dlbroz', 'guyz'])
+    .isIn(['FanzMoneyDash', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz', 'taboofanz', 'femmefanz', 'transfanz', 'fanzuncut', 'southernfanz', 'bearfanz', 'dlbroz', 'guyz'])
     .withMessage('Invalid platform'),
   body('reloadable')
     .optional()

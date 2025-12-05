@@ -21,7 +21,7 @@ The enhanced FanzDash is **already running** with all features accessible!
 Navigate to: **http://localhost:3000/analytics-dashboard**
 
 ### Configure for a Platform
-1. Select platform from dropdown (e.g., "BoyFanz")
+1. Select platform from dropdown (e.g., "FanzDash")
 2. Click "Configure Analytics" button
 3. Go to **GA4 tab**:
    - Enter Measurement ID: `G-XXXXXXXXXX`
@@ -44,7 +44,7 @@ fetch('/api/analytics/track', {
   method: 'POST',
   headers: {'Content-Type': 'application/json'},
   body: JSON.stringify({
-    platformId: 'BoyFanz',
+    platformId: 'FanzDash',
     tenantId: 'fanz_main',
     userId: 'test_user_123',
     sessionId: 'test_session_' + Date.now(),
@@ -206,8 +206,8 @@ Click on: **"Calendars" tab**
 ### API Endpoints (Test with Postman/curl)
 ```bash
 # Analytics
-GET  /api/analytics/config/BoyFanz
-POST /api/analytics/config/BoyFanz
+GET  /api/analytics/config/FanzDash
+POST /api/analytics/config/FanzDash
 POST /api/analytics/track
 
 # OAuth

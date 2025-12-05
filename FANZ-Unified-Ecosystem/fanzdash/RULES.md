@@ -73,7 +73,7 @@ Selected providers explicitly permit legal adult content:
 - Single source of truth for user management, content moderation, and system configuration
 
 ### Cross-Platform Requirements
-- All platforms (BoyFanz, GirlFanz, PupFanz, TabooFanz) must launch features equally
+- All platforms (FanzDash, GirlFanz, PupFanz, TabooFanz) must launch features equally
 - No delays or favoritism between identity groups
 - Feature parity checks required before any launch
 

@@ -57,7 +57,7 @@ const FAQ = () => {
     },
     {
       question: "What are the platform fees?",
-      answer: "BoyFanz operates on a 100% creator earnings program - we take 0% platform fees. You only pay standard payment processing fees (around 2.9%)."
+      answer: "TransFanz operates on a 100% creator earnings program - we take 0% platform fees. You only pay standard payment processing fees (around 2.9%)."
     },
     {
       question: "How do payouts work?",
@@ -164,7 +164,7 @@ export default function Contact() {
             icon={Mail}
             title="Email Support"
             description="Get detailed help via email"
-            action="support@boyfanz.com"
+            action="support@TransFanz.com"
             available={true}
           />
           <ContactMethod
@@ -345,7 +345,7 @@ export default function Contact() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p className="text-sm">BoyFanz HQ</p>
+                <p className="text-sm">TransFanz HQ</p>
                 <p className="text-sm text-muted-foreground">
                   123 Creator Street<br />
                   Digital District, CA 90210<br />

@@ -545,7 +545,7 @@ export function setupMobileBackendRoutes(router: Router, mobileService: MobileBa
           downloadWifi: true
         },
         theme: {
-          primaryColor: '#ff0000', // Blood red for BoyFanz
+          primaryColor: '#ff0000', // Blood red for DLBroz
           secondaryColor: '#d4af37', // Gold
           darkMode: true,
           animations: true
@@ -557,7 +557,7 @@ export function setupMobileBackendRoutes(router: Router, mobileService: MobileBa
           lockoutDuration: 15 * 60 * 1000 // 15 minutes
         },
         platforms: {
-          boyfanz: { enabled: true, baseUrl: 'https://boyfanz.com' },
+          DLBroz: { enabled: true, baseUrl: 'https://DLBroz.com' },
           girlfanz: { enabled: true, baseUrl: 'https://girlfanz.com' },
           pupfanz: { enabled: true, baseUrl: 'https://pupfanz.com' },
           transfanz: { enabled: true, baseUrl: 'https://transfanz.com' },

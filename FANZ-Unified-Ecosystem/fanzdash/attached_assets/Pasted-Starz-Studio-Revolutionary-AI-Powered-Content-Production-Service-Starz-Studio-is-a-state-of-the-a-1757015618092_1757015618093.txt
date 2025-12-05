@@ -9,7 +9,7 @@ Starz Studio is attached to the broader FANZ OS 3.0 platform ecosystem, which in
 1. Core FANZ OS Architecture - It's integrated into the modular ecosystem with 8+ platform clusters
 2. FanzLab Portal (Port 3000) - The central neon portal serving as the main OS interface
 3. Multiple Platform Clusters including:
-•  BoyFanz (Port 3001)
+•  FanzDash (Port 3001)
 •  GirlFanz (Port 3002) 
 •  DaddyFanz (Port 3003)
 •  PupFanz (Port 3004)

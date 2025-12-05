@@ -103,7 +103,7 @@ class PerformanceOptimizationService {
     quality?: number;
     format?: 'webp' | 'jpeg' | 'png';
   }): string {
-    const cdnBase = process.env.CDN_BASE_URL || 'https://cdn.boyfanz.com';
+    const cdnBase = process.env.CDN_BASE_URL || 'https://cdn.TransFanz.com';
     
     if (!transforms) {
       return `${cdnBase}${assetPath}`;

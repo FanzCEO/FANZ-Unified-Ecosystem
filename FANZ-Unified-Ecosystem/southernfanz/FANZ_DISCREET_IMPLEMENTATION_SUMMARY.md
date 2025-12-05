@@ -83,7 +83,7 @@
 - **Reloadable** up to 10 times per card
 - **Balance range**: $10 - $500 per card
 - **Validity**: 2 years from purchase
-- **Cross-platform**: Works on all FANZ platforms (boyfanz, girlfanz, pupfanz, etc.)
+- **Cross-platform**: Works on all FANZ platforms (SouthernFanz, girlfanz, pupfanz, etc.)
 
 ### Compliance
 - **KYC Tiers**:
@@ -313,7 +313,7 @@ User Flow:
 - Backed by industry-leading CCBill security
 
 ### Marketing Channels
-1. **In-App Banners**: FanzMoneyDash, BoyFanz, GirlFanz homepages
+1. **In-App Banners**: FanzMoneyDash, SouthernFanz, GirlFanz homepages
 2. **Email Campaign**: "Introducing FanzDiscreet" to all users
 3. **Creator Announcements**: Creators educate fans about privacy option
 4. **Social Media**: Twitter, Reddit, Discord communities

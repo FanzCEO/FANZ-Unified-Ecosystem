@@ -20,7 +20,7 @@ INSERT INTO users (
 ) VALUES (
     'admin-' || substr(lower(hex(randomblob(16))), 1, 16),
     'admin',
-    'admin@boyfanz.com',
+    'admin@TransFanz.com',
     'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.0123456789abcdef', -- Simple hash for 'admin123'
     'admin',
     'Super',

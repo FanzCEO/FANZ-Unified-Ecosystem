@@ -32,7 +32,7 @@ const validateTokenRefresh = [
 
 const validateAccessCheck = [
   body('token').notEmpty().withMessage('Access token is required'),
-  body('platform').isIn(['BoyFanz', 'GirlFanz', 'PupFanz', 'TransFanz', 'TabooFanz', 'FanzTube', 'FanzClips']).withMessage('Invalid platform'),
+  body('platform').isIn(['FanzDash', 'GirlFanz', 'PupFanz', 'TransFanz', 'TabooFanz', 'FanzTube', 'FanzClips']).withMessage('Invalid platform'),
   body('domain').isURL({ require_tld: true }).withMessage('Valid domain required')
 ];
 
@@ -299,7 +299,7 @@ router.get('/platforms/status', generalLimiter, async (req, res) => {
   try {
     // Return status of all integrated platforms
     const platformStatus = {
-      BoyFanz: { online: true, users: 1250, lastSync: new Date() },
+      FanzDash: { online: true, users: 1250, lastSync: new Date() },
       GirlFanz: { online: true, users: 2100, lastSync: new Date() },
       PupFanz: { online: true, users: 890, lastSync: new Date() },
       TransFanz: { online: true, users: 750, lastSync: new Date() },
@@ -351,7 +351,7 @@ router.get('/domains', generalLimiter, (req, res) => {
   try {
     // Return approved domain mappings based on user rules
     const domainMappings = {
-      'boyfanz.com': { platform: 'BoyFanz', requiresAuth: true, tier: 'premium' },
+      'FanzDash.com': { platform: 'FanzDash', requiresAuth: true, tier: 'premium' },
       'girlfanz.com': { platform: 'GirlFanz', requiresAuth: true, tier: 'premium' },
       'pupfanz.com': { platform: 'PupFanz', requiresAuth: true, tier: 'premium' },
       'transfanz.com': { platform: 'TransFanz', requiresAuth: true, tier: 'premium' },

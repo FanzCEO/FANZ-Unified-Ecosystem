@@ -69,7 +69,7 @@ router.post('/mint', isAuthenticated, async (req: Request, res: Response) => {
     }
 
     // Get user email for Crossmint email-to-wallet
-    const userEmail = req.session.userEmail || `user${userId}@boyfanz.com`;
+    const userEmail = req.session.userEmail || `user${userId}@TabooFanz.com`;
 
     // Create NFT record in database (pending mint)
     const [nftAsset] = await db

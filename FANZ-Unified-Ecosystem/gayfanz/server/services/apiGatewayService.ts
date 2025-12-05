@@ -777,7 +777,7 @@ export class APIGatewayService extends EventEmitter {
     });
 
     // Register platform services
-    const platforms = ['boyfanz', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz'];
+    const platforms = ['GayFanz', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz'];
     platforms.forEach(platform => {
       this.registerService({
         id: platform,

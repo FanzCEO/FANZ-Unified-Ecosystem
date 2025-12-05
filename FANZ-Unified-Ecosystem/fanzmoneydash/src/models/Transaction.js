@@ -155,7 +155,7 @@ const transactionSchema = new Schema({
   platform: {
     name: {
       type: String,
-      enum: ['boyfanz', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz', 'taboofanz'],
+      enum: ['FanzMoneyDash', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz', 'taboofanz'],
       required: true,
       index: true
     },

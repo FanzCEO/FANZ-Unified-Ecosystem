@@ -161,7 +161,7 @@ Comprehensive protection against screenshots and screen recording:
   mediaAssetId="asset_123"
   userId="user_456"
   sessionId="session_789"
-  platformId="boyfanz"
+  platformId="FanzDash"
   onViolation={(type) => console.log('Violation:', type)}
 />
 ```
@@ -365,7 +365,7 @@ POST /api/media/upload/init
   "fileSize": 1073741824,
   "mimeType": "video/mp4",
   "creatorId": "creator_123",
-  "platformId": "boyfanz",
+  "platformId": "FanzDash",
   "tenantId": "fanz_main"
 }
 
@@ -380,7 +380,7 @@ POST /api/media/upload/:uploadId/chunk
 POST /api/media/upload/:uploadId/complete
 {
   "creatorId": "creator_123",
-  "platformId": "boyfanz",
+  "platformId": "FanzDash",
   "tenantId": "fanz_main",
   "width": 1920,
   "height": 1080,
@@ -397,7 +397,7 @@ GET /api/media/upload/:uploadId/progress
 # Scan platform for stolen content
 POST /api/dmca/scan/:platform
 {
-  "keywords": ["fanz", "boyfanz"]
+  "keywords": ["fanz", "FanzDash"]
 }
 
 # Get all DMCA cases
@@ -418,7 +418,7 @@ POST /api/media/log-violation
 {
   "userId": "user_123",
   "sessionId": "session_456",
-  "platformId": "boyfanz",
+  "platformId": "FanzDash",
   "mediaAssetId": "asset_789",
   "violationType": "printscreen_key",
   "userAgent": "...",
@@ -608,7 +608,7 @@ curl -X POST http://localhost:3000/api/media/upload/init \
     "fileSize": 10485760,
     "mimeType": "video/mp4",
     "creatorId": "test_creator",
-    "platformId": "boyfanz",
+    "platformId": "FanzDash",
     "tenantId": "fanz_main"
   }'
 ```

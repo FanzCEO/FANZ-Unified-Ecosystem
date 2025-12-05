@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>BoyFanz - Every Man's Playground</title>
+    <title>TransFanz - Every Man's Playground</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
     
@@ -10,8 +10,8 @@
     <meta name="theme-color" content="#ff0000" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="BoyFanz" />
-    <meta name="application-name" content="BoyFanz" />
+    <meta name="apple-mobile-web-app-title" content="TransFanz" />
+    <meta name="application-name" content="TransFanz" />
     <meta name="msapplication-TileColor" content="#ff0000" />
     <meta name="msapplication-config" content="/browserconfig.xml" />
     
@@ -67,8 +67,8 @@
       z-index: 9999;
       flex-direction: column;
     ">
-      <img src="/boyfanz-logo.png" alt="BoyFanz" style="width: 120px; height: auto; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.5));" />
-      <div style="color: #ff0000; font-family: 'Bebas Neue', sans-serif; font-size: 2rem; text-shadow: 0 0 10px rgba(255, 0, 0, 0.8); margin-bottom: 1rem;">BoyFanz</div>
+      <img src="/TransFanz-logo.png" alt="TransFanz" style="width: 120px; height: auto; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.5));" />
+      <div style="color: #ff0000; font-family: 'Bebas Neue', sans-serif; font-size: 2rem; text-shadow: 0 0 10px rgba(255, 0, 0, 0.8); margin-bottom: 1rem;">TransFanz</div>
       <div style="color: #d4af37; font-size: 0.9rem; margin-bottom: 2rem;">Every Man's Playground</div>
       <div style="width: 40px; height: 40px; border: 3px solid rgba(255, 0, 0, 0.3); border-top: 3px solid #ff0000; border-radius: 50%; animation: spin 1s linear infinite;"></div>
     </div>
@@ -101,7 +101,7 @@
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
             .then((registration) => {
-              console.log('🚀 BoyFanz SW registered:', registration.scope);
+              console.log('🚀 TransFanz SW registered:', registration.scope);
               
               // Check for updates
               registration.addEventListener('updatefound', () => {
@@ -131,7 +131,7 @@
       
       // Track successful installation
       window.addEventListener('appinstalled', () => {
-        console.log('🎉 BoyFanz PWA installed');
+        console.log('🎉 TransFanz PWA installed');
         deferredPrompt = null;
       });
     </script>

@@ -3617,7 +3617,7 @@ Remember: You have the authority to BLOCK actions and require approval for risky
 - Technical support for creators and moderators
 - Crisis management and threat assessment procedures
 - AI analysis engine capabilities and results
-- Platform cluster management (BoyFanz, GirlFanz, DaddyFanz, etc.)
+- Platform cluster management (FanzDash, GirlFanz, DaddyFanz, etc.)
 - Self-healing system status and maintenance
 - Predictive analytics and forecasting
 

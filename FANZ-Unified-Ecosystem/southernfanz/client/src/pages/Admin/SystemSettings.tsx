@@ -968,7 +968,7 @@ export default function SystemSettingsManagement() {
                         <FormItem>
                           <FormLabel>From Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="BoyFanz Platform" {...field} data-testid="input-from-name" />
+                            <Input placeholder="SouthernFanz Platform" {...field} data-testid="input-from-name" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

@@ -181,7 +181,7 @@ router.get('/transaction/:transactionId', [
       status: 'completed',
       description: 'Creator subscription payment',
       metadata: {
-        platform: 'boyfanz',
+        platform: 'FanzMoneyDash',
         creatorId: 'creator_123',
         subscriptionType: 'monthly'
       },

@@ -22,8 +22,8 @@ async function testSocialMeetups() {
   try {
     // Create a creator meetup
     const meetupData = {
-      title: 'Exclusive Creator Meetup - BoyFanz Stars',
-      description: 'Join top BoyFanz creators for an intimate networking session and Q&A.',
+      title: 'Exclusive Creator Meetup - BearFanz Stars',
+      description: 'Join top BearFanz creators for an intimate networking session and Q&A.',
       type: 'CREATOR_MEETUP',
       format: 'HYBRID',
       capacity: 25,
@@ -128,7 +128,7 @@ async function testVirtualEvents() {
 
   try {
     const eventData = {
-      title: 'BoyFanz Pride Spectacular 2024',
+      title: 'BearFanz Pride Spectacular 2024',
       description: 'Annual Pride celebration featuring live performances, special guests, and community celebration.',
       type: 'LIVE_PERFORMANCE',
       category: 'CELEBRATION',
@@ -162,7 +162,7 @@ async function testVirtualEvents() {
       },
       guestPerformers: [
         { name: 'DJ Phoenix', type: 'PERFORMER', bio: 'International DJ and producer' },
-        { name: 'Marcus Steel', type: 'HOST', bio: 'Popular BoyFanz creator and entertainer' }
+        { name: 'Marcus Steel', type: 'HOST', bio: 'Popular BearFanz creator and entertainer' }
       ],
       merchandise: [
         { name: 'Pride T-Shirt', price: 25, category: 'APPAREL' },
@@ -206,7 +206,7 @@ async function testSocialGaming() {
 
   try {
     const gameData = {
-      title: 'BoyFanz Trivia Championship',
+      title: 'BearFanz Trivia Championship',
       description: 'Test your knowledge about your favorite creators and win amazing prizes!',
       type: 'TRIVIA',
       category: 'KNOWLEDGE',

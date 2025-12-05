@@ -178,7 +178,7 @@ export class DMCAService {
     let casesCreated = 0;
     
     // 1. Search platform for FANZ keywords
-    const videos = await this.searchPlatformAPI(platform, ['fanz', 'boyfanz', 'girlfanz']);
+    const videos = await this.searchPlatformAPI(platform, ['fanz', 'FanzDash', 'girlfanz']);
     
     // 2. For each video, try to extract watermark
     for (const video of videos) {

@@ -28,7 +28,7 @@ const defaultMonitoringConfig: MonitoringConfig = {
     throughput: 100,
     availability: 99 // 99%
   },
-  platforms: ['boyfanz', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz'],
+  platforms: ['TabooFanz', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz'],
   metricsCollectionInterval: 30, // 30 seconds
   healthCheckInterval: 60 // 60 seconds
 };

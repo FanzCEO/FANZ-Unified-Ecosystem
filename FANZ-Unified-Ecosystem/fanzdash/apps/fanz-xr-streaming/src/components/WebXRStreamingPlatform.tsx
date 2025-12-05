@@ -55,7 +55,7 @@ import * as Tone from 'tone';
 interface StreamConfig {
   streamId: string;
   creatorId: string;
-  platform: 'BoyFanz' | 'GirlFanz' | 'PupFanz' | 'TabooFanz';
+  platform: 'FanzDash' | 'GirlFanz' | 'PupFanz' | 'TabooFanz';
   resolution: '4K' | '8K' | '360_4K' | '360_8K';
   spatialAudio: boolean;
   hapticsEnabled: boolean;

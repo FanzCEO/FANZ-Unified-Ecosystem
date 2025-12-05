@@ -53,7 +53,7 @@ Got it — this new drop adds even more depth to the Sponzy v6.8 admin suite. He
 
 ⸻
 
-⚡ Bottom line: BoyFanz’s v6.8 admin is a full CRM + CMS + Ads Manager + Finance system. To migrate properly, we’ll need to ensure dashboard, deposits, gifts, ads, and editorial tools all have their own microservice slots or extensions (ads-svc, cms-svc, commerce-svc, analytics-svc).
+⚡ Bottom line: FanzDash’s v6.8 admin is a full CRM + CMS + Ads Manager + Finance system. To migrate properly, we’ll need to ensure dashboard, deposits, gifts, ads, and editorial tools all have their own microservice slots or extensions (ads-svc, cms-svc, commerce-svc, analytics-svc).
 
 ⸻
 

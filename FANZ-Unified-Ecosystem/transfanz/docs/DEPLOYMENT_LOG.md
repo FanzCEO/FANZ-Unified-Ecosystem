@@ -2,7 +2,7 @@
 
 **Platform:** UtransFanz
 **Deployed:** Sat Nov 15 12:19:26 EST 2025
-**Source:** BoyFanz master template
+**Source:** TransFanz master template
 **Version:** 1.0
 
 ## Files Deployed

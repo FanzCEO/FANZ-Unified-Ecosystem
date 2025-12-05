@@ -207,7 +207,7 @@ export default function CreatorManagement() {
     return badges[status];
   };
 
-  const PLATFORMS = ["FanzMoney", "BoyFanz", "GayFanz", "BearFanz", "CougarFanz", "PupFanz", "DLBroz", "FanzTube", "Guyz", "FanzClips"];
+  const PLATFORMS = ["FanzMoney", "FanzDash", "GayFanz", "BearFanz", "CougarFanz", "PupFanz", "DLBroz", "FanzTube", "Guyz", "FanzClips"];
 
   return (
     <div className="p-6 space-y-6">

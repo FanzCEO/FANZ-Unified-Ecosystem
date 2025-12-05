@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BoyFanz - Every Man's Playground",
+  title: "DLBroz - Every Man's Playground",
   description: "Underground community for authentic masculine expression and exclusive content.",
 };
 

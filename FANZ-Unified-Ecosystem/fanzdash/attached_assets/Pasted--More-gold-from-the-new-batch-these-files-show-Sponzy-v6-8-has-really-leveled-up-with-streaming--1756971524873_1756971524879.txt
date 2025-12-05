@@ -69,4 +69,4 @@
 
 ⸻
 
-Josh — do you want me to roll all of these (live streaming, private requests, Instamojo, MercadoPago, maintenance mode, limits, languages, members, messages) into the migration canvas doc so your Replit team has the complete service blueprint? This way, we’re not just tracking modules — we’re building the single source of truth for BoyFanz v6.8 → Polyglot OS.
+Josh — do you want me to roll all of these (live streaming, private requests, Instamojo, MercadoPago, maintenance mode, limits, languages, members, messages) into the migration canvas doc so your Replit team has the complete service blueprint? This way, we’re not just tracking modules — we’re building the single source of truth for FanzDash v6.8 → Polyglot OS.

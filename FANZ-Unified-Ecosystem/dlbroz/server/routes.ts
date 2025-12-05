@@ -1144,7 +1144,7 @@ export function registerRoutes(app: Express) {
         // Return a default theme if none is active
         return res.json({
           id: 'default',
-          name: 'BoyFanz Dark',
+          name: 'DLBroz Dark',
           isActive: true,
           colors: {
             primary: 'hsl(0, 72%, 51%)',
@@ -1199,7 +1199,7 @@ export function registerRoutes(app: Express) {
       };
       
       res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Content-Disposition', `attachment; filename=boyfanz-data-export-${userId}.json`);
+      res.setHeader('Content-Disposition', `attachment; filename=DLBroz-data-export-${userId}.json`);
       res.json(exportData);
     } catch (error) {
       console.error('Privacy export error:', error);
@@ -1448,10 +1448,10 @@ export function registerRoutes(app: Express) {
     try {
       const custodianInfo = {
         title: 'Custodian of Records Notice',
-        notice: `Pursuant to 18 U.S.C. Section 2257, the following individual has been designated as the custodian of records for BoyFanz platform:`,
+        notice: `Pursuant to 18 U.S.C. Section 2257, the following individual has been designated as the custodian of records for DLBroz platform:`,
         custodian: {
-          name: 'BoyFanz Legal Compliance Officer',
-          company: 'BoyFanz LLC',
+          name: 'DLBroz Legal Compliance Officer',
+          company: 'DLBroz LLC',
           address: {
             street: '123 Compliance Street',
             city: 'Legal City',
@@ -1464,7 +1464,7 @@ export function registerRoutes(app: Express) {
         statement: `All records required to be maintained by 18 U.S.C. Section 2257 and 2257A are kept by the custodian of records at the above address. All performers appearing in any visual depictions of sexually explicit conduct were 18 years of age or older at the time of creation.`,
         lastUpdated: new Date().toISOString(),
         contactInfo: {
-          email: 'records@boyfanz.com',
+          email: 'records@DLBroz.com',
           phone: '+1 (555) 123-4567'
         }
       };
@@ -1977,7 +1977,7 @@ export function registerRoutes(app: Express) {
         metadata: {
           user_id: userId,
           product_id: productId,
-          platform: 'boyfanz'
+          platform: 'DLBroz'
         }
       });
       

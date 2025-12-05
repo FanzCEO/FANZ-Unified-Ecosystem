@@ -18,7 +18,7 @@
 #### **docker-compose.yml** - Local development stack
 - PostgreSQL database
 - Redis cache
-- All 5 platforms (BoyFanz, GirlFanz, PupFanz, TransFanz, TabooFanz)
+- All 5 platforms (Guyz, GirlFanz, PupFanz, TransFanz, TabooFanz)
 - NGINX load balancer
 - Shared volumes and networking
 
@@ -34,7 +34,7 @@
   - Platform ports
 
 #### **Deployments** (5 platforms)
-- `k8s/deployments/boyfanz-deployment.yaml` - 3 replicas
+- `k8s/deployments/Guyz-deployment.yaml` - 3 replicas
 - `k8s/deployments/girlfanz-deployment.yaml` - 3 replicas
 - `k8s/deployments/pupfanz-deployment.yaml` - 2 replicas
 - `k8s/deployments/transfanz-deployment.yaml` - 2 replicas
@@ -47,7 +47,7 @@ Each with:
 - Persistent volume mounts
 
 #### **Services** (ClusterIP)
-- `k8s/services/boyfanz-service.yaml`
+- `k8s/services/Guyz-service.yaml`
 - `k8s/services/girlfanz-service.yaml`
 - `k8s/services/pupfanz-service.yaml`
 - `k8s/services/transfanz-service.yaml`
@@ -157,7 +157,7 @@ Overview of entire infrastructure
 ```
 ┌─────────────────────────────────────────────────────┐
 │                 Load Balancer (NGINX)               │
-│            boyfanz.com, girlfanz.com, etc.          │
+│            Guyz.com, girlfanz.com, etc.          │
 └────────────────────┬────────────────────────────────┘
                      │
             ┌────────┴────────┐
@@ -169,7 +169,7 @@ Overview of entire infrastructure
     │                │                │
     ▼                ▼                ▼
 ┌─────────┐    ┌─────────┐      ┌─────────┐
-│ BoyFanz │    │GirlFanz │ ...  │TabooFanz│
+│ Guyz │    │GirlFanz │ ...  │TabooFanz│
 │ 3 pods  │    │ 3 pods  │      │ 2 pods  │
 └────┬────┘    └────┬────┘      └────┬────┘
      │              │                │
@@ -277,7 +277,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: admin@boyfanz.com
+    email: admin@Guyz.com
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
@@ -301,15 +301,15 @@ Add DNS A records for all domains:
 
 | Domain | Type | Name | Value |
 |--------|------|------|-------|
-| boyfanz.com | A | @ | `<LOAD_BALANCER_IP>` |
-| boyfanz.com | A | www | `<LOAD_BALANCER_IP>` |
+| Guyz.com | A | @ | `<LOAD_BALANCER_IP>` |
+| Guyz.com | A | www | `<LOAD_BALANCER_IP>` |
 | girlfanz.com | A | @ | `<LOAD_BALANCER_IP>` |
 | girlfanz.com | A | www | `<LOAD_BALANCER_IP>` |
 | ... | ... | ... | ... |
 
 ### 5. Setup GitHub CI/CD (5 minutes)
 
-Go to: `https://github.com/FanzCEO/BoyFanzV1/settings/secrets/actions`
+Go to: `https://github.com/FanzCEO/GuyzV1/settings/secrets/actions`
 
 Add:
 ```
@@ -338,7 +338,7 @@ kubectl get services -n fanz-ecosystem
 kubectl get ingress -n fanz-ecosystem
 
 # Test health endpoints
-curl https://boyfanz.com/api/health
+curl https://Guyz.com/api/health
 curl https://girlfanz.com/api/health
 curl https://pupfanz.com/api/health
 curl https://transfanz.com/api/health
@@ -347,7 +347,7 @@ curl https://taboofanz.com/api/health
 
 Expected response:
 ```json
-{"status": "healthy", "platform": "BoyFanz"}
+{"status": "healthy", "platform": "Guyz"}
 ```
 
 ---
@@ -356,13 +356,13 @@ Expected response:
 
 ```bash
 # View logs
-kubectl logs -f deployment/boyfanz -n fanz-ecosystem
+kubectl logs -f deployment/Guyz -n fanz-ecosystem
 
 # Scale manually
-kubectl scale deployment boyfanz --replicas=5 -n fanz-ecosystem
+kubectl scale deployment Guyz --replicas=5 -n fanz-ecosystem
 
 # Rollback deployment
-kubectl rollout undo deployment/boyfanz -n fanz-ecosystem
+kubectl rollout undo deployment/Guyz -n fanz-ecosystem
 
 # Update secrets
 kubectl delete secret fanz-secrets -n fanz-ecosystem
@@ -377,7 +377,7 @@ kubectl rollout restart deployment -n fanz-ecosystem
 Your FANZ ecosystem is now enterprise-ready and deployed to Kubernetes!
 
 **Live URLs:**
-- 🔵 BoyFanz: https://boyfanz.com
+- 🔵 Guyz: https://Guyz.com
 - 🌸 GirlFanz: https://girlfanz.com
 - 🐾 PupFanz: https://pupfanz.com
 - 🏳️‍⚧️ TransFanz: https://transfanz.com
@@ -407,4 +407,4 @@ Your FANZ ecosystem is now enterprise-ready and deployed to Kubernetes!
 **Need Help?**
 - See `DEPLOYMENT_GUIDE.md` for detailed instructions
 - See `QUICK_START.md` for 30-minute quick setup
-- GitHub: https://github.com/FanzCEO/BoyFanzV1
+- GitHub: https://github.com/FanzCEO/GuyzV1

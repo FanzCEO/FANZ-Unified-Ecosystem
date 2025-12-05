@@ -50,7 +50,7 @@ export default function GooglePayButton({
         environment: import.meta.env.PROD ? 'PRODUCTION' : 'TEST',
         merchantInfo: {
           merchantId: googlePaymentsMerchantId,
-          merchantName: 'BoyFanz'
+          merchantName: 'GayFanz'
         }
       });
 
@@ -113,7 +113,7 @@ export default function GooglePayButton({
         }],
         merchantInfo: {
           merchantId: import.meta.env.VITE_GOOGLE_PAY_MERCHANT_ID,
-          merchantName: 'BoyFanz'
+          merchantName: 'GayFanz'
         },
         transactionInfo: {
           totalPriceStatus: 'FINAL',

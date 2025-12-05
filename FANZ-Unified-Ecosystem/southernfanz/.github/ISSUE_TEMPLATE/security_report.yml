@@ -69,7 +69,7 @@ body:
       label: Affected Platform
       description: Which platform is affected?
       options:
-        - BoyFanz
+        - SouthernFanz
         - GirlFanz  
         - PupFanz
         - TabooFanz

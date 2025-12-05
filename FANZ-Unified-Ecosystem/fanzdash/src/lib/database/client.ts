@@ -7,7 +7,7 @@
  * Usage:
  *   import { FanzDatabaseClient } from '@fanz/database-client';
  *   const db = new FanzDatabaseClient({
- *     platformId: 'boyfanz',
+ *     platformId: 'FanzDash',
  *     tenantId: '00000000-0000-0000-0000-000000000001'
  *   });
  */

@@ -14,7 +14,7 @@
       "Bash(tee:*)",
       "Read(//Users/joshuastone/**)",
       "Bash(chmod:*)",
-      "Bash(for dir in \"/Users/joshuastone/PycharmProjects/FanzCloud\" \"/Users/joshuastone/Library/Mobile Documents/com~apple~CloudDocs/BoyFanz-2\" \"/Users/joshuastone/Library/Mobile Documents/com~apple~CloudDocs/GitHub/FANZDash-V1\")",
+      "Bash(for dir in \"/Users/joshuastone/PycharmProjects/FanzCloud\" \"/Users/joshuastone/Library/Mobile Documents/com~apple~CloudDocs/FanzDash-2\" \"/Users/joshuastone/Library/Mobile Documents/com~apple~CloudDocs/GitHub/FANZDash-V1\")",
       "Bash(do echo \"\")",
       "Bash(ls:*)",
       "Bash(done)"

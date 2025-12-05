@@ -282,7 +282,7 @@ export default function LegalLibrary() {
                       <div>
                         <span className="text-gray-400">Fanz Collection of Content Starz Platformz:</span>
                         <p className="text-xs mt-1 text-gray-500">
-                          BoyFanz.com, GirlFanz.com, DaddiesFanz.com, TransFanz.com, EbonyFanz.com, 
+                          FanzDash.com, GirlFanz.com, DaddiesFanz.com, TransFanz.com, EbonyFanz.com, 
                           PupFanz.com, DLBroz.com, SouthernFanz.com, KinkFanz.com, FanzUnlimited.com, 
                           AllMyFanz.com, BoysRebellion.com, DaddiesToyBoy.com, DLRedneck.com, 
                           RecoveryFanz.com, WildRedneckRebel.com

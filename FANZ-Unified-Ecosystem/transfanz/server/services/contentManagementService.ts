@@ -215,7 +215,7 @@ class ContentManagementService {
           data: {
             contentId,
             dmcaRequestId,
-            appealProcess: 'https://boyfanz.com/dmca-appeal'
+            appealProcess: 'https://TransFanz.com/dmca-appeal'
           }
         });
       }

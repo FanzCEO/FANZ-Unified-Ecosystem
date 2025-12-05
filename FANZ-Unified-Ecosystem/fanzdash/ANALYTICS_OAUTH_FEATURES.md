@@ -152,7 +152,7 @@ await fetch('/api/analytics/track', {
   method: 'POST',
   headers: {'Content-Type': 'application/json'},
   body: JSON.stringify({
-    platformId: 'BoyFanz',
+    platformId: 'FanzDash',
     tenantId: 'fanz_main',
     userId: 'user_123',
     sessionId: 'session_abc',
@@ -240,7 +240,7 @@ await service.postToProvider('user_123', 'twitter', {
 // Post to multiple platforms
 await service.postToMultiplePlatforms('user_123', ['twitter', 'tiktok', 'instagram'], {
   message: 'New video out now!',
-  link: 'https://boyfanz.com/video/123'
+  link: 'https://FanzDash.com/video/123'
 });
 ```
 
@@ -365,7 +365,7 @@ await service.postToMultiplePlatforms('user_123', ['twitter', 'tiktok', 'instagr
       "data": {
         "type": "send_email",
         "config": {
-          "subject": "Welcome to BoyFanz!",
+          "subject": "Welcome to FanzDash!",
           "template": "welcome_email",
           "to": "{{subscriber.email}}"
         }
@@ -436,7 +436,7 @@ console.log(status.result); // Workflow results
 
 ```javascript
 const scheduled = await calendarService.scheduleContent('user_123', {
-  platformId: 'BoyFanz',
+  platformId: 'FanzDash',
   tenantId: 'fanz_main',
   title: 'Morning Motivation',
   contentType: 'social_post',
@@ -619,13 +619,13 @@ import AdminConfigPanel from '@/components/AdminConfigPanel';
 ### Multi-Tenant Isolation
 
 **All tables include:**
-- `platform_id` - Identifies specific platform (BoyFanz, GirlFanz, etc.)
+- `platform_id` - Identifies specific platform (FanzDash, GirlFanz, etc.)
 - `tenant_id` - Identifies tenant (fanz_main, etc.)
 
 **Queries automatically filter by tenant:**
 ```sql
 SELECT * FROM analytics_events 
-WHERE platform_id = 'BoyFanz' 
+WHERE platform_id = 'FanzDash' 
   AND tenant_id = 'fanz_main';
 ```
 

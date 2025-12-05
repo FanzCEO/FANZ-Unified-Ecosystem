@@ -68,7 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Multi-Platform Launch**
-  - BoyFanz platform for male creators
+  - GayFanz platform for male creators
   - GirlFanz platform for female creators  
   - PupFanz platform for pet/furry community
   - TabooFanz platform for adult content

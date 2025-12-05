@@ -65,7 +65,7 @@ interface BlockchainReward {
   metadata: {
     tokenId?: string;
     contractAddress?: string;
-    blockchain: 'ethereum' | 'polygon' | 'solana' | 'boyfanz_chain';
+    blockchain: 'ethereum' | 'polygon' | 'solana' | 'Guyz_chain';
     rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
     properties: Record<string, any>;
   };
@@ -126,7 +126,7 @@ class RevolutionaryFeaturesService {
   private biometricAuth = new Map<string, BiometricAuth>();
 
   private webRTCConfig = {
-    servers: process.env.WEBRTC_SERVERS?.split(',') || ['stun:stun.boyfanz.com:3478'],
+    servers: process.env.WEBRTC_SERVERS?.split(',') || ['stun:stun.Guyz.com:3478'],
     apiKey: process.env.WEBRTC_API_KEY
   };
 
@@ -406,7 +406,7 @@ class RevolutionaryFeaturesService {
           rarity: params.rarity as any,
           properties: {
             ...params.metadata,
-            mintedBy: 'BoyFanz',
+            mintedBy: 'Guyz',
             mintDate: new Date().toISOString(),
             uniqueId: rewardId
           }
@@ -462,7 +462,7 @@ class RevolutionaryFeaturesService {
           benefits: params.benefits,
           stakingRequirement: params.stakingRequirement
         },
-        blockchain: 'boyfanz_chain',
+        blockchain: 'Guyz_chain',
         rarity: params.membershipTier === 'founder' ? 'legendary' : 
                params.membershipTier === 'diamond' ? 'epic' : 'rare'
       });
@@ -666,7 +666,7 @@ class RevolutionaryFeaturesService {
   }
 
   private async generateARVRStreamUrl(sessionId: string): Promise<string> {
-    return `wss://arvr.boyfanz.com/stream/${sessionId}`;
+    return `wss://arvr.Guyz.com/stream/${sessionId}`;
   }
 
   private async initializeHapticFeedback(sessionId: string): Promise<void> {
@@ -681,7 +681,7 @@ class RevolutionaryFeaturesService {
     // Mock voice synthesis - real implementation would use AI voice cloning
     return {
       profileId: `profile_${Date.now()}`,
-      audioUrl: `https://cdn.boyfanz.com/voice/${Date.now()}.mp3`,
+      audioUrl: `https://cdn.Guyz.com/voice/${Date.now()}.mp3`,
       duration: 30,
       processingTime: 5000
     };

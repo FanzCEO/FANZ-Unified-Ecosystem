@@ -241,7 +241,7 @@ class MessageSecurityService {
     }
 
     // Additional spam indicators
-    if (content.includes('http') && !content.includes('boyfanz.com')) {
+    if (content.includes('http') && !content.includes('GayFanz.com')) {
       result.reasons.push('external_link');
       result.confidence += 0.2;
     }

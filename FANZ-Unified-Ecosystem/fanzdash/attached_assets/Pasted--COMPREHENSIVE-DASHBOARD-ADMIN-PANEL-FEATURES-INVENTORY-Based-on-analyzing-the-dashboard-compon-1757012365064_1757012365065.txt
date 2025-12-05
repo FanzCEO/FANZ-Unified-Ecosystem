@@ -327,7 +327,7 @@ FanzLab Central Portal Dashboard
 •  Unified analytics
 •  Revenue aggregation
 
-BoyFanz Dashboard (Neon Red Theme)
+FanzDash Dashboard (Neon Red Theme)
 • Male Creator Focus
 •  Muscle gallery analytics
 •  Gear marketplace metrics

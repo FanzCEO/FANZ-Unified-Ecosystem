@@ -10,14 +10,14 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "100m"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-    nginx.ingress.kubernetes.io/websocket-services: "boyfanz-service"
+    nginx.ingress.kubernetes.io/websocket-services: "FanzUncut-service"
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - boyfanz.com
-    - www.boyfanz.com
-    secretName: boyfanz-tls
+    - FanzUncut.com
+    - www.FanzUncut.com
+    secretName: FanzUncut-tls
   - hosts:
     - girlfanz.com
     - www.girlfanz.com
@@ -35,24 +35,24 @@ spec:
     - www.taboofanz.com
     secretName: taboofanz-tls
   rules:
-  - host: boyfanz.com
+  - host: FanzUncut.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: boyfanz-service
+            name: FanzUncut-service
             port:
               number: 80
-  - host: www.boyfanz.com
+  - host: www.FanzUncut.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: boyfanz-service
+            name: FanzUncut-service
             port:
               number: 80
   - host: girlfanz.com

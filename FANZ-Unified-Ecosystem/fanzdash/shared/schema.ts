@@ -3120,9 +3120,9 @@ export const tenants = pgTable("tenants", {
   id: varchar("id")
     .primaryKey()
     .default(sql`gen_random_uuid()`),
-  slug: varchar("slug").notNull().unique(), // e.g., 'boyfanz', 'fanzcommerce'
-  name: varchar("name").notNull(), // e.g., 'BoyFanz', 'FanzCommerce'
-  ssoDomain: varchar("sso_domain"), // e.g., 'boyfanz.myfanz.network'
+  slug: varchar("slug").notNull().unique(), // e.g., 'FanzDash', 'fanzcommerce'
+  name: varchar("name").notNull(), // e.g., 'FanzDash', 'FanzCommerce'
+  ssoDomain: varchar("sso_domain"), // e.g., 'FanzDash.myfanz.network'
   status: varchar("status").notNull().default("active"), // 'active', 'suspended', 'archived'
   brandingConfig: jsonb("branding_config").default("{}"), // logos, colors, etc.
   billingConfig: jsonb("billing_config").default("{}"),
@@ -3800,7 +3800,7 @@ export const insertGtmSettingsSchema = createInsertSchema(gtmSettings).omit({
 
 export const analyticsConfigurations = pgTable("analytics_configurations", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  platformId: varchar("platform_id").notNull(), // e.g., 'boyfanz', 'girlfanz', 'fanzdash'
+  platformId: varchar("platform_id").notNull(), // e.g., 'FanzDash', 'girlfanz', 'fanzdash'
 
   // Google Analytics 4
   ga4MeasurementId: varchar("ga4_measurement_id"),
@@ -4164,7 +4164,7 @@ export const addOnRegistry = pgTable("addon_registry", {
 // Platform Add-On Configuration - Which add-ons are enabled for which platforms
 export const platformAddOns = pgTable("platform_addons", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  platformId: varchar("platform_id").notNull(), // 'boyfanz', 'girlfanz', etc.
+  platformId: varchar("platform_id").notNull(), // 'FanzDash', 'girlfanz', etc.
   addonId: varchar("addon_id").references(() => addOnRegistry.id).notNull(),
 
   // Enable/Disable

@@ -34,7 +34,7 @@
 - [ ] ♿ Accessibility Improvement
 
 **Platforms Affected:**
-- [ ] BoyFanz
+- [ ] BearFanz
 - [ ] GirlFanz
 - [ ] PupFanz  
 - [ ] TabooFanz

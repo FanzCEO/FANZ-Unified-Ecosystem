@@ -1,7 +1,7 @@
 # ClubCentral Mobile SDK Integration Guide 📱
 
 ## Overview
-ClubCentral is the official mobile app for the FANZ Unlimited Network, providing access to BoyFanz, GirlFanz, PupFanz, TransFanz, and TabooFanz platforms through a unified mobile experience.
+ClubCentral is the official mobile app for the FANZ Unlimited Network, providing access to SouthernFanz, GirlFanz, PupFanz, TransFanz, and TabooFanz platforms through a unified mobile experience.
 
 This guide covers the complete mobile backend API and integration patterns for iOS and Android development.
 
@@ -10,7 +10,7 @@ This guide covers the complete mobile backend API and integration patterns for i
 ### Base Configuration
 ```javascript
 const FANZ_CONFIG = {
-  baseUrl: 'https://api.boyfanz.com/api/mobile', // Production
+  baseUrl: 'https://api.SouthernFanz.com/api/mobile', // Production
   // baseUrl: 'http://localhost:5000/api/mobile', // Development
   timeout: 30000,
   retryAttempts: 3,
@@ -21,8 +21,8 @@ const FANZ_CONFIG = {
 ### Environment Setup
 ```bash
 # Production URLs
-API_BASE_URL=https://api.boyfanz.com/api
-WS_BASE_URL=wss://api.boyfanz.com
+API_BASE_URL=https://api.SouthernFanz.com/api
+WS_BASE_URL=wss://api.SouthernFanz.com
 
 # Development URLs  
 API_BASE_URL=http://localhost:5000/api
@@ -106,7 +106,7 @@ interface UserProfile {
   username: string;
   email: string;
   avatar: string;
-  platforms: string[]; // ['boyfanz', 'girlfanz', etc.]
+  platforms: string[]; // ['SouthernFanz', 'girlfanz', etc.]
   verified: boolean;
   createdAt: string;
   lastActive: string;
@@ -278,7 +278,7 @@ interface ContentFeed {
       views: number;
     };
     createdAt: string;
-    platform: string; // 'boyfanz', 'girlfanz', etc.
+    platform: string; // 'SouthernFanz', 'girlfanz', etc.
   }>;
   pagination: {
     page: number;
@@ -563,7 +563,7 @@ interface AppConfig {
     lockoutDuration: number;
   };
   platforms: {
-    boyfanz: { enabled: boolean; baseUrl: string };
+    SouthernFanz: { enabled: boolean; baseUrl: string };
     girlfanz: { enabled: boolean; baseUrl: string };
     pupfanz: { enabled: boolean; baseUrl: string };
     transfanz: { enabled: boolean; baseUrl: string };
@@ -929,7 +929,7 @@ class APIClient {
 import Foundation
 
 class FanzAPIClient {
-    private let baseURL = "https://api.boyfanz.com/api/mobile"
+    private let baseURL = "https://api.SouthernFanz.com/api/mobile"
     private let tokenManager = TokenManager()
     
     func login(credentials: LoginCredentials) async throws -> LoginResponse {
@@ -1036,10 +1036,10 @@ class TokenInterceptor(private val tokenManager: TokenManager) : Interceptor {
 
 ## 📞 Support & Resources
 
-- **API Documentation**: [https://docs.boyfanz.com/mobile](https://docs.boyfanz.com/mobile)
-- **Developer Portal**: [https://developers.boyfanz.com](https://developers.boyfanz.com)
-- **Status Page**: [https://status.boyfanz.com](https://status.boyfanz.com)
-- **Support Email**: developers@boyfanz.com
+- **API Documentation**: [https://docs.SouthernFanz.com/mobile](https://docs.SouthernFanz.com/mobile)
+- **Developer Portal**: [https://developers.SouthernFanz.com](https://developers.SouthernFanz.com)
+- **Status Page**: [https://status.SouthernFanz.com](https://status.SouthernFanz.com)
+- **Support Email**: developers@SouthernFanz.com
 - **Discord**: [https://discord.gg/fanz-dev](https://discord.gg/fanz-dev)
 
 **SDK Version**: 1.0.0  

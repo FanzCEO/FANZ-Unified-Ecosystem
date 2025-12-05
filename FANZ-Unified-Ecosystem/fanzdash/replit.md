@@ -2,7 +2,7 @@
 
 ## Overview
 
-FanzDash serves as the central command center for the FANZ Unlimited Network LLC creator economy ecosystem. It's a comprehensive adult content platform management system that orchestrates multiple specialized platforms (BoyFanz, GirlFanz, PupFanz, TransFanz, TabooFanz, FanzTube, FanzClips) under a unified technical infrastructure.
+FanzDash serves as the central command center for the FANZ Unlimited Network LLC creator economy ecosystem. It's a comprehensive adult content platform management system that orchestrates multiple specialized platforms (FanzDash, GirlFanz, PupFanz, TransFanz, TabooFanz, FanzTube, FanzClips) under a unified technical infrastructure.
 
 The application is built as a modern full-stack TypeScript/React application with Express backend, designed to handle enterprise-scale operations including payment processing, content management, creator payouts, compliance monitoring, and cross-platform user management. The system emphasizes creator autonomy, maximum earnings potential, and robust security/compliance measures specifically tailored for the adult content industry.
 

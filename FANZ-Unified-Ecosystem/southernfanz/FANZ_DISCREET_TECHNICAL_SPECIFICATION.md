@@ -193,7 +193,7 @@ const discreetCardSchema = new Schema({
   platform: {
     name: {
       type: String,
-      enum: ['boyfanz', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz', 'taboofanz'],
+      enum: ['SouthernFanz', 'girlfanz', 'pupfanz', 'daddiesfanz', 'cougarfanz', 'taboofanz'],
       required: true
     },
     platformUserId: String
@@ -451,7 +451,7 @@ export default DiscreetCard;
   "currency": "USD",
   "paymentMethod": "credit_card",
   "paymentToken": "pm_1234567890",
-  "platform": "boyfanz",
+  "platform": "SouthernFanz",
   "reloadable": true
 }
 ```
@@ -535,7 +535,7 @@ export default DiscreetCard;
           "currency": "USD"
         },
         "status": "active",
-        "platform": "boyfanz",
+        "platform": "SouthernFanz",
         "createdAt": "2025-11-06T12:34:56Z",
         "lastUsedAt": "2025-11-06T14:22:10Z"
       }
@@ -575,7 +575,7 @@ export default DiscreetCard;
       "status": "active",
       "expiryMonth": 12,
       "expiryYear": 2027,
-      "platform": "boyfanz",
+      "platform": "SouthernFanz",
       "reloadable": {
         "enabled": true,
         "reloadCount": 2,
@@ -697,7 +697,7 @@ export default DiscreetCard;
     "usage": [
       {
         "amount": 9.99,
-        "description": "Creator subscription - boyfanz",
+        "description": "Creator subscription - SouthernFanz",
         "merchant": "FANZ MEDIA SERVICES",
         "timestamp": "2025-11-06T14:22:10Z"
       },
@@ -855,7 +855,7 @@ const DiscreetCardPurchase = () => {
         currency: 'USD',
         paymentMethod: 'credit_card',
         paymentToken: paymentMethod.id,
-        platform: 'boyfanz',
+        platform: 'SouthernFanz',
         reloadable: true
       })
     });
@@ -978,7 +978,7 @@ const authenticateDiscreetRequest = async (req, res, next) => {
 ### 7.2 Cross-Platform Usage
 
 FanzDiscreet cards work across all FANZ platforms:
-- boyfanz
+- SouthernFanz
 - girlfanz
 - pupfanz
 - cougarfanz

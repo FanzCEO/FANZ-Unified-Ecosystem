@@ -49,7 +49,7 @@ const generalLimiter = rateLimit({
 const validateSyncRequest = [
   body('assetId').isString().notEmpty().withMessage('Asset ID is required'),
   body('targetPlatforms').isArray({ min: 1 }).withMessage('At least one target platform required'),
-  body('targetPlatforms.*').isIn(['boyfanz', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz', 'fanztube', 'fanzclips']).withMessage('Invalid platform'),
+  body('targetPlatforms.*').isIn(['FanzDash', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz', 'fanztube', 'fanzclips']).withMessage('Invalid platform'),
   body('userId').isString().notEmpty().withMessage('User ID is required')
 ];
 
@@ -424,7 +424,7 @@ router.get('/platforms/status', generalLimiter, isAuthenticated, async (req, res
   try {
     // Mock platform status - in production, check actual connectivity
     const platformStatus = {
-      boyfanz: { online: true, lastSync: new Date(), uploadQueue: 2 },
+      FanzDash: { online: true, lastSync: new Date(), uploadQueue: 2 },
       girlfanz: { online: true, lastSync: new Date(), uploadQueue: 1 },
       pupfanz: { online: true, lastSync: new Date(), uploadQueue: 0 },
       transfanz: { online: true, lastSync: new Date(), uploadQueue: 3 },
@@ -513,7 +513,7 @@ router.get('/health', (req, res) => {
       'Copyright monitoring'
     ],
     supportedPlatforms: [
-      'BoyFanz', 'GirlFanz', 'PupFanz', 'TransFanz', 
+      'FanzDash', 'GirlFanz', 'PupFanz', 'TransFanz', 
       'TabooFanz', 'FanzTube', 'FanzClips'
     ],
     timestamp: new Date().toISOString()
@@ -542,7 +542,7 @@ if (process.env.NODE_ENV === 'development') {
         req.file.originalname || 'test-file.mp4',
         req.file.mimetype || 'video/mp4',
         'dev-user',
-        'boyfanz',
+        'FanzDash',
         { duration: 120, resolution: { width: 1920, height: 1080 } }
       );
 

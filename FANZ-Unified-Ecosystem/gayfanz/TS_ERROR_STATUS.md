@@ -1,4 +1,4 @@
-# TypeScript Error Status - BoyFanzV1
+# TypeScript Error Status - GayFanzV1
 
 ## Current Status
 

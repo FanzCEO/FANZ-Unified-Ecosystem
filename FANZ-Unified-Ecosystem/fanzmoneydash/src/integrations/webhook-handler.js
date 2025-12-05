@@ -93,7 +93,7 @@ export async function processFanzDashWebhook(req, res) {
 }
 
 /**
- * Process webhook from platform (BoyFanz, GirlFanz, etc.)
+ * Process webhook from platform (FanzMoneyDash, GirlFanz, etc.)
  */
 export async function processPlatformWebhook(req, res) {
   try {

@@ -59,7 +59,7 @@
 
 ⸻
 
-⚡ Bottom line: BoyFanz’s Sponzy v6.8 now has a compliance-grade moderation suite, RBAC system, and 10+ global payment processors beyond the usual suspects. In your polyglot OS, commerce-svc must become a multi-gateway orchestrator, and users-svc must enforce RBAC + reserved names.
+⚡ Bottom line: FanzDash’s Sponzy v6.8 now has a compliance-grade moderation suite, RBAC system, and 10+ global payment processors beyond the usual suspects. In your polyglot OS, commerce-svc must become a multi-gateway orchestrator, and users-svc must enforce RBAC + reserved names.
 
 ⸻
 

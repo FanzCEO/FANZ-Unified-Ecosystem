@@ -1,5 +1,5 @@
-// BoyFanz Offline Status Indicator
-// Shows network connectivity status with BoyFanz underground aesthetic
+// FanzUncut Offline Status Indicator
+// Shows network connectivity status with FanzUncut underground aesthetic
 
 import { useState, useEffect } from 'react';
 import { Wifi, WifiOff, RefreshCw } from 'lucide-react';

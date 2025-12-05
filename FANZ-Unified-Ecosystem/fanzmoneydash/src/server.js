@@ -81,7 +81,7 @@ app.use(cors({
     'http://localhost:3001',
     'https://fanz.network',
     'https://*.fanz.network',
-    'https://boyfanz.com',
+    'https://FanzMoneyDash.com',
     'https://girlfanz.com', 
     'https://pupfanz.com'
   ],

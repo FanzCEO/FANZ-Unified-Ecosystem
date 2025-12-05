@@ -9,7 +9,7 @@ if (process.env.RESEND_API_KEY) {
   console.warn('⚠️  Email service not configured (RESEND_API_KEY missing). Emails will be logged only.');
 }
 
-const FROM_EMAIL = 'BoyFanz <onboarding@resend.dev>'; // Change to your verified domain
+const FROM_EMAIL = 'Guyz <onboarding@resend.dev>'; // Change to your verified domain
 const APP_URL = process.env.REPLIT_DEV_DOMAIN
   ? `https://${process.env.REPLIT_DEV_DOMAIN}`
   : 'http://localhost:5000';
@@ -86,7 +86,7 @@ export class EmailService {
           </div>
           
           <div class="content">
-            <h2>Welcome to BoyFanz!</h2>
+            <h2>Welcome to Guyz!</h2>
             <p>Thanks for signing up. Please verify your email address to get started.</p>
             <p>Click the button below to verify your email:</p>
             <p>
@@ -98,8 +98,8 @@ export class EmailService {
           </div>
           
           <div class="footer">
-            <p>If you didn't create an account with BoyFanz, you can safely ignore this email.</p>
-            <p>&copy; ${new Date().getFullYear()} BoyFanz. All rights reserved.</p>
+            <p>If you didn't create an account with Guyz, you can safely ignore this email.</p>
+            <p>&copy; ${new Date().getFullYear()} Guyz. All rights reserved.</p>
           </div>
         </body>
       </html>
@@ -109,7 +109,7 @@ export class EmailService {
       await resend.emails.send({
         from: FROM_EMAIL,
         to: email,
-        subject: 'Verify your BoyFanz account',
+        subject: 'Verify your Guyz account',
         html,
       });
       console.log(`✅ Verification email sent to ${email}`);
@@ -207,7 +207,7 @@ export class EmailService {
           
           <div class="footer">
             <p>For security reasons, this password reset link can only be used once.</p>
-            <p>&copy; ${new Date().getFullYear()} BoyFanz. All rights reserved.</p>
+            <p>&copy; ${new Date().getFullYear()} Guyz. All rights reserved.</p>
           </div>
         </body>
       </html>
@@ -217,7 +217,7 @@ export class EmailService {
       await resend.emails.send({
         from: FROM_EMAIL,
         to: email,
-        subject: 'Reset your BoyFanz password',
+        subject: 'Reset your Guyz password',
         html,
       });
       console.log(`✅ Password reset email sent to ${email}`);

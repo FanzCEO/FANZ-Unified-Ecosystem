@@ -10,7 +10,7 @@ import { faker } from '@faker-js/faker';
 // ============================================================================
 
 export const PLATFORMS = [
-  'boyfanz',
+  'FanzDash',
   'girlfanz',
   'pupfanz',
   'gayfanz',

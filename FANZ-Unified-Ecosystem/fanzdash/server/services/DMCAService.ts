@@ -50,7 +50,7 @@ export class DMCAService {
    */
   async scanPlatform(platform: ScanPlatform, keywords?: string[]): Promise<ScanResult> {
     const startTime = Date.now();
-    const defaultKeywords = ['fanz', 'boyfanz', 'girlfanz', 'pupfanz', 'fanztube'];
+    const defaultKeywords = ['fanz', 'FanzDash', 'girlfanz', 'pupfanz', 'fanztube'];
     const searchKeywords = keywords || defaultKeywords;
 
     console.log(`🔍 Scanning ${platform} for stolen content with keywords: ${searchKeywords.join(', ')}`);

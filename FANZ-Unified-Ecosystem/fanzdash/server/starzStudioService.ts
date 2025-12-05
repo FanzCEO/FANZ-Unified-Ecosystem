@@ -232,8 +232,8 @@ export class StarzStudioService extends EventEmitter {
         lastSync: new Date(),
       },
       {
-        id: "boyfanz",
-        name: "BoyFanz",
+        id: "FanzDash",
+        name: "FanzDash",
         port: 3001,
         endpoint: "http://localhost:3001",
         theme: {

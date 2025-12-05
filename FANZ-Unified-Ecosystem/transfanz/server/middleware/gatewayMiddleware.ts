@@ -1,5 +1,5 @@
 // API Gateway Middleware Setup
-// Integrates API Gateway service mesh into BoyFanz Express server
+// Integrates API Gateway service mesh into TransFanz Express server
 
 import { Express } from 'express';
 import { apiGateway } from '../services/apiGatewayInit.js';

@@ -168,7 +168,7 @@ class AdvancedMonetizationEngine {
       categories: contentData.categories || [],
       exclusivity: {
         isExclusive: contentData.exclusivity?.isExclusive || false,
-        platform: 'BOYFANZ',
+        platform: 'BearFanz',
         exclusivityPeriod: contentData.exclusivity?.exclusivityPeriod || null
       },
       status: 'ACTIVE',

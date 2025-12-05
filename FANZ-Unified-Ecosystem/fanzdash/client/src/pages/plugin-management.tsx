@@ -134,7 +134,7 @@ export default function PluginManagement() {
       dependencies: ["user_service", "auth_service"],
       platforms: [
         "FanzLab",
-        "BoyFanz",
+        "FanzDash",
         "GirlFanz",
         "DaddyFanz",
         "PupFanz",
@@ -192,7 +192,7 @@ export default function PluginManagement() {
       installDate: "2025-01-01T00:00:00Z",
       lastUpdate: "2025-01-12T09:15:00Z",
       dependencies: ["media_core"],
-      platforms: ["FanzLab", "GirlFanz", "BoyFanz", "TransFanz"],
+      platforms: ["FanzLab", "GirlFanz", "FanzDash", "TransFanz"],
       apiEndpoint: "/api/streaming/webrtc",
       configurable: true,
       essential: false,

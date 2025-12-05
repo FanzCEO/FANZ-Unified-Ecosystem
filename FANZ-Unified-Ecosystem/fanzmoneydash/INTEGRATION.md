@@ -8,7 +8,7 @@ FANZ MoneyDash is designed to seamlessly integrate with the entire FANZ ecosyste
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│    BoyFanz      │    │   GirlFanz      │    │   PupFanz       │
+│    FanzMoneyDash      │    │   GirlFanz      │    │   PupFanz       │
 │                 │    │                 │    │                 │
 └─────┬───────────┘    └─────┬───────────┘    └─────┬───────────┘
       │                      │                      │
@@ -64,7 +64,7 @@ RESTful endpoints for:
 ## Supported Platforms
 
 ### Core Platforms
-- **BoyFanz** (`boyfanz.com`)
+- **FanzMoneyDash** (`FanzMoneyDash.com`)
 - **GirlFanz** (`girlfanz.com`)  
 - **PupFanz** (`pupfanz.com`)
 - **DaddiesFanz** (`daddiesfanz.com`)
@@ -114,7 +114,7 @@ Content-Type: application/json
     "lastPayout": 4500.00,
     "pendingPayout": 500.00,
     "platforms": {
-      "boyfanz": 2000.00,
+      "FanzMoneyDash": 2000.00,
       "girlfanz": 1500.00,
       "pupfanz": 1500.00
     }
@@ -193,7 +193,7 @@ SSO_CLIENT_SECRET=your-sso-client-secret
 
 # Platform Webhooks
 WEBHOOK_SECRET=fanz-money-dash-webhook-secret
-WEBHOOK_BOYFANZ=https://api.boyfanz.com/webhooks/money-dash
+WEBHOOK_FanzMoneyDash=https://api.FanzMoneyDash.com/webhooks/money-dash
 WEBHOOK_GIRLFANZ=https://api.girlfanz.com/webhooks/money-dash
 WEBHOOK_PUPFANZ=https://api.pupfanz.com/webhooks/money-dash
 WEBHOOK_DADDIESFANZ=https://api.daddiesfanz.com/webhooks/money-dash
@@ -239,7 +239,7 @@ Authorization: Bearer <admin-token>
 Content-Type: application/json
 
 {
-  "platform": "boyfanz",
+  "platform": "FanzMoneyDash",
   "event": "subscription_created",
   "data": {
     "userId": "test123",
@@ -299,7 +299,7 @@ Content-Type: application/json
 tail -f logs/integrations.log
 
 # Filter by platform
-grep "boyfanz" logs/integrations.log
+grep "FanzMoneyDash" logs/integrations.log
 
 # View webhook processing
 grep "webhook_received" logs/audit.log

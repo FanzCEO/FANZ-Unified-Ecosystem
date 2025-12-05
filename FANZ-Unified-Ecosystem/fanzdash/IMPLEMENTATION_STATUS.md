@@ -31,7 +31,7 @@
 - **Status:** Operational
 - **Health Check:** `GET /api/media/health` → ✅ 200 OK
 - **Features:** Forensic protection, cross-platform sync, AI moderation
-- **Platforms:** 7 platforms connected (BoyFanz, GirlFanz, PupFanz, etc.)
+- **Platforms:** 7 platforms connected (FanzDash, GirlFanz, PupFanz, etc.)
 
 ### ✅ 5. Creator Payout System
 - **Status:** Operational
@@ -121,7 +121,7 @@
 ## 🌐 Platform Integration
 
 ### Connected Platforms (7 Active)
-1. **BoyFanz** - boyfanz.com
+1. **FanzDash** - FanzDash.com
 2. **GirlFanz** - girlfanz.com
 3. **PupFanz** - pupfanz.com  
 4. **TransFanz** - transfanz.com

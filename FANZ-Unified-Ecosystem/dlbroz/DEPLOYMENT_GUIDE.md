@@ -1,6 +1,6 @@
 # FANZ Ecosystem - Kubernetes Deployment Guide
 
-Complete guide to deploying the BoyFanz, GirlFanz, PupFanz, TransFanz, and TabooFanz platforms to Digital Ocean Kubernetes.
+Complete guide to deploying the DLBroz, GirlFanz, PupFanz, TransFanz, and TabooFanz platforms to Digital Ocean Kubernetes.
 
 ## 📋 Table of Contents
 
@@ -21,7 +21,7 @@ Complete guide to deploying the BoyFanz, GirlFanz, PupFanz, TransFanz, and Taboo
 1. **Digital Ocean Account** with billing enabled
 2. **GitHub Account** with repository access
 3. **Domain Names** registered:
-   - boyfanz.com
+   - DLBroz.com
    - girlfanz.com
    - pupfanz.com
    - transfanz.com
@@ -124,8 +124,8 @@ doctl compute space key create fanz-spaces-key
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/FanzCEO/BoyFanzV1.git
-cd BoyFanzV1
+git clone https://github.com/FanzCEO/DLBrozV1.git
+cd DLBrozV1
 ```
 
 ### 2. Configure Environment
@@ -156,7 +156,7 @@ docker-compose up -d
 docker-compose logs -f
 
 # Access platforms:
-# BoyFanz:   http://localhost:5001
+# DLBroz:   http://localhost:5001
 # GirlFanz:  http://localhost:5002
 # PupFanz:   http://localhost:5003
 # TransFanz: http://localhost:5004
@@ -172,7 +172,7 @@ docker-compose down
 
 ### 1. Configure GitHub Secrets
 
-Go to: `https://github.com/FanzCEO/BoyFanzV1/settings/secrets/actions`
+Go to: `https://github.com/FanzCEO/DLBrozV1/settings/secrets/actions`
 
 Add these secrets:
 
@@ -261,7 +261,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: admin@boyfanz.com
+    email: admin@DLBroz.com
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
@@ -296,7 +296,7 @@ Copy the `EXTERNAL-IP` value.
 
 ### 2. Configure DNS Records
 
-For **each domain** (boyfanz.com, girlfanz.com, etc.), add these DNS records:
+For **each domain** (DLBroz.com, girlfanz.com, etc.), add these DNS records:
 
 ```
 Type    Name    Value                   TTL
@@ -304,7 +304,7 @@ A       @       <LOAD_BALANCER_IP>      3600
 A       www     <LOAD_BALANCER_IP>      3600
 ```
 
-**Example for BoyFanz.com:**
+**Example for DLBroz.com:**
 ```
 A       @       64.23.145.22            3600
 A       www     64.23.145.22            3600
@@ -360,7 +360,7 @@ kubectl get services -n fanz-ecosystem
 kubectl get hpa -n fanz-ecosystem
 
 # View logs
-kubectl logs -f deployment/boyfanz -n fanz-ecosystem
+kubectl logs -f deployment/DLBroz -n fanz-ecosystem
 kubectl logs -f deployment/girlfanz -n fanz-ecosystem
 ```
 
@@ -368,7 +368,7 @@ kubectl logs -f deployment/girlfanz -n fanz-ecosystem
 
 ```bash
 # Manual scaling
-kubectl scale deployment boyfanz --replicas=5 -n fanz-ecosystem
+kubectl scale deployment DLBroz --replicas=5 -n fanz-ecosystem
 
 # Auto-scaling is configured:
 # - Min replicas: 2-3 per platform
@@ -466,13 +466,13 @@ kubectl get secret fanz-secrets -n fanz-ecosystem -o yaml
 
 ```bash
 # Check certificate status
-kubectl describe certificate boyfanz-tls -n fanz-ecosystem
+kubectl describe certificate DLBroz-tls -n fanz-ecosystem
 
 # Check cert-manager logs
 kubectl logs -n cert-manager deploy/cert-manager
 
 # Manually trigger certificate renewal
-kubectl delete certificate boyfanz-tls -n fanz-ecosystem
+kubectl delete certificate DLBroz-tls -n fanz-ecosystem
 kubectl apply -f k8s/ingress/ingress.yaml
 ```
 
@@ -480,13 +480,13 @@ kubectl apply -f k8s/ingress/ingress.yaml
 
 ```bash
 # View deployment history
-kubectl rollout history deployment/boyfanz -n fanz-ecosystem
+kubectl rollout history deployment/DLBroz -n fanz-ecosystem
 
 # Rollback to previous version
-kubectl rollout undo deployment/boyfanz -n fanz-ecosystem
+kubectl rollout undo deployment/DLBroz -n fanz-ecosystem
 
 # Rollback to specific revision
-kubectl rollout undo deployment/boyfanz --to-revision=2 -n fanz-ecosystem
+kubectl rollout undo deployment/DLBroz --to-revision=2 -n fanz-ecosystem
 ```
 
 ---
@@ -497,7 +497,7 @@ kubectl rollout undo deployment/boyfanz --to-revision=2 -n fanz-ecosystem
 
 ```bash
 # Check if platforms are responding
-curl https://boyfanz.com/api/health
+curl https://DLBroz.com/api/health
 curl https://girlfanz.com/api/health
 curl https://pupfanz.com/api/health
 curl https://transfanz.com/api/health
@@ -506,7 +506,7 @@ curl https://taboofanz.com/api/health
 
 Expected response:
 ```json
-{"status": "healthy", "platform": "BoyFanz"}
+{"status": "healthy", "platform": "DLBroz"}
 ```
 
 ---
@@ -582,7 +582,7 @@ kubectl get secrets -n fanz-ecosystem -o yaml > fanz-secrets-backup.yaml
 
 - **Digital Ocean Docs**: https://docs.digitalocean.com/products/kubernetes/
 - **Kubernetes Docs**: https://kubernetes.io/docs/
-- **GitHub Repository**: https://github.com/FanzCEO/BoyFanzV1
+- **GitHub Repository**: https://github.com/FanzCEO/DLBrozV1
 - **Slack Alerts**: Configure SLACK_WEBHOOK_URL for notifications
 
 ---

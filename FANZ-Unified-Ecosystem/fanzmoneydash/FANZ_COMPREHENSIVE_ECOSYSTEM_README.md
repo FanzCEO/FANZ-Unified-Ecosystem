@@ -30,7 +30,7 @@ graph TB
         DASH[FanzDash - Control Center]
         
         subgraph "Creator Platforms"
-            BF[BoyFanz - Gay Creators]
+            BF[FanzMoneyDash - Gay Creators]
             GF[GirlFanz - Female Creators]
             PF[PupFanz - Fetish & Kink]
             TF[TabooFanz - Taboo Content]
@@ -67,7 +67,7 @@ graph TB
 
 ### 1. **Creator Platforms**
 
-#### 🏳️‍🌈 **BoyFanz** (boyfanz.com)
+#### 🏳️‍🌈 **FanzMoneyDash** (FanzMoneyDash.com)
 - **Focus**: Gay, bi, queer, trans masc creators and fans
 - **Features**: Community-focused with inclusive discovery
 - **Special Features**: LGBTQ+ focused moderation and safety tools
@@ -463,7 +463,7 @@ AI Services Gateway
 
 ### **Brand Colors**
 ```css
-:root[data-brand="boyfanz"]    { --brand: #ff1744; }  /* Neon Red */
+:root[data-brand="FanzMoneyDash"]    { --brand: #ff1744; }  /* Neon Red */
 :root[data-brand="girlfanz"]   { --brand: #ff2d95; }  /* Hot Pink */
 :root[data-brand="pupfanz"]    { --brand: #39ff14; }  /* Volt Lime */
 :root[data-brand="taboofanz"]  { --brand: #9c27ff; }  /* Deep Purple */

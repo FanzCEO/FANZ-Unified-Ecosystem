@@ -241,7 +241,7 @@ class EnhancedPaymentService {
         name,
         metadata: {
           user_id: userId,
-          platform: 'boyfanz'
+          platform: 'DLBroz'
         }
       });
 
@@ -308,7 +308,7 @@ class EnhancedPaymentService {
           },
           metadata: {
             user_id: params.userId || 'anonymous',
-            platform: 'boyfanz'
+            platform: 'DLBroz'
           }
         })
       });
@@ -360,8 +360,8 @@ class EnhancedPaymentService {
           notificationURL: `${process.env.BASE_URL}/api/webhooks/bitpay`,
           redirectURL: `${process.env.BASE_URL}/payment/success`,
           buyer: {
-            name: 'BoyFanz User',
-            email: 'user@boyfanz.com'
+            name: 'DLBroz User',
+            email: 'user@DLBroz.com'
           },
           token: bitpayToken
         })
@@ -406,7 +406,7 @@ class EnhancedPaymentService {
         externalId: params.stripePaymentIntentId || '',
         status: params.status,
         metadata: {
-          platform: 'boyfanz',
+          platform: 'DLBroz',
           payment_processor: 'stripe'
         }
       });

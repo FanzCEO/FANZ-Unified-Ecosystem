@@ -88,7 +88,7 @@ export default function CreatorProfile() {
                 <ArrowLeft className="w-6 h-6" />
               </Link>
               <h1 className="text-xl font-heading text-primary underground-glow font-bold">
-                BoyFanz
+                DLBroz
               </h1>
             </div>
             <div className="flex items-center space-x-4">

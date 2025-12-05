@@ -25,22 +25,22 @@ export default function Landing() {
       {/* ACCESSIBILITY: Skip link for keyboard users */}
       <a href="#main-content" className="skip-link">Skip to main content</a>
       {/* Hero Section */}
-      <main id="main-content" className="relative overflow-hidden" role="main" aria-label="BoyFanz platform introduction">
+      <main id="main-content" className="relative overflow-hidden" role="main" aria-label="Guyz platform introduction">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/10"></div>
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <div className="flex justify-center mb-12">
               <img 
-                src="/boyfanz-logo.png" 
-                alt="BoyFanz - Every Man's Playground logo" 
+                src="/Guyz-logo.png" 
+                alt="Guyz - Every Man's Playground logo" 
                 className="h-48 md:h-64 w-auto glow-effect rounded-lg transform hover:scale-105 transition-all duration-300"
                 style={{
                   filter: 'drop-shadow(0 0 20px rgba(255, 0, 0, 0.4)) drop-shadow(0 0 40px rgba(255, 0, 0, 0.2))',
                   boxShadow: '0 0 30px rgba(255, 0, 0, 0.3), 0 0 60px rgba(255, 0, 0, 0.1)'
                 }}
                 role="img"
-                data-testid="boyfanz-logo-enhanced"
+                data-testid="Guyz-logo-enhanced"
               />
             </div>
             <p className="text-2xl mb-8 max-w-2xl mx-auto">
@@ -277,7 +277,7 @@ export default function Landing() {
             Ready to Start Your Journey?
           </h2>
           <p className="text-2xl mb-8 font-body seedy-neon-white">
-            Join thousands of creators who are already building their empire on <span className="font-display font-black seedy-neon-golden tracking-wide">BoyFanz</span>.
+            Join thousands of creators who are already building their empire on <span className="font-display font-black seedy-neon-golden tracking-wide">Guyz</span>.
           </p>
           <Button 
             onClick={handleLogin} 
@@ -322,7 +322,7 @@ export default function Landing() {
 
           <div className="text-center mb-4">
             <p className="text-xs text-gray-500">
-              © 2025 BoyFanz. All rights reserved. FANZ (FANZ) L.L.C. - Address: 30 N Gould St #45302 Sheridan, Wyoming United States
+              © 2025 Guyz. All rights reserved. FANZ (FANZ) L.L.C. - Address: 30 N Gould St #45302 Sheridan, Wyoming United States
             </p>
           </div>
 

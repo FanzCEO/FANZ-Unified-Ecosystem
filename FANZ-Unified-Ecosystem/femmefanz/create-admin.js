@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Create Admin User Script for BoyFanz Platform
+ * Create Admin User Script for FemmeFanz Platform
  * Creates a test admin user for accessing the admin dashboard
  */
 
@@ -25,7 +25,7 @@ async function hashPassword(password) {
 
 async function createAdminUser() {
   try {
-    console.log("🚀 Creating admin user for BoyFanz platform...");
+    console.log("🚀 Creating admin user for FemmeFanz platform...");
 
     // Check if admin user already exists
     const existingUser = await storage.getUserByUsername("admin");
@@ -44,7 +44,7 @@ async function createAdminUser() {
 
     const adminUserData = {
       username: "admin",
-      email: "admin@boyfanz.com",
+      email: "admin@FemmeFanz.com",
       password: hashedPassword,
       role: "admin",
       firstName: "Admin",

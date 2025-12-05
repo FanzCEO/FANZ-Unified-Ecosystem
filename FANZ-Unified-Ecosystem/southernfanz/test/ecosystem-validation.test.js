@@ -16,7 +16,7 @@ const TEST_CONFIG = {
 
 // Mock test data
 const testUser = {
-  email: 'test@boyfanz.com',
+  email: 'test@SouthernFanz.com',
   password: 'TestPassword123!',
   username: 'testuser001',
   platform: 'android',
@@ -175,7 +175,7 @@ describe('FANZ Ecosystem Integration Tests', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data.app).toBeDefined();
       expect(response.body.data.features).toBeDefined();
-      expect(response.body.data.platforms.boyfanz.enabled).toBe(true);
+      expect(response.body.data.platforms.SouthernFanz.enabled).toBe(true);
       expect(response.body.data.theme.primaryColor).toBe('#ff0000');
     });
 
@@ -497,7 +497,7 @@ describe('FANZ Ecosystem Integration Tests', () => {
       
       // Verify that key platform routes exist
       const routes = response.body.data.routes;
-      const platformRoutes = routes.filter(r => r.path.includes('/api/boyfanz/') || 
+      const platformRoutes = routes.filter(r => r.path.includes('/api/SouthernFanz/') || 
                                                   r.path.includes('/api/girlfanz/') ||
                                                   r.path.includes('/api/pupfanz/'));
       expect(platformRoutes.length).toBeGreaterThan(0);

@@ -95,7 +95,7 @@ class LiveKitStreamingService {
   private streamAnalytics = new Map<string, StreamAnalytics[]>();
 
   private liveKitConfig = {
-    serverUrl: process.env.LIVEKIT_SERVER_URL || 'wss://boyfanz-livekit.livekit.cloud',
+    serverUrl: process.env.LIVEKIT_SERVER_URL || 'wss://GayFanz-livekit.livekit.cloud',
     apiKey: process.env.LIVEKIT_API_KEY,
     apiSecret: process.env.LIVEKIT_API_SECRET,
     defaultRegion: process.env.LIVEKIT_REGION || 'us-east-1'
@@ -125,7 +125,7 @@ class LiveKitStreamingService {
 
       // Generate unique room ID
       const roomId = `live_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const roomName = `boyfanz_${roomId}`;
+      const roomName = `GayFanz_${roomId}`;
 
       // Create LiveKit room
       const liveKitRoom = await this.createLiveKitRoom(roomName, params);

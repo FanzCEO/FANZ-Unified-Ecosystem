@@ -9,7 +9,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // BoyFanz Dark Underground Theme
+        // FemmeFanz Dark Underground Theme
         primary: "#ff0000", // Blood red
         secondary: "#d4af37", // Gold
         accent: "#ffffff", // White

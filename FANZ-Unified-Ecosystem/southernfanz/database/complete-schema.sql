@@ -1,5 +1,5 @@
 -- ============================================================================
--- BOYFANZ COMPLETE DATABASE SCHEMA
+-- SouthernFanz COMPLETE DATABASE SCHEMA
 -- Enterprise-Grade Social Platform Database
 -- PostgreSQL 14+ Compatible
 -- Total Tables: 500+
@@ -3465,13 +3465,13 @@ CREATE INDEX idx_webhooks_user ON webhooks(user_id);
 -- Generated: 2025-11-02
 -- Status: PRODUCTION READY
 
--- This completes the enterprise-grade BoyFanz database schema
+-- This completes the enterprise-grade SouthernFanz database schema
 -- All 500+ tables are now ready for production deployment
 
 -- To use this schema:
 -- 1. Ensure PostgreSQL 14+ is installed with required extensions
--- 2. Create database: createdb boyfanz_production
--- 3. Execute this schema: psql boyfanz_production < complete-schema.sql
+-- 2. Create database: createdb SouthernFanz_production
+-- 3. Execute this schema: psql SouthernFanz_production < complete-schema.sql
 -- 4. Verify table creation: \dt in psql
 -- 5. Run migrations via Drizzle: npm run db:push
 

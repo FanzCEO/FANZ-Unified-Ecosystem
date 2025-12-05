@@ -1,4 +1,4 @@
-# BoyFanz Complete Database Schema - Quick Start Guide
+# BearFanz Complete Database Schema - Quick Start Guide
 
 ## Summary
 
@@ -9,14 +9,14 @@
 ## Files Created
 
 ### 1. Complete SQL Schema
-**Location**: `/tmp/BoyFanzV1/database/complete-schema.sql`
+**Location**: `/tmp/BearFanzV1/database/complete-schema.sql`
 - **Size**: 124 KB
 - **Lines**: 3,477
 - **Tables**: 180 fully implemented + 320 documented
 - **Status**: PRODUCTION READY
 
 ### 2. Comprehensive Documentation
-**Location**: `/tmp/BoyFanzV1/database/README.md`
+**Location**: `/tmp/BearFanzV1/database/README.md`
 - Complete installation guide
 - Schema section breakdown
 - Performance tuning recommendations
@@ -142,22 +142,22 @@ Fully implemented tables include:
 #### Step 1: Create Database
 ```bash
 # Create PostgreSQL database
-createdb boyfanz_production
+createdb BearFanz_production
 ```
 
 #### Step 2: Execute Schema
 ```bash
 # Navigate to database directory
-cd /tmp/BoyFanzV1/database
+cd /tmp/BearFanzV1/database
 
 # Execute the complete schema
-psql boyfanz_production < complete-schema.sql
+psql BearFanz_production < complete-schema.sql
 ```
 
 #### Step 3: Verify Tables
 ```bash
 # Connect to database
-psql boyfanz_production
+psql BearFanz_production
 
 # List all tables
 \dt
@@ -175,13 +175,13 @@ WHERE table_schema = 'public';
 #### Step 1: Create Supabase Project
 1. Visit https://supabase.com
 2. Click "New Project"
-3. Enter project name: "boyfanz-production"
+3. Enter project name: "BearFanz-production"
 4. Set database password
 5. Select region closest to your users
 
 #### Step 2: Execute Schema
 1. Open SQL Editor in Supabase dashboard
-2. Copy entire contents of `/tmp/BoyFanzV1/database/complete-schema.sql`
+2. Copy entire contents of `/tmp/BearFanzV1/database/complete-schema.sql`
 3. Paste into SQL Editor
 4. Click "Run" to execute
 
@@ -196,11 +196,11 @@ WHERE table_schema = 'public';
 ### Option 3: Use with Drizzle ORM (Already Configured)
 
 ```bash
-# Your BoyFanzV1 project already has Drizzle configured!
-cd /tmp/BoyFanzV1
+# Your BearFanzV1 project already has Drizzle configured!
+cd /tmp/BearFanzV1
 
 # Set database URL in .env
-echo "DATABASE_URL=postgresql://user:password@host:5432/boyfanz_production" > .env
+echo "DATABASE_URL=postgresql://user:password@host:5432/BearFanz_production" > .env
 
 # Push schema via Drizzle
 npm run db:push
@@ -252,7 +252,7 @@ npm run db:generate
 
 The complete schema is in:
 ```
-/tmp/BoyFanzV1/database/complete-schema.sql
+/tmp/BearFanzV1/database/complete-schema.sql
 ```
 
 Just copy and paste the entire file contents into:
@@ -341,7 +341,7 @@ Works with:
 
 All files are located in:
 ```
-/tmp/BoyFanzV1/database/
+/tmp/BearFanzV1/database/
   ├── complete-schema.sql (THE MAIN FILE - 3,477 lines)
   ├── README.md (Comprehensive documentation)
   └── DATABASE_SCHEMA_GUIDE.md (This file)
@@ -359,7 +359,7 @@ You now have a **magnificent, enterprise-grade, production-ready database schema
 - Security features included
 - Scalability for millions of users
 
-Simply copy `/tmp/BoyFanzV1/database/complete-schema.sql` and paste it into your PostgreSQL database or Supabase SQL editor to get started!
+Simply copy `/tmp/BearFanzV1/database/complete-schema.sql` and paste it into your PostgreSQL database or Supabase SQL editor to get started!
 
 ---
 

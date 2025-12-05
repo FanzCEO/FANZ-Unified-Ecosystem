@@ -22,7 +22,7 @@ function AdminContent() {
                 <ArrowLeft className="w-6 h-6" />
               </Link>
               <Link href="/" className="text-2xl font-heading text-primary underground-glow font-bold">
-                BoyFanz
+                BearFanz
               </Link>
               <span className="text-sm text-text-secondary font-body">
                 Admin Panel

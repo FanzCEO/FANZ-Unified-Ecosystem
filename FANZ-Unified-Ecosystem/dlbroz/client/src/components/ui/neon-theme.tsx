@@ -147,7 +147,7 @@ export function UndergroundLoader({
         <div className="text-center space-y-8">
           {/* Neon logo/branding */}
           <NeonSign 
-            text="BOYFANZ" 
+            text="DLBroz" 
             size="xl" 
             color="red" 
             underground={true}

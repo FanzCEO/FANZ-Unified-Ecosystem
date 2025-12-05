@@ -492,8 +492,8 @@ class MeetupSchedulingService {
       console.log(`🎥 Creating virtual room for meetup: ${meetupId}`);
 
       // Integration with video calling service (e.g., Jitsi, Zoom, custom)
-      const roomId = `boyfanz_meetup_${meetupId}`;
-      const roomUrl = `https://meet.boyfanz.com/room/${roomId}`;
+      const roomId = `FemmeFanz_meetup_${meetupId}`;
+      const roomUrl = `https://meet.FemmeFanz.com/room/${roomId}`;
 
       // Store room details
       await storage.storeMeetingRoom({

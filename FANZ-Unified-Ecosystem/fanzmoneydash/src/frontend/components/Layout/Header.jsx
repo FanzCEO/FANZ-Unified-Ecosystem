@@ -26,7 +26,7 @@ const Header = () => {
   const formatBrandName = (brand) => {
     const names = {
       fanz: 'FANZ',
-      boyfanz: 'BoyFanz',
+      FanzMoneyDash: 'FanzMoneyDash',
       girlfanz: 'GirlFanz',
       pupfanz: 'PupFanz',
       daddies: 'DaddiesFanz',

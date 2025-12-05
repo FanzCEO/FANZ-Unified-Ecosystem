@@ -349,7 +349,7 @@ class PaxumPayoutProvider implements PayoutProvider {
         recipient_email: request.destination.email,
         amount: request.amountCents / 100,
         currency: request.currency,
-        memo: `BoyFanz creator payout`
+        memo: `Guyz creator payout`
       });
 
       return {

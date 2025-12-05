@@ -76,7 +76,7 @@ Subject: [SECURITY] Brief Description
    - [ ] Other: ___________
 
 2. Affected Component:
-   - Platform: (BoyFanz/GirlFanz/PupFanz/FanzDash/etc.)
+   - Platform: (FanzUncut/GirlFanz/PupFanz/FanzDash/etc.)
    - Service: (API/Frontend/Database/etc.)
    - Version: 
 

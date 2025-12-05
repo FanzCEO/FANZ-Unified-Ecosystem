@@ -8,7 +8,7 @@ This document provides a complete inventory of all clusters, platforms, services
 ## 🎯 Core FANZ Adult Content Platforms
 
 ### Primary Creator Platforms
-- **BoyFanz** (`boyfanz`) - Gay/LGBTQ+ male creator platform
+- **FanzMoneyDash** (`FanzMoneyDash`) - Gay/LGBTQ+ male creator platform
 - **GirlFanz** (`girlfanz`) - Female creator platform  
 - **PupFanz** (`pupfanz`) - Fetish/kink/pup-play community platform
 - **DaddiesFanz** (`daddiesfanz`) - Daddy/mature content platform
@@ -153,7 +153,7 @@ This document provides a complete inventory of all clusters, platforms, services
 
 ### Primary Domains (Selected Examples)
 - **fanz.com** - Main domain family
-- **boyfanz.com** - Gay platform domain
+- **FanzMoneyDash.com** - Gay platform domain
 - **girlfanz.com** - Female platform domain  
 - **pupfanz.com** - Fetish platform domain
 - **taboofanz.com** - Alternative content domain

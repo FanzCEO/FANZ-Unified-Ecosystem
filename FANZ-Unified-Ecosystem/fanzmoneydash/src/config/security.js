@@ -132,7 +132,7 @@ export const corsConfig = {
     const allowedOrigins = [
       'https://money.fanz.network',
       'https://dash.fanz.network',
-      'https://boyfanz.com',
+      'https://FanzMoneyDash.com',
       'https://girlfanz.com',
       'https://pupfanz.com',
       'https://daddiesfanz.com',

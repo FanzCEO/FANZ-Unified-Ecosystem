@@ -121,10 +121,10 @@ export class ServiceRegistry {
    */
   private registerContentPlatformServices(): void {
     const contentPlatforms = [
-      'FanzLab', 'BoyFanz', 'GirlFanz', 'DaddyFanz', 'CougarFanz',
+      'FanzLab', 'FanzDash', 'GirlFanz', 'DaddyFanz', 'CougarFanz',
       'PupFanz', 'TabooFanz', 'TransFanz', 'FanzClips', 'FanzTube',
       'BearFanz', 'TwinkFanz', 'JockFanz', 'NerdFanz', 'GothFanz',
-      'E-BoyFanz', 'E-GirlFanz', 'MILFFanz', 'DILFFanz', 'FemdomFanz'
+      'E-FanzDash', 'E-GirlFanz', 'MILFFanz', 'DILFFanz', 'FemdomFanz'
     ];
 
     contentPlatforms.forEach((platform, index) => {

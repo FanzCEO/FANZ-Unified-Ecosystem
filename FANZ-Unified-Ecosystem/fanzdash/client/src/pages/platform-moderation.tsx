@@ -135,8 +135,8 @@ export default function PlatformModeration() {
       communityGuidelines: "Adult content allowed with age verification",
     },
     {
-      id: "boyfanz",
-      name: "BoyFanz",
+      id: "FanzDash",
+      name: "FanzDash",
       theme: "Neon red for male creators",
       icon: <Crown className="w-5 h-5" />,
       status: "active",
@@ -332,7 +332,7 @@ export default function PlatformModeration() {
     },
     {
       id: "act_002",
-      platform: "BoyFanz",
+      platform: "FanzDash",
       action: "user_warned",
       userId: "user_456",
       username: "alex_creator",

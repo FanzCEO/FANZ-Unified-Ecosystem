@@ -364,7 +364,7 @@ docker-compose -f docker-compose.production.yml exec app node --inspect src/serv
 - Role-based access control
 
 ### Platform Webhooks
-- BoyFanz transaction events
+- FanzMoneyDash transaction events
 - GirlFanz payout notifications
 - PupFanz user updates
 

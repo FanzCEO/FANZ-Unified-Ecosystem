@@ -549,7 +549,7 @@ All endpoints require authentication via Bearer token:
 ```bash
 curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
      -H "Content-Type: application/json" \
-     https://api.boyfanz.com/api/revenue-ai/pricing/analyze
+     https://api.SouthernFanz.com/api/revenue-ai/pricing/analyze
 ```
 
 ### Access Control

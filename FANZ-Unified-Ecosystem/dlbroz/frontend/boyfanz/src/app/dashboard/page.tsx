@@ -24,7 +24,7 @@ function DashboardContent() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <Link href="/" className="text-2xl font-heading text-primary underground-glow font-bold">
-                BoyFanz
+                DLBroz
               </Link>
               <span className="text-sm text-text-secondary font-body">
                 Dashboard

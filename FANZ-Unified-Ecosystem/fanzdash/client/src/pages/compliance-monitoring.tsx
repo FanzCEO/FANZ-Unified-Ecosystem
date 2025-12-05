@@ -142,7 +142,7 @@ export default function ComplianceMonitoring() {
       recordType: "age_verification",
       userId: "user_002",
       username: "alex_creator",
-      platform: "BoyFanz",
+      platform: "FanzDash",
       status: "pending",
       verificationDate: "2025-01-15T10:00:00Z",
       verifiedBy: "ai_verification",
@@ -559,7 +559,7 @@ export default function ComplianceMonitoring() {
                     <SelectContent>
                       <SelectItem value="all">All Platforms</SelectItem>
                       <SelectItem value="FanzLab">FanzLab</SelectItem>
-                      <SelectItem value="BoyFanz">BoyFanz</SelectItem>
+                      <SelectItem value="FanzDash">FanzDash</SelectItem>
                       <SelectItem value="GirlFanz">GirlFanz</SelectItem>
                       <SelectItem value="DaddyFanz">DaddyFanz</SelectItem>
                       <SelectItem value="TabooFanz">TabooFanz</SelectItem>

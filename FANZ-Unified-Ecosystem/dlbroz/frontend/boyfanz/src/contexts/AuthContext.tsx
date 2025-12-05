@@ -53,12 +53,12 @@ const mockApi = {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Mock validation - replace with real authentication
-    if (email === 'admin@boyfanz.com' && password === 'admin123') {
+    if (email === 'admin@DLBroz.com' && password === 'admin123') {
       return {
         user: {
           id: '1',
           username: 'admin',
-          email: 'admin@boyfanz.com',
+          email: 'admin@DLBroz.com',
           displayName: 'Admin User',
           avatar: '/api/placeholder/40/40',
           role: 'admin',
@@ -69,12 +69,12 @@ const mockApi = {
       };
     }
     
-    if (email === 'creator@boyfanz.com' && password === 'creator123') {
+    if (email === 'creator@DLBroz.com' && password === 'creator123') {
       return {
         user: {
           id: '2',
           username: 'alpha_muscle_god',
-          email: 'creator@boyfanz.com',
+          email: 'creator@DLBroz.com',
           displayName: 'Alpha Muscle God',
           avatar: '/api/placeholder/40/40',
           role: 'creator',
@@ -93,12 +93,12 @@ const mockApi = {
       };
     }
     
-    if (email === 'fan@boyfanz.com' && password === 'fan123') {
+    if (email === 'fan@DLBroz.com' && password === 'fan123') {
       return {
         user: {
           id: '3',
           username: 'underground_fan',
-          email: 'fan@boyfanz.com',
+          email: 'fan@DLBroz.com',
           displayName: 'Underground Fan',
           avatar: '/api/placeholder/40/40',
           role: 'fan',
@@ -153,13 +153,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Load user from localStorage on mount
   useEffect(() => {
-    const savedUser = localStorage.getItem('boyfanz_user');
+    const savedUser = localStorage.getItem('DLBroz_user');
     if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
       } catch (error) {
         console.error('Failed to parse saved user:', error);
-        localStorage.removeItem('boyfanz_user');
+        localStorage.removeItem('DLBroz_user');
       }
     }
     setIsLoading(false);
@@ -168,9 +168,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Save user to localStorage whenever user changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem('boyfanz_user', JSON.stringify(user));
+      localStorage.setItem('DLBroz_user', JSON.stringify(user));
     } else {
-      localStorage.removeItem('boyfanz_user');
+      localStorage.removeItem('DLBroz_user');
     }
   }, [user]);
 
@@ -212,7 +212,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('boyfanz_user');
+    localStorage.removeItem('DLBroz_user');
   };
 
   const updateUser = (userData: Partial<User>) => {

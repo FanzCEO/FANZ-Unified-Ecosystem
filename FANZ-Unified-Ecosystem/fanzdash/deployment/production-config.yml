@@ -160,9 +160,9 @@ services:
 
 # Platform Clusters
 platform_clusters:
-  # BoyFanz Cluster
-  boyfanz:
-    domain: "boyfanz.com"
+  # FanzDash Cluster
+  FanzDash:
+    domain: "FanzDash.com"
     subdomains: ["www", "api", "cdn", "chat", "live"]
     regions: ["us-east", "eu-west", "asia-pacific"]
     adult_content: true

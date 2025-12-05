@@ -1,4 +1,4 @@
-// BoyFanz PWA Offline Storage
+// TabooFanz PWA Offline Storage
 // IndexedDB utilities for offline data storage and synchronization
 
 interface StoredMessage {
@@ -57,9 +57,9 @@ interface OfflineSession {
   dataUsage: number;
 }
 
-class BoyFanzOfflineStorage {
+class TabooFanzOfflineStorage {
   private db: IDBDatabase | null = null;
-  private readonly dbName = 'BoyFanzPWA';
+  private readonly dbName = 'TabooFanzPWA';
   private readonly dbVersion = 1;
 
   // Database stores
@@ -89,7 +89,7 @@ class BoyFanzOfflineStorage {
 
       request.onsuccess = () => {
         this.db = request.result;
-        console.log('✅ BoyFanz IndexedDB initialized');
+        console.log('✅ TabooFanz IndexedDB initialized');
         resolve();
       };
 
@@ -533,7 +533,7 @@ class BoyFanzOfflineStorage {
 }
 
 // Global offline storage instance
-export const offlineStorage = new BoyFanzOfflineStorage();
+export const offlineStorage = new TabooFanzOfflineStorage();
 
 // Export types
 export type { 

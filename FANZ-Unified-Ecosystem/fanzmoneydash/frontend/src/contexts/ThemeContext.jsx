@@ -46,8 +46,8 @@ const brands = {
     secondary: '#00D1FF',
     accent: '#FF3D71'
   },
-  boyfanz: {
-    name: 'BoyFanz',
+  FanzMoneyDash: {
+    name: 'FanzMoneyDash',
     primary: '#ff1744',
     secondary: '#ff5722',
     accent: '#e91e63'

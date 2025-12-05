@@ -90,7 +90,7 @@ class RevolutionarySocialEngine {
     return {
       id: `room_${Date.now()}_${Math.random().toString(36).substr(2, 8)}`,
       platform: 'FANZ_VIRTUAL_SPACE',
-      url: `https://virtual.boyfanz.com/room/${Date.now()}`,
+      url: `https://virtual.FanzUncut.com/room/${Date.now()}`,
       features: [
         'SPATIAL_AUDIO',
         'SCREEN_SHARE',

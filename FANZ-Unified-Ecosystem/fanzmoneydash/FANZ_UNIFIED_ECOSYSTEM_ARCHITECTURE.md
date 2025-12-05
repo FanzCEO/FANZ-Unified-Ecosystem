@@ -21,7 +21,7 @@ The FANZ Unified Ecosystem is a comprehensive creator-first adult content platfo
 - **WCAG 2.2 AA compliance**
 
 #### Supported Platforms:
-- BoyFanz (gay content creators)
+- FanzMoneyDash (gay content creators)
 - GirlFanz (female content creators)
 - PupFanz (fetish & kink community)
 - TabooFanz (taboo content creators)
@@ -194,7 +194,7 @@ Each repository includes:
 Each platform uses dedicated domains from the approved list:
 
 **Primary Platforms:**
-- `boyfanz.com` - Gay content creators
+- `FanzMoneyDash.com` - Gay content creators
 - `girlfanz.com` - Female content creators  
 - `pupfanz.com` - Fetish & kink community
 - `taboofanz.com` - Taboo content creators

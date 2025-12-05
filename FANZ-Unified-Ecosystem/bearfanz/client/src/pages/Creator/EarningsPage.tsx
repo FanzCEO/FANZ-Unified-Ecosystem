@@ -13,7 +13,7 @@ interface EarningsBreakdown {
   availableBalance: number;
   pendingBalance: number;
   feeBreakdown: {
-    boyfanzFee: number;
+    BearFanzFee: number;
     processorFee: number;
     taxWithholding?: number;
   };
@@ -130,14 +130,14 @@ export default function EarningsPage() {
             100% Creator Earnings Program
           </CardTitle>
           <CardDescription className="text-emerald-300">
-            BoyFanz takes 0% platform fees - creators keep 100% of their earnings
+            BearFanz takes 0% platform fees - creators keep 100% of their earnings
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-emerald-500/5 rounded-lg border border-emerald-500/20">
               <div className="text-2xl font-bold text-emerald-400">0%</div>
-              <p className="text-sm text-muted-foreground">BoyFanz Platform Fee</p>
+              <p className="text-sm text-muted-foreground">BearFanz Platform Fee</p>
             </div>
             <div className="text-center p-4 bg-blue-500/5 rounded-lg border border-blue-500/20">
               <div className="text-2xl font-bold text-blue-400">2.9%</div>

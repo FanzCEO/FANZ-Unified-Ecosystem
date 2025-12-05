@@ -279,7 +279,7 @@ class WebSocketService {
     if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
       new Notification('New Message', {
         body: message.data.content || 'You have a new message',
-        icon: '/boyfanz-logo.png',
+        icon: '/SouthernFanz-logo.png',
       });
     }
     
@@ -292,9 +292,9 @@ class WebSocketService {
     
     // Show browser notification
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(message.data.title || 'BoyFanz Notification', {
+      new Notification(message.data.title || 'SouthernFanz Notification', {
         body: message.data.message || 'You have a new notification',
-        icon: '/boyfanz-logo.png',
+        icon: '/SouthernFanz-logo.png',
       });
     }
     

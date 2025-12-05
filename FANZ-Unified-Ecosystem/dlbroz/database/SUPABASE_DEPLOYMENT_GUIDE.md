@@ -1,4 +1,4 @@
-# BoyFanz Database - Supabase Deployment Guide
+# DLBroz Database - Supabase Deployment Guide
 
 ## Deployment Complete - Ready to Use!
 
@@ -18,7 +18,7 @@ Your Supabase project: `ysjondxpwvfjofbneqki`
 
 2. **Execute the Complete Schema**
    - Click **"New Query"**
-   - Open the file: `/tmp/BoyFanzV1/database/complete-schema.sql`
+   - Open the file: `/tmp/DLBrozV1/database/complete-schema.sql`
    - Copy the ENTIRE contents (all 3,477 lines)
    - Paste into the Supabase SQL Editor
    - Click **"RUN"** or press `Cmd+Enter` (Mac) / `Ctrl+Enter` (Windows)
@@ -55,7 +55,7 @@ Visit your Supabase project settings:
 
 ```bash
 # Navigate to database directory
-cd /tmp/BoyFanzV1/database
+cd /tmp/DLBrozV1/database
 
 # Deploy schema (replace [YOUR-PASSWORD] with actual password)
 psql "postgresql://postgres:[YOUR-PASSWORD]@db.ysjondxpwvfjofbneqki.supabase.co:5432/postgres" \
@@ -107,7 +107,7 @@ supabase link --project-ref ysjondxpwvfjofbneqki
 
 ```bash
 # Navigate to database directory
-cd /tmp/BoyFanzV1/database
+cd /tmp/DLBrozV1/database
 
 # Execute schema
 supabase db push --db-url "postgresql://postgres:[YOUR-PASSWORD]@db.ysjondxpwvfjofbneqki.supabase.co:5432/postgres"
@@ -272,7 +272,7 @@ Then re-run the schema.
 
 ### 1. Update Application Connection
 
-Update your `/tmp/BoyFanzV1/.env` file:
+Update your `/tmp/DLBrozV1/.env` file:
 
 ```env
 DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.ysjondxpwvfjofbneqki.supabase.co:5432/postgres
@@ -281,10 +281,10 @@ DIRECT_URL=postgresql://postgres:[YOUR-PASSWORD]@db.ysjondxpwvfjofbneqki.supabas
 
 ### 2. Push Schema via Drizzle (Optional)
 
-Your BoyFanzV1 project uses Drizzle ORM. After manual SQL deployment:
+Your DLBrozV1 project uses Drizzle ORM. After manual SQL deployment:
 
 ```bash
-cd /tmp/BoyFanzV1
+cd /tmp/DLBrozV1
 
 # Generate Drizzle types from existing database
 npm run db:pull
@@ -300,7 +300,7 @@ Create seed data for development:
 ```sql
 -- Insert admin user
 INSERT INTO users (username, email, password_hash, is_admin, is_staff)
-VALUES ('admin', 'admin@boyfanz.com', '$2a$10$...', true, true);
+VALUES ('admin', 'admin@DLBroz.com', '$2a$10$...', true, true);
 
 -- Insert subscription tiers
 INSERT INTO subscription_tiers (creator_id, tier_name, price, billing_cycle)
@@ -366,7 +366,7 @@ LIMIT 10;
 
 ### Files Location
 ```
-/tmp/BoyFanzV1/database/
+/tmp/DLBrozV1/database/
   ├── complete-schema.sql (THE MAIN FILE)
   ├── README.md (Technical documentation)
   ├── DATABASE_SCHEMA_GUIDE.md (Quick start guide)
@@ -377,13 +377,13 @@ LIMIT 10;
 - Supabase Dashboard: https://supabase.com/dashboard/project/ysjondxpwvfjofbneqki
 - PostgreSQL Docs: https://www.postgresql.org/docs/
 - Drizzle ORM: https://orm.drizzle.team/
-- BoyFanzV1 Repo: https://github.com/FanzCEO/BoyFanzV1
+- DLBrozV1 Repo: https://github.com/FanzCEO/DLBrozV1
 
 ---
 
 ## Deployment Status
 
-**Schema File**: `/tmp/BoyFanzV1/database/complete-schema.sql`
+**Schema File**: `/tmp/DLBrozV1/database/complete-schema.sql`
 **Total Lines**: 3,477
 **Total Tables**: 500+ (180 fully implemented, 320 documented)
 **File Size**: 124 KB
@@ -395,5 +395,5 @@ LIMIT 10;
 ---
 
 **Generated**: 2025-11-02
-**BoyFanzV1 Database Schema**
+**DLBrozV1 Database Schema**
 **Enterprise-Grade PostgreSQL Database**

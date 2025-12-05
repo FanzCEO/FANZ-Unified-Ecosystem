@@ -1,8 +1,8 @@
-# BoyFanz Complete Database Schema
+# TransFanz Complete Database Schema
 
 ## Overview
 
-This is an **enterprise-grade, production-ready PostgreSQL database schema** for the BoyFanz platform with **500+ tables** covering every aspect of a premium social media and content monetization platform.
+This is an **enterprise-grade, production-ready PostgreSQL database schema** for the TransFanz platform with **500+ tables** covering every aspect of a premium social media and content monetization platform.
 
 ## Quick Start
 
@@ -11,10 +11,10 @@ This is an **enterprise-grade, production-ready PostgreSQL database schema** for
 ```bash
 # 1. Ensure PostgreSQL 14+ is installed
 # 2. Create database
-createdb boyfanz_production
+createdb TransFanz_production
 
 # 3. Execute schema
-psql boyfanz_production < database/complete-schema.sql
+psql TransFanz_production < database/complete-schema.sql
 
 # For Supabase:
 # Simply copy/paste the SQL into your Supabase SQL editor and execute
@@ -298,7 +298,7 @@ Based on user count:
 
 ```bash
 # Daily full backup
-pg_dump boyfanz_production | gzip > backup_$(date +%Y%m%d).sql.gz
+pg_dump TransFanz_production | gzip > backup_$(date +%Y%m%d).sql.gz
 
 # Continuous archiving (recommended)
 # Configure in postgresql.conf:
@@ -424,7 +424,7 @@ The schema is designed to work seamlessly with:
 
 ## License
 
-This schema is part of the BoyFanz platform.
+This schema is part of the TransFanz platform.
 
 ---
 

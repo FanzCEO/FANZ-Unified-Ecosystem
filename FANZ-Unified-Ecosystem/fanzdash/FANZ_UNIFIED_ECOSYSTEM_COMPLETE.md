@@ -18,7 +18,7 @@ We have successfully implemented a comprehensive, production-ready unified ecosy
 ### Platform Clusters
 
 The system integrates seamlessly with all FANZ platform clusters:
-- **BoyFanz** - boyfanz.com
+- **FanzDash** - FanzDash.com
 - **GirlFanz** - girlfanz.com  
 - **PupFanz** - pupfanz.com
 - **TransFanz** - transfanz.com

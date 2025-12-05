@@ -5,7 +5,7 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#7C4DFF",
+  "theme_color": "#4CAF50",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
@@ -58,7 +58,11 @@
       "purpose": "maskable any"
     }
   ],
-  "categories": ["finance", "business", "productivity"],
+  "categories": [
+    "finance",
+    "business",
+    "productivity"
+  ],
   "lang": "en-US",
   "dir": "ltr",
   "prefer_related_applications": false,
@@ -68,28 +72,48 @@
       "short_name": "Dashboard",
       "description": "View financial dashboard",
       "url": "/dashboard",
-      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Analytics",
       "short_name": "Analytics",
       "description": "AI-powered financial analytics",
       "url": "/analytics",
-      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Compliance",
       "short_name": "Compliance",
       "description": "Tax and compliance management",
       "url": "/compliance",
-      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Blockchain",
       "short_name": "Blockchain",
       "description": "Crypto and blockchain features",
       "url": "/blockchain",
-      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

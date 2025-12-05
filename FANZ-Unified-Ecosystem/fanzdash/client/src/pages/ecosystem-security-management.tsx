@@ -315,7 +315,7 @@ export default function EcosystemSecurityManagement() {
     return badges[status];
   };
 
-  const PLATFORMS = ["FanzMoney", "BoyFanz", "GayFanz", "BearFanz", "CougarFanz", "PupFanz", "DLBroz", "FanzTube", "FanzRoulette", "Guyz", "FanzClips"];
+  const PLATFORMS = ["FanzMoney", "FanzDash", "GayFanz", "BearFanz", "CougarFanz", "PupFanz", "DLBroz", "FanzTube", "FanzRoulette", "Guyz", "FanzClips"];
 
   return (
     <div className="p-6 space-y-6">

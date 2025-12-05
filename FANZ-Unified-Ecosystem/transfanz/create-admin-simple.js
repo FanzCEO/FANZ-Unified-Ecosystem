@@ -6,13 +6,13 @@ require("dotenv").config();
 
 async function createAdminUser() {
   try {
-    console.log("🚀 Creating admin user for BoyFanz platform...");
+    console.log("🚀 Creating admin user for TransFanz platform...");
     
     // Simulate the storage interface for demonstration
     // In a real app, we would import the compiled storage module
     console.log("✅ Admin user would be created with:");
     console.log("👤 Username: admin");
-    console.log("📧 Email: admin@boyfanz.com");
+    console.log("📧 Email: admin@TransFanz.com");
     console.log("🔑 Password: admin123");
     console.log("🛡️  Role: admin (would need to be updated via direct database query)");
     console.log("");

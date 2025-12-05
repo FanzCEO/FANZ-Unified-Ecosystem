@@ -42,7 +42,7 @@
 ```
 frontend/
 ├── apps/                    # 5 Platform Applications
-│   ├── boyfanz/            # BoyFanz.com (Dark underground)
+│   ├── GayFanz/            # GayFanz.com (Dark underground)
 │   ├── girlfanz/           # GirlFanz.com (Elegant feminine)
 │   ├── pupfanz/            # PupFanz.com (Playful community)
 │   ├── transfanz/          # TransFanz.com (Inclusive modern)
@@ -71,7 +71,7 @@ ClubCentral/
 
 ## 🎨 Platform Design System
 
-### **BoyFanz Theme** 🔥
+### **GayFanz Theme** 🔥
 - **Colors:** Blood red (#ff0000), Gold (#d4af37), Deep black background
 - **Typography:** Bebas Neue headers, Inter body
 - **Style:** Dark underground fight club aesthetic
@@ -168,7 +168,7 @@ ClubCentral/
 cd frontend && ./start-dev.sh
 
 # Individual platform development
-./start-boyfanz.sh    # http://localhost:3001
+./start-GayFanz.sh    # http://localhost:3001
 ./start-girlfanz.sh   # http://localhost:3002
 ./start-pupfanz.sh    # http://localhost:3003
 ./start-transfanz.sh  # http://localhost:3004

@@ -253,7 +253,7 @@ Now let me create the comprehensive bullet-pointed inventory:
 
 Primary Platform Clusters
 • FanzLab - Central neon portal (entry point for all users)
-• BoyFanz - Neon red theme for male creators
+• FanzDash - Neon red theme for male creators
 • GirlFanz - Neon pink theme for female creators  
 • DaddyFanz - Neon gold yellow theme for Dom/sub community
 • PupFanz - Neon green theme for pup community
@@ -735,7 +735,7 @@ Neon Theme System
 • Dark/light mode support
 
 Platform-Specific Themes
-• BoyFanz - Neon red theme
+• FanzDash - Neon red theme
 • GirlFanz - Neon pink theme
 • DaddyFanz - Neon gold yellow theme
 • PupFanz - Neon green theme

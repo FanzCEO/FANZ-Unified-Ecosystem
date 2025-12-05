@@ -93,7 +93,7 @@ export default function ExplorePage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <Link href="/" className="text-2xl font-heading text-primary underground-glow font-bold">
-                BoyFanz
+                FemmeFanz
               </Link>
               <span className="text-sm text-text-secondary font-body">
                 Every Man&apos;s Playground
@@ -281,7 +281,7 @@ export default function ExplorePage() {
       <footer className="bg-background border-t border-border py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-text-secondary text-sm">
-            © 2025 BoyFanz. Every Man&apos;s Playground. 18+ Only.
+            © 2025 FemmeFanz. Every Man&apos;s Playground. 18+ Only.
           </p>
         </div>
       </footer>

@@ -386,7 +386,7 @@ FanzDash provides unified management for the entire Fanz™ ecosystem:
 
 ```mermaid
 graph TD
-    A[FanzDash Control Center] --> B[BoyFanz.com]
+    A[FanzDash Control Center] --> B[FanzDash.com]
     A --> C[GirlFanz.com] 
     A --> D[DaddiesFanz.com]
     A --> E[TransFanz.com]
@@ -534,7 +534,7 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 This repository is part of the larger FANZ ecosystem:
 
 - **[FANZ Unified Ecosystem](https://github.com/FanzCEO/FANZ-Unified-Ecosystem)** - Main ecosystem repository
-- **[BoyFanz](https://boyfanz.com)** - Male creator platform
+- **[FanzDash](https://FanzDash.com)** - Male creator platform
 - **[GirlFanz](https://girlfanz.com)** - Female creator platform  
 - **[PupFanz](https://pupfanz.com)** - Pet/furry creator community
 - **[TabooFanz](https://taboofanz.com)** - Adult content platform

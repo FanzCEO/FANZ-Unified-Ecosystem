@@ -71,7 +71,7 @@
 
 ⸻
 
-⚡ Bottom line: BoyFanz’s Sponzy v6.8 is basically a super-app: CMS, ads, gifts, crypto, banking, tax, geo, payments (CCBill, Cardinity, Flutterwave, Coinbase, CoinPayments, Binance), FFmpeg, chat (GetStream + Giphy), and notifications.
+⚡ Bottom line: FanzDash’s Sponzy v6.8 is basically a super-app: CMS, ads, gifts, crypto, banking, tax, geo, payments (CCBill, Cardinity, Flutterwave, Coinbase, CoinPayments, Binance), FFmpeg, chat (GetStream + Giphy), and notifications.
 
 ⸻
 

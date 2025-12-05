@@ -385,7 +385,7 @@ curl https://yourdomain.com/api/health
 ### 2. Database Connection
 
 ```bash
-curl https://yourdomain.com/api/analytics/config/BoyFanz
+curl https://yourdomain.com/api/analytics/config/FanzDash
 # Expected: Analytics configuration object or empty {}
 ```
 
@@ -393,7 +393,7 @@ curl https://yourdomain.com/api/analytics/config/BoyFanz
 
 Navigate to: `https://yourdomain.com/analytics-dashboard`
 
-1. Select platform (e.g., BoyFanz)
+1. Select platform (e.g., FanzDash)
 2. Click "Configure Analytics"
 3. Enter GA4 credentials
 4. Save configuration
@@ -489,7 +489,7 @@ To configure analytics/OAuth for specific platforms:
 
 ```javascript
 // In FanzDash UI, configure per platform:
-// BoyFanz: GA4_MEASUREMENT_ID = G-ABC123
+// FanzDash: GA4_MEASUREMENT_ID = G-ABC123
 // GirlFanz: GA4_MEASUREMENT_ID = G-XYZ789
 // Etc.
 ```

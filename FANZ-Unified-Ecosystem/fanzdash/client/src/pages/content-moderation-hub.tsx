@@ -69,7 +69,7 @@ interface ModerationItem {
     | "document";
   platform:
     | "FanzLab"
-    | "BoyFanz"
+    | "FanzDash"
     | "GirlFanz"
     | "DaddyFanz"
     | "PupFanz"
@@ -135,7 +135,7 @@ export default function ContentModerationHub() {
     {
       id: "mod_002",
       contentType: "video",
-      platform: "BoyFanz",
+      platform: "FanzDash",
       creatorId: "user_002",
       creatorName: "alex_creator",
       content: "Workout video - adult content",
@@ -520,7 +520,7 @@ export default function ContentModerationHub() {
                     <SelectContent>
                       <SelectItem value="all">All Platforms</SelectItem>
                       <SelectItem value="FanzLab">FanzLab</SelectItem>
-                      <SelectItem value="BoyFanz">BoyFanz</SelectItem>
+                      <SelectItem value="FanzDash">FanzDash</SelectItem>
                       <SelectItem value="GirlFanz">GirlFanz</SelectItem>
                       <SelectItem value="DaddyFanz">DaddyFanz</SelectItem>
                       <SelectItem value="PupFanz">PupFanz</SelectItem>

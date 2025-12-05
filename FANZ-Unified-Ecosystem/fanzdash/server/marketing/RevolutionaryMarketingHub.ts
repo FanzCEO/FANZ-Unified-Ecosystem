@@ -267,7 +267,7 @@ export class RevolutionaryMarketingHub extends EventEmitter {
         'linkedin',
         'twitch',
         'onlyfans',
-        'boyfanz',
+        'FanzDash',
         'girlfanz',
         'pupfanz',
         'taboofanz'

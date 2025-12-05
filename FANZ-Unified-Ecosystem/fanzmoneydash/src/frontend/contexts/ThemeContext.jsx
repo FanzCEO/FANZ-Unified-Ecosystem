@@ -21,7 +21,7 @@ const themeReducer = (state, action) => {
 
 const brandColors = {
   fanz: '#7C4DFF',
-  boyfanz: '#FF1744',
+  FanzMoneyDash: '#FF1744',
   girlfanz: '#FF2D95',
   pupfanz: '#39FF14',
   daddies: '#276EF1',

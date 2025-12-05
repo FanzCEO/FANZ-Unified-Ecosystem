@@ -114,7 +114,7 @@ export function SocialLoginButtons({
                 </span>
               </div>
 
-              {/* Animated border for BoyFanz neon effect */}
+              {/* Animated border for DLBroz neon effect */}
               <div className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="absolute inset-0 rounded-md border border-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 animate-pulse" />
               </div>

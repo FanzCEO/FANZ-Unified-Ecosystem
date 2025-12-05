@@ -117,7 +117,7 @@ router.get('/platforms/:platform', async (req, res) => {
     const userId = req.user.id;
     
     const validPlatforms = [
-      'boyfanz', 'girlfanz', 'pupfanz', 'taboofanz',
+      'FanzSSO', 'girlfanz', 'pupfanz', 'taboofanz',
       'transfanz', 'daddiesfanz', 'cougarfanz'
     ];
 
@@ -171,7 +171,7 @@ router.put('/platforms/:platform', async (req, res) => {
     const updates = req.body;
 
     const validPlatforms = [
-      'boyfanz', 'girlfanz', 'pupfanz', 'taboofanz',
+      'FanzSSO', 'girlfanz', 'pupfanz', 'taboofanz',
       'transfanz', 'daddiesfanz', 'cougarfanz'
     ];
 

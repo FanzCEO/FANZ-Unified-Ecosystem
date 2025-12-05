@@ -4,7 +4,7 @@
 @import 'tailwindcss/utilities';
 
 :root {
-  /* BoyFanz Dark Underground Theme */
+  /* DLBroz Dark Underground Theme */
   --background: #0a0a0a;
   --foreground: #ffffff;
   --primary: #ff0000;
@@ -39,7 +39,7 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
 }
 
-/* BoyFanz Underground Aesthetic */
+/* DLBroz Underground Aesthetic */
 .underground-glow {
   text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
 }

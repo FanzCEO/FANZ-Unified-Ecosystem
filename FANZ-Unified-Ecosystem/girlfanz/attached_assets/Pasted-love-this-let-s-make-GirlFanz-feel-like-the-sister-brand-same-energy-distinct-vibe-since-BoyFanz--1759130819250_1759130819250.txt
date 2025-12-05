@@ -1,4 +1,4 @@
-love this. let’s make GirlFanz feel like the sister brand—same energy, distinct vibe. since BoyFanz skews bold/clubby, GirlFanz should hit “feminine but ferocious,” not bubblegum. think neon nightlife + cyber-glam.
+love this. let’s make GirlFanz feel like the sister brand—same energy, distinct vibe. since GirlFanz skews bold/clubby, GirlFanz should hit “feminine but ferocious,” not bubblegum. think neon nightlife + cyber-glam.
 
 GirlFanz brand kit (v1)
 
@@ -93,7 +93,7 @@ theme: {
 
 ⸻
 
-How this pairs with BoyFanz
-	•	BoyFanz (from your reference) reads like bold/masc nightlife. GirlFanz keeps the night mode but swaps primary hue from blue/steel to electric magenta, with violet depth and cyan sparks. Side-by-side, they feel like one family—different leads, same band.
+How this pairs with GirlFanz
+	•	GirlFanz (from your reference) reads like bold/masc nightlife. GirlFanz keeps the night mode but swaps primary hue from blue/steel to electric magenta, with violet depth and cyan sparks. Side-by-side, they feel like one family—different leads, same band.
 
 If you want, I’ll spin this into a mini brand sheet (logo locks, buttons, cards, and a landing hero) so your devs can drop it straight into the Next.js app.

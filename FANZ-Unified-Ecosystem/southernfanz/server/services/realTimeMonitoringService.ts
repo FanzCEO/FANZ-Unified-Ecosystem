@@ -222,7 +222,7 @@ export class MetricsCollector extends EventEmitter {
   private getPlatformHealthUrl(platformId: string): string {
     // Map platform IDs to health check URLs
     const urlMap: Record<string, string> = {
-      'boyfanz': process.env.BOYFANZ_HEALTH_URL || 'http://localhost:5000/health',
+      'SouthernFanz': process.env.SouthernFanz_HEALTH_URL || 'http://localhost:5000/health',
       'girlfanz': process.env.GIRLFANZ_HEALTH_URL || 'http://localhost:5001/health',
       'pupfanz': process.env.PUPFANZ_HEALTH_URL || 'http://localhost:5002/health',
       'transfanz': process.env.TRANSFANZ_HEALTH_URL || 'http://localhost:5003/health',
@@ -769,7 +769,7 @@ export class RealTimeMonitoringService extends EventEmitter {
   
   private formatPlatformName(platformId: string): string {
     const nameMap: Record<string, string> = {
-      'boyfanz': 'BoyFanz',
+      'SouthernFanz': 'SouthernFanz',
       'girlfanz': 'GirlFanz',
       'pupfanz': 'PupFanz',
       'transfanz': 'TransFanz',
@@ -828,7 +828,7 @@ export const MonitoringConfigSchema = z.object({
     throughput: z.number().min(0).default(100),
     availability: z.number().min(0).max(100).default(99)
   }),
-  platforms: z.array(z.string()).default(['boyfanz', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz']),
+  platforms: z.array(z.string()).default(['SouthernFanz', 'girlfanz', 'pupfanz', 'transfanz', 'taboofanz']),
   metricsCollectionInterval: z.number().min(5).max(300).default(30),
   healthCheckInterval: z.number().min(5).max(300).default(60)
 });

@@ -118,7 +118,7 @@ export class ReferralService {
    * Generate a tracking URL with embedded referral data
    */
   generateReferralLink(data: ReferralLinkData): string {
-    const baseUrl = process.env.FRONTEND_URL || 'https://boyfanz.com';
+    const baseUrl = process.env.FRONTEND_URL || 'https://TabooFanz.com';
     const params = new URLSearchParams();
     
     params.set('ref', data.code);

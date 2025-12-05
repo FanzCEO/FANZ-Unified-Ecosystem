@@ -24,7 +24,7 @@ import { nanoid } from 'nanoid';
 
 /**
  * FanzTrust™ Financial Ledger Service
- * Core financial ecosystem for BoyFanz platform
+ * Core financial ecosystem for Guyz platform
  */
 
 export class FanzTrustService {

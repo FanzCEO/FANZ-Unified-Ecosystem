@@ -58,7 +58,7 @@ The FANZ Unlimited Network operates across a carefully architected domain ecosys
 ## 🌈 Content Platform Domains
 
 ### Primary Platforms
-- **BoyFanz**: `boyfanz.com`
+- **FanzDash**: `FanzDash.com`
   - Target: Male content creators
   - Features: Masculine-focused UI, specialized category tags
   
@@ -127,7 +127,7 @@ Selected from the FANZ domain portfolio for specialized purposes:
 │  └─ Help & documentation
 │
 └─ Content Platforms
-   ├─ boyfanz.com (Male creators)
+   ├─ FanzDash.com (Male creators)
    ├─ girlfanz.com (Female creators) 
    ├─ pupfanz.com (Kink community)
    └─ taboofanz.com (Diverse/Taboo)

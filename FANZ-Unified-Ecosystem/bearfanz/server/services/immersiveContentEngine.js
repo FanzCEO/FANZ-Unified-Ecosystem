@@ -105,7 +105,7 @@ class ImmersiveContentEngine {
     // Simulate 3D asset processing
     asset.optimized = await this.optimize3DAsset(asset, file);
     asset.lodVersions = await this.generateLODVersions(asset);
-    asset.streamingUrl = `https://cdn.boyfanz.com/3d-assets/${asset.id}`;
+    asset.streamingUrl = `https://cdn.BearFanz.com/3d-assets/${asset.id}`;
 
     this.threeDAssets.set(asset.id, asset);
 

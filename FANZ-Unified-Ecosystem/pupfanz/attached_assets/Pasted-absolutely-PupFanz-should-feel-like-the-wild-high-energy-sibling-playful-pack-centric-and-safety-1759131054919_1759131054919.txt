@@ -129,7 +129,7 @@ Sample component styles
 
 ⸻
 
-How it sits with BoyFanz & GirlFanz
+How it sits with PupFanz & GirlFanz
 	•	Shared DNA: dark base, neon gradients, Space Grotesk/Inter system, consistent spacing & radii.
 	•	Distinct voice: GirlFanz = cyber-glam magenta; PupFanz = sport-tech neon lime with kinetic cues (bounce, confetti), community “pack” language, and explicit safety signals.
 

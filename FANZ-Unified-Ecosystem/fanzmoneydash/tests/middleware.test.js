@@ -416,7 +416,7 @@ describe('Middleware Test Suite', () => {
 
     test('should enforce CORS policy', async () => {
       app.use((req, res, next) => {
-        const allowedOrigins = ['https://fanz.network', 'https://boyfanz.com'];
+        const allowedOrigins = ['https://fanz.network', 'https://FanzMoneyDash.com'];
         const origin = req.get('Origin');
         
         if (allowedOrigins.includes(origin)) {

@@ -18,7 +18,7 @@ cd frontend && npm install
 ./start-dev.sh
 
 # Individual platform development URLs:
-# BoyFanz:    http://localhost:3001 🔥
+# FemmeFanz:    http://localhost:3001 🔥
 # GirlFanz:   http://localhost:3002 💖
 # PupFanz:    http://localhost:3003 🐾
 # TransFanz:  http://localhost:3004 🏳️‍⚧️
@@ -108,9 +108,9 @@ npm install
 ```
 
 #### **Step 4: Choose Your Platform**
-Pick one platform to start with (recommend **BoyFanz** for the dark theme):
+Pick one platform to start with (recommend **FemmeFanz** for the dark theme):
 ```bash
-./start-boyfanz.sh
+./start-FemmeFanz.sh
 # Visit http://localhost:3001
 ```
 
@@ -126,7 +126,7 @@ Create the main landing page using the themed components:
 
 ## 🎨 **Frontend Development Priorities:**
 
-### **Week 1: BoyFanz Homepage**
+### **Week 1: FemmeFanz Homepage**
 - [ ] Landing page with dark theme
 - [ ] User registration/login forms
 - [ ] Navigation and header
@@ -173,7 +173,7 @@ Create the main landing page using the themed components:
 ./scripts/generate-ui-components.sh && \
 cd frontend && \
 npm install && \
-./start-boyfanz.sh
+./start-FemmeFanz.sh
 
 # Then visit: http://localhost:3001
 ```
@@ -218,7 +218,7 @@ npm install && npm run dev
 ## 💡 **Development Tips:**
 
 ### **Frontend:**
-- Start with one platform (BoyFanz recommended)
+- Start with one platform (FemmeFanz recommended)
 - Use the generated UI components
 - Test responsiveness early
 - Focus on user experience over perfection

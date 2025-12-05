@@ -35,7 +35,7 @@ const CredentialTypeSchema = z.enum([
   'achievement_badge'
 ]);
 
-const PlatformSchema = z.enum(['BoyFanz', 'GirlFanz', 'PupFanz', 'TabooFanz', 'External']);
+const PlatformSchema = z.enum(['FanzDash', 'GirlFanz', 'PupFanz', 'TabooFanz', 'External']);
 
 const VerifiableCredentialSchema = z.object({
   '@context': z.array(z.string()),

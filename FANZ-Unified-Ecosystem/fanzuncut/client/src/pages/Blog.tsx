@@ -202,7 +202,7 @@ export default function Blog() {
       publishedAt: '2024-03-10',
       readTime: 4,
       author: {
-        name: 'BoyFanz Team',
+        name: 'FanzUncut Team',
         role: 'Platform Team'
       },
       viewsCount: 2100,

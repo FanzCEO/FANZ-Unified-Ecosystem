@@ -7624,7 +7624,7 @@ export const referralCodes = pgTable(
     userId: varchar("user_id")
       .notNull()
       .references(() => accounts.id, { onDelete: "cascade" }),
-    code: varchar("code").unique().notNull(), // Unique referral code (e.g., BOYFANZ123)
+    code: varchar("code").unique().notNull(), // Unique referral code (e.g., SouthernFanz123)
     type: varchar("type").notNull().default("standard"), // standard, campaign, custom
     status: referralCodeStatusEnum("status").default("active").notNull(),
 

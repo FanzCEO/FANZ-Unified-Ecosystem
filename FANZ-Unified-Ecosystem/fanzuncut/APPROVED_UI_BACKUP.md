@@ -29,7 +29,7 @@
 - **Privacy Notice**: "WE RESPECT YOUR PRIVACY" with cookie/privacy messaging
 
 ### BRANDING:
-- **Platform**: BoyFanz
+- **Platform**: FanzUncut
 - **Tagline**: "Every Man's Playground" 
 - **Tone**: Premium, masculine, professional, adult-oriented but tasteful
 

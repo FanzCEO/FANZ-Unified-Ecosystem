@@ -37,8 +37,8 @@
 ⚙️ Admin & Backend
 	•	FanzDash Integration: One-stop admin panel for approvals, payouts, content moderation, analytics.
 	•	Analytics: Creator + fan KPIs, fraud detection, traffic sources.
-	•	Cluster Integration: BoyFanz nodes must sync to central database (shared verification, shared fan SSO).
-	•	APIs: Open for expansion — so FanzWork, FanzVarsity, FanzVegas all pull from BoyFanz when needed.
+	•	Cluster Integration: FanzUncut nodes must sync to central database (shared verification, shared fan SSO).
+	•	APIs: Open for expansion — so FanzWork, FanzVarsity, FanzVegas all pull from FanzUncut when needed.
 
 ⸻
 
@@ -50,4 +50,4 @@
 
 ⸻
 
-👉 To meet your standards, BoyFanz shouldn’t just be “another content site” — it has to feel like a full creator economy hub, with compliance, monetization, and inter-platform synergy baked in.
+👉 To meet your standards, FanzUncut shouldn’t just be “another content site” — it has to feel like a full creator economy hub, with compliance, monetization, and inter-platform synergy baked in.

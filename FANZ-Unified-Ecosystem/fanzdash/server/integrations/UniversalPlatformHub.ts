@@ -116,16 +116,16 @@ export class UniversalPlatformHub extends EventEmitter {
   private initializePlatforms(): void {
     const platformConfigs: PlatformConfig[] = [
       {
-        id: 'boyfanz',
-        name: 'BoyFanz',
-        domain: 'boyfanz.com',
+        id: 'FanzDash',
+        name: 'FanzDash',
+        domain: 'FanzDash.com',
         requiredMembership: 'premium',
         ageRestriction: 18,
         contentType: 'adult',
         features: ['streaming', 'messaging', 'tips', 'subscriptions', 'merchandise'],
         paymentMethods: ['ccbill', 'segpay', 'epoch', 'crypto', 'paxum'],
         isActive: true,
-        theme: { primaryColor: '#FF0040', brandName: 'BoyFanz', logo: '/assets/boyfanz-logo.png' }
+        theme: { primaryColor: '#FF0040', brandName: 'FanzDash', logo: '/assets/FanzDash-logo.png' }
       },
       {
         id: 'girlfanz',

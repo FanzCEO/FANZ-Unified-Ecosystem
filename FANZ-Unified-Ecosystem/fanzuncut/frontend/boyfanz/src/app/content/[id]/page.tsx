@@ -112,7 +112,7 @@ export default function ContentPage() {
     
     // In real app, you'd show a report modal or send report to API
     console.log('Reported media:', mediaId);
-    alert('Content reported. Thank you for helping keep BoyFanz safe.');
+    alert('Content reported. Thank you for helping keep FanzUncut safe.');
   };
 
   const handleSubscribe = (creatorId: string) => {
@@ -143,7 +143,7 @@ export default function ContentPage() {
                 <ArrowLeft className="w-6 h-6" />
               </Link>
               <Link href="/" className="text-2xl font-heading text-primary underground-glow font-bold">
-                BoyFanz
+                FanzUncut
               </Link>
             </div>
             <div className="flex items-center space-x-4">

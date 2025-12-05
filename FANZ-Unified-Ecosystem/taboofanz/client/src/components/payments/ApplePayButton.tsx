@@ -42,7 +42,7 @@ export default function ApplePayButton({
 
     try {
       const merchantIdentifier = import.meta.env.VITE_APPLE_PAY_MERCHANT_ID;
-      const displayName = import.meta.env.VITE_APPLE_PAY_DISPLAY_NAME || 'BoyFanz';
+      const displayName = import.meta.env.VITE_APPLE_PAY_DISPLAY_NAME || 'TabooFanz';
       
       if (!merchantIdentifier) {
         throw new Error('Apple Pay merchant identifier not configured');

@@ -1,5 +1,5 @@
 // PWA Database Schema Extensions
-// This file adds PWA-specific schemas to the existing BoyFanz database
+// This file adds PWA-specific schemas to the existing FanzUncut database
 
 import { sql } from 'drizzle-orm';
 import {

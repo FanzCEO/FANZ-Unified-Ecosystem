@@ -16,7 +16,7 @@ This deployment guide covers the complete FANZ AI Ecosystem featuring autonomous
 - **Universal Platform Hub** - Cross-platform transaction and user management
 
 ### Platform Ecosystem
-- **BoyFanz** - Gay adult content platform
+- **FanzDash** - Gay adult content platform
 - **GirlFanz** - Female creator content platform  
 - **PupFanz** - Kink/fetish specialized platform
 - **TransFanz** - Transgender creator platform

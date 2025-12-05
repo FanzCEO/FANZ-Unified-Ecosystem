@@ -55,7 +55,7 @@ Before contributing, ensure you have:
    pnpm dev
    
    # Or start specific services
-   pnpm dev:app boyfanz
+   pnpm dev:app FanzDash
    pnpm dev:service auth
    ```
 
@@ -110,7 +110,7 @@ What should happen instead?
 If applicable, add screenshots.
 
 **Environment**
-- Platform: [BoyFanz/GirlFanz/PupFanz/etc.]
+- Platform: [FanzDash/GirlFanz/PupFanz/etc.]
 - Browser: [e.g. Chrome 91]
 - Device: [e.g. iPhone 12, Desktop]
 ```
@@ -221,7 +221,7 @@ docs(api): update creator API authentication examples
 ```
 fanz-ecosystem/
 ├── apps/                   # Platform applications
-│   ├── boyfanz/           # BoyFanz platform
+│   ├── FanzDash/           # FanzDash platform
 │   ├── girlfanz/          # GirlFanz platform
 │   └── dashboard/         # FanzDash admin
 ├── packages/              # Shared packages

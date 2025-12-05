@@ -314,7 +314,7 @@ const TIER_LIMITS = {
 
 ```typescript
 const PLATFORMS = [
-  { id: 'boyfanz', requiresTier: 'silver' },
+  { id: 'FanzDash', requiresTier: 'silver' },
   { id: 'girlfanz', requiresTier: 'silver' },
   { id: 'pupfanz', requiresTier: 'gold' },
   { id: 'transfanz', requiresTier: 'gold' },
@@ -353,7 +353,7 @@ POST /api/protection/upload/initialize
   "creatorId": "user_123",
   "creatorTier": "diamond",
   "platformId": "fanztube",
-  "selectedPlatforms": ["boyfanz", "girlfanz", "fanztube"],
+  "selectedPlatforms": ["FanzDash", "girlfanz", "fanztube"],
   "qualityPresets": ["4k", "1080p", "720p", "480p"]
 }
 
@@ -473,7 +473,7 @@ POST /api/protection/violations/log
 {
   "userId": "user_123",
   "sessionId": "session_abc",
-  "platformId": "boyfanz",
+  "platformId": "FanzDash",
   "violationType": "screenshot_attempted",
   "mediaAssetId": "asset_xyz"
 }
@@ -508,7 +508,7 @@ const initResponse = await fetch('/api/protection/upload/initialize', {
     creatorId: currentUser.id,
     creatorTier: currentUser.tier,
     platformId: 'fanztube',
-    selectedPlatforms: ['boyfanz', 'girlfanz']
+    selectedPlatforms: ['FanzDash', 'girlfanz']
   })
 });
 

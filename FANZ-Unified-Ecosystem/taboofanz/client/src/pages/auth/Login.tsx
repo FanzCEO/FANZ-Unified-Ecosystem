@@ -210,7 +210,7 @@ export default function Login() {
           <div className="bg-card/30 rounded-lg p-6 border border-accent/20">
             <div className="flex items-center space-x-3 mb-3">
               <Star className="h-6 w-6 text-accent neon-heartbeat" />
-              <h3 className="font-semibold neon-crimson-heading neon-dying">Why Choose BoyFanz?</h3>
+              <h3 className="font-semibold neon-crimson-heading neon-dying">Why Choose TabooFanz?</h3>
             </div>
             <ul className="space-y-2 text-sm neon-white-body">
               <li>• Underground club aesthetic with seductive neon vibes</li>

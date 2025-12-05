@@ -44,7 +44,7 @@ The FANZ API Gateway & Integration Hub has been successfully implemented as the 
 The gateway automatically registers and manages these FANZ ecosystem services:
 
 #### Core Platforms
-- **BoyFanz** (`boyfanz.com`) - Port 5001 - Men's content platform
+- **TransFanz** (`TransFanz.com`) - Port 5001 - Men's content platform
 - **GirlFanz** (`girlfanz.com`) - Port 5002 - Women's content platform  
 - **PupFanz** (`pupfanz.com`) - Port 5003 - Pet play community
 - **TransFanz** (`transfanz.com`) - Port 5004 - Trans content platform
@@ -81,7 +81,7 @@ PAYMENTS_SERVICE_URL=http://localhost:5000
 MEDIA_SERVICE_URL=http://localhost:7000
 
 # Platform Service URLs
-BOYFANZ_SERVICE_URL=http://localhost:5001
+TransFanz_SERVICE_URL=http://localhost:5001
 GIRLFANZ_SERVICE_URL=http://localhost:5002
 PUPFANZ_SERVICE_URL=http://localhost:5003
 TRANSFANZ_SERVICE_URL=http://localhost:5004
@@ -95,7 +95,7 @@ JWT_SECRET=your-jwt-secret-key-64-characters-minimum
 The gateway handles these route patterns:
 
 #### Platform Routes
-- `/api/boyfanz/*` → BoyFanz service
+- `/api/TransFanz/*` → TransFanz service
 - `/api/girlfanz/*` → GirlFanz service
 - `/api/pupfanz/*` → PupFanz service
 - `/api/transfanz/*` → TransFanz service
@@ -172,8 +172,8 @@ The gateway handles these route patterns:
 
 ## 🔗 Integration Points
 
-### BoyFanz Server Integration
-The gateway is integrated into the main BoyFanz server via:
+### TransFanz Server Integration
+The gateway is integrated into the main TransFanz server via:
 
 1. **Middleware Setup** (`middleware/gatewayMiddleware.ts`)
    - Applied after route registration
@@ -249,7 +249,7 @@ The API Gateway provides optimized routing for the ClubCentral mobile app:
 ## 🔄 Development Workflow
 
 ### Local Development
-1. Start BoyFanz server: `npm run dev`
+1. Start TransFanz server: `npm run dev`
 2. Gateway automatically initializes
 3. Services register on first request
 4. Health checks begin after 30 seconds
@@ -308,7 +308,7 @@ The FANZ API Gateway & Integration Hub is now fully operational and provides:
 📊 **Monitoring**: Real-time health checks and metrics  
 🔧 **Management**: Dynamic service registry and configuration  
 📱 **Mobile Optimized**: ClubCentral app support with offline capabilities  
-🌐 **Multi-Platform**: Support for all FANZ platforms (BoyFanz, GirlFanz, etc.)  
+🌐 **Multi-Platform**: Support for all FANZ platforms (TransFanz, GirlFanz, etc.)  
 💳 **Payment Ready**: Adult-industry payment processor integration  
 📋 **Compliance**: GDPR, ADA, and adult industry compliance features  
 

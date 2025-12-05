@@ -276,7 +276,7 @@ export class PaymentOrchestrator extends EventEmitter {
         id: 'ccbill-us-001',
         gatewayId: 'ccbill',
         region: 'US',
-        descriptor: 'FANZ*BOYFANZ',
+        descriptor: 'FANZ*FanzDash',
         status: 'active' as const,
         limits: { daily: 25000, monthly: 500000, chargebackThreshold: 1.5 },
         current: { volume: 15000, chargebacks: 0.8, approvalRate: 94.2 }
