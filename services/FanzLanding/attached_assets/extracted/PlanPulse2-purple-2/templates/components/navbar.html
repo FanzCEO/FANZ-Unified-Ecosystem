@@ -1,0 +1,750 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container-fluid">
+    <!-- Brand Logo -->
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      <img
+        src="{{ url_for('static', filename='images/fanz-logo-neon.png') }}"
+        alt="FANZ"
+        class="fanz-logo-img"
+        height="50"
+      />
+    </a>
+
+    <!-- Mobile Toggle -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navigation Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        {% if current_user.is_authenticated %}
+        <!-- Authenticated User Navigation -->
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('portal') }}">
+            <i class="fas fa-rocket me-1"></i>Portal
+          </a>
+        </li>
+
+        {% if current_user.role.value == 'star' %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('create_scene') }}">
+            <i class="fas fa-plus me-1"></i>Create
+          </a>
+        </li>
+        {% endif %}
+
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="clustersDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+          >
+            <i class="fas fa-network-wired me-1"></i>Clusters
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            {% for membership in current_user.cluster_memberships if
+            membership.is_active %}
+            <li>
+              <a class="dropdown-item" href="#">
+                {% if membership.cluster_type.value == 'boyfanz' %}
+                <i class="fas fa-male me-2 neon-cyan"></i>
+                {% elif membership.cluster_type.value == 'girlfanz' %}
+                <i class="fas fa-female me-2 neon-pink"></i>
+                {% elif membership.cluster_type.value == 'tranzfanz' %}
+                <i class="fas fa-transgender me-2 neon-purple"></i>
+                {% elif membership.cluster_type.value == 'allmyfanz' %}
+                <i class="fas fa-star me-2 neon-yellow"></i>
+                {% elif membership.cluster_type.value == 'fanztube' %}
+                <i class="fas fa-video me-2 neon-orange"></i>
+                {% elif membership.cluster_type.value == 'fanzvarsity' %}
+                <i class="fas fa-graduation-cap me-2 neon-blue"></i>
+                {% else %}
+                <i class="fas fa-users me-2"></i>
+                {% endif %} {{ membership.cluster_type.value.title() }}
+              </a>
+            </li>
+            {% endfor %}
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="{{ url_for('cluster_selection') }}"
+              >
+                <i class="fas fa-plus me-2 neon-green"></i>Join More Clusters
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        {% if current_user.role.value in ['admin', 'moderator', 'exec'] %}
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="adminDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+          >
+            <i class="fas fa-shield-alt me-1"></i>Admin
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            {% if current_user.role.value in ['admin', 'exec'] %}
+            <li>
+              <a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">
+                <i class="fas fa-cog me-2"></i>Admin Dashboard
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('theme_manager') }}">
+                <i class="fas fa-palette me-2"></i>Theme Manager
+              </a>
+            </li>
+            {% endif %} {% if current_user.role.value in ['admin', 'moderator',
+            'exec'] %}
+            <li>
+              <a
+                class="dropdown-item"
+                href="{{ url_for('security_dashboard') }}"
+              >
+                <i class="fas fa-lock me-2"></i>Security Center
+              </a>
+            </li>
+            {% endif %} {% if current_user.role.value == 'exec' %}
+            <li>
+              <a class="dropdown-item" href="{{ url_for('exec_dashboard') }}">
+                <i class="fas fa-crown me-2"></i>Executive Dashboard
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </li>
+        {% endif %} {% else %}
+        <!-- Guest Navigation -->
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('about') }}">
+            <i class="fas fa-info-circle me-1"></i>About
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('about') }}#features">
+            <i class="fas fa-star me-1"></i>Features
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('about') }}#clusters">
+            <i class="fas fa-network-wired me-1"></i>Clusters
+          </a>
+        </li>
+
+        <!-- Legal & Compliance Dropdown -->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="legalDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+          >
+            <i class="fas fa-balance-scale me-1"></i>Legal & Compliance
+            <span class="compliance-badges-nav ms-1">
+              <span class="badge-mini bg-success" title="256-bit SSL Encryption"
+                >SSL</span
+              >
+              <span
+                class="badge-mini bg-primary"
+                title="PCI DSS Level 1 Compliant"
+                >PCI</span
+              >
+              <span class="badge-mini bg-info" title="SOC 2 Type II Certified"
+                >SOC2</span
+              >
+              <span
+                class="badge-mini bg-warning text-dark"
+                title="GDPR Compliant"
+                >GDPR</span
+              >
+              <span class="badge-mini bg-danger" title="ISO 27001 Certified"
+                >ISO</span
+              >
+            </span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark legal-dropdown">
+            <li class="dropdown-header">
+              <i class="fas fa-shield-alt me-2 text-warning"></i>Platform
+              Policies
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('terms') }}">
+                <i class="fas fa-file-contract me-2 text-primary"></i>Terms of
+                Service
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('privacy') }}">
+                <i class="fas fa-user-shield me-2 text-info"></i>Privacy Policy
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li class="dropdown-header">
+              <i class="fas fa-gavel me-2 text-danger"></i>Legal Protection
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('dmca') }}">
+                <i class="fas fa-copyright me-2 text-warning"></i>DMCA Policy
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('usc2257') }}">
+                <i class="fas fa-certificate me-2 text-danger"></i>USC 2257
+                Compliance
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li class="dropdown-header">
+              <i class="fas fa-question-circle me-2 text-success"></i>Support &
+              Help
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('faq') }}">
+                <i class="fas fa-question me-2 text-success"></i>FAQ & Help
+                Center
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="mailto:legal@fanz.com">
+                <i class="fas fa-envelope me-2 text-cyan"></i>Contact Legal Team
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+
+      <!-- Right Side Navigation -->
+      <ul class="navbar-nav">
+        {% if current_user.is_authenticated %}
+        <!-- Notifications -->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link position-relative"
+            href="#"
+            id="notificationsDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+          >
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end dropdown-menu-dark notification-dropdown"
+          >
+            <li class="dropdown-header">
+              <i class="fas fa-bell me-2"></i>Notifications
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item notification-item" href="#">
+                <div class="notification-icon neon-green">
+                  <i class="fas fa-check"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">Verification Complete</div>
+                  <div class="notification-time">2 minutes ago</div>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item notification-item" href="#">
+                <div class="notification-icon neon-cyan">
+                  <i class="fas fa-heart"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">New follower</div>
+                  <div class="notification-time">1 hour ago</div>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item notification-item" href="#">
+                <div class="notification-icon neon-yellow">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">Payment received</div>
+                  <div class="notification-time">3 hours ago</div>
+                </div>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item text-center" href="#">
+                <i class="fas fa-eye me-1"></i>View All
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- User Profile Dropdown -->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle user-profile-link"
+            href="#"
+            id="userDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+          >
+            <div class="user-avatar">
+              {% if current_user.profile_image_url %}
+              <img
+                src="{{ current_user.profile_image_url }}"
+                alt="Profile"
+                class="avatar-img"
+              />
+              {% else %}
+              <i class="fas fa-user"></i>
+              {% endif %}
+            </div>
+            <span class="user-name">{{ current_user.username }}</span>
+            {% if current_user.is_verified %}
+            <i
+              class="fas fa-check-circle verified-badge"
+              title="Verified Account"
+            ></i>
+            {% endif %}
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end dropdown-menu-dark user-dropdown"
+          >
+            <li class="dropdown-header">
+              <div class="user-info">
+                <div class="user-full-name">
+                  {{ current_user.get_full_name() }}
+                </div>
+                <div class="user-role-badge role-{{ current_user.role.value }}">
+                  {% if current_user.role.value == 'star' %}
+                  <i class="fas fa-star me-1"></i>STAR Creator {% elif
+                  current_user.role.value == 'fan' %}
+                  <i class="fas fa-heart me-1"></i>Fan {% elif
+                  current_user.role.value == 'admin' %}
+                  <i class="fas fa-shield-alt me-1"></i>Administrator {% elif
+                  current_user.role.value == 'moderator' %}
+                  <i class="fas fa-user-shield me-1"></i>Moderator {% elif
+                  current_user.role.value == 'exec' %}
+                  <i class="fas fa-crown me-1"></i>Executive {% endif %}
+                </div>
+              </div>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="fas fa-user me-2"></i>Profile
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="{{ url_for('verification_status') }}"
+              >
+                <i class="fas fa-clipboard-check me-2"></i>Verification Status
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="fas fa-cog me-2"></i>Settings
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="fas fa-wallet me-2"></i>Wallet
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a
+                class="dropdown-item text-danger"
+                href="{{ url_for('logout') }}"
+              >
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% else %}
+        <!-- Guest Actions -->
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('login') }}">
+            <i class="fas fa-sign-in-alt me-1"></i>Login
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-primary ms-2" href="{{ url_for('register') }}">
+            <i class="fas fa-user-plus me-1"></i>Sign Up
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Push content down due to fixed navbar -->
+<div style="height: 80px"></div>
+
+<style>
+  /* Navbar Styles */
+  .navbar {
+    background: rgba(10, 10, 10, 0.95) !important;
+    backdrop-filter: blur(15px);
+    border-bottom: 2px solid var(--neon-cyan);
+    box-shadow: 0 2px 30px rgba(0, 255, 255, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .navbar-brand .fanz-logo {
+    font-size: 1.8rem;
+    background: var(--banana-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: bold;
+    position: relative;
+  }
+
+  .nav-link {
+    color: var(--text-secondary) !important;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 8px 16px !important;
+    border-radius: 8px;
+  }
+
+  .nav-link:hover {
+    color: var(--neon-cyan) !important;
+    background: rgba(0, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--neon-cyan);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+
+  .nav-link:hover::after {
+    width: 80%;
+  }
+
+  /* User Profile */
+  .user-profile-link {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 15px !important;
+    border-radius: 25px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  .user-profile-link:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.1);
+  }
+
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    color: var(--dark-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--neon-cyan);
+    overflow: hidden;
+  }
+
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .user-name {
+    font-weight: bold;
+    color: var(--text-primary) !important;
+  }
+
+  .verified-badge {
+    color: var(--neon-green);
+    font-size: 0.9rem;
+  }
+
+  /* Notifications */
+  .notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--neon-pink);
+    color: var(--dark-bg);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: notification-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes notification-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  /* Dropdown Menus */
+  .dropdown-menu {
+    background: var(--card-bg) !important;
+    border: 2px solid var(--border-color) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(10px);
+    margin-top: 10px !important;
+  }
+
+  .dropdown-item {
+    color: var(--text-secondary) !important;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin: 2px 8px;
+  }
+
+  .dropdown-item:hover {
+    background: rgba(0, 255, 255, 0.1) !important;
+    color: var(--neon-cyan) !important;
+    transform: translateX(5px);
+  }
+
+  .dropdown-header {
+    color: var(--text-primary) !important;
+    font-weight: bold;
+    padding: 10px 16px;
+  }
+
+  /* User Dropdown */
+  .user-dropdown {
+    min-width: 250px;
+  }
+
+  .user-info {
+    text-align: center;
+    padding: 10px;
+  }
+
+  .user-full-name {
+    color: var(--text-primary);
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .user-role-badge {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: 1px solid currentColor;
+  }
+
+  .role-star {
+    color: var(--neon-pink);
+    background: rgba(255, 0, 255, 0.1);
+  }
+
+  .role-fan {
+    color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.1);
+  }
+
+  .role-admin {
+    color: var(--neon-orange);
+    background: rgba(255, 136, 0, 0.1);
+  }
+
+  .role-moderator {
+    color: var(--neon-green);
+    background: rgba(0, 255, 0, 0.1);
+  }
+
+  .role-exec {
+    color: var(--neon-purple);
+    background: rgba(136, 0, 255, 0.1);
+  }
+
+  /* Notification Dropdown */
+  .notification-dropdown {
+    min-width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .notification-item {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px !important;
+    border-radius: 8px;
+    margin: 2px 8px;
+  }
+
+  .notification-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .notification-content {
+    flex: 1;
+  }
+
+  .notification-title {
+    color: var(--text-primary);
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .notification-time {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 991px) {
+    .navbar-nav {
+      margin-top: 15px;
+    }
+
+    .user-profile-link {
+      justify-content: flex-start !important;
+      margin-top: 10px;
+    }
+
+    .notification-dropdown,
+    .user-dropdown {
+      position: static !important;
+      transform: none !important;
+      box-shadow: none !important;
+      border: 1px solid var(--border-color) !important;
+      margin: 10px 0 !important;
+    }
+  }
+
+  /* Legal & Compliance Dropdown */
+  .legal-dropdown {
+    min-width: 280px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .compliance-badges-nav {
+    display: inline-flex;
+    gap: 3px;
+  }
+
+  .badge-mini {
+    font-size: 0.6rem;
+    padding: 2px 5px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .legal-dropdown .dropdown-item {
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin: 2px 8px;
+    transition: all 0.3s ease;
+  }
+
+  .legal-dropdown .dropdown-item:hover {
+    background: rgba(0, 255, 255, 0.1) !important;
+    transform: translateX(8px);
+  }
+
+  .legal-dropdown .dropdown-header {
+    color: var(--text-primary) !important;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    margin-bottom: 5px;
+  }
+
+  .legal-dropdown .dropdown-divider {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin: 8px 16px;
+  }
+
+  /* Legal dropdown icons */
+  .legal-dropdown .text-cyan {
+    color: var(--neon-cyan) !important;
+  }
+
+  /* Trust badge hover effects */
+  .badge-mini:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  /* Responsive badges */
+  @media (max-width: 991px) {
+    .compliance-badges-nav {
+      display: none;
+    }
+
+    .legal-dropdown {
+      min-width: 250px;
+    }
+  }
+
+  /* Scrollbar for dropdowns */
+  .notification-dropdown::-webkit-scrollbar,
+  .legal-dropdown::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .notification-dropdown::-webkit-scrollbar-track,
+  .legal-dropdown::-webkit-scrollbar-track {
+    background: var(--border-color);
+  }
+
+  .notification-dropdown::-webkit-scrollbar-thumb,
+  .legal-dropdown::-webkit-scrollbar-thumb {
+    background: var(--neon-cyan);
+    border-radius: 2px;
+  }
+</style>

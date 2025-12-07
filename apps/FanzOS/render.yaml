@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: fanz-operating-system
+    runtime: go
+    repo: https://github.com/FanzCEO/fanz.os.git
+    branch: main
+    buildCommand: |
+      npm install
+      npm run build:render
+    startCommand: ./dist/go-server
+    plan: free
+    env:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromEnvironment: true
+    health:
+      path: /health
+      method: GET

@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}Setup {{ domain.domain_name }} - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">
+            <i data-feather="settings" class="me-2"></i>
+            Setup {{ domain.domain_name }}
+        </h1>
+        <div class="btn-toolbar">
+            <a href="{{ url_for('domains') }}" class="btn btn-outline-secondary me-2">
+                <i data-feather="arrow-left" class="me-1"></i>
+                Back to Domains
+            </a>
+            {% if domain.status.value != 'verified' %}
+                <form method="POST" action="{{ url_for('verify_domain', domain_id=domain.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="check-circle" class="me-1"></i>
+                        Verify Domain
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Domain Status</h5>
+                    <div class="mb-3">
+                        <strong>Status:</strong>
+                        {% if domain.status.value == 'verified' %}
+                            <span class="badge bg-success ms-2">
+                                <i data-feather="check-circle" class="me-1" style="width: 12px; height: 12px;"></i>
+                                Verified
+                            </span>
+                        {% elif domain.status.value == 'pending' %}
+                            <span class="badge bg-warning ms-2">
+                                <i data-feather="clock" class="me-1" style="width: 12px; height: 12px;"></i>
+                                Pending Verification
+                            </span>
+                        {% elif domain.status.value == 'failed' %}
+                            <span class="badge bg-danger ms-2">
+                                <i data-feather="x-circle" class="me-1" style="width: 12px; height: 12px;"></i>
+                                Verification Failed
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    {% if domain.status.value == 'verified' %}
+                        <div class="row text-sm">
+                            <div class="col-12 mb-2">
+                                <strong>Email Service:</strong>
+                                {% if domain.is_email_enabled %}
+                                    <i data-feather="check" class="text-success ms-1" style="width: 12px; height: 12px;"></i>
+                                {% else %}
+                                    <i data-feather="x" class="text-muted ms-1" style="width: 12px; height: 12px;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 mb-2">
+                                <strong>MX Records:</strong>
+                                {% if domain.mx_records_configured %}
+                                    <i data-feather="check" class="text-success ms-1" style="width: 12px; height: 12px;"></i>
+                                {% else %}
+                                    <i data-feather="x" class="text-muted ms-1" style="width: 12px; height: 12px;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 mb-2">
+                                <strong>SPF:</strong>
+                                {% if domain.spf_enabled %}
+                                    <i data-feather="check" class="text-success ms-1" style="width: 12px; height: 12px;"></i>
+                                {% else %}
+                                    <i data-feather="x" class="text-muted ms-1" style="width: 12px; height: 12px;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 mb-2">
+                                <strong>DKIM:</strong>
+                                {% if domain.dkim_enabled %}
+                                    <i data-feather="check" class="text-success ms-1" style="width: 12px; height: 12px;"></i>
+                                {% else %}
+                                    <i data-feather="x" class="text-muted ms-1" style="width: 12px; height: 12px;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <strong>DMARC:</strong>
+                                {% if domain.dmarc_enabled %}
+                                    <i data-feather="check" class="text-success ms-1" style="width: 12px; height: 12px;"></i>
+                                {% else %}
+                                    <i data-feather="x" class="text-muted ms-1" style="width: 12px; height: 12px;"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if domain.verified_at %}
+                        <div class="mt-3 pt-3 border-top">
+                            <small class="text-muted">
+                                Verified {{ domain.verified_at.strftime('%B %d, %Y at %I:%M %p') }}
+                            </small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if domain.status.value == 'verified' %}
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i data-feather="activity" class="me-1"></i>
+                            DNS Health Check
+                        </h6>
+                        <button class="btn btn-sm btn-outline-primary" onclick="checkDNS()">
+                            <i data-feather="refresh-cw" class="me-1" style="width: 12px; height: 12px;"></i>
+                            Check DNS Propagation
+                        </button>
+                        <div id="dnsResults" class="mt-2"></div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="list" class="me-2"></i>
+                        DNS Records Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if domain.status.value != 'verified' %}
+                        <div class="alert alert-warning">
+                            <div class="d-flex">
+                                <i data-feather="alert-triangle" class="me-3 mt-1" style="width: 16px; height: 16px;"></i>
+                                <div>
+                                    <strong>Domain Verification Required</strong>
+                                    <p class="mb-0 mt-1">
+                                        Please add the DNS records below to your domain's DNS settings, 
+                                        then click "Verify Domain" to complete the setup.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <p class="text-muted mb-4">
+                        Add the following DNS records to your domain's DNS configuration. 
+                        These records are required for email delivery and domain verification.
+                    </p>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                    <th>Value</th>
+                                    <th>Priority</th>
+                                    <th>TTL</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in instructions.records %}
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-primary-subtle text-primary">{{ record.type }}</span>
+                                        </td>
+                                        <td class="font-monospace small">{{ record.name }}</td>
+                                        <td class="font-monospace small text-break" style="max-width: 300px;">
+                                            {{ record.value }}
+                                        </td>
+                                        <td>
+                                            {% if record.priority %}
+                                                {{ record.priority }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ record.ttl }}</td>
+                                        <td>
+                                            {% if record.verified %}
+                                                <i data-feather="check-circle" class="text-success" style="width: 16px; height: 16px;"></i>
+                                            {% else %}
+                                                <i data-feather="clock" class="text-warning" style="width: 16px; height: 16px;"></i>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if domain.verification_token %}
+                        <div class="alert alert-info mt-4">
+                            <div class="d-flex">
+                                <i data-feather="key" class="me-3 mt-1" style="width: 16px; height: 16px;"></i>
+                                <div>
+                                    <strong>Verification Token</strong>
+                                    <p class="mb-2 mt-1">Your unique verification token:</p>
+                                    <code class="bg-light p-2 rounded d-block">{{ domain.verification_token }}</code>
+                                    <small class="text-muted mt-1">
+                                        This token expires on {{ domain.verification_expires.strftime('%B %d, %Y') }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="help-circle" class="me-2"></i>
+                        Setup Instructions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Step 1: Access DNS Settings</h6>
+                            <ul class="small text-muted">
+                                <li>Log in to your domain registrar or DNS provider</li>
+                                <li>Navigate to DNS management or DNS zone editor</li>
+                                <li>Look for "Manage DNS" or "DNS Records"</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Step 2: Add DNS Records</h6>
+                            <ul class="small text-muted">
+                                <li>Add each record from the table above</li>
+                                <li>Use the exact values shown</li>
+                                <li>Save changes after adding all records</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6>Step 3: Wait for Propagation</h6>
+                            <ul class="small text-muted">
+                                <li>DNS changes can take up to 24 hours</li>
+                                <li>Most changes propagate within 1-2 hours</li>
+                                <li>You can check propagation status above</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Step 4: Verify Domain</h6>
+                            <ul class="small text-muted">
+                                <li>Click "Verify Domain" once records are added</li>
+                                <li>We'll check for the verification record</li>
+                                <li>Email service will be activated upon verification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function checkDNS() {
+        const button = event.target.closest('button');
+        const resultsDiv = document.getElementById('dnsResults');
+        
+        button.disabled = true;
+        button.innerHTML = '<i data-feather="loader" class="me-1 spinner-border spinner-border-sm"></i> Checking...';
+        
+        fetch('/domains/{{ domain.id }}/check-dns')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultsDiv.innerHTML = '<div class="alert alert-danger small mt-2">' + data.error + '</div>';
+                } else {
+                    let html = '<div class="mt-2">';
+                    for (const [record, status] of Object.entries(data)) {
+                        const icon = status ? 'check-circle' : 'x-circle';
+                        const color = status ? 'success' : 'danger';
+                        html += `<div class="small"><i data-feather="${icon}" class="text-${color} me-1" style="width: 12px; height: 12px;"></i> ${record}</div>`;
+                    }
+                    html += '</div>';
+                    resultsDiv.innerHTML = html;
+                    feather.replace(); // Re-render feather icons
+                }
+            })
+            .catch(error => {
+                resultsDiv.innerHTML = '<div class="alert alert-danger small mt-2">Error checking DNS: ' + error.message + '</div>';
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.innerHTML = '<i data-feather="refresh-cw" class="me-1" style="width: 12px; height: 12px;"></i> Check DNS Propagation';
+                feather.replace(); // Re-render feather icons
+            });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,87 @@
+<svg width="180" height="60" viewBox="0 0 180 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Neon glow gradient -->
+    <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00FFFF;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#FF1493;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#00FF7F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8A2BE2;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Dripping effect gradient -->
+    <linearGradient id="drippingGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0.3" />
+    </linearGradient>
+    
+    <!-- Shadow filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="25" cy="30" r="22" fill="rgba(0,255,255,0.1)" stroke="url(#neonGradient)" stroke-width="2" filter="url(#glow)"/>
+  
+  <!-- Main "F" letter -->
+  <path d="M15 20 L15 40 M15 20 L32 20 M15 30 L28 30" 
+        stroke="url(#neonGradient)" 
+        stroke-width="3" 
+        stroke-linecap="round" 
+        fill="none" 
+        filter="url(#glow)"/>
+  
+  <!-- Dripping banana effect from F -->
+  <path d="M32 20 Q35 25 32 30 Q30 35 35 40 Q40 42 35 45" 
+        stroke="url(#drippingGradient)" 
+        stroke-width="2" 
+        fill="none" 
+        opacity="0.8"/>
+  
+  <!-- Text "FANZLAB" -->
+  <text x="55" y="25" 
+        font-family="Arial, sans-serif" 
+        font-size="14" 
+        font-weight="bold" 
+        fill="url(#neonGradient)" 
+        filter="url(#glow)">FANZ</text>
+  
+  <text x="90" y="25" 
+        font-family="Arial, sans-serif" 
+        font-size="14" 
+        font-weight="bold" 
+        fill="#FFD700" 
+        filter="url(#glow)">LAB</text>
+  
+  <!-- Text "2.0" -->
+  <text x="55" y="45" 
+        font-family="Arial, sans-serif" 
+        font-size="18" 
+        font-weight="bold" 
+        fill="url(#neonGradient)" 
+        filter="url(#glow)">2.0</text>
+  
+  <!-- Decorative neon dots -->
+  <circle cx="130" cy="15" r="2" fill="#00FFFF" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="140" cy="25" r="1.5" fill="#FF1493" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="135" cy="35" r="2.5" fill="#FFD700" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Creator Economy tagline -->
+  <text x="55" y="55" 
+        font-family="Arial, sans-serif" 
+        font-size="8" 
+        fill="#888" 
+        opacity="0.7">Made for creators by creators</text>
+</svg>

@@ -1,0 +1,383 @@
+@extends('layouts.app')
+
+@section('title') Costar Consent Form @endsection
+
+@section('css')
+    <link rel="stylesheet" href="{{ asset('public/css/costar-consent-form.css') }}">
+@endsection
+
+@if(session('error'))
+  <script>
+    alert("{{ session('error') }}");
+  </script>
+@endif
+@if(session('success'))
+  <script>
+    alert("{{ session('success') }}");
+  </script>
+@endif
+
+@section('content')
+<section class="section section-sm">
+    <div class="container">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <div class="row justify-content-center text-center mb-sm">
+            <div class="col-lg-12 py-5">
+                    <div id="email-confirmation">
+                        <p>Please enter your email below to verify you are the correct costar</p>
+                        <input type="hidden" id="receivedEmail" value="{{$email}}">
+                        <input type="text" id="emailConfirmation" value="">
+                        <button style="margin-top:10px;" id="emailConfirmationButton"> Check Validity </button>
+                    </div>
+                    <div id="consentForm" style="display:none;">
+                        @if($costarVerificationRequired && $verificationRequired)
+                            <div class="card-body px-lg-5 py-lg-5 position-relative">
+
+                              <div class="text-muted text-center mb-3 position-relative modal-offset">
+                                <h2 class="font-weight-light">
+                                  Verify your Identity to apply for Costar consent
+                                </h2>
+                              </div>
+                              <div class="alert alert-warning mt-4" role="alert">
+                                <p>To apply for Costar consent, please follow these steps:</p>
+                                <ul class="text-start d-inline-block">
+                                    <li>Verify your age/identity using <strong>Verifymy</strong>.</li>
+                                    <li>Once your age is successfully verified, you can apply for <strong>Costar consent</strong>.</li>
+                                    <li>An alert message will display your verification status if everything is completed correctly.</li>
+                                </ul>
+                              </div>
+                              <form id="verifyAgeForm" action="{{route('age.verification.start')}}" method="POST">
+                                @csrf
+                                <input type="hidden" name="creator_username" value="settings/verify/account">
+                                <input type="hidden" name="costarEmail" value="{{$email}}">
+                                <input type="hidden" name="fromCostar" value="true">
+                                <input type="hidden" name="token" value="{{$token}}">
+                                <div class="w-100 text-center">
+                                    <button type="submit" data-id="{{ $token }}" id="VerifyMy" class="btn btn-primary btn-profile mr-1">
+                                      <i class="bi bi-person mr-1"></i> Verify My Age
+                                    </button>
+                                </div>
+                              </form>
+                            </div>
+                        @else
+                        <form action="" method="post">
+                    
+                    <h3>Consent Form</h2>
+                    <!-- Content Creator Information -->
+                    <div class="section">
+                    <p>
+                        This legally binding agreement (“Agreement”) is entered into between:
+                        <br>
+                        • Fanz™ Unlimited Network (FUN) LLC, hereinafter referred to as “FUN,” “we,” or “the Company.”<br>
+                        • The undersigned individual(s), hereinafter referred to as “Content Star” or “Co-Star.”<br>
+                        This Agreement ensures compliance with 18 U.S.C. § 2257 and all applicable federal, state, and 
+                        international laws governing adult content production and distribution.
+                    </p>
+                        
+                        <h3>1. Identification Information</h3>
+                        <h4>1.1 Costar Information</h4>
+                        <label for="creator_name">Full Legal Name:</label>
+                        <input type="text" id="creator_name" name="creator_name" value="{{ old('creator_name') }}"  required>
+            
+                        <label for="creator-stage-name">Costar Stage Name: 
+                            <small style="color: gray; font-size: 14px;">(Use underscore (_) for multi-word names. ex: michael_weeks)</small>
+                        </label>
+                        <input type="text" id="creator_stage_name" name="creator_stage_name" value="{{ old('creator_stage_name') }}" required>
+                        <i id="costar_stage_name_error" style="color: red; display: none;">Sorry, this stage name is already taken. Please create a unique name</i>
+                        <br>
+                        <i id="costar_stage_name_format" style="color: red; display: none;">Please use an underscore (_) to join multiple words.</i>
+                        <br>
+                        <i id="costar_stage_name_symbols" style="color: red; display: none;">Stage name must not contain any special characters.</i>
+                        <label for="creator_email">Costar Email:</label>
+                        <input type="text" id="creator_email" name="creator_email" value="{{$email}}" required readonly>
+                    
+                        <label for="creator_id_type">Type of ID Produced:</label><br>
+                        <div style="display: flex; gap: 3%;">
+                            <div>
+                                <input type="radio" id="creator-passport" name="creator_id_type" value="Passport" required>
+                                <label for="creator-passport">Passport</label>
+                            </div>
+                            
+                            <div>
+                                <input type="radio" id="creator-citizenship" name="creator_id_type" value="Citizenship" required>
+                                <label for="creator-citizenship">Citizenship</label>
+                            </div>
+                            
+                            <div>
+                                <input type="radio" id="creator-drivers-license" name="creator_id_type" value="Driver's License" required>
+                                <label for="creator-drivers-license">Driver's License</label>
+                            </div>
+                            
+                            <div>
+                                <input type="radio" id="creator-military-card" name="creator_id_type" value="Military Card" required>
+                                <label for="creator-military-card">Military Card</label>
+                            </div>
+                        </div>
+            
+                        <label for="creator_id_picture">Upload the picture of your ID (combine both front and back in a single picture before you submit)</label>
+                        <input type="file" id="creator_id_picture" name="creator_id_picture" style="position: absolute; z-index: -9999; height: 0px; width: 0px; padding: 0px; margin: 0px; line-height: 0; outline: 0px; border: 0px; opacity: 0;" required>
+                        <button type="button" id="img-upload-btn" style="padding:5px 10px; border-radius:5px; border:1px solid black;">Upload Picture</button>
+
+                        <label for="creator_id_number">ID Number:</label>
+                        <input type="text" id="creator_id_number" name="creator_id_number" value="{{ old('creator_id_number') }}" required>
+            
+                        <label for="creator_id_state_country">State/Country:</label>
+                        <input type="text" id="creator_id_state_country" name="creator_id_state_country" value="{{ old('creator_id_state_country') }}" required>
+            
+                        <label for="creator_zip_code">Zip Code:</label>
+                        <input type="text" id="creator_zip_code" name="creator_zip_code" value="{{ old('creator_zip_code') }}" required>
+
+                        <label for="creator_dob">Date of Birth:</label>
+                        <input type="date" id="creator_dob" name="creator_dob" value="{{ old('creator_dob') }}" required>
+                   
+                        
+                        <h4 style="margin-top:30px;">1.2 Primary content star information</h4>
+                        <label for="primary_creator_name">Full Legal Name:</label>
+                        <input type="text" id="primary_creator_name" name="primary_creator_name" value="{{ old('primary_creator_name') }}"  required>
+            
+                        <label for="primary_creator_email">Email:</label>
+                        <input type="text" id="primary_creator_email" name="primary_creator_email" value="{{ old('primary_creator_email') }}" required>
+
+                        <p>
+                            By checking below, I certify that:
+                            <ul>
+                                <li>• All provided information is accurate, truthful, and complete.</li>
+                                <li>• Any falsification may result in civil and/or criminal penalties.</li>
+                            </ul>
+                        </p>
+                        <label for="certify_checkbox">
+                        <input type="checkbox" id="certify_checkbox" name="certify_checkbox" required>
+                        I acknowledge and agree to the above statements.
+                    </label>
+                    </div>
+
+                    
+                    <div class="section">
+                        <h3>2. Legal Compliance & Sworn Statements</h3>
+                        <h4>Sworn Statement by Co-Star</h4>
+                        <p>UNDER 28 U.S.C. § 1746 AND PENALTIES OF PERJURY, I swear that:</p>
+                        <ul>
+                            <li>• All identification documents are valid, lawfully obtained, and unaltered</li>
+                        </ul>
+                        <label for="legalcompliance_checkbox">
+                            <input type="checkbox" id="legalcompliance_checkbox" name="legalcompliance_checkbox" required>
+                            I acknowledge and agree to the above statements.
+                        </label>
+                    </div>
+
+                    <div class="section">
+                        <h3>3. Terms and Conditions</h3>
+                        <h4>3.1 Ownership & Rights</h4>
+                        <ul style="list-style-type: disc !important;">
+                            <li>• The Co-Star and Primary Content Star retain full ownership over the collaboratively 
+created content</li>
+                            <li>• FUN does not claim ownership of any content and acts solely as a hosting service</li>
+                        </ul>
+
+                        <h4>3.2 Grant of Unlimited License</h4>
+                        <p>The Co-Star and Primary Content Star grant FUN a non-exclusive, revocable, and limited 
+license to host, distribute, and display content solely for the purposes of fulfilling its services, 
+subject to this Agreement. This license does not transfer ownership</p>
+
+                        <h4>3.3 Compliance with Laws</h4>
+                        <p>All content must comply with federal, state, and international laws governing adult 
+content</p>
+                            
+                        <h4>3.4 Indemnification Clause</h4>
+                        <p>The Co-Star and Primary Content Star agree to indemnify, defend, and hold harmless FUN, its 
+affiliates, directors, officers, employees, and agents from and against any claims, liabilities, 
+damages, costs, and expenses, including legal fees, arising from:</p>
+                        <ul style="list-style-type: disc !important;">
+                            <li>• Breach of this Agreement.</li>
+                            <li>• Any content uploaded, distributed, or monetized.</li>
+                            <li>• Violations of intellectual property, privacy, or contractual rights</li>
+                        </ul>
+                        <p>This indemnification extends to third-party claims, regulatory actions, and law enforcement 
+investigations</p>
+
+                        <h4>3.5 Force Majeure</h4>
+                        <p>FUN shall not be held liable for any failure or delay in performance due to unforeseen 
+circumstances, including but not limited to natural disasters, government restrictions, 
+cyberattacks, or regulatory changes</p>
+
+                        <label for="tc_checkbox">
+                            <input type="checkbox" id="tc_checkbox" name="tc_checkbox" required>
+                            I acknowledge and agree to the above statements.
+                        </label>
+                    </div>
+
+                    <div class="section">
+                        <h3>4. Dmca & Copyright compliance</h3>
+                        <h4>Digital Millennium Copyright Act (DMCA) Compliance</h4>
+                        <p>FUN complies with the DMCA (17 U.S.C. § 512) and follows a Notice-and-Takedown 
+Procedure:</p>
+                            <ul>
+                                <li>• Filing a DMCA Complaint - Email support@fanzunlimited.com with a signed notice. - 
+Include the copyrighted work’s location and proof of ownership</li>
+                                <li>• Content Removal & Review - FUN will remove content within 24 hours upon receiving a 
+valid notice</li>
+                                <li>• Counter-Notification Process - Users have 10 business days to respond before content is 
+permanently removed</li>
+                                <li>• Repeat Infringer Policy - Users with three (3) or more violations will be permanently banned</li>
+                            </ul>
+                        <label for="dmca_checkbox">
+                            <input type="checkbox" id="dmca_checkbox" name="dmca_checkbox" required>
+                            I acknowledge and agree to the above statements.
+                        </label>
+                    </div>
+
+                    <div class="section">
+                        <h3>5. Complaints Policy</h3>
+                        <h4>5.1 How to file complaints?</h4>
+                        <p>User may file complaints via:</p> 
+                            <ul>
+                                <li><strong>• support@fanzunlimited.com</strong></li>
+                                <li>• Mail: 
+                                    <li>Fanz™ Unlimited Network LLC</li>
+                                    <li>30 N Gould Street #45302</li>
+                                    <li>Sheridan, WY 82801</li>
+                                </li>
+                            </ul>
+                        
+                        <h4>5.2 Resolution Timeline</h4>
+                        <ul>
+                            <li>• Complaints are acknowledged within 2 business days</li>
+                            <li>• A decision is issued within 7 business days</li>
+                            <li>• Users may appeal decisions within 30 days</li>
+                        </ul>
+
+                        <h4>5.3 Arbitration & Class Action Waiver</h4>
+                        <ul>
+                            <li>• All disputes must be resolved through final and binding arbitration</li>
+                            <li>• Users waive the right to file class-action lawsuits against FUN</li>
+                            <li>• Arbitration will be held in Sheridan, Wyoming, USA</li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <h3>6. International Laws & Regulations</h3>
+                        <h4>6.1 United States Compliance</h4>
+                        <ul>
+                            <li>• 18 U.S.C. § 2257</li>
+                            <li>• Age Verification & Record-Keeping</li>
+                            <li>• DMCA (17 U.S.C. § 512) – Copyright & Takedown Procedures.</li>
+                            <li>• CCPA (Cal. Civ. Code § 1798.100)– Data Privacy for California Users</li>
+                        </ul>
+
+                        <h4>6.2 European Union Compliance</h4>
+                        <ul>
+                            <li>• GDPR (EU Regulation 2016/679)– Data Protection & Privacy</li>
+                            <li>• EU Digital Services Act (Regulation 2022/2065) – Platform Accountability</li>
+                        </ul>
+
+                        <h4>6.3 Global Compliance</h4>
+                        <ul>
+                            <li>• Berne Convention for Copyright (1886) – International Copyright Protections.</li>
+                            <li>• WIPO Copyright Treaty (WCT) – Digital Copyright Enforcement.</li>
+                        </ul>
+                    </div>
+
+                     <!-- Signature and Date -->
+                     <div class="section">
+                        <h3>7. Final Acknowledgement and Signature</h3>
+            
+                        <h4>7.1 Costar Signature</h4>
+                        <label for="creator-signature-canvas">Signature:</label>
+                        <canvas id="creator-signature-canvas" width="400" height="150" style="border: 1px solid #000; background-color:grey;" required></canvas>
+                        <br>
+                        <button  style="width:50%;" type="button" id="creator-clear-signature">Clear Signature</button>
+                        <input type="hidden" id="creator-signature" name="creator_signature" >
+            
+                        <label for="creator_signature_date">Date:</label>
+                        <input type="date" id="creator_signature_date" name="creator_signature_date" value="" required>
+                    </div>       
+            
+                    <!-- Submit Button -->
+                    <div class="section">
+                        <button id="submit" type="submit">Submit Consent Form</button>
+                    </div>
+            
+                </form>
+                @endif
+            </div>
+        </div>
+        
+    </div>
+</section>
+@endsection
+
+@section('javascript')
+    <script src="{{ asset('public/js/costar-consent-form.js') }}"></script>
+
+    <script>
+        function validateForm() {
+            let stageName = $('#creator_stage_name').val().trim();
+            let hasSpaces = /\s/.test(stageName);
+            let isTaken = $('#costar_stage_name_error').is(':visible');
+            let isInvalidFormat = $('#costar_stage_name_format').is(':visible');
+
+            // Disable submit button if name is taken, has spaces, or is too short
+            if (stageName.length < 3 || hasSpaces || isTaken || isInvalidFormat) {
+                $('#submit').prop('disabled', true);
+            } else {
+                $('#submit').prop('disabled', false);
+            }
+        }
+        $('#creator_stage_name').on('input', function () {
+            let stageName = $(this).val().trim();
+            let hasSpaces = /\s/.test(stageName);
+            let hasSymbols = /[^a-zA-Z0-9]/.test(stageName);
+
+            if (stageName.length < 3) {
+                $('#costar_stage_name_error').hide();
+                $('#costar_stage_name_format').hide();
+                validateForm();
+                return; // Don't check for very short names
+            }
+
+            if (hasSpaces) {
+                $('#costar_stage_name_format').show();
+            } else {
+                $('#costar_stage_name_format').hide();
+            }
+
+            // Show symbol warning
+            if (hasSymbols) {
+                $('#costar_stage_name_symbols').show();
+            } else {
+                $('#costar_stage_name_symbols').hide();
+            }
+
+            // AJAX request to check if the stage name exists
+            $.ajax({
+                url: '/check-costar-stage-name', // Your backend endpoint
+                type: 'GET',
+                data: { stage_name: stageName },
+                success: function (response) {
+                    if (response.exists) {
+                        $('#costar_stage_name_error').show();
+                    } else {
+                        $('#costar_stage_name_error').hide();
+                    }
+                    validateForm();
+                },
+                error: function () {
+                    console.error('Error checking stage name');
+                    validateForm();
+                }
+            });
+        });
+
+        // Initial check on page load (optional)
+        validateForm();
+    </script>
+
+@endsection

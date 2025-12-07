@@ -1,0 +1,658 @@
+{% extends "base.html" %} {% block title %}Fan Dashboard - FANZ{% endblock %} {%
+block content %}
+<div class="fan-dashboard-container">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Welcome Header -->
+      <div class="col-12">
+        <div class="welcome-banner mb-4">
+          <div class="card gradient-card">
+            <div class="card-body py-4">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h2 class="neon-text neon-pink mb-2">
+                    <i class="fas fa-heart me-2"></i>Welcome back, {{
+                    current_user.get_full_name() }}!
+                  </h2>
+                  <p class="lead text-secondary mb-2">
+                    Explore amazing content from creators across all clusters
+                  </p>
+                  <div class="user-stats">
+                    <span class="stat-item">
+                      <i class="fas fa-network-wired neon-cyan me-1"></i>
+                      {{ memberships | length }} Cluster{{ 's' if
+                      memberships|length != 1 else '' }}
+                    </span>
+                    <span class="stat-item">
+                      <i class="fas fa-calendar neon-green me-1"></i>
+                      Member since {{ current_user.created_at.strftime('%B %Y')
+                      }}
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div class="profile-avatar">
+                    {% if current_user.profile_image_url %}
+                    <img
+                      src="{{ current_user.profile_image_url }}"
+                      alt="Profile"
+                      class="avatar-img"
+                    />
+                    {% else %}
+                    <div class="avatar-placeholder">
+                      <i class="fas fa-user fa-3x"></i>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="col-12 mb-4">
+        <div class="quick-actions-card card">
+          <div class="card-header">
+            <h4 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <a
+                  href="{{ url_for('cluster_selection') }}"
+                  class="action-button"
+                >
+                  <div class="action-icon neon-cyan">
+                    <i class="fas fa-plus"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Join Clusters</h6>
+                    <p>Discover new communities</p>
+                  </div>
+                </a>
+              </div>
+              <div class="col-md-3">
+                <a href="#" class="action-button">
+                  <div class="action-icon neon-pink">
+                    <i class="fas fa-search"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Browse Creators</h6>
+                    <p>Find new STARs to follow</p>
+                  </div>
+                </a>
+              </div>
+              <div class="col-md-3">
+                <a href="#" class="action-button">
+                  <div class="action-icon neon-green">
+                    <i class="fas fa-star"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>My Subscriptions</h6>
+                    <p>Manage your follows</p>
+                  </div>
+                </a>
+              </div>
+              <div class="col-md-3">
+                <a href="#" class="action-button">
+                  <div class="action-icon neon-yellow">
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Messages</h6>
+                    <p>Chat with creators</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Clusters -->
+      {% if memberships %}
+      <div class="col-lg-8 mb-4">
+        <div class="my-clusters-card card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-network-wired me-2"></i>My Clusters
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="clusters-grid">
+              {% for membership in memberships %}
+              <div
+                class="cluster-item"
+                data-cluster="{{ membership.cluster_type.value }}"
+              >
+                <div class="cluster-header">
+                  <div
+                    class="cluster-icon {{ 'neon-cyan' if loop.index0 % 4 == 0 else 'neon-pink' if loop.index0 % 4 == 1 else 'neon-green' if loop.index0 % 4 == 2 else 'neon-yellow' }}"
+                  >
+                    {% if membership.cluster_type.value == 'boyfanz' %}
+                    <i class="fas fa-male"></i>
+                    {% elif membership.cluster_type.value == 'girlfanz' %}
+                    <i class="fas fa-female"></i>
+                    {% elif membership.cluster_type.value == 'tranzfanz' %}
+                    <i class="fas fa-transgender"></i>
+                    {% elif membership.cluster_type.value == 'allmyfanz' %}
+                    <i class="fas fa-star"></i>
+                    {% elif membership.cluster_type.value == 'fanztube' %}
+                    <i class="fas fa-video"></i>
+                    {% elif membership.cluster_type.value == 'fanzvarsity' %}
+                    <i class="fas fa-graduation-cap"></i>
+                    {% else %}
+                    <i class="fas fa-users"></i>
+                    {% endif %}
+                  </div>
+                  <div class="cluster-info">
+                    <h6 class="cluster-name">
+                      {{ membership.cluster_type.value.title() }}
+                    </h6>
+                    <small class="cluster-status">
+                      <i class="fas fa-circle text-success me-1"></i>Active
+                    </small>
+                  </div>
+                </div>
+                <div class="cluster-actions">
+                  <button class="btn btn-sm btn-primary">
+                    <i class="fas fa-eye me-1"></i>Browse
+                  </button>
+                  {% if membership.can_cross_post %}
+                  <span class="badge bg-success">
+                    <i class="fas fa-share-alt me-1"></i>Cross-post
+                  </span>
+                  {% endif %}
+                </div>
+                <div class="cluster-footer">
+                  <small class="text-muted">
+                    Joined {{ membership.joined_at.strftime('%b %Y') }}
+                  </small>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="col-lg-8 mb-4">
+        <div class="empty-clusters-card card">
+          <div class="card-body text-center py-5">
+            <i class="fas fa-network-wired fa-4x neon-cyan mb-3"></i>
+            <h5>No Clusters Joined Yet</h5>
+            <p class="text-secondary mb-4">
+              Join clusters to discover amazing content and connect with
+              creators
+            </p>
+            <a
+              href="{{ url_for('cluster_selection') }}"
+              class="btn btn-primary btn-lg"
+            >
+              <i class="fas fa-plus me-2"></i>Join Your First Cluster
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Activity Feed / Recent Updates -->
+      <div class="col-lg-4 mb-4">
+        <div class="activity-feed-card card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-bell me-2"></i>Recent Activity
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="activity-list">
+              <!-- Example activity items -->
+              <div class="activity-item">
+                <div class="activity-icon neon-green">
+                  <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-text">Welcome to FANZ!</p>
+                  <small class="activity-time"
+                    >{{ current_user.created_at.strftime('%H:%M') }}</small
+                  >
+                </div>
+              </div>
+
+              {% if current_user.verification_status.value == 'approved' %}
+              <div class="activity-item">
+                <div class="activity-icon neon-cyan">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-text">Account verified successfully</p>
+                  <small class="activity-time">Recent</small>
+                </div>
+              </div>
+              {% endif %} {% for membership in memberships[:3] %}
+              <div class="activity-item">
+                <div class="activity-icon neon-pink">
+                  <i class="fas fa-plus-circle"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-text">
+                    Joined {{ membership.cluster_type.value.title() }}
+                  </p>
+                  <small class="activity-time"
+                    >{{ membership.joined_at.strftime('%b %d') }}</small
+                  >
+                </div>
+              </div>
+              {% endfor %} {% if not memberships %}
+              <div class="empty-activity text-center py-4">
+                <i class="fas fa-rss fa-2x neon-cyan mb-2"></i>
+                <p class="text-muted">No recent activity</p>
+                <small>Join clusters to see updates here</small>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="col-12 mb-4">
+        <div class="recommendations-card card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-thumbs-up me-2"></i>Recommended For You
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="recommendations-grid">
+              <!-- Cluster Recommendations -->
+              <div class="recommendation-item">
+                <div class="rec-icon neon-cyan">
+                  <i class="fas fa-network-wired"></i>
+                </div>
+                <div class="rec-content">
+                  <h6>Explore More Clusters</h6>
+                  <p>Discover communities that match your interests</p>
+                  <a
+                    href="{{ url_for('cluster_selection') }}"
+                    class="btn btn-sm btn-outline-light"
+                  >
+                    <i class="fas fa-arrow-right me-1"></i>Browse
+                  </a>
+                </div>
+              </div>
+
+              <!-- Creator Recommendations -->
+              <div class="recommendation-item">
+                <div class="rec-icon neon-pink">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="rec-content">
+                  <h6>Find Top Creators</h6>
+                  <p>Follow popular STARs in your favorite clusters</p>
+                  <a href="#" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-arrow-right me-1"></i>Discover
+                  </a>
+                </div>
+              </div>
+
+              <!-- Content Recommendations -->
+              <div class="recommendation-item">
+                <div class="rec-icon neon-green">
+                  <i class="fas fa-fire"></i>
+                </div>
+                <div class="rec-content">
+                  <h6>Trending Content</h6>
+                  <p>Check out what's popular across the platform</p>
+                  <a href="#" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-arrow-right me-1"></i>View
+                  </a>
+                </div>
+              </div>
+
+              <!-- Feature Recommendations -->
+              <div class="recommendation-item">
+                <div class="rec-icon neon-yellow">
+                  <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="rec-content">
+                  <h6>Platform Features</h6>
+                  <p>Learn about messaging, subscriptions, and more</p>
+                  <a href="#" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-arrow-right me-1"></i>Learn
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .fan-dashboard-container {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 255, 0.05),
+      rgba(0, 255, 255, 0.05)
+    );
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  .gradient-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 255, 0.1),
+      rgba(0, 255, 255, 0.1)
+    );
+    border: 2px solid var(--neon-pink);
+  }
+
+  .user-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .profile-avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--neon-pink);
+    object-fit: cover;
+  }
+
+  .avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--neon-pink);
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neon-pink);
+  }
+
+  .action-button {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+
+  .action-button:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+    color: var(--text-primary);
+    transform: translateY(-3px);
+  }
+
+  .action-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .action-content h6 {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+
+  .action-content p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .clusters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .cluster-item {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .cluster-item:hover {
+    border-color: var(--neon-cyan);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+  }
+
+  .cluster-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .cluster-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+  }
+
+  .cluster-name {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+
+  .cluster-status {
+    color: var(--text-secondary);
+  }
+
+  .cluster-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .cluster-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+  }
+
+  .activity-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .activity-item:last-child {
+    border-bottom: none;
+  }
+
+  .activity-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .activity-text {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+  }
+
+  .activity-time {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+  }
+
+  .recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .recommendation-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+  }
+
+  .recommendation-item:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+  }
+
+  .rec-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .rec-content h6 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .rec-content p {
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+  }
+
+  .empty-activity {
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    .user-stats {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .clusters-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .recommendations-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .action-button {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .recommendation-item {
+      flex-direction: column;
+      text-align: center;
+      gap: 15px;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Add click handlers for cluster items
+      const clusterItems = document.querySelectorAll('.cluster-item');
+      clusterItems.forEach(item => {
+          item.addEventListener('click', function() {
+              const clusterType = this.dataset.cluster;
+              // Navigate to cluster content (placeholder)
+              window.NeonUtils.showNeonAlert(`Opening ${clusterType} cluster...`, 'info');
+          });
+      });
+
+      // Animate elements on load
+      const animatedElements = document.querySelectorAll('.cluster-item, .recommendation-item, .activity-item');
+      animatedElements.forEach((element, index) => {
+          element.style.opacity = '0';
+          element.style.transform = 'translateY(20px)';
+
+          setTimeout(() => {
+              element.style.transition = 'all 0.5s ease';
+              element.style.opacity = '1';
+              element.style.transform = 'translateY(0)';
+          }, index * 100);
+      });
+
+      // Welcome message for new users
+      const isNewUser = {{ 'true' if (current_user.created_at and (current_user.created_at - current_user.created_at).days < 1) else 'false' }};
+      const hasNoClusters = {{ 'true' if not memberships else 'false' }};
+
+      if (isNewUser && hasNoClusters) {
+          setTimeout(() => {
+              window.NeonUtils.showNeonAlert('Welcome to FANZ! Start by joining some clusters to discover amazing content.', 'info');
+          }, 2000);
+      }
+
+      // Auto-refresh activity feed
+      setInterval(function() {
+          // Placeholder for activity refresh
+          console.log('Checking for new activity...');
+      }, 60000);
+  });
+</script>
+{% endblock %}

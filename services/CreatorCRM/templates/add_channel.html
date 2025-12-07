@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Add Communication Channel - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('channels') }}">Channels</a></li>
+                <li class="breadcrumb-item active">Add Channel</li>
+            </ol>
+        </nav>
+        <h1 class="h2 mb-0">Add Communication Channel</h1>
+        <p class="text-muted">Connect a new messaging or video platform</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" id="channelForm">
+                    <!-- Channel Type Selection -->
+                    <div class="mb-4">
+                        <label for="channel_type" class="form-label">Platform Type</label>
+                        <select class="form-select" id="channel_type" name="channel_type" required onchange="updateChannelForm()">
+                            <option value="">Select a platform...</option>
+                            
+                            <optgroup label="📱 Messaging Platforms">
+                                <option value="sms" {% if channel_type == 'sms' %}selected{% endif %}>SMS (Twilio)</option>
+                                <option value="whatsapp" {% if channel_type == 'whatsapp' %}selected{% endif %}>WhatsApp Personal</option>
+                                <option value="telegram" {% if channel_type == 'telegram' %}selected{% endif %}>Telegram Bot</option>
+                                <option value="discord" {% if channel_type == 'discord' %}selected{% endif %}>Discord</option>
+                                <option value="email" {% if channel_type == 'email' %}selected{% endif %}>Personal Email</option>
+                                <option value="wechat" {% if channel_type == 'wechat' %}selected{% endif %}>WeChat</option>
+                                <option value="line" {% if channel_type == 'line' %}selected{% endif %}>Line</option>
+                                <option value="element_matrix" {% if channel_type == 'element_matrix' %}selected{% endif %}>Element (Matrix)</option>
+                            </optgroup>
+                            
+                            <optgroup label="🌐 Social Media">
+                                <option value="facebook_messenger" {% if channel_type == 'facebook_messenger' %}selected{% endif %}>Facebook Messenger</option>
+                                <option value="instagram" {% if channel_type == 'instagram' %}selected{% endif %}>Instagram Direct</option>
+                                <option value="x_twitter" {% if channel_type == 'x_twitter' %}selected{% endif %}>X (Twitter) DMs</option>
+                                <option value="reddit" {% if channel_type == 'reddit' %}selected{% endif %}>Reddit Messages</option>
+                                <option value="bluesky" {% if channel_type == 'bluesky' %}selected{% endif %}>BlueSky</option>
+                                <option value="twitch" {% if channel_type == 'twitch' %}selected{% endif %}>Twitch Chat/Whispers</option>
+                                <option value="tiktok" {% if channel_type == 'tiktok' %}selected{% endif %}>TikTok Messages</option>
+                                <option value="snapchat" {% if channel_type == 'snapchat' %}selected{% endif %}>Snapchat</option>
+                            </optgroup>
+                            
+                            <optgroup label="💼 Professional">
+                                <option value="linkedin" {% if channel_type == 'linkedin' %}selected{% endif %}>LinkedIn Messages</option>
+                                <option value="slack" {% if channel_type == 'slack' %}selected{% endif %}>Slack</option>
+                                <option value="teams" {% if channel_type == 'teams' %}selected{% endif %}>Microsoft Teams</option>
+                                <option value="zoom" {% if channel_type == 'zoom' %}selected{% endif %}>Zoom Chat</option>
+                                <option value="mattermost" {% if channel_type == 'mattermost' %}selected{% endif %}>Mattermost</option>
+                                <option value="rocketchat" {% if channel_type == 'rocketchat' %}selected{% endif %}>RocketChat</option>
+                            </optgroup>
+                            
+                            <optgroup label="📹 Video Platforms">
+                                <option value="getstream" {% if channel_type == 'getstream' %}selected{% endif %}>GetStream Chat & Video</option>
+                                <option value="agora_video" {% if channel_type == 'agora_video' %}selected{% endif %}>Agora Video</option>
+                                <option value="daily_video" {% if channel_type == 'daily_video' %}selected{% endif %}>Daily.co Video</option>
+                                <option value="twilio_video" {% if channel_type == 'twilio_video' %}selected{% endif %}>Twilio Video</option>
+                            </optgroup>
+                            
+                            <optgroup label="🔐 Specialized">
+                                <option value="rentmen" {% if channel_type == 'rentmen' %}selected{% endif %}>Rent.men</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- Channel Name -->
+                    <div class="mb-4">
+                        <label for="channel_name" class="form-label">Channel Name</label>
+                        <input type="text" class="form-control" id="channel_name" name="channel_name" 
+                               placeholder="e.g., My Business WhatsApp">
+                        <div class="form-text">Give this channel a memorable name for your reference</div>
+                    </div>
+
+                    <!-- Dynamic Configuration Fields -->
+                    <div id="configFields"></div>
+
+                    <!-- Submit Buttons -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i data-feather="plus" class="me-1"></i>Add Channel
+                        </button>
+                        <a href="{{ url_for('channels') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Configuration Templates -->
+<template id="sms-config">
+    <div class="mb-3">
+        <label class="form-label">Twilio Account SID</label>
+        <input type="text" class="form-control" name="config_account_sid" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Twilio Auth Token</label>
+        <input type="password" class="form-control" name="config_auth_token" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Twilio Phone Number</label>
+        <input type="tel" class="form-control" name="config_phone_number" placeholder="+1234567890" required>
+    </div>
+</template>
+
+<template id="whatsapp-config">
+    <div class="mb-3">
+        <label class="form-label">WhatsApp API URL</label>
+        <input type="url" class="form-control" name="config_api_url" placeholder="https://api.whatsapp.com" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">API Token</label>
+        <input type="password" class="form-control" name="config_api_token" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Instance ID</label>
+        <input type="text" class="form-control" name="config_instance_id" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <input type="tel" class="form-control" name="config_phone_number" placeholder="+1234567890" required>
+    </div>
+</template>
+
+<template id="getstream-config">
+    <div class="alert alert-info">
+        <i data-feather="info" class="me-2"></i>
+        <strong>GetStream Integration</strong> - Your favorite platform for chat and video!
+    </div>
+    <div class="mb-3">
+        <label class="form-label">GetStream API Key</label>
+        <input type="text" class="form-control" name="config_api_key" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">API Secret</label>
+        <input type="password" class="form-control" name="config_api_secret" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">App ID</label>
+        <input type="text" class="form-control" name="config_app_id" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">User Token</label>
+        <input type="text" class="form-control" name="config_user_token" required>
+    </div>
+    <div class="mb-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="config_video_enabled" value="true" checked>
+            <label class="form-check-label">Enable Video Calling</label>
+        </div>
+    </div>
+</template>
+
+<template id="agora_video-config">
+    <div class="mb-3">
+        <label class="form-label">Agora App ID</label>
+        <input type="text" class="form-control" name="config_app_id" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">App Certificate</label>
+        <input type="password" class="form-control" name="config_app_certificate" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Channel Name</label>
+        <input type="text" class="form-control" name="config_channel_name" placeholder="main-channel" required>
+    </div>
+</template>
+
+<template id="slack-config">
+    <div class="mb-3">
+        <label class="form-label">Bot Token</label>
+        <input type="password" class="form-control" name="config_bot_token" placeholder="xoxb-..." required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Signing Secret</label>
+        <input type="password" class="form-control" name="config_signing_secret" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Workspace ID</label>
+        <input type="text" class="form-control" name="config_workspace_id" required>
+    </div>
+</template>
+
+<template id="facebook_messenger-config">
+    <div class="mb-3">
+        <label class="form-label">Page Access Token</label>
+        <input type="password" class="form-control" name="config_page_access_token" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Page ID</label>
+        <input type="text" class="form-control" name="config_page_id" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">App Secret</label>
+        <input type="password" class="form-control" name="config_app_secret" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Verify Token</label>
+        <input type="text" class="form-control" name="config_verify_token" required>
+    </div>
+</template>
+
+<!-- Add more templates for other channel types as needed -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateChannelForm() {
+    const channelType = document.getElementById('channel_type').value;
+    const configFields = document.getElementById('configFields');
+    
+    // Clear existing fields
+    configFields.innerHTML = '';
+    
+    if (!channelType) return;
+    
+    // Get template for this channel type
+    const template = document.getElementById(channelType + '-config');
+    if (template) {
+        configFields.innerHTML = '<h5 class="mb-3">Configuration</h5>' + template.innerHTML;
+    } else {
+        // Generic configuration for platforms without specific templates
+        configFields.innerHTML = `
+            <h5 class="mb-3">Configuration</h5>
+            <div class="alert alert-info">
+                <i data-feather="info" class="me-2"></i>
+                This platform requires manual configuration. Please refer to the platform's API documentation.
+            </div>
+            <div class="mb-3">
+                <label class="form-label">API Key/Token</label>
+                <input type="password" class="form-control" name="config_api_key">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">API Secret</label>
+                <input type="password" class="form-control" name="config_api_secret">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Additional Configuration (JSON)</label>
+                <textarea class="form-control" name="config_json" rows="4" placeholder='{"key": "value"}'></textarea>
+                <div class="form-text">Add any additional configuration parameters in JSON format</div>
+            </div>
+        `;
+    }
+    
+    // Update channel name placeholder
+    const channelNameInput = document.getElementById('channel_name');
+    const channelTypeText = document.querySelector(`option[value="${channelType}"]`).textContent;
+    channelNameInput.placeholder = `My ${channelTypeText} Channel`;
+    
+    // Refresh feather icons
+    feather.replace();
+}
+
+// Initialize form if channel type is pre-selected
+document.addEventListener('DOMContentLoaded', function() {
+    updateChannelForm();
+    feather.replace();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,82 @@
+$ pnpm run lint && pnpm run build
+
+> shadcnui@ lint /workspace/shadcn-ui
+> eslint --quiet ./src
+
+
+/workspace/shadcn-ui/src/lib/api.ts
+    2:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   12:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   12:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  243:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  243:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  259:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  259:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  267:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  267:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  281:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  281:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  289:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  289:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  305:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  305:54  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  312:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  312:57  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  320:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  320:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  332:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  332:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  347:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  347:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  355:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  355:59  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  367:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  367:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  380:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  380:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  395:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  395:55  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  405:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  405:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  413:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  413:57  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  427:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  427:59  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  438:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  438:54  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  452:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  452:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  464:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  464:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  478:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  478:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  489:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  489:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  505:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  505:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  517:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  517:55  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/workspace/shadcn-ui/src/lib/database.ts
+  108:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/workspace/shadcn-ui/src/lib/deployment.ts
+  145:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/workspace/shadcn-ui/src/lib/webhooks.ts
+    5:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:36  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  122:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  122:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  137:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  137:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  284:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  289:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  298:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 65 problems (65 errors, 0 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,391 @@
+let’s gooo 🔥 this is the finished, copy-paste build directive for Replit AI (or any agent) to stand up FANZ Forge end-to-end. drop it in verbatim.
+
+⸻
+
+SYSTEM / PROJECT DIRECTIVE — “FANZ Forge” (Prompt-to-Prod App Factory)
+
+You are an autonomous build agent. Your job is to produce a working platform (monorepo) that converts natural-language prompts into production-ready web apps for the FANZ ecosystem. Follow this spec exactly. When a choice exists, pick the option that ships the fastest while preserving security/compliance.
+
+OBJECTIVE
+
+Build FANZ Forge: a Replit-style platform for non-devs that turns prompts into deployable apps with one click. Must support no-code UI composition, a low-code YAML DSL (VibeSpec), AI scaffolding, instant previews, zero-touch prod deploys, and single sign-on to FANZ Identity and FanzLab 2.0.
+
+NON-NEGOTIABLES
+	•	Prod-ready by default: containerized, CI/CD, HTTPS, env-secrets, logs, metrics, error tracking.
+	•	Zero lock-in: every generated app exports as Docker + Terraform + DB migrations.
+	•	Guardrails: SCA + license audit, OWASP baseline scan, SBOM on every build, pinned deps.
+	•	SSO: OIDC/OAuth2 to FANZ Identity, org/workspace roles (Owner/Admin/Builder/Viewer).
+
+CORE CAPABILITIES
+	1.	Prompt→App (AI Build Pipeline)
+	•	Input: plain English → compile to VibeSpec (YAML) → generate code (Next.js/Node or FastAPI/Python selectable).
+	•	Templates + patchable recipes: auth, CRUD, payments, media, chat, 2257-ready uploader.
+	•	Auto tests: unit + e2e smoke scaffolded per app.
+	2.	No-Code Composer
+	•	Drag-drop blocks (cards, forms, tables, charts, media, chat, paywall, SSO).
+	•	Data bindings to Postgres or REST/GraphQL.
+	•	Flow editor (state machine) for onboarding, checkout, DM paywall, 2257 verify.
+	3.	One-Click Deploy
+	•	Ephemeral previews + prod envs.
+	•	Provisioners: Postgres (Neon/Cloud SQL), S3/MinIO, Redis, queue, CDN (Cloudflare).
+	•	Domains + TLS auto, blue/green deploys, rollbacks.
+	4.	Observability & Ops
+	•	OTel logs/metrics/traces; Sentry-compatible errors.
+	•	Live tail + “Fix-with-AI” autocreate PRs.
+	5.	Marketplace / Plugins
+	•	Blocks for: Auth, CCBill/NMI/Stripe, Messaging, Livestream, ML moderation, 2257 pipeline, Affiliate/MLM, Coupons/Time-bomb links, Analytics.
+	6.	Compliance & Safety
+	•	18 U.S.C. §2257 aware uploader, age-check hooks, co-star tagging, audit logs, kill-switch vault.
+	•	PII handling, DPA templates, RBAC data access, geo-blocking.
+
+ARCHITECTURE (MVP)
+	•	apps/platform: Next.js + Tailwind + shadcn/ui (TypeScript) — no-code canvas + VibeSpec editor.
+	•	services/builder: NestJS (Node) — auth, orgs/projects, builds, exports, webhooks.
+	•	services/codegen: FastAPI (Python) — LLM router, recipe engine, template merger, security lints.
+	•	services/runner: Go (Fiber) — build orchestration, Docker, previews, deploys.
+	•	infra: Terraform modules; registry; MinIO/S3; Redis; Postgres; Cloudflare.
+	•	identity: OIDC against Keycloak/ORY or existing FANZ IdP (configurable).
+
+DATA MODEL (Platform)
+
+Tables (Postgres):
+users(id, email, name, roles, org_id, sso_sub)
+orgs(id, name, plan, billing_id)
+projects(id, org_id, name, template, status)
+builds(id, project_id, git_ref, docker_image, status, logs_url)
+env_vars(id, project_id, key, value_ref, scope)
+plugins(id, name, version, manifest)
+audits(id, actor, action, target, ip, user_agent, diff, created_at)
+
+Deliver DDL (SQL) for these tables and apply via migration tool (Drizzle for Node services; Alembic for Python).
+
+SSO (OIDC) — REQUIRED ENV
+
+Use these across platform + generated apps:
+
+OIDC_ISSUER_URL=
+OIDC_CLIENT_ID=
+OIDC_CLIENT_SECRET=
+OIDC_SCOPES=openid profile email
+OIDC_REDIRECT_URI=https://forge.fanz.app/api/auth/callback
+JWKS_CACHE_TTL=3600
+
+Role mapping: Owner, Admin, Builder, Viewer via OIDC claims realm_access.roles or a custom fanz_roles claim.
+
+FanzLab 2.0 WEBHOOK CONTRACT
+
+POST JSON with HMAC header X-Fanz-Signature (sha256=...):
+
+{ "event":"build.started|build.succeeded|build.failed|deploy.succeeded|audit.created",
+  "project_id":"uuid",
+  "build_id":"uuid",
+  "org_id":"uuid",
+  "ts":"iso8601",
+  "data":{ "docker_image":"...", "logs_url":"...", "actor":"user@fanz.app" } }
+
+Secrets:
+
+FANZLAB_WEBHOOK_URL=
+FANZLAB_WEBHOOK_SECRET=
+
+BUILDER API (OpenAPI Summary)
+	•	POST /api/orgs create org
+	•	POST /api/projects create project (body: name, template, vibespec)
+	•	POST /api/builds start build (project_id, stack)
+	•	GET /api/builds/{id} status/logs
+	•	POST /api/exports produce zip (source + Terraform + compose + migrations)
+	•	POST /api/deploy one-click deploy (env, domain, provisioners)
+	•	POST /api/env set secrets (scoped)
+	•	GET /api/audits stream audits (cursor)
+
+Return shapes MUST include id, status, links.preview, links.logs, links.export.
+
+VIBESPEC (DSL) — SCHEMA (min)
+
+app.name: string
+app.stack: enum[nextjs-node, fastapi-python]
+app.auth: enum[oidc, none]
+app.database: enum[postgres, none]
+app.storage: enum[s3, none]
+features: list[feature]
+ui.pages: list[path: components]
+ops.deploy: enum[preview, prod]
+ops.domain: string
+observability: { errors: bool, traces: bool, logs: bool }
+security: { cors: list, rate_limit: string }
+
+STARTER VIBESPEC — Creator Paywall + DM Tips (FANZ-ready)
+
+app:
+  name: creator-paywall-dm
+  stack: nextjs-node
+  auth: oidc
+  database: postgres
+  storage: s3
+features:
+  - membership: { tiers: [Free, Bronze, Silver, Gold], gating: "per-page|component" }
+  - dm: { ppv_messages: true, tip_to_unlock: true, receipts: true }
+  - media:
+      upload_policy: 2257_ready
+      cosign_required: true
+      watermark: "FANZ"
+  - payments: { providers: [ccbill, nmi], currency: USD }
+  - analytics: { dashboard: basic }
+  - coupons: { timebomb_links: true, max_claims: 1, expires_in: "24h" }
+ui:
+  pages:
+    - /: hero, feed.cards(gated), subscribe.drawer
+    - /inbox: auth.required, dm.threadlist, dm.composer(ppv=true,tips=true)
+    - /admin: auth.required, table(Member), table(Transactions), table(Media), settings(2257)
+ops:
+  deploy: prod
+  domain: paywall.fanz.app
+  observability: { errors: on, traces: on, logs: on }
+security:
+  cors: ["*.fanz.app"]
+  rate_limit: "120r/m"
+
+REPO FILE TREE (MONOREPO)
+
+fanz-forge/
+  apps/
+    platform/               # Next.js UI (no-code canvas + VibeSpec editor)
+      app/
+      components/
+      lib/oidc/
+      lib/vibespec/
+      pages/api/
+      public/
+    templates/
+      nextjs-node/          # base template with auth, CRUD, paywall block
+      fastapi-python/       # HTMX-ready template + 2257 uploader flow
+      blocks/               # paywall, dm, media, coupons, analytics, 2257
+  services/
+    builder/                # NestJS
+      src/
+      prisma/               # if used
+      openapi.yaml
+    codegen/                # FastAPI
+      app/
+      recipes/
+      linters/
+      templates/
+    runner/                 # Go
+      cmd/
+      internal/
+      docker/
+  packages/
+    sdk-js/                 # client for Builder API
+    sdk-py/
+  infra/
+    terraform/
+      modules/
+        postgres/
+        s3_minio/
+        redis/
+        cloudflare/
+        k8s_registry/
+      envs/
+        preview/
+        prod/
+  .github/workflows/
+    ci.yaml
+    security.yaml
+  Makefile
+  docker-compose.yml
+  README.md
+  LICENSE
+
+MAKEFILE (TOP-LEVEL)
+
+.PHONY: bootstrap dev test build up down export sbom
+
+bootstrap: ## install toolchains
+	@corepack enable || true
+	@npm i -g pnpm@9 || true
+	@pip install -U pip wheel poetry || true
+
+dev:
+	@pnpm -C apps/platform dev
+
+test:
+	@pnpm -C apps/platform test
+	@pnpm -C services/builder test
+	@poetry run pytest services/codegen
+	@go test ./services/runner/...
+
+build:
+	@docker compose build
+
+up:
+	@docker compose up -d
+
+down:
+	@docker compose down
+
+export:
+	@node scripts/export-project.mjs
+
+sbom:
+	@syft packages dir:. -o cyclonedx-json > sbom.json
+
+GITHUB ACTIONS — ci.yaml (ESSENTIAL STEPS)
+
+name: CI
+on: [push, pull_request]
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: corepack enable
+      - run: pnpm -v || npm i -g pnpm@9
+      - run: pnpm -C apps/platform i && pnpm -C apps/platform test
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -U pip poetry
+      - run: poetry install -C services/codegen
+      - run: poetry run pytest services/codegen
+
+      - uses: actions/setup-go@v5
+        with: { go-version: "1.22" }
+      - run: go test ./services/runner/...
+
+      - name: Build Docker
+        run: docker build -t forge/builder ./services/builder
+
+      - name: SBOM
+        uses: anchore/sbom-action@v0
+        with: { path: ".", format: cyclonedx-json, artifact-name: sbom.json }
+
+      - name: OWASP ZAP Baseline
+        uses: zaproxy/action-baseline@v0.12.0
+        with: { target: "http://localhost:3000", rules_file_name: ".zap/rules.tsv" }
+
+      - name: Secret Scan
+        uses: gitleaks/gitleaks-action@v2
+
+DOCKERFILES (EXCERPTS)
+
+services/builder/Dockerfile
+
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY . .
+CMD ["node","dist/main.js"]
+
+services/codegen/Dockerfile
+
+FROM python:3.11-slim
+WORKDIR /app
+COPY pyproject.toml poetry.lock* ./
+RUN pip install --no-cache-dir poetry && poetry install --no-root --only main
+COPY . .
+CMD ["poetry","run","uvicorn","app.main:app","--host","0.0.0.0","--port","8000"]
+
+services/runner/Dockerfile
+
+FROM golang:1.22-alpine AS build
+WORKDIR /src
+COPY . .
+RUN go build -o /runner ./cmd/runner
+FROM alpine:3.20
+COPY --from=build /runner /runner
+ENTRYPOINT ["/runner"]
+
+ENV & SECRETS — .env.example
+
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=postgres://user:pass@host:5432/forge?sslmode=require
+REDIS_URL=redis://redis:6379
+S3_ENDPOINT=https://s3.amazonaws.com
+S3_BUCKET=fanz-forge
+S3_ACCESS_KEY=
+S3_SECRET_KEY=
+REGISTRY_URL=
+REGISTRY_USERNAME=
+REGISTRY_PASSWORD=
+CLOUDFLARE_API_TOKEN=
+CLOUDFLARE_ZONE_ID=
+OIDC_ISSUER_URL=
+OIDC_CLIENT_ID=
+OIDC_CLIENT_SECRET=
+FANZLAB_WEBHOOK_URL=
+FANZLAB_WEBHOOK_SECRET=
+SENTRY_DSN=
+OTEL_EXPORTER_OTLP_ENDPOINT=
+
+2257 / COMPLIANCE HOOKS
+	•	Uploader contract: every media POST requires age_verified:boolean, performer_ids:list, verification_refs:list, shoot_date, location_code, custodian_id.
+	•	Audit: write immutable audit rows for uploads, edits, approvals (audits.diff holds JSON patch).
+	•	Kill-switch vault: S3 prefix vault/illegal/* with KMS bucket key + access deny at WAF.
+
+PLUGIN MANIFEST (Marketplace)
+
+{
+  "name":"payments-ccbill",
+  "version":"1.0.0",
+  "type":"payment",
+  "env":["CCBILL_CLIENT_ACCOUNT","CCBILL_SUBACCOUNT","CCBILL_DATALINK_KEY"],
+  "routes":[{"path":"/api/payments/callback","method":"POST"}],
+  "ui_blocks":["paywall.button","subscription.card"],
+  "permissions":["transactions:write","webhooks:read"]
+}
+
+OBSERVABILITY DEFAULTS
+	•	OTel auto-instrumentation in Node/Python/Go, OTEL_SERVICE_NAME per service.
+	•	/healthz and /metrics endpoints.
+	•	Sentry DSN wired via env; 1 sample error seeded on first request in preview.
+
+TEST PLAN (MUST PASS)
+	•	E2E: Prompt → VibeSpec → Build → Preview → Deploy → Export → docker compose up works locally with seed data.
+	•	Security: ZAP baseline no high severity; dependency & license scan pass; gitleaks 0 findings.
+	•	Load: k6 smoke at 200 VUs for 60s on preview; autoscale triggers.
+
+DELIVERABLES (MVP ACCEPTANCE)
+	1.	Create project → author VibeSpec → preview URL < 3 min.
+	2.	One-click “Deploy to Prod” with HTTPS, domain, Postgres, S3, Redis, metrics.
+	3.	Export zip contains source + Terraform + compose + migrations + README runbook.
+	4.	Templates shipped: Membership/Paywall, DM Paywall, CRUD Admin.
+	5.	Logs, errors, traces visible immediately.
+	6.	FanzLab webhooks fire for build lifecycle; audit written for all actions.
+
+MILESTONES
+	•	M0 (Week 1): Scaffolding, auth, org/projects, VibeSpec parser, 2 templates.
+	•	M1 (Week 2): CodeGen v1, build runner, previews, exports.
+	•	M2 (Week 3): One-click deploys, provisioners, observability.
+	•	M3 (Week 4): Marketplace, coupons/time-bomb links, FANZ SSO + FanzLab hooks, compliance checks.
+
+QUICK START (AGENT CHECKLIST)
+	1.	Create monorepo file tree above.
+	2.	Implement VibeSpec parser + two base templates.
+	3.	Wire Builder→Codegen→Runner pipeline with Docker builds + preview envs.
+	4.	Provision Postgres/Redis/S3 via Terraform (preview + prod).
+	5.	Configure OIDC (FANZ Identity) + map roles.
+	6.	Register FanzLab webhooks + send signed events.
+	7.	Ship CI (build/test/sbom/owasp/secret-scan) + CD (preview & prod).
+	8.	Demo with Creator Paywall + DM Tips VibeSpec.
+
+⸻
+
+(Bonus) Starter repo seeds to generate now
+	•	apps/templates/nextjs-node includes: auth route handlers, paywall block, DM drawer, S3 uploader with 2257 metadata form, analytics stub, Stripe + CCBill adapters, Drizzle migrations.
+	•	apps/templates/fastapi-python includes: HTMX pages, login, media uploader, Celery tasks, Alembic migrations.
+	•	infra/terraform/envs/preview provisions: Neon DB, MinIO, Redis, Cloudflare DNS for *.preview.fanz.app.
+
+⸻
+
+DONE-DONE / DEFINITION OF READY
+	•	New org can create a project, paste the starter VibeSpec, click Build, open preview, click Deploy, get a working HTTPS app at domain, export the zip, and run it locally with docker compose up using the included .env.example.
+
+⸻
+
+That’s the playbook.
+
+If you want, I can also drop in a repo README and the first migration files for the platform tables so your agent can literally hit the ground running.

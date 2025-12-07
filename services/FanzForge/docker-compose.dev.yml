@@ -1,0 +1,196 @@
+# FANZ Cross-Platform Ad System - Development Docker Compose
+# Extended configuration for local development with all services
+
+version: '3.8'
+
+services:
+  # PostgreSQL database with FANZ ad system schema
+  postgres:
+    image: postgres:16-alpine
+    container_name: fanz-postgres-dev
+    environment:
+      POSTGRES_DB: fanz_ads_dev
+      POSTGRES_USER: fanz_dev
+      POSTGRES_PASSWORD: fanz_dev_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=en_US.UTF-8 --lc-ctype=en_US.UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+      - ./database/schema:/schema
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fanz_dev -d fanz_ads_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: fanz-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+
+  # Ad Service (Express.js backend)
+  ad-service:
+    build:
+      context: .
+      dockerfile: services/ad-service/Dockerfile.dev
+    container_name: fanz-ad-service-dev
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      DATABASE_URL: postgresql://fanz_dev:fanz_dev_password@postgres:5432/fanz_ads_dev
+      REDIS_URL: redis://redis:6379
+      FANZ_ENV: development
+      FANZ_LOG_LEVEL: debug
+      DEBUG: fanz:*
+    ports:
+      - "4000:4000"
+      - "9229:9229"  # Node.js debugging port
+    volumes:
+      - ./services/ad-service:/app
+      - /app/node_modules
+      - ./packages:/packages:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+    command: ["pnpm", "dev:debug"]
+
+  # Demo App (Next.js frontend)
+  demo-app:
+    build:
+      context: .
+      dockerfile: apps/fanz-ads-demo/Dockerfile.dev
+    container_name: fanz-demo-app-dev
+    environment:
+      NODE_ENV: development
+      PORT: 3100
+      NEXT_PUBLIC_ADS_API: http://localhost:4000
+      NEXTAUTH_URL: http://localhost:3100
+      NEXTAUTH_SECRET: dev-secret-change-in-production
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./apps/fanz-ads-demo:/app
+      - /app/.next
+      - /app/node_modules
+      - ./packages:/packages:ro
+    depends_on:
+      - ad-service
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+    command: ["pnpm", "dev"]
+
+  # Mailhog for development email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: fanz-mailhog-dev
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+
+  # MinIO for S3-compatible object storage
+  minio:
+    image: minio/minio:latest
+    container_name: fanz-minio-dev
+    environment:
+      MINIO_ROOT_USER: fanz-dev
+      MINIO_ROOT_PASSWORD: fanz-dev-password-123
+      MINIO_DEFAULT_BUCKETS: fanz-creatives-dev,fanz-uploads-dev
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    volumes:
+      - minio_dev_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: fanz-prometheus-dev
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_dev_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+
+  # Grafana for metrics visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: fanz-grafana-dev
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: fanz-dev
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_dev_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - fanz-dev-network
+    restart: unless-stopped
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+  minio_dev_data:
+    driver: local
+  prometheus_dev_data:
+    driver: local
+  grafana_dev_data:
+    driver: local
+
+networks:
+  fanz-dev-network:
+    driver: bridge
+    name: fanz-dev-network

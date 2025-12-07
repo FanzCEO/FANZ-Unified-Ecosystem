@@ -1,0 +1,507 @@
+{% extends "base.html" %} {% block title %}Scene Consent - FANZ{% endblock %} {%
+block content %}
+<div class="consent-form-container">
+  <div class="container">
+    <div class="row justify-content-center py-5">
+      <div class="col-lg-8">
+        <div class="consent-card card">
+          <div class="card-header text-center">
+            <h2 class="neon-text neon-orange mb-3">
+              <i class="fas fa-handshake me-2"></i>Scene Consent Form
+            </h2>
+            <p class="text-secondary">
+              Consent is required for participation in:
+              <strong>{{ scene.title }}</strong>
+            </p>
+          </div>
+
+          <div class="card-body p-4">
+            <!-- Scene Information -->
+            <div class="scene-info mb-4">
+              <div class="card bg-secondary bg-opacity-10">
+                <div class="card-body">
+                  <h5 class="neon-text neon-cyan mb-3">
+                    <i class="fas fa-video me-2"></i>Scene Details
+                  </h5>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p><strong>Title:</strong> {{ scene.title }}</p>
+                      <p>
+                        <strong>Type:</strong> {{ scene.content_type.title() }}
+                      </p>
+                      <p>
+                        <strong>Creator:</strong> {{ scene.creator.username }}
+                      </p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>
+                        <strong>Created:</strong> {{
+                        scene.created_at.strftime('%Y-%m-%d') }}
+                      </p>
+                      <p>
+                        <strong>Participants:</strong> {{
+                        scene.participants|length }}
+                      </p>
+                    </div>
+                  </div>
+                  {% if scene.description %}
+                  <p><strong>Description:</strong></p>
+                  <p class="text-muted">{{ scene.description }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Consent Form -->
+            <form method="POST" class="consent-form">
+              {{ form.hidden_tag() }} {{ form.scene_id() }}
+
+              <!-- Legal Requirements -->
+              <div class="legal-section mb-4">
+                <h5 class="neon-text neon-pink mb-3">
+                  <i class="fas fa-gavel me-2"></i>Legal Requirements
+                </h5>
+
+                <div class="legal-notice">
+                  <div class="alert alert-warning">
+                    <h6>
+                      <i class="fas fa-exclamation-triangle me-2"></i>Important
+                      Notice
+                    </h6>
+                    <p class="mb-2">
+                      By participating in this scene, you acknowledge and agree
+                      that:
+                    </p>
+                    <ul class="mb-0">
+                      <li>You are at least 18 years of age</li>
+                      <li>You have completed identity verification</li>
+                      <li>You consent to being recorded/photographed</li>
+                      <li>
+                        Content may be distributed across multiple platforms
+                      </li>
+                      <li>You understand 2257 record-keeping requirements</li>
+                      <li>You have read and agreed to all platform policies</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Participant Role -->
+              <div class="role-section mb-4">
+                <h5 class="neon-text neon-green mb-3">
+                  <i class="fas fa-user-tag me-2"></i>Your Role in This Scene
+                </h5>
+
+                <div class="form-group">
+                  {{ form.role_in_scene.label(class="form-label") }} {{
+                  form.role_in_scene(class="form-select") }}
+                  <div class="form-text text-muted">
+                    Select your role in this scene for proper attribution and
+                    records
+                  </div>
+                </div>
+              </div>
+
+              <!-- Consent Agreement -->
+              <div class="consent-section mb-4">
+                <h5 class="neon-text neon-yellow mb-3">
+                  <i class="fas fa-signature me-2"></i>Digital Consent
+                </h5>
+
+                <div class="consent-text">
+                  <div class="card bg-dark bg-opacity-25 border-warning">
+                    <div class="card-body">
+                      <p class="text-warning fw-bold mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Please read carefully before agreeing
+                      </p>
+
+                      <div class="consent-details">
+                        <p>
+                          I,
+                          <strong>{{ current_user.get_full_name() }}</strong>
+                          (username: {{ current_user.username }}), hereby
+                          provide my explicit consent to participate in the
+                          scene titled "<strong>{{ scene.title }}</strong>".
+                        </p>
+
+                        <p>I understand and acknowledge that:</p>
+                        <ul>
+                          <li>
+                            This consent is being given voluntarily and without
+                            coercion
+                          </li>
+                          <li>
+                            I have the right to withdraw consent at any time
+                            before or during filming
+                          </li>
+                          <li>
+                            My participation will be recorded and may be
+                            distributed commercially
+                          </li>
+                          <li>
+                            Proper 2257 records will be maintained for this
+                            content
+                          </li>
+                          <li>
+                            I am legally authorized to enter into this agreement
+                          </li>
+                          <li>
+                            I have verified my identity through the platform's
+                            verification system
+                          </li>
+                          <li>
+                            All participants in this scene are 18+ years of age
+                            and verified
+                          </li>
+                        </ul>
+
+                        <p>
+                          This digital consent is equivalent to a written
+                          signature and is legally binding. The consent is
+                          timestamped and recorded with forensic-level detail
+                          for compliance purposes.
+                        </p>
+
+                        <div
+                          class="forensic-info mt-3 p-3 bg-secondary bg-opacity-25 rounded"
+                        >
+                          <small class="text-muted">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            <strong>Forensic Information:</strong> This consent
+                            will be recorded with your IP address, device
+                            fingerprint, timestamp, and geolocation for legal
+                            compliance and audit purposes.
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-check mt-4">
+                  {{ form.consent_agreement(class="form-check-input
+                  required-consent") }} {{
+                  form.consent_agreement.label(class="form-check-label fw-bold")
+                  }}
+                </div>
+              </div>
+
+              <!-- Signature Section -->
+              <div class="signature-section mb-4">
+                <h6 class="neon-text neon-purple mb-3">
+                  <i class="fas fa-pen-nib me-2"></i>Digital Signature
+                </h6>
+
+                <div class="signature-info">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p>
+                        <strong>Full Name:</strong> {{
+                        current_user.get_full_name() }}
+                      </p>
+                      <p>
+                        <strong>Username:</strong> {{ current_user.username }}
+                      </p>
+                    </div>
+                    <div class="col-md-6">
+                      <p>
+                        <strong>Date:</strong> <span id="current-date"></span>
+                      </p>
+                      <p>
+                        <strong>Time:</strong> <span id="current-time"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="form-actions text-center">
+                <button
+                  type="submit"
+                  class="btn btn-success btn-lg px-5 glow-pulse"
+                  id="consent-btn"
+                  disabled
+                >
+                  <i class="fas fa-signature me-2"></i>Provide Digital Consent
+                </button>
+                <p class="text-muted mt-3">
+                  <i class="fas fa-lock me-2"></i>
+                  Your consent is recorded with forensic-level security and
+                  encryption
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Participant Status -->
+        <div class="participants-status card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-users me-2"></i>Scene Participants
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="participants-list">
+              {% for participant in scene.participants %}
+              <div class="participant-item">
+                <div class="participant-avatar">
+                  <i class="fas fa-user"></i>
+                </div>
+                <div class="participant-info">
+                  <h6>{{ participant.user.username }}</h6>
+                  <p class="text-muted mb-1">
+                    {{ participant.role or 'Participant' }}
+                  </p>
+                  <small class="text-muted">
+                    Added: {{ participant.added_at.strftime('%Y-%m-%d %H:%M') }}
+                  </small>
+                </div>
+                <div class="participant-status">
+                  {% if participant.has_consent %}
+                  <span class="status-badge status-approved">
+                    <i class="fas fa-check me-1"></i>Consented
+                  </span>
+                  <br /><small class="text-success">
+                    {{ participant.consent_timestamp.strftime('%Y-%m-%d %H:%M')
+                    }}
+                  </small>
+                  {% else %} {% if participant.user_id == current_user.id %}
+                  <span class="status-badge status-pending">
+                    <i class="fas fa-clock me-1"></i>Pending (You)
+                  </span>
+                  {% else %}
+                  <span class="status-badge status-pending">
+                    <i class="fas fa-clock me-1"></i>Pending
+                  </span>
+                  {% endif %} {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+
+            {% if not scene.can_publish %}
+            <div class="alert alert-info mt-3">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>Scene Status:</strong> This scene cannot be published
+              until all participants provide consent and are verified.
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .consent-form-container {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 136, 0, 0.05),
+      rgba(255, 0, 255, 0.05)
+    );
+    min-height: 100vh;
+  }
+
+  .consent-card {
+    background: var(--card-bg);
+    border: 2px solid var(--neon-orange);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(255, 136, 0, 0.3);
+  }
+
+  .legal-notice {
+    background: rgba(255, 193, 7, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+  }
+
+  .consent-text .card {
+    border-color: rgba(255, 193, 7, 0.5);
+  }
+
+  .consent-details ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  .consent-details li {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .consent-details li:before {
+    content: "✓";
+    color: var(--neon-green);
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .forensic-info {
+    border: 1px solid rgba(0, 255, 255, 0.3);
+  }
+
+  .signature-info {
+    background: rgba(136, 0, 255, 0.1);
+    border: 1px solid rgba(136, 0, 255, 0.3);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .participants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .participant-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+  }
+
+  .participant-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    color: var(--dark-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .participant-info {
+    flex: 1;
+  }
+
+  .participant-info h6 {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+
+  .participant-status {
+    text-align: right;
+  }
+
+  #consent-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .participant-item {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .participant-status {
+      text-align: center;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".consent-form");
+    const consentBtn = document.getElementById("consent-btn");
+    const consentCheckbox = document.querySelector(".required-consent");
+
+    // Update current date and time
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById("current-date").textContent =
+        now.toLocaleDateString();
+      document.getElementById("current-time").textContent =
+        now.toLocaleTimeString();
+    }
+
+    updateDateTime();
+    setInterval(updateDateTime, 1000); // Update every second
+
+    // Enable/disable consent button
+    function checkConsent() {
+      consentBtn.disabled = !consentCheckbox.checked;
+      if (consentCheckbox.checked) {
+        consentBtn.classList.add("glow-pulse");
+      } else {
+        consentBtn.classList.remove("glow-pulse");
+      }
+    }
+
+    consentCheckbox.addEventListener("change", checkConsent);
+
+    // Form submission
+    form.addEventListener("submit", function (e) {
+      if (!consentCheckbox.checked) {
+        e.preventDefault();
+        window.NeonUtils.showNeonAlert(
+          "You must provide consent to participate in this scene.",
+          "warning",
+        );
+        return;
+      }
+
+      const roleSelect = form.querySelector('select[name="role_in_scene"]');
+      if (!roleSelect.value) {
+        e.preventDefault();
+        window.NeonUtils.showNeonAlert(
+          "Please select your role in this scene.",
+          "warning",
+        );
+        return;
+      }
+
+      // Show confirmation dialog
+      if (
+        !confirm(
+          "Are you sure you want to provide consent for this scene? This action cannot be undone.",
+        )
+      ) {
+        e.preventDefault();
+        return;
+      }
+
+      // Disable button and show loading state
+      consentBtn.disabled = true;
+      consentBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Recording Consent...';
+
+      // Show success message
+      window.NeonUtils.showNeonAlert(
+        "Digital consent recorded successfully with forensic-level security.",
+        "success",
+      );
+    });
+
+    // Add warning when leaving page
+    let consentGiven = false;
+
+    form.addEventListener("submit", function () {
+      consentGiven = true;
+    });
+
+    window.addEventListener("beforeunload", function (e) {
+      if (consentCheckbox.checked && !consentGiven) {
+        e.preventDefault();
+        e.returnValue =
+          "You have checked the consent box but not submitted. Are you sure you want to leave?";
+        return e.returnValue;
+      }
+    });
+
+    // Initial check
+    checkConsent();
+  });
+</script>
+{% endblock %}

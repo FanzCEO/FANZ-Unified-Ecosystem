@@ -1,0 +1,40 @@
+$ cd /workspace/shadcn-ui && find src/pages -name "*.tsx" -type f
+src/pages/Admin.tsx
+src/pages/AdminPanel.tsx
+src/pages/Compliance.tsx
+src/pages/Dashboard.tsx
+src/pages/Index.tsx
+src/pages/MobileCompliance.tsx
+src/pages/MobileDashboard.tsx
+src/pages/MobileProfile.tsx
+src/pages/MobileScheduler.tsx
+src/pages/MobileUpload.tsx
+src/pages/NotFound.tsx
+src/pages/Scheduler.tsx
+src/pages/Upload.tsx
+$ cd /workspace/shadcn-ui && find src/components -name "*.tsx" -type f | grep -E "(Navigation|Dashboard|CRM|Analytics|Cloud)" | head -20
+
+src/components/AnalyticsReporting.tsx
+src/components/CRMDashboard.tsx
+src/components/CloudStorageManager.tsx
+src/components/MobileNavigation.tsx
+src/components/Navigation.tsx
+$ pnpm run lint && pnpm run build
+
+
+> shadcnui@ lint /workspace/shadcn-ui
+> eslint --quiet ./src
+
+
+> shadcnui@ build /workspace/shadcn-ui
+> vite build
+
+vite v5.4.19 building for production...
+transforming...
+✓ 159 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   1.81 kB │ gzip:   0.77 kB
+dist/assets/index-DIAm0WCM.css   66.12 kB │ gzip:  11.41 kB
+dist/assets/index-UClh_kCu.js   451.81 kB │ gzip: 130.64 kB
+✓ built in 4.21s

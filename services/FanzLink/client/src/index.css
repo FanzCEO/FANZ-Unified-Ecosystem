@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(222.2 84% 4.9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222.2 84% 4.9%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222.2 84% 4.9%);
+  --primary: hsl(262.1 83.3% 57.8%);
+  --primary-foreground: hsl(210 40% 98%);
+  --secondary: hsl(210 40% 96%);
+  --secondary-foreground: hsl(222.2 84% 4.9%);
+  --muted: hsl(210 40% 96%);
+  --muted-foreground: hsl(215.4 16.3% 46.9%);
+  --accent: hsl(210 40% 96%);
+  --accent-foreground: hsl(222.2 84% 4.9%);
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(214.3 31.8% 91.4%);
+  --input: hsl(214.3 31.8% 91.4%);
+  --ring: hsl(262.1 83.3% 57.8%);
+  --radius: 0.5rem;
+  
+  /* FanzLink custom colors */
+  --fanz-purple: hsl(262.1 83.3% 57.8%);
+  --fanz-pink: hsl(330.4 81.2% 60.4%);
+  --fanz-indigo: hsl(238.7 83.5% 66.7%);
+  --fanz-cyan: hsl(191.6 91.4% 36.5%);
+  --dark-bg: hsl(240 23% 9%);
+  --dark-card: hsl(240 19% 16%);
+  --dark-border: hsl(240 19% 26%);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, hsl(262.1 83.3% 57.8%) 0%, hsl(330.4 81.2% 60.4%) 100%);
+  --gradient-bg: linear-gradient(135deg, hsl(238.7 83.5% 66.7%) 0%, hsl(240 19% 40%) 100%);
+  
+  /* Shadows and effects */
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.dark {
+  --background: hsl(240 23% 9%);
+  --foreground: hsl(210 40% 98%);
+  --card: hsl(240 19% 16%);
+  --card-foreground: hsl(210 40% 98%);
+  --popover: hsl(240 19% 16%);
+  --popover-foreground: hsl(210 40% 98%);
+  --primary: hsl(262.1 83.3% 57.8%);
+  --primary-foreground: hsl(210 40% 98%);
+  --secondary: hsl(240 19% 26%);
+  --secondary-foreground: hsl(210 40% 98%);
+  --muted: hsl(240 19% 26%);
+  --muted-foreground: hsl(215 20.2% 65.1%);
+  --accent: hsl(240 19% 26%);
+  --accent-foreground: hsl(210 40% 98%);
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(240 19% 26%);
+  --input: hsl(240 19% 26%);
+  --ring: hsl(262.1 83.3% 57.8%);
+  
+  --gradient-bg: linear-gradient(135deg, hsl(240 19% 26%) 0%, hsl(240 19% 16%) 100%);
+  --shadow-card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .gradient-bg {
+    background: var(--gradient-bg);
+  }
+  
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-card);
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  .animate-bounce-soft {
+    animation: bounce 1s infinite;
+  }
+  
+  .animate-pulse-soft {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@layer utilities {
+  .text-fanz-purple {
+    color: var(--fanz-purple);
+  }
+  
+  .text-fanz-pink {
+    color: var(--fanz-pink);
+  }
+  
+  .text-fanz-indigo {
+    color: var(--fanz-indigo);
+  }
+  
+  .text-fanz-cyan {
+    color: var(--fanz-cyan);
+  }
+  
+  .bg-fanz-purple {
+    background-color: var(--fanz-purple);
+  }
+  
+  .bg-fanz-pink {
+    background-color: var(--fanz-pink);
+  }
+  
+  .bg-fanz-indigo {
+    background-color: var(--fanz-indigo);
+  }
+  
+  .bg-fanz-cyan {
+    background-color: var(--fanz-cyan);
+  }
+  
+  .bg-dark-bg {
+    background-color: var(--dark-bg);
+  }
+  
+  .bg-dark-card {
+    background-color: var(--dark-card);
+  }
+  
+  .border-dark-border {
+    border-color: var(--dark-border);
+  }
+}

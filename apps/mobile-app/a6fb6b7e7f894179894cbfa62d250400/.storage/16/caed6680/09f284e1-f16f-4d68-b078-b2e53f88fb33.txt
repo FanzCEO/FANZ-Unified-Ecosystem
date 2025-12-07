@@ -1,0 +1,3 @@
+$ find /workspace -type f -name "*.tsx" -o -name "*.ts" -o -name "*.json" -o -name "*.html" | head -20
+/workspace/.MGXEnv.json
+/workspace/.timeline.json

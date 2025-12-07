@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="{% block meta_description %}FANZ - The neon-dripping banana gateway to the new creator economy. Military-grade encrypted platform for adult content creators with USC 2257 compliance.{% endblock %}"
+    />
+    <meta
+      name="keywords"
+      content="{% block meta_keywords %}adult content, creator economy, OnlyFans alternative, content creator platform, USC 2257 compliant, military encryption{% endblock %}"
+    />
+    <meta name="author" content="Fanz™ Unlimited Network LLC" />
+    <meta
+      name="robots"
+      content="{% block meta_robots %}index, follow{% endblock %}"
+    />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.url }}" />
+    <meta
+      property="og:title"
+      content="{% block og_title %}{{ self.title() }}{% endblock %}"
+    />
+    <meta
+      property="og:description"
+      content="{% block og_description %}{{ self.meta_description() }}{% endblock %}"
+    />
+    <meta
+      property="og:image"
+      content="{{ url_for('static', filename='images/fanz-og-image.png', _external=True) }}"
+    />
+    <meta property="og:site_name" content="FANZ" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="{{ request.url }}" />
+    <meta
+      property="twitter:title"
+      content="{% block twitter_title %}{{ self.og_title() }}{% endblock %}"
+    />
+    <meta
+      property="twitter:description"
+      content="{% block twitter_description %}{{ self.og_description() }}{% endblock %}"
+    />
+    <meta
+      property="twitter:image"
+      content="{{ url_for('static', filename='images/fanz-twitter-card.png', _external=True) }}"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="{{ url_for('static', filename='apple-touch-icon.png') }}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="{{ url_for('static', filename='favicon-32x32.png') }}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="{{ url_for('static', filename='favicon-16x16.png') }}"
+    />
+    <link
+      rel="manifest"
+      href="{{ url_for('static', filename='site.webmanifest') }}"
+    />
+
+    <title>
+      {% block title %}FANZ - Creator Economy Platform{% endblock %}
+    </title>
+
+    <!-- Resource Preloading for Performance -->
+    {% for resource in preload_resources %}
+    <link rel="preload" href="{{ resource.href }}" as="{{ resource.as }}" />
+    {% endfor %}
+
+    <!-- DNS Prefetch for External Resources -->
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+
+    <!-- Custom Neon Theme -->
+    <link
+      href="{{ url_for('static', filename='css/neon-theme.css') }}"
+      rel="stylesheet"
+    />
+
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "FANZ",
+        "description": "Military-grade encrypted creator economy platform for adult content with USC 2257 compliance",
+        "url": "{{ request.url_root }}",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "offers": {
+          "@type": "Offer",
+          "category": "Creator Economy Platform"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "2547"
+        },
+        "featureList": [
+          "Military AES-256 Encryption",
+          "USC 2257 Compliance",
+          "Anti-Media Theft Technology",
+          "Multi-Cluster Content Management",
+          "Identity Verification",
+          "PCI DSS Level 1 Certified"
+        ]
+      }
+    </script>
+
+    <!-- Additional Styles -->
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body
+    data-user-role="{{ current_user.role.value if current_user.is_authenticated else 'guest' }}"
+    class="loading"
+  >
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link visually-hidden-focusable"
+      >Skip to main content</a
+    >
+
+    <!-- Navigation -->
+    {% include 'components/navbar.html' %}
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+      <div
+        class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show"
+        role="alert"
+      >
+        <i
+          class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' if category == 'info' else 'check-circle' if category == 'success' else 'exclamation-triangle' }}"
+        ></i>
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <!-- Main Content -->
+    <main
+      id="main-content"
+      class="main-content"
+      role="main"
+      aria-label="Main content area"
+    >
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    {% include 'components/footer.html' %}
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="d-none">
+      {% include 'components/loading.html' %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/neon-effects.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/floating-hints.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/adaptive-footer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/onboarding.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/social-integration.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ai-dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/micro-interactions.js') }}"></script>
+
+    <!-- Additional Scripts -->
+    {% block extra_js %}{% endblock %}
+
+    <script>
+      // Global configuration
+      window.FanzLabConfig = {
+          isAuthenticated: {{ 'true' if current_user.is_authenticated else 'false' }},
+          userRole: {{ '"' + current_user.role.value + '"' if current_user.is_authenticated else 'null' }},
+          csrfToken: document.querySelector('meta[name=csrf-token]').content,
+          performance: {
+              navigationStart: performance.now(),
+              isTouch: 'ontouchstart' in window,
+              prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          }
+      };
+
+      // Remove loading class when page is fully loaded
+      document.addEventListener('DOMContentLoaded', function() {
+          document.body.classList.remove('loading');
+      });
+
+      // Initialize page-specific features
+      document.addEventListener('DOMContentLoaded', function() {
+          {% block page_scripts %}{% endblock %}
+      });
+    </script>
+  </body>
+</html>

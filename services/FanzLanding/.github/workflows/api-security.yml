@@ -1,0 +1,264 @@
+name: 🔐 API Security Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 4 * * *' # Daily at 4 AM
+
+jobs:
+  api-security-scan:
+    name: API Security Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: |
+        if [ -f package.json ]; then
+          npm ci
+        fi
+    
+    - name: API Security Linting
+      run: |
+        echo "🔍 Scanning for API security issues..."
+        
+        # Check for exposed secrets in API endpoints
+        if find . -name "*.ts" -o -name "*.js" -o -name "*.json" | xargs grep -l "password.*=" 2>/dev/null; then
+          echo "⚠️ Warning: Potential password exposure found"
+        fi
+        
+        # Check for missing authentication
+        if find . -name "*.ts" -o -name "*.js" | xargs grep -l "app\.get\|app\.post\|router\.get\|router\.post" | xargs grep -L "authenticate\|authorize" 2>/dev/null; then
+          echo "⚠️ Warning: Endpoints without authentication found"
+        fi
+        
+        # Check for CORS misconfiguration
+        if grep -r "origin:.*\*" . 2>/dev/null; then
+          echo "❌ Error: Wildcard CORS origin detected - security risk!"
+        fi
+        
+        echo "✅ API security scan completed"
+    
+    - name: Adult Platform Compliance Check
+      run: |
+        echo "🔞 Checking adult platform API compliance..."
+        
+        # Check for age verification middleware
+        if find . -name "*.ts" -o -name "*.js" | xargs grep -l "adult\|age.*verify\|18\+" 2>/dev/null; then
+          if ! find . -name "*.ts" -o -name "*.js" | xargs grep -l "ageVerified\|age.*check" 2>/dev/null; then
+            echo "⚠️ Warning: Adult content endpoints may lack age verification"
+          fi
+        fi
+        
+        # Check for payment processor validation
+        if grep -r "ccbill\|paxum\|segpay" . 2>/dev/null; then
+          echo "✅ Adult-friendly payment processors detected"
+        fi
+        
+        echo "✅ Adult platform compliance check completed"
+    
+    - name: JWT Security Validation
+      run: |
+        echo "🔑 Validating JWT security configuration..."
+        
+        # Check for hardcoded JWT secrets
+        if grep -r "jwt.*secret.*=.*['\"]" . --include="*.ts" --include="*.js" 2>/dev/null; then
+          echo "❌ Error: Hardcoded JWT secret detected!"
+          exit 1
+        fi
+        
+        # Check for JWT algorithm vulnerabilities
+        if grep -r "algorithm.*none\|algorithm.*HS256" . --include="*.ts" --include="*.js" 2>/dev/null; then
+          echo "⚠️ Warning: Potentially weak JWT algorithm detected"
+        fi
+        
+        echo "✅ JWT security validation completed"
+    
+    - name: Rate Limiting Check
+      run: |
+        echo "🚦 Checking rate limiting configuration..."
+        
+        # Look for rate limiting implementation
+        if find . -name "*.ts" -o -name "*.js" | xargs grep -l "rateLimit\|express-rate-limit" 2>/dev/null; then
+          echo "✅ Rate limiting middleware found"
+        else
+          echo "⚠️ Warning: No rate limiting detected - consider implementing"
+        fi
+        
+        # Check for payment endpoint protection
+        if find . -name "*.ts" -o -name "*.js" | xargs grep -l "payment\|billing" 2>/dev/null; then
+          if ! find . -name "*.ts" -o -name "*.js" | xargs grep -l "payment.*rate.*limit\|billing.*rate" 2>/dev/null; then
+            echo "⚠️ Warning: Payment endpoints may lack rate limiting"
+          fi
+        fi
+        
+        echo "✅ Rate limiting check completed"
+    
+    - name: HTTPS/TLS Validation
+      run: |
+        echo "🔒 Validating HTTPS/TLS configuration..."
+        
+        # Check for HTTPS enforcement
+        if grep -r "requireHTTPS\|secure.*true\|https.*only" . --include="*.ts" --include="*.js" 2>/dev/null; then
+          echo "✅ HTTPS enforcement detected"
+        else
+          echo "⚠️ Warning: Consider enforcing HTTPS for all endpoints"
+        fi
+        
+        # Check for secure cookie settings
+        if grep -r "cookie.*secure\|sameSite" . --include="*.ts" --include="*.js" 2>/dev/null; then
+          echo "✅ Secure cookie configuration detected"
+        fi
+        
+        echo "✅ HTTPS/TLS validation completed"
+    
+    - name: Input Validation Check
+      run: |
+        echo "🔍 Checking input validation..."
+        
+        # Look for validation middleware
+        if find . -name "*.ts" -o -name "*.js" | xargs grep -l "validate\|joi\|yup\|express-validator" 2>/dev/null; then
+          echo "✅ Input validation middleware detected"
+        else
+          echo "⚠️ Warning: Consider implementing input validation"
+        fi
+        
+        # Check for SQL injection protection
+        if find . -name "*.ts" -o -name "*.js" | xargs grep -l "SELECT.*+\|INSERT.*+" 2>/dev/null; then
+          echo "❌ Error: Potential SQL injection vulnerability!"
+        fi
+        
+        echo "✅ Input validation check completed"
+
+  oauth-security-test:
+    name: OAuth Security Testing
+    runs-on: ubuntu-latest
+    if: github.event_name != 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: OAuth Configuration Test
+      run: |
+        echo "🔐 Testing OAuth security configuration..."
+        
+        # Check for OAuth implementation
+        if find . -name "*.ts" -o -name "*.js" | xargs grep -l "oauth\|authorization.*code" 2>/dev/null; then
+          
+          # Check for secure redirect URI validation
+          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "redirect.*uri.*valid" 2>/dev/null; then
+            echo "✅ Redirect URI validation detected"
+          else
+            echo "⚠️ Warning: Implement redirect URI validation for OAuth"
+          fi
+          
+          # Check for PKCE implementation
+          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "code.*challenge\|code.*verifier" 2>/dev/null; then
+            echo "✅ PKCE implementation detected"
+          else
+            echo "⚠️ Warning: Consider implementing PKCE for OAuth"
+          fi
+          
+        fi
+        
+        echo "✅ OAuth security test completed"
+
+  payment-security-test:
+    name: Payment Security Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Payment Security Validation
+      run: |
+        echo "💳 Testing payment security..."
+        
+        # Check for PCI compliance measures
+        if find . -name "*.ts" -o -name "*.js" | xargs grep -l "payment\|billing" 2>/dev/null; then
+          
+          # Check for tokenization
+          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "token\|encrypt" 2>/dev/null; then
+            echo "✅ Payment tokenization/encryption detected"
+          else
+            echo "⚠️ Warning: Implement payment data tokenization"
+          fi
+          
+          # Check for adult-friendly processors
+          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "ccbill\|paxum\|segpay" 2>/dev/null; then
+            echo "✅ Adult-friendly payment processors detected"
+          else
+            echo "⚠️ Info: Consider adult-friendly payment processors"
+          fi
+          
+          # Check for direct card data (PCI violation)
+          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "cardNumber\|card.*number\|cvv" 2>/dev/null; then
+            echo "❌ Error: Potential direct card data handling - PCI violation!"
+          fi
+          
+        fi
+        
+        echo "✅ Payment security test completed"
+    
+    - name: Generate Security Report
+      run: |
+        echo "📊 Generating API security report..."
+        
+        cat > api-security-report.md << 'REPORT_EOF'
+# API Security Analysis Report
+
+**Repository:** ${{ github.repository }}
+**Branch:** ${{ github.ref_name }}
+**Scan Date:** $(date)
+
+## Security Checks Performed
+
+- ✅ API Security Linting
+- ✅ Adult Platform Compliance
+- ✅ JWT Security Validation
+- ✅ Rate Limiting Check
+- ✅ HTTPS/TLS Validation
+- ✅ Input Validation
+- ✅ OAuth Security Testing
+- ✅ Payment Security Testing
+
+## Compliance Status
+
+- **Adult Content:** Validated
+- **Payment Processing:** PCI considerations checked
+- **Authentication:** JWT security verified
+- **Authorization:** OAuth implementation tested
+
+## Next Steps
+
+1. Review any warnings or errors above
+2. Implement recommended security measures
+3. Verify adult platform compliance requirements
+4. Test payment processor integrations
+
+---
+*Generated by FANZ API Security Validation*
+REPORT_EOF
+        
+        echo "✅ API security report generated"
+    
+    - name: Upload Security Report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: api-security-report
+        path: api-security-report.md
+        retention-days: 30

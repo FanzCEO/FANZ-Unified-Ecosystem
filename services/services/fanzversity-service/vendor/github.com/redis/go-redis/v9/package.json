@@ -1,0 +1,13 @@
+{
+  "name": "redis",
+  "version": "9.3.0",
+  "main": "index.js",
+  "repository": "git@github.com:redis/go-redis.git",
+  "author": "Vladimir Mihailenco <vladimir.webdev@gmail.com>",
+  "license": "BSD-2-clause",
+  "scripts": {
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
+  }
+}

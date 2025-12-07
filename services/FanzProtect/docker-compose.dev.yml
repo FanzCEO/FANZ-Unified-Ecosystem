@@ -1,0 +1,45 @@
+# FanzProtect Legal Platform - Development Docker Compose
+# Simplified configuration for local development
+
+services:
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: fanzprotect-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-dev-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Local PostgreSQL for development
+  postgres:
+    image: postgres:15-alpine
+    container_name: fanzprotect-postgres-dev
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: fanzprotect
+      POSTGRES_USER: fanzprotect
+      POSTGRES_PASSWORD: fanzprotect_dev_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fanzprotect -d fanzprotect"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  postgres-dev-data:
+    driver: local
+  redis-dev-data:
+    driver: local

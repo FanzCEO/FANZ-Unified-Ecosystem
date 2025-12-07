@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Broadcast Analytics - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-4">
+                <a href="{{ url_for('broadcasts') }}" class="btn btn-outline-secondary me-3">
+                    <i data-feather="arrow-left" class="me-1"></i>
+                    Back
+                </a>
+                <h2 class="text-primary mb-0">
+                    <i data-feather="bar-chart-2" class="me-2"></i>
+                    Broadcast Analytics: {{ analytics.broadcast.title }}
+                </h2>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <div class="text-primary fw-bold fs-1">{{ analytics.total_recipients }}</div>
+                            <div class="text-muted">Total Recipients</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <div class="text-success fw-bold fs-1">{{ analytics.sent_count }}</div>
+                            <div class="text-muted">Successfully Sent</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <div class="text-info fw-bold fs-1">{{ analytics.delivered_count }}</div>
+                            <div class="text-muted">Delivered</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <div class="text-danger fw-bold fs-1">{{ analytics.failed_count }}</div>
+                            <div class="text-muted">Failed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Broadcast Details -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i data-feather="info" class="me-2"></i>
+                                Broadcast Details
+                            </h5>
+                            
+                            <div class="mb-3">
+                                <strong>Message Type:</strong>
+                                <span class="badge bg-info ms-2">{{ analytics.broadcast.broadcast_type.value.title() }}</span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Status:</strong>
+                                <span class="badge {% if analytics.broadcast.status.value == 'sent' %}bg-success{% elif analytics.broadcast.status.value == 'draft' %}bg-secondary{% else %}bg-warning{% endif %} ms-2">
+                                    {{ analytics.broadcast.status.value.title() }}
+                                </span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Created:</strong>
+                                <div class="text-muted">{{ analytics.broadcast.created_at.strftime('%B %d, %Y at %I:%M %p') }}</div>
+                            </div>
+                            
+                            {% if analytics.broadcast.sent_time %}
+                            <div class="mb-3">
+                                <strong>Sent:</strong>
+                                <div class="text-muted">{{ analytics.broadcast.sent_time.strftime('%B %d, %Y at %I:%M %p') }}</div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <strong>Delivery Channels:</strong>
+                                <div class="mt-1">
+                                    {% if analytics.broadcast.send_via_sms %}
+                                    <span class="badge bg-primary me-1">SMS</span>
+                                    {% endif %}
+                                    {% if analytics.broadcast.send_via_email %}
+                                    <span class="badge bg-info me-1">Email</span>
+                                    {% endif %}
+                                    {% if analytics.broadcast.send_via_whatsapp %}
+                                    <span class="badge bg-success me-1">WhatsApp</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Message Preview -->
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i data-feather="message-square" class="me-2"></i>
+                                Message Preview
+                            </h5>
+                            <div class="bg-light p-3 rounded border-start border-primary border-4">
+                                {{ analytics.broadcast.message_content }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recipients List -->
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">
+                                    <i data-feather="users" class="me-2"></i>
+                                    Recipients & Delivery Status
+                                </h5>
+                                <div class="d-flex gap-2">
+                                    <span class="badge bg-success">{{ analytics.sms_sent }} SMS</span>
+                                    <span class="badge bg-info">{{ analytics.email_sent }} Email</span>
+                                </div>
+                            </div>
+
+                            {% if analytics.recipients %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Recipient</th>
+                                            <th>Contact</th>
+                                            <th>Channels</th>
+                                            <th>Status</th>
+                                            <th>Sent Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for recipient in analytics.recipients %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-2">
+                                                        {% if recipient.client_id %}
+                                                        <i data-feather="user" class="text-primary"></i>
+                                                        {% else %}
+                                                        <i data-feather="user-plus" class="text-success"></i>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold">{{ recipient.name or 'Unknown' }}</div>
+                                                        {% if recipient.client_id %}
+                                                        <small class="text-muted">Client</small>
+                                                        {% else %}
+                                                        <small class="text-muted">Custom</small>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    {% if recipient.phone_number %}
+                                                    <div><i data-feather="phone" class="me-1" style="width:12px;height:12px;"></i>{{ recipient.phone_number }}</div>
+                                                    {% endif %}
+                                                    {% if recipient.email %}
+                                                    <div><i data-feather="mail" class="me-1" style="width:12px;height:12px;"></i>{{ recipient.email }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column gap-1">
+                                                    {% if recipient.sms_sent %}
+                                                    <span class="badge bg-primary" style="font-size: 0.7rem;">SMS ✓</span>
+                                                    {% endif %}
+                                                    {% if recipient.email_sent %}
+                                                    <span class="badge bg-info" style="font-size: 0.7rem;">Email ✓</span>
+                                                    {% endif %}
+                                                    {% if recipient.whatsapp_sent %}
+                                                    <span class="badge bg-success" style="font-size: 0.7rem;">WhatsApp ✓</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge {% if recipient.delivery_status.value == 'sent' %}bg-success{% elif recipient.delivery_status.value == 'delivered' %}bg-info{% elif recipient.delivery_status.value == 'failed' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                                    {{ recipient.delivery_status.value.title() }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if recipient.sent_time %}
+                                                <small class="text-muted">{{ recipient.sent_time.strftime('%m/%d %I:%M %p') }}</small>
+                                                {% else %}
+                                                <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4">
+                                <i data-feather="users" class="text-muted mb-3" style="width: 48px; height: 48px;"></i>
+                                <p class="text-muted">No recipients found for this broadcast.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

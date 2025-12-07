@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Add Domain - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3">
+                <h1 class="h2">
+                    <i data-feather="plus-circle" class="me-2"></i>
+                    Add New Domain
+                </h1>
+                <a href="{{ url_for('domains') }}" class="btn btn-outline-secondary">
+                    <i data-feather="arrow-left" class="me-1"></i>
+                    Back
+                </a>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5 class="card-title">Domain Information</h5>
+                        <p class="text-muted">
+                            Add your custom domain to enable professional email communication. 
+                            You'll need access to your domain's DNS settings to complete the setup.
+                        </p>
+                    </div>
+
+                    <form method="POST" id="domainForm">
+                        <div class="mb-3">
+                            <label for="domain_name" class="form-label">Domain Name *</label>
+                            <input type="text" class="form-control" id="domain_name" name="domain_name" 
+                                   value="{{ request.form.domain_name if request.form else '' }}"
+                                   placeholder="example.com" required>
+                            <div class="form-text">
+                                Enter your domain name without www or https:// (e.g., example.com)
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <div class="d-flex">
+                                <i data-feather="info" class="me-3 mt-1 text-info" style="width: 16px; height: 16px;"></i>
+                                <div>
+                                    <strong>What happens next?</strong>
+                                    <ul class="mb-0 mt-2">
+                                        <li>We'll generate DNS records for your domain</li>
+                                        <li>You'll add these records to your domain's DNS settings</li>
+                                        <li>We'll verify domain ownership</li>
+                                        <li>Your professional email service will be activated</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i data-feather="plus" class="me-2"></i>
+                                Add Domain
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i data-feather="help-circle" class="me-2"></i>
+                        Requirements
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Domain Ownership</h6>
+                            <ul class="text-muted small">
+                                <li>You must own or control the domain</li>
+                                <li>Access to DNS management console</li>
+                                <li>Ability to add DNS records</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Common DNS Providers</h6>
+                            <ul class="text-muted small">
+                                <li>Cloudflare</li>
+                                <li>GoDaddy</li>
+                                <li>Namecheap</li>
+                                <li>Google Domains</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('domainForm').addEventListener('submit', function(e) {
+        const domainName = document.getElementById('domain_name').value.trim().toLowerCase();
+        
+        // Basic domain validation
+        if (!domainName.includes('.') || domainName.startsWith('.') || domainName.endsWith('.')) {
+            e.preventDefault();
+            alert('Please enter a valid domain name (e.g., example.com)');
+            return false;
+        }
+        
+        // Remove common prefixes
+        if (domainName.startsWith('http://') || domainName.startsWith('https://')) {
+            e.preventDefault();
+            alert('Please enter only the domain name without http:// or https://');
+            return false;
+        }
+        
+        if (domainName.startsWith('www.')) {
+            e.preventDefault();
+            alert('Please enter the domain name without www.');
+            return false;
+        }
+    });
+
+    // Auto-focus on domain input
+    document.getElementById('domain_name').focus();
+</script>
+{% endblock %}

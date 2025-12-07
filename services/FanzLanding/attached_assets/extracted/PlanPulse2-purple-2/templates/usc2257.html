@@ -1,0 +1,713 @@
+{% extends "base.html" %} {% block title %}USC 2257 Compliance | FANZ{% endblock
+%} {% block content %}
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="legal-document">
+        <div class="document-header text-center mb-5">
+          <h1 class="display-4 text-white mb-3">
+            USC 2257 Compliance Statement
+          </h1>
+          <p class="lead text-muted">
+            18 U.S.C. § 2257 Record-Keeping Requirements
+          </p>
+          <p class="lead text-muted">
+            Last Updated: {{ current_date or 'January 1, 2025' }}
+          </p>
+        </div>
+
+        <div class="legal-content">
+          <div class="compliance-notice mb-5 p-4 bg-warning rounded">
+            <h3 class="text-dark mb-3">
+              <i class="fas fa-certificate me-2"></i>Federal Compliance
+              Statement
+            </h3>
+            <p class="text-dark mb-0">
+              <strong>Fanz Unlimited Network LLC</strong> is fully compliant
+              with Title 18 U.S.C. § 2257 and all related federal record-keeping
+              requirements for producers of sexually explicit content. All
+              models appearing on this website were at least 18 years of age
+              when the content was created.
+            </p>
+          </div>
+
+          <section class="compliance-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              1. Legal Requirements Overview
+            </h2>
+
+            <div class="legal-overview">
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div
+                    class="requirement-card p-4 bg-dark rounded border-primary h-100"
+                  >
+                    <h4 class="text-primary">
+                      <i class="fas fa-id-card me-2"></i>Age Verification
+                    </h4>
+                    <p class="text-light">
+                      All performers must provide government-issued photo
+                      identification proving they are at least 18 years of age
+                      before any content creation.
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div
+                    class="requirement-card p-4 bg-dark rounded border-primary h-100"
+                  >
+                    <h4 class="text-primary">
+                      <i class="fas fa-file-alt me-2"></i>Record Keeping
+                    </h4>
+                    <p class="text-light">
+                      Detailed records of all performers' identification
+                      documents must be maintained for a minimum of seven (7)
+                      years after content creation.
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div
+                    class="requirement-card p-4 bg-dark rounded border-primary h-100"
+                  >
+                    <h4 class="text-primary">
+                      <i class="fas fa-search me-2"></i>Record Inspection
+                    </h4>
+                    <p class="text-light">
+                      Records must be available for inspection by authorized
+                      federal law enforcement officers during reasonable
+                      business hours.
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div
+                    class="requirement-card p-4 bg-dark rounded border-primary h-100"
+                  >
+                    <h4 class="text-primary">
+                      <i class="fas fa-map-marker-alt me-2"></i>Custodian Notice
+                    </h4>
+                    <p class="text-light">
+                      The location of records and identity of the custodian must
+                      be clearly disclosed on all materials containing sexually
+                      explicit conduct.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="compliance-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              2. FANZ Compliance Measures
+            </h2>
+
+            <div class="compliance-measures">
+              <div class="measure-item mb-4 p-4 bg-dark rounded border-success">
+                <div class="d-flex align-items-start">
+                  <div
+                    class="measure-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                    style="min-width: 50px; height: 50px"
+                  >
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-success mb-2">
+                      Mandatory Identity Verification
+                    </h4>
+                    <p class="text-light">
+                      Every creator must complete our comprehensive identity
+                      verification process before uploading any content. This
+                      includes:
+                    </p>
+                    <ul class="text-light">
+                      <li>
+                        Government-issued photo ID (driver's license, passport,
+                        or state ID)
+                      </li>
+                      <li>Real-time selfie verification holding ID</li>
+                      <li>Biometric verification to prevent fraud</li>
+                      <li>
+                        Cross-reference with government databases where legally
+                        permissible
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="measure-item mb-4 p-4 bg-dark rounded border-success">
+                <div class="d-flex align-items-start">
+                  <div
+                    class="measure-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                    style="min-width: 50px; height: 50px"
+                  >
+                    <i class="fas fa-database"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-success mb-2">
+                      Comprehensive Record Keeping
+                    </h4>
+                    <p class="text-light">
+                      We maintain detailed records including:
+                    </p>
+                    <ul class="text-light">
+                      <li>
+                        Digital copies of all government-issued identification
+                      </li>
+                      <li>Verification timestamps and IP addresses</li>
+                      <li>Content creation dates and locations</li>
+                      <li>Performer consent documentation</li>
+                      <li>Regular audit trails and compliance reviews</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="measure-item mb-4 p-4 bg-dark rounded border-success">
+                <div class="d-flex align-items-start">
+                  <div
+                    class="measure-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                    style="min-width: 50px; height: 50px"
+                  >
+                    <i class="fas fa-lock"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-success mb-2">Secure Storage & Access</h4>
+                    <p class="text-light">All compliance records are:</p>
+                    <ul class="text-light">
+                      <li>Stored in military-grade encrypted databases</li>
+                      <li>
+                        Accessible only to authorized compliance personnel
+                      </li>
+                      <li>
+                        Backed up redundantly across multiple secure locations
+                      </li>
+                      <li>Protected with multi-factor authentication</li>
+                      <li>
+                        Maintained for the legally required retention period
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="measure-item mb-4 p-4 bg-dark rounded border-success">
+                <div class="d-flex align-items-start">
+                  <div
+                    class="measure-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                    style="min-width: 50px; height: 50px"
+                  >
+                    <i class="fas fa-user-check"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-success mb-2">
+                      Ongoing Compliance Monitoring
+                    </h4>
+                    <p class="text-light">Our compliance program includes:</p>
+                    <ul class="text-light">
+                      <li>Regular legal reviews and updates</li>
+                      <li>Staff training on 2257 requirements</li>
+                      <li>Automated compliance checking systems</li>
+                      <li>Third-party compliance audits</li>
+                      <li>Immediate response procedures for violations</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="compliance-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              3. Record Custodian Information
+            </h2>
+
+            <div class="custodian-info p-4 bg-dark rounded border-primary">
+              <div class="row">
+                <div class="col-md-8">
+                  <h4 class="text-primary mb-3">
+                    <i class="fas fa-user-tie me-2"></i>Designated Custodian of
+                    Records
+                  </h4>
+                  <div class="custodian-details">
+                    <p class="text-light mb-2">
+                      <strong>Company:</strong> Fanz Unlimited Network LLC
+                    </p>
+                    <p class="text-light mb-2">
+                      <strong>Title:</strong> Chief Compliance Officer
+                    </p>
+                    <p class="text-light mb-2">
+                      <strong>Department:</strong> Legal & Compliance
+                    </p>
+                    <p class="text-light mb-2">
+                      <strong>Email:</strong>
+                      <a href="mailto:compliance@fanz.com" class="text-primary"
+                        >compliance@fanz.com</a
+                      >
+                    </p>
+                    <p class="text-light mb-2">
+                      <strong>Records Request Email:</strong>
+                      <a href="mailto:records@fanz.com" class="text-primary"
+                        >records@fanz.com</a
+                      >
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-4 text-center">
+                  <div class="compliance-badge p-3 bg-success rounded">
+                    <i class="fas fa-certificate fa-3x text-white mb-2"></i>
+                    <h5 class="text-white">Fully Compliant</h5>
+                    <p class="text-white mb-0">18 U.S.C. § 2257</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="inspection-hours p-4 bg-dark rounded border-secondary mt-4"
+            >
+              <h4 class="text-light mb-3">
+                <i class="fas fa-clock me-2"></i>Record Inspection Hours
+              </h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <p class="text-light mb-2">
+                    <strong>Business Days:</strong> Monday - Friday
+                  </p>
+                  <p class="text-light mb-2">
+                    <strong>Hours:</strong> 9:00 AM - 5:00 PM Eastern Time
+                  </p>
+                  <p class="text-light mb-2">
+                    <strong>Advance Notice:</strong> 48 hours required
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <p class="text-light mb-2">
+                    <strong>Emergency Contact:</strong> 24/7 available
+                  </p>
+                  <p class="text-light mb-2">
+                    <strong>Legal Department:</strong>
+                    <a href="mailto:legal@fanz.com" class="text-primary"
+                      >legal@fanz.com</a
+                    >
+                  </p>
+                  <p class="text-light mb-2">
+                    <strong>Law Enforcement Line:</strong> Available upon
+                    request
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="compliance-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              4. Creator Responsibilities
+            </h2>
+
+            <div class="creator-responsibilities">
+              <div class="responsibility-category mb-4">
+                <h4 class="text-light mb-3">
+                  <i class="fas fa-user-circle me-2"></i>Primary Content
+                  Creators
+                </h4>
+                <div class="resp-grid">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <div
+                        class="resp-card p-3 bg-dark rounded border-secondary h-100"
+                      >
+                        <h6 class="text-primary">Identity Verification</h6>
+                        <p class="text-light">
+                          Complete full identity verification before content
+                          upload
+                        </p>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div
+                        class="resp-card p-3 bg-dark rounded border-secondary h-100"
+                      >
+                        <h6 class="text-primary">Age Documentation</h6>
+                        <p class="text-light">
+                          Provide valid government-issued photo ID proving 18+
+                          age
+                        </p>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div
+                        class="resp-card p-3 bg-dark rounded border-secondary h-100"
+                      >
+                        <h6 class="text-primary">Consent Forms</h6>
+                        <p class="text-light">
+                          Complete all required consent and model release forms
+                        </p>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div
+                        class="resp-card p-3 bg-dark rounded border-secondary h-100"
+                      >
+                        <h6 class="text-primary">Ongoing Compliance</h6>
+                        <p class="text-light">
+                          Respond to compliance requests and maintain current
+                          documentation
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="responsibility-category mb-4">
+                <h4 class="text-light mb-3">
+                  <i class="fas fa-users me-2"></i>Co-Authored Content
+                </h4>
+                <div
+                  class="co-author-requirements p-4 bg-dark rounded border-warning"
+                >
+                  <p class="text-light mb-3">
+                    For content featuring multiple performers, the uploading
+                    creator must:
+                  </p>
+                  <ul class="text-light">
+                    <li>
+                      Obtain and maintain ID copies for all depicted performers
+                    </li>
+                    <li>Secure written consent from all participants</li>
+                    <li>
+                      Provide performer documentation to FANZ upon request
+                    </li>
+                    <li>
+                      Ensure all participants are properly tagged and identified
+                    </li>
+                    <li>
+                      Maintain separate model release forms for each performer
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="compliance-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              5. Law Enforcement Information
+            </h2>
+
+            <div class="law-enforcement-section">
+              <div class="le-contact p-4 bg-dark rounded border-info mb-4">
+                <h4 class="text-info mb-3">
+                  <i class="fas fa-badge me-2"></i>For Law Enforcement Officers
+                </h4>
+                <div class="row">
+                  <div class="col-md-6">
+                    <h5 class="text-light">Record Inspection Requests</h5>
+                    <p class="text-light">
+                      Authorized law enforcement officers may inspect records
+                      during business hours with proper identification and
+                      jurisdiction.
+                    </p>
+                    <p class="text-light mb-0">
+                      <strong>Contact:</strong>
+                      <a href="mailto:legal@fanz.com" class="text-info"
+                        >legal@fanz.com</a
+                      >
+                    </p>
+                  </div>
+                  <div class="col-md-6">
+                    <h5 class="text-light">Emergency Requests</h5>
+                    <p class="text-light">
+                      For urgent law enforcement matters involving child safety
+                      or imminent threats, 24/7 emergency contact is available.
+                    </p>
+                    <p class="text-light mb-0">
+                      <strong>Emergency Line:</strong> Available upon official
+                      request
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cooperation-statement p-4 bg-success rounded">
+                <h4 class="text-white mb-3">
+                  <i class="fas fa-handshake me-2"></i>Law Enforcement
+                  Cooperation
+                </h4>
+                <p class="text-white mb-0">
+                  Fanz Unlimited Network LLC fully cooperates with all
+                  legitimate law enforcement investigations and maintains
+                  comprehensive records in accordance with federal requirements.
+                  We have zero tolerance for any content involving minors and
+                  immediately report any suspected child exploitation to the
+                  National Center for Missing & Exploited Children (NCMEC) and
+                  appropriate law enforcement agencies.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="compliance-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              6. International Compliance
+            </h2>
+
+            <div class="international-compliance">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="compliance-region p-4 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">United States</h5>
+                    <p class="text-light">
+                      Full compliance with 18 U.S.C. § 2257, FOSTA-SESTA, and
+                      all federal age verification requirements.
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="compliance-region p-4 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">European Union</h5>
+                    <p class="text-light">
+                      Compliance with GDPR data protection requirements and EU
+                      age verification standards.
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="compliance-region p-4 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">United Kingdom</h5>
+                    <p class="text-light">
+                      Adherence to UK Data Protection Act 2018 and Online Safety
+                      Bill requirements.
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="compliance-region p-4 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">Canada</h5>
+                    <p class="text-light">
+                      Compliance with Personal Information Protection and
+                      Electronic Documents Act (PIPEDA).
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="compliance-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              7. Reporting Violations
+            </h2>
+
+            <div class="violation-reporting">
+              <div class="urgent-reports p-4 bg-danger rounded mb-4">
+                <h4 class="text-white mb-3">
+                  <i class="fas fa-exclamation-triangle me-2"></i>Report
+                  Suspected Violations Immediately
+                </h4>
+                <div class="row">
+                  <div class="col-md-6">
+                    <h5 class="text-white">Child Safety Issues</h5>
+                    <p class="text-white">Report immediately to:</p>
+                    <ul class="text-white">
+                      <li>
+                        <strong>NCMEC:</strong>
+                        www.missingkids.org/gethelpnow/cybertipline
+                      </li>
+                      <li>
+                        <strong>FANZ:</strong>
+                        <a href="mailto:urgent@fanz.com" class="text-white"
+                          >urgent@fanz.com</a
+                        >
+                      </li>
+                      <li><strong>Local Law Enforcement:</strong> 911</li>
+                    </ul>
+                  </div>
+                  <div class="col-md-6">
+                    <h5 class="text-white">Compliance Violations</h5>
+                    <p class="text-white">Report suspected violations to:</p>
+                    <ul class="text-white">
+                      <li>
+                        <strong>Compliance Team:</strong>
+                        <a href="mailto:compliance@fanz.com" class="text-white"
+                          >compliance@fanz.com</a
+                        >
+                      </li>
+                      <li>
+                        <strong>Anonymous Hotline:</strong> Available 24/7
+                      </li>
+                      <li>
+                        <strong>Legal Department:</strong>
+                        <a href="mailto:legal@fanz.com" class="text-white"
+                          >legal@fanz.com</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="whistleblower-protection p-4 bg-dark rounded border-success"
+              >
+                <h4 class="text-success mb-3">
+                  <i class="fas fa-shield-alt me-2"></i>Whistleblower Protection
+                </h4>
+                <p class="text-light">
+                  FANZ prohibits retaliation against anyone who reports
+                  suspected compliance violations in good faith. We maintain
+                  strict confidentiality for reporters and provide multiple
+                  anonymous reporting channels to ensure safe reporting of
+                  compliance concerns.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <div class="final-compliance-statement p-4 bg-primary rounded">
+            <h4 class="text-white mb-3">
+              <i class="fas fa-certificate me-2"></i>Compliance Commitment
+            </h4>
+            <p class="text-white mb-3">
+              Fanz Unlimited Network LLC is committed to maintaining the highest
+              standards of legal compliance and ethical business practices. We
+              take our responsibilities under 18 U.S.C. § 2257 seriously and
+              continuously invest in technology, training, and processes to
+              ensure full compliance with all applicable laws.
+            </p>
+            <p class="text-white mb-0">
+              <strong
+                >This compliance statement is updated regularly to reflect
+                current legal requirements and best practices. For questions
+                about our compliance program, contact our legal department at
+                <a href="mailto:legal@fanz.com" class="text-white"
+                  >legal@fanz.com</a
+                >.</strong
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .legal-document {
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    line-height: 1.6;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .compliance-notice {
+    background: rgba(255, 193, 7, 0.9) !important;
+    border: 2px solid var(--neon-yellow);
+  }
+
+  .requirement-card,
+  .resp-card,
+  .compliance-region {
+    transition: all 0.3s ease;
+  }
+
+  .requirement-card:hover,
+  .resp-card:hover,
+  .compliance-region:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary) !important;
+  }
+
+  .measure-item {
+    border-color: rgba(40, 167, 69, 0.3) !important;
+    transition: all 0.3s ease;
+  }
+
+  .measure-item:hover {
+    border-color: var(--neon-green) !important;
+    background-color: rgba(40, 167, 69, 0.05) !important;
+  }
+
+  .measure-icon {
+    min-width: 50px;
+    min-height: 50px;
+  }
+
+  .custodian-info {
+    background: rgba(26, 26, 46, 0.9) !important;
+  }
+
+  .compliance-badge {
+    background: rgba(40, 167, 69, 0.9) !important;
+  }
+
+  .co-author-requirements {
+    background: rgba(26, 26, 46, 0.9) !important;
+    border-color: rgba(255, 193, 7, 0.5) !important;
+  }
+
+  .le-contact {
+    background: rgba(26, 26, 46, 0.9) !important;
+    border-color: rgba(23, 162, 184, 0.5) !important;
+  }
+
+  .cooperation-statement {
+    background: rgba(40, 167, 69, 0.9) !important;
+  }
+
+  .urgent-reports {
+    background: rgba(220, 53, 69, 0.9) !important;
+  }
+
+  .whistleblower-protection {
+    background: rgba(26, 26, 46, 0.9) !important;
+    border-color: rgba(40, 167, 69, 0.5) !important;
+  }
+
+  .final-compliance-statement {
+    background: var(--primary) !important;
+  }
+
+  @media (max-width: 768px) {
+    .legal-document {
+      font-size: 0.9rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .measure-item .d-flex {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .measure-icon {
+      margin-bottom: 1rem;
+      align-self: center;
+    }
+  }
+</style>
+{% endblock %}

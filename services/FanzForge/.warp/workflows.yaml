@@ -1,0 +1,368 @@
+# FANZ Cross-Platform Ad System Warp Workflows
+# Author: FANZ Development Team
+# Description: Complete development and deployment workflows for the FANZ ad system
+
+workflows:
+  # Development workflows
+  - name: "ads:dev"
+    description: "Start the complete FANZ ads development environment"
+    command: |
+      set -e
+      echo "🚀 Starting FANZ Ad System development environment..."
+      
+      # Check if ports are available
+      if lsof -i :4000 > /dev/null 2>&1; then
+        echo "⚠️  Port 4000 is busy, stopping existing processes..."
+        pkill -f "node.*ad-service" || true
+        sleep 2
+      fi
+      
+      if lsof -i :3100 > /dev/null 2>&1; then
+        echo "⚠️  Port 3100 is busy, stopping existing processes..."
+        pkill -f "next.*3100" || true
+        sleep 2
+      fi
+      
+      # Start ad service in background
+      echo "📡 Starting FANZ Ad Service on port 4000..."
+      cd services/ad-service
+      npm install --silent
+      nohup npm start > ../../logs/ad-service.log 2>&1 &
+      AD_SERVICE_PID=$!
+      cd ../..
+      
+      # Wait for ad service to be ready
+      echo "⏳ Waiting for ad service to start..."
+      sleep 5
+      
+      # Check if ad service is running
+      if ! curl -s http://localhost:4000/health > /dev/null; then
+        echo "❌ Ad service failed to start. Check logs/ad-service.log"
+        exit 1
+      fi
+      
+      echo "✅ Ad service is running at http://localhost:4000"
+      
+      # Start demo app
+      echo "🎨 Starting FANZ Ads Demo on port 3100..."
+      cd apps/fanz-ads-demo
+      npm install --silent
+      echo "🌐 Demo app starting at http://localhost:3100"
+      echo "📊 Ad service health: http://localhost:4000/health"
+      echo "📋 View logs: tail -f ../../logs/ad-service.log"
+      npm run dev
+    tags: [development, ads, fanz]
+
+  - name: "ads:stop"
+    description: "Stop all FANZ ads development services"
+    command: |
+      set -e
+      echo "🛑 Stopping FANZ Ad System services..."
+      
+      # Kill ad service
+      pkill -f "node.*ad-service" || echo "No ad service processes found"
+      
+      # Kill demo app
+      pkill -f "next.*3100" || echo "No demo app processes found"
+      
+      # Kill any remaining FANZ processes
+      pkill -f "fanz.*dev" || echo "No other FANZ dev processes found"
+      
+      echo "✅ All FANZ ad services stopped"
+    tags: [development, cleanup, fanz]
+
+  - name: "ads:logs"
+    description: "Show live logs from FANZ ad services"
+    command: |
+      mkdir -p logs
+      if [ -f logs/ad-service.log ]; then
+        echo "📋 FANZ Ad Service logs (press Ctrl+C to exit):"
+        tail -f logs/ad-service.log
+      else
+        echo "❌ No ad service logs found. Run 'warp ads:dev' first."
+      fi
+    tags: [development, debugging, fanz]
+
+  - name: "ads:test"
+    description: "Run smoke tests for FANZ ad placements"
+    command: |
+      set -e
+      echo "🧪 Testing FANZ Ad System endpoints..."
+      
+      # Check if ad service is running
+      if ! curl -s http://localhost:4000/health > /dev/null; then
+        echo "❌ Ad service not running. Start with 'warp ads:dev' first."
+        exit 1
+      fi
+      
+      echo "✅ Ad service is healthy"
+      
+      # Test each placement type
+      placements=("HEADER" "FOOTER" "SIDEPANEL" "HOMEPAGE_HERO" "HOMEPAGE_NATIVE" "DASHBOARD_WIDGET")
+      platforms=("boyfanz" "girlfanz" "pupfanz")
+      
+      for platform in "${platforms[@]}"; do
+        echo "🧪 Testing $platform placements..."
+        for placement in "${placements[@]}"; do
+          response=$(curl -s "http://localhost:4000/api/ads?placement=$placement&platform=$platform" | jq -r '.campaignId')
+          if [[ "$response" != "null" && "$response" != "" ]]; then
+            echo "  ✅ $placement: $response"
+          else
+            echo "  ❌ $placement: failed"
+          fi
+        done
+      done
+      
+      # Test campaign creation
+      echo "🧪 Testing campaign creation..."
+      campaign_response=$(curl -s -X POST "http://localhost:4000/api/campaigns/init" \
+        -H "Content-Type: application/json" \
+        -d '{
+          "buyerId": "test_creator",
+          "budget": 100,
+          "bidType": "CPM",
+          "placements": ["HEADER", "FOOTER"]
+        }' | jq -r '.campaignId')
+      
+      if [[ "$campaign_response" != "null" && "$campaign_response" != "" ]]; then
+        echo "✅ Campaign creation: $campaign_response"
+      else
+        echo "❌ Campaign creation failed"
+      fi
+      
+      echo "🎉 FANZ Ad System smoke tests completed"
+    tags: [testing, qa, fanz]
+
+  - name: "ads:build"
+    description: "Build all FANZ ad system components"
+    command: |
+      set -e
+      echo "🔨 Building FANZ Ad System..."
+      
+      # Build ads client package
+      echo "📦 Building @fanz/ads-client..."
+      cd packages/fanz-ads-client
+      npm install --silent
+      npm run build
+      cd ../..
+      
+      # Build demo app
+      echo "🎨 Building demo app..."
+      cd apps/fanz-ads-demo
+      npm install --silent
+      npm run build
+      cd ../..
+      
+      # Prepare ad service for production
+      echo "📡 Preparing ad service..."
+      cd services/ad-service
+      npm install --production --silent
+      cd ../..
+      
+      echo "✅ FANZ Ad System build complete"
+      echo "📊 Client package: packages/fanz-ads-client/dist/"
+      echo "🎨 Demo app: apps/fanz-ads-demo/.next/"
+      echo "📡 Ad service: services/ad-service/"
+    tags: [build, production, fanz]
+
+  - name: "ads:deploy:staging"
+    description: "Deploy FANZ ad system to staging environment"
+    command: |
+      set -e
+      echo "🚀 Deploying FANZ Ad System to staging..."
+      
+      # Build first
+      warp run ads:build
+      
+      # Deploy ad service
+      echo "📡 Deploying ad service..."
+      # Add your staging deployment commands here
+      # docker build -t fanz-ad-service:staging services/ad-service/
+      # docker push registry.fanz.network/ad-service:staging
+      
+      # Deploy demo app
+      echo "🎨 Deploying demo app..."
+      # Add your demo app deployment commands here
+      # docker build -t fanz-ads-demo:staging apps/fanz-ads-demo/
+      # docker push registry.fanz.network/ads-demo:staging
+      
+      echo "✅ FANZ Ad System deployed to staging"
+      echo "🌐 Staging URL: https://ads-staging.fanz.network"
+    tags: [deployment, staging, fanz]
+
+  - name: "ads:deploy:production"
+    description: "Deploy FANZ ad system to production"
+    command: |
+      set -e
+      echo "🚀 Deploying FANZ Ad System to production..."
+      echo "⚠️  This will deploy to LIVE production environment!"
+      
+      read -p "Are you sure you want to deploy to production? (yes/no): " confirm
+      if [[ $confirm != "yes" ]]; then
+        echo "❌ Production deployment cancelled"
+        exit 1
+      fi
+      
+      # Build and test first
+      warp run ads:build
+      warp run ads:test
+      
+      # Deploy with zero downtime
+      echo "📡 Deploying ad service to production..."
+      # Add your production deployment commands here
+      # kubectl apply -f k8s/ad-service-production.yaml
+      
+      echo "🎨 Deploying client packages..."
+      # npm publish packages/fanz-ads-client/ --registry=https://registry.fanz.network
+      
+      echo "✅ FANZ Ad System deployed to production"
+      echo "🌐 Production API: https://api.fanz.network"
+    tags: [deployment, production, fanz]
+
+  # Utility workflows
+  - name: "ads:clean"
+    description: "Clean all build artifacts and dependencies"
+    command: |
+      set -e
+      echo "🧹 Cleaning FANZ Ad System..."
+      
+      # Stop services first
+      warp run ads:stop
+      
+      # Clean node_modules and build artifacts
+      echo "📦 Removing node_modules..."
+      find . -name "node_modules" -type d -exec rm -rf {} + 2>/dev/null || true
+      find . -name "dist" -type d -exec rm -rf {} + 2>/dev/null || true
+      find . -name ".next" -type d -exec rm -rf {} + 2>/dev/null || true
+      
+      # Clean logs
+      echo "📋 Cleaning logs..."
+      rm -rf logs/
+      mkdir -p logs
+      
+      echo "✅ FANZ Ad System cleaned"
+    tags: [cleanup, maintenance, fanz]
+
+  - name: "ads:docs"
+    description: "Generate and serve FANZ ad system documentation"
+    command: |
+      echo "📚 FANZ Ad System Documentation"
+      echo ""
+      echo "🔗 Quick Links:"
+      echo "  • OpenAPI Spec: openapi/fanz-ads.yml"
+      echo "  • README: README.md"
+      echo "  • Policy Rules: services/ad-service/policy/rules.json"
+      echo ""
+      echo "🚀 Development:"
+      echo "  warp ads:dev     - Start development environment"
+      echo "  warp ads:test    - Run smoke tests"
+      echo "  warp ads:stop    - Stop all services"
+      echo ""
+      echo "📦 Build & Deploy:"
+      echo "  warp ads:build   - Build all components"
+      echo "  warp ads:deploy:staging - Deploy to staging"
+      echo "  warp ads:deploy:production - Deploy to production"
+      echo ""
+      echo "🛠️  Utilities:"
+      echo "  warp ads:clean   - Clean build artifacts"
+      echo "  warp ads:logs    - View live logs"
+      echo ""
+      echo "🔐 Security:"
+      echo "  • Adult-friendly payment processors only"
+      echo "  • Stripe/PayPal automatically blocked"
+      echo "  • Content policy validation enabled"
+      echo ""
+      if command -v open >/dev/null 2>&1; then
+        echo "Opening README in browser..."
+        open README.md
+      fi
+    tags: [documentation, help, fanz]
+
+  - name: "ads:security:check"
+    description: "Run security checks on FANZ ad system"
+    command: |
+      set -e
+      echo "🔐 Running FANZ Ad System security checks..."
+      
+      # Check for prohibited payment processors in code
+      echo "🚫 Checking for prohibited payment processors..."
+      if grep -r -i "stripe\|paypal" services/ad-service/src/ --exclude-dir=node_modules; then
+        echo "❌ SECURITY VIOLATION: Found references to prohibited payment processors!"
+        echo "   FANZ policy prohibits Stripe and PayPal. Use only adult-friendly processors."
+        exit 1
+      else
+        echo "✅ No prohibited payment processors found"
+      fi
+      
+      # Check environment variables
+      echo "🔑 Checking environment variables..."
+      if [ -f env/.env.local ]; then
+        if grep -q "stripe\|paypal" env/.env.local; then
+          echo "⚠️  WARNING: Found prohibited processors in environment config"
+        else
+          echo "✅ Environment configuration is clean"
+        fi
+      fi
+      
+      # Check dependencies for vulnerabilities
+      echo "📦 Checking for vulnerable dependencies..."
+      if command -v npm >/dev/null 2>&1; then
+        cd services/ad-service
+        npm audit --audit-level=moderate || echo "⚠️  Found some dependency issues"
+        cd ../..
+      fi
+      
+      echo "✅ FANZ security checks completed"
+    tags: [security, audit, fanz]
+
+  # Integration workflows  
+  - name: "ads:integration:boyfanz"
+    description: "Test FANZ ad integration with BoyFanz platform"
+    command: |
+      echo "🔗 Testing FANZ Ad integration with BoyFanz..."
+      
+      # Set platform-specific environment
+      export NEXT_PUBLIC_PLATFORM=boyfanz
+      
+      # Test platform-specific ad requests
+      placements=("HEADER" "FOOTER" "SIDEPANEL" "HOMEPAGE_HERO")
+      for placement in "${placements[@]}"; do
+        response=$(curl -s "http://localhost:4000/api/ads?placement=$placement&platform=boyfanz&device=mobile" | jq -r '.creativeUrl')
+        echo "📱 Mobile $placement: $response"
+        
+        response=$(curl -s "http://localhost:4000/api/ads?placement=$placement&platform=boyfanz&device=desktop" | jq -r '.creativeUrl')
+        echo "🖥️  Desktop $placement: $response"
+      done
+      
+      echo "✅ BoyFanz integration test completed"
+    tags: [integration, testing, boyfanz]
+
+  - name: "ads:performance"
+    description: "Run performance tests on FANZ ad system"
+    command: |
+      set -e
+      echo "⚡ Running FANZ Ad System performance tests..."
+      
+      # Check if ad service is running
+      if ! curl -s http://localhost:4000/health > /dev/null; then
+        echo "❌ Ad service not running. Start with 'warp ads:dev' first."
+        exit 1
+      fi
+      
+      # Basic load test with curl
+      echo "🔥 Testing ad request performance (100 requests)..."
+      time for i in {1..100}; do
+        curl -s "http://localhost:4000/api/ads?placement=HEADER&platform=boyfanz" > /dev/null
+      done
+      
+      # Test campaign creation performance
+      echo "🔥 Testing campaign creation (10 campaigns)..."
+      time for i in {1..10}; do
+        curl -s -X POST "http://localhost:4000/api/campaigns/init" \
+          -H "Content-Type: application/json" \
+          -d "{\"buyerId\":\"perf_test_$i\",\"budget\":50,\"bidType\":\"CPM\",\"placements\":[\"HEADER\"]}" > /dev/null
+      done
+      
+      echo "✅ Performance tests completed"
+      echo "💡 For detailed performance analysis, use tools like Apache Bench or Artillery"
+    tags: [performance, testing, fanz]

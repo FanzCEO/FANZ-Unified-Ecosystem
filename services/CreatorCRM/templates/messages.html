@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Messages - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h2 mb-0">Messages</h1>
+        <p class="text-muted">View and manage your communications</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if messages %}
+            <div class="list-group list-group-flush">
+                {% for message in messages %}
+                    <div class="list-group-item {{ 'border-start border-warning border-3' if not message.processed else '' }}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2">
+                                    <h6 class="mb-0 me-3">
+                                        {% if message.client %}
+                                            {{ message.client.name }}
+                                        {% else %}
+                                            {{ message.phone_number }}
+                                        {% endif %}
+                                    </h6>
+                                    <span class="badge bg-{{ 'primary' if message.direction == 'outbound' else 'secondary' }} me-2">
+                                        {% if message.direction == 'outbound' %}
+                                            <i data-feather="arrow-up-right" class="me-1"></i>Sent
+                                        {% else %}
+                                            <i data-feather="arrow-down-left" class="me-1"></i>Received
+                                        {% endif %}
+                                    </span>
+                                    <span class="badge bg-info">{{ message.channel.upper() }}</span>
+                                    {% if not message.processed %}
+                                        <span class="badge bg-warning ms-2">Unread</span>
+                                    {% endif %}
+                                </div>
+                                <div class="message-content mb-2">
+                                    {{ message.content }}
+                                </div>
+                                <small class="text-muted">
+                                    <i data-feather="clock" class="me-1"></i>
+                                    {{ message.created_at.strftime('%b %d, %Y at %I:%M %p') }}
+                                    {% if message.twilio_sid %}
+                                        | SID: {{ message.twilio_sid }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="flex-shrink-0 ms-3">
+                                {% if not message.processed %}
+                                    <form method="POST" action="{{ url_for('mark_message_processed', message_id=message.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                                            <i data-feather="check" class="me-1"></i>Mark Read
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center text-muted py-5">
+                <i data-feather="message-circle" class="mb-3" style="width: 48px; height: 48px;"></i>
+                <h5>No messages yet</h5>
+                <p>Your SMS conversations will appear here once you start receiving messages.</p>
+                <div class="mt-4">
+                    <h6>To get started:</h6>
+                    <ol class="list-unstyled text-start d-inline-block">
+                        <li>1. Configure your Twilio webhook to point to:</li>
+                        <li class="text-info mb-2"><code>{{ request.url_root }}webhooks/twilio/sms</code></li>
+                        <li>2. Add your Twilio credentials to environment variables</li>
+                        <li>3. Start receiving and responding to messages automatically</li>
+                    </ol>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if messages %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i data-feather="activity" class="me-2"></i>Message Statistics
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="fw-bold fs-4 text-primary">{{ messages|selectattr('direction', 'equalto', 'inbound')|list|length }}</div>
+                    <div class="text-muted small">Received</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="fw-bold fs-4 text-success">{{ messages|selectattr('direction', 'equalto', 'outbound')|list|length }}</div>
+                    <div class="text-muted small">Sent</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="fw-bold fs-4 text-warning">{{ messages|selectattr('processed', 'equalto', false)|list|length }}</div>
+                    <div class="text-muted small">Unread</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="fw-bold fs-4 text-info">{{ messages|selectattr('channel', 'equalto', 'sms')|list|length }}</div>
+                    <div class="text-muted small">SMS</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

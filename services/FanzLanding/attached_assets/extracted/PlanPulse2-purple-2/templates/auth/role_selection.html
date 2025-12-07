@@ -1,0 +1,570 @@
+{% extends "base.html" %} {% block title %}Select Your Role - FANZ{% endblock %}
+{% block content %}
+<div class="role-selection-container">
+  <div class="container">
+    <div class="row justify-content-center min-vh-100 align-items-center py-5">
+      <div class="col-lg-10">
+        <div class="role-selection-card card">
+          <div class="card-header text-center py-4">
+            <h2 class="fanz-logo neon-text neon-cyan mb-2">
+              <i class="fas fa-user-cog me-2"></i>Choose Your Path
+            </h2>
+            <p class="lead text-secondary mb-0">
+              Select your role in the FanzLab ecosystem
+            </p>
+            <small class="text-muted"
+              >You can always change this later in your settings</small
+            >
+          </div>
+
+          <div class="card-body p-5">
+            <form method="POST" class="role-form">
+              {{ form.hidden_tag() }}
+
+              <div class="roles-grid">
+                <!-- Fan Role -->
+                <div class="role-option" data-role="fan">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="fan"
+                    id="role-fan"
+                    class="role-input"
+                  />
+                  <label for="role-fan" class="role-card">
+                    <div class="role-icon neon-cyan">
+                      <i class="fas fa-heart fa-3x"></i>
+                    </div>
+                    <div class="role-content">
+                      <h4 class="role-title">Fan</h4>
+                      <p class="role-description">
+                        Enjoy and support creators across all clusters. Access
+                        premium content, interact with STARs, and be part of
+                        vibrant communities.
+                      </p>
+                      <div class="role-features">
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Access to all clusters</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Direct messaging with creators</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Premium content subscriptions</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Community participation</span>
+                        </div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- STAR Role -->
+                <div class="role-option" data-role="star">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="star"
+                    id="role-star"
+                    class="role-input"
+                  />
+                  <label for="role-star" class="role-card featured">
+                    <div class="role-badge">
+                      <i class="fas fa-crown"></i> Most Popular
+                    </div>
+                    <div class="role-icon neon-pink">
+                      <i class="fas fa-star fa-3x"></i>
+                    </div>
+                    <div class="role-content">
+                      <h4 class="role-title">STAR (Creator)</h4>
+                      <p class="role-description">
+                        Create, monetize, and build your brand across multiple
+                        clusters. Full compliance support with cross-platform
+                        publishing capabilities.
+                      </p>
+                      <div class="role-features">
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Content monetization</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Cross-cluster posting</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Analytics dashboard</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>2257 compliance tools</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Multiple payment gateways</span>
+                        </div>
+                      </div>
+                      <div class="role-note">
+                        <i class="fas fa-info-circle neon-yellow"></i>
+                        <small
+                          >Requires identity verification and compliance
+                          documents</small
+                        >
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- Moderator Role -->
+                <div class="role-option" data-role="moderator">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="moderator"
+                    id="role-moderator"
+                    class="role-input"
+                  />
+                  <label for="role-moderator" class="role-card">
+                    <div class="role-icon neon-green">
+                      <i class="fas fa-shield-alt fa-3x"></i>
+                    </div>
+                    <div class="role-content">
+                      <h4 class="role-title">Moderator</h4>
+                      <p class="role-description">
+                        Help maintain community standards and safety across the
+                        platform. Review content, manage disputes, and support
+                        users.
+                      </p>
+                      <div class="role-features">
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Content moderation tools</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>User support capabilities</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Verification queue access</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Security dashboard</span>
+                        </div>
+                      </div>
+                      <div class="role-note">
+                        <i class="fas fa-info-circle neon-yellow"></i>
+                        <small>By invitation only - contact admin team</small>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- Admin Role -->
+                <div class="role-option" data-role="admin">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="admin"
+                    id="role-admin"
+                    class="role-input"
+                  />
+                  <label for="role-admin" class="role-card">
+                    <div class="role-icon neon-orange">
+                      <i class="fas fa-cog fa-3x"></i>
+                    </div>
+                    <div class="role-content">
+                      <h4 class="role-title">Administrator</h4>
+                      <p class="role-description">
+                        Platform administration with full access to system
+                        controls, user management, and compliance oversight.
+                      </p>
+                      <div class="role-features">
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Full platform access</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>User management</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>System configuration</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Compliance oversight</span>
+                        </div>
+                      </div>
+                      <div class="role-note">
+                        <i class="fas fa-exclamation-triangle neon-orange"></i>
+                        <small
+                          >Restricted access - admin invitation required</small
+                        >
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- Executive Role -->
+                <div class="role-option" data-role="exec">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="exec"
+                    id="role-exec"
+                    class="role-input"
+                  />
+                  <label for="role-exec" class="role-card">
+                    <div class="role-icon neon-purple">
+                      <i class="fas fa-crown fa-3x"></i>
+                    </div>
+                    <div class="role-content">
+                      <h4 class="role-title">Executive</h4>
+                      <p class="role-description">
+                        Business management and strategic oversight with access
+                        to executive dashboards, analytics, and financial
+                        reporting.
+                      </p>
+                      <div class="role-features">
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Executive dashboard</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Financial reporting</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Platform analytics</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-check neon-green"></i>
+                          <span>Strategic oversight</span>
+                        </div>
+                      </div>
+                      <div class="role-note">
+                        <i class="fas fa-lock neon-purple"></i>
+                        <small
+                          >C-level access only - requires authorization</small
+                        >
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-actions text-center mt-5">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg px-5 glow-pulse"
+                  disabled
+                  id="continue-btn"
+                >
+                  <i class="fas fa-arrow-right me-2"></i>Continue with Selected
+                  Role
+                </button>
+                <p class="text-muted mt-3">
+                  <i class="fas fa-info-circle me-2"></i>
+                  You can change your role later in account settings
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .role-selection-container {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 255, 255, 0.05),
+      rgba(255, 0, 255, 0.05)
+    );
+    min-height: 100vh;
+  }
+
+  .role-selection-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+  }
+
+  .role-option {
+    position: relative;
+  }
+
+  .role-input {
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .role-card {
+    display: block;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    padding: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .role-card.featured {
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+  }
+
+  .role-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 15px 40px rgba(0, 255, 255, 0.2);
+  }
+
+  .role-input:checked + .role-card {
+    border-color: var(--neon-green);
+    background: rgba(0, 255, 0, 0.05);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+  }
+
+  .role-badge {
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    background: var(--neon-pink);
+    color: var(--dark-bg);
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    z-index: 10;
+  }
+
+  .role-icon {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid currentColor;
+  }
+
+  .role-title {
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .role-description {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .role-features {
+    margin-bottom: 20px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .feature-item i {
+    width: 16px;
+    text-align: center;
+  }
+
+  .role-note {
+    background: rgba(255, 255, 0, 0.1);
+    border: 1px solid rgba(255, 255, 0, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .role-note small {
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .form-actions {
+    position: relative;
+  }
+
+  #continue-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .roles-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .role-card {
+      padding: 20px;
+    }
+
+    .role-icon {
+      padding: 15px;
+    }
+
+    .role-icon i {
+      font-size: 2rem !important;
+    }
+  }
+
+  /* Animation for role selection */
+  @keyframes role-select {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .role-input:checked + .role-card {
+    animation: role-select 0.5s ease;
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const roleInputs = document.querySelectorAll(".role-input");
+    const continueBtn = document.getElementById("continue-btn");
+    const form = document.querySelector(".role-form");
+
+    // Enable continue button when a role is selected
+    roleInputs.forEach((input) => {
+      input.addEventListener("change", function () {
+        continueBtn.disabled = false;
+        continueBtn.classList.add("glow-pulse");
+
+        // Update button text based on selected role
+        const selectedRole = this.value;
+        const roleNames = {
+          fan: "Fan",
+          star: "STAR Creator",
+          moderator: "Moderator",
+          admin: "Administrator",
+          exec: "Executive",
+        };
+
+        continueBtn.innerHTML = `<i class="fas fa-arrow-right me-2"></i>Continue as ${roleNames[selectedRole]}`;
+
+        // Add visual feedback
+        document.querySelectorAll(".role-card").forEach((card) => {
+          card.style.transform = "";
+          card.style.boxShadow = "";
+        });
+
+        const selectedCard = this.nextElementSibling;
+        selectedCard.style.transform = "scale(1.02)";
+      });
+    });
+
+    // Form submission enhancement
+    form.addEventListener("submit", function (e) {
+      if (continueBtn.disabled) {
+        e.preventDefault();
+        window.NeonUtils.showNeonAlert(
+          "Please select a role to continue",
+          "warning",
+        );
+        return;
+      }
+
+      // Disable button and show loading state
+      continueBtn.disabled = true;
+      continueBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+
+      // Show next steps based on role
+      const selectedRole = document.querySelector(".role-input:checked").value;
+
+      if (selectedRole === "star") {
+        window.NeonUtils.showNeonAlert(
+          "Great! Next, you'll complete identity verification for 2257 compliance.",
+          "info",
+        );
+      } else if (["moderator", "admin", "exec"].includes(selectedRole)) {
+        window.NeonUtils.showNeonAlert(
+          "Administrative roles require approval. You'll be contacted by our team.",
+          "info",
+        );
+      } else {
+        window.NeonUtils.showNeonAlert(
+          "Welcome! Let's get you set up with your favorite clusters.",
+          "success",
+        );
+      }
+    });
+
+    // Add hover effects to role cards
+    const roleCards = document.querySelectorAll(".role-card");
+    roleCards.forEach((card) => {
+      card.addEventListener("mouseenter", function () {
+        if (!this.previousElementSibling.checked) {
+          this.style.transform = "translateY(-3px)";
+        }
+      });
+
+      card.addEventListener("mouseleave", function () {
+        if (!this.previousElementSibling.checked) {
+          this.style.transform = "";
+        }
+      });
+    });
+
+    // Keyboard navigation
+    document.addEventListener("keydown", function (e) {
+      if (e.key >= "1" && e.key <= "5") {
+        const index = parseInt(e.key) - 1;
+        if (roleInputs[index]) {
+          roleInputs[index].checked = true;
+          roleInputs[index].dispatchEvent(new Event("change"));
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

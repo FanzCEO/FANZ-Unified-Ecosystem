@@ -1,0 +1,43 @@
+Proprietary Feature — Geolocation Map with Creator‑Only Chat
+
+The FansLab Map UX
+	•	Private Creator Layer: A live, interactive map displaying verified creators within adjustable radius (privacy settings configured by creators).
+	•	Functionalities:
+	•	Real-Time Presence Indicators (online/offline).
+	•	“Open for Collab/Meet” Pins: Creators broadcast availability for meetups or co-creation.
+	•	Direct Chat From Map: Tap a pin to open instant creator-to-creator chat, propose collabs, or schedule visits.
+	•	Filterable by Niche, Ratings, Events: Use RateLab status, upcoming event pins, or topic filters.
+	•	Integration Touchpoints:
+	•	ForumLab: Open discussions or invite peers directly via map.
+	•	ViserGo: Launch location-based contests (e.g. “Best local shoot”).
+	•	Apointer/EventLab: Schedule nearby workshops or private sessions via map interaction.
+Module(s)
+Contribution to FansLab Functionality
+FansLab (core)
+Subscriptions, content feed, drip content, messaging, base platform logic
+MLMLab + AffiLab
+Referral and affiliate monetization with commission tracking and KYC
+PaymentHub + XCash
+Gateway integration, escrow, wallet management, tipping, payout, multi-currency
+Ecoma/CodePlus/PPDLab
+Commerce functionality—physical merch, digital files, pay-per-download
+NFTLab + Metalance
+Web3 capabilities: NFT minting, crypto gigs, Metamask, digital ownership
+ViserCard
+VIP access, payment credentials, membership cards
+PlayLab + ViserTube
+Video delivery: on-demand, live, shorts, adaptive streaming with DRM
+eLab + InspireMe
+Online learning, portfolios, workshop hosting, inspiration-sharing
+EventLab + TheataLab + Apointer
+Event ticketing, show management, appointment scheduling
+ViserGo + CollabStar
+Campaigns, competitions, influencer matching, gamified engagement
+BuzzLab, TweetSMS, ShortLab, CpaLab
+Marketing—email/SMS, link tracking, landing funnels, lead gen
+ForumLab + RateLab
+Community discussion, feedback, trust signals, creator ratings
+ViserWeb
+SEO tools, analytics, webmaster interface
+Geolocation + Map Chat
+Creator discovery, seamless collaboration, wheel-of-possibilities in real time

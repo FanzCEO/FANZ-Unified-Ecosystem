@@ -1,0 +1,130 @@
+$ cd /workspace/shadcn-ui && git init
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint: 
+hint: 	git config --global init.defaultBranch <name>
+hint: 
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint: 
+hint: 	git branch -m <name>
+Initialized empty Git repository in /workspace/shadcn-ui/.git/
+$ cd /workspace/shadcn-ui && git add .
+
+$ cd /workspace/shadcn-ui && git commit -m "Initial commit: FANZ Mobile Creator Platform with complete features"
+
+[master (root-commit) ff3efb2] Initial commit: FANZ Mobile Creator Platform with complete features
+ 112 files changed, 16898 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 .mgx/config.yaml
+ create mode 100755 README.md
+ create mode 100644 components.json
+ create mode 100644 eslint.config.js
+ create mode 100644 index.html
+ create mode 100644 package.json
+ create mode 100644 pnpm-lock.yaml
+ create mode 100644 postcss.config.js
+ create mode 100644 public/favicon.svg
+ create mode 100644 public/images/AlexWorkout.jpg
+ create mode 100644 public/images/Avatar.jpg
+ create mode 100644 public/images/PupFanz.jpg
+ create mode 100644 public/images/photo1761765478.jpg
+ create mode 100644 public/images/photo1761765597.jpg
+ create mode 100644 public/images/photo1761765700.jpg
+ create mode 100644 public/robots.txt
+ create mode 100644 src/App.css
+ create mode 100644 src/App.tsx
+ create mode 100644 src/components/AnalyticsReporting.tsx
+ create mode 100644 src/components/CRMDashboard.tsx
+ create mode 100644 src/components/CloudStorageManager.tsx
+ create mode 100644 src/components/ComplianceForm.tsx
+ create mode 100644 src/components/ForensicProtection.tsx
+ create mode 100644 src/components/MediaCard.tsx
+ create mode 100644 src/components/MediaProcessingStatus.tsx
+ create mode 100644 src/components/MobileNavigation.tsx
+ create mode 100644 src/components/Navigation.tsx
+ create mode 100644 src/components/PlatformSelector.tsx
+ create mode 100644 src/components/ProcessingStatus.tsx
+ create mode 100644 src/components/ui/accordion.tsx
+ create mode 100644 src/components/ui/alert-dialog.tsx
+ create mode 100644 src/components/ui/alert.tsx
+ create mode 100644 src/components/ui/aspect-ratio.tsx
+ create mode 100644 src/components/ui/avatar.tsx
+ create mode 100644 src/components/ui/badge.tsx
+ create mode 100644 src/components/ui/breadcrumb.tsx
+ create mode 100644 src/components/ui/button.tsx
+ create mode 100644 src/components/ui/calendar.tsx
+ create mode 100644 src/components/ui/card.tsx
+ create mode 100644 src/components/ui/carousel.tsx
+ create mode 100644 src/components/ui/chart.tsx
+ create mode 100644 src/components/ui/checkbox.tsx
+ create mode 100644 src/components/ui/collapsible.tsx
+ create mode 100644 src/components/ui/command.tsx
+ create mode 100644 src/components/ui/context-menu.tsx
+ create mode 100644 src/components/ui/dialog.tsx
+ create mode 100644 src/components/ui/drawer.tsx
+ create mode 100644 src/components/ui/dropdown-menu.tsx
+ create mode 100644 src/components/ui/form.tsx
+ create mode 100644 src/components/ui/hover-card.tsx
+ create mode 100644 src/components/ui/input-otp.tsx
+ create mode 100644 src/components/ui/input.tsx
+ create mode 100644 src/components/ui/label.tsx
+ create mode 100644 src/components/ui/menubar.tsx
+ create mode 100644 src/components/ui/navigation-menu.tsx
+ create mode 100644 src/components/ui/pagination.tsx
+ create mode 100644 src/components/ui/popover.tsx
+ create mode 100644 src/components/ui/progress.tsx
+ create mode 100644 src/components/ui/radio-group.tsx
+ create mode 100644 src/components/ui/resizable.tsx
+ create mode 100644 src/components/ui/scroll-area.tsx
+ create mode 100644 src/components/ui/select.tsx
+ create mode 100644 src/components/ui/separator.tsx
+ create mode 100644 src/components/ui/sheet.tsx
+ create mode 100644 src/components/ui/sidebar.tsx
+ create mode 100644 src/components/ui/skeleton.tsx
+ create mode 100644 src/components/ui/slider.tsx
+ create mode 100644 src/components/ui/sonner.tsx
+ create mode 100644 src/components/ui/switch.tsx
+ create mode 100644 src/components/ui/table.tsx
+ create mode 100644 src/components/ui/tabs.tsx
+ create mode 100644 src/components/ui/textarea.tsx
+ create mode 100644 src/components/ui/toast.tsx
+ create mode 100644 src/components/ui/toaster.tsx
+ create mode 100644 src/components/ui/toggle-group.tsx
+ create mode 100644 src/components/ui/toggle.tsx
+ create mode 100644 src/components/ui/tooltip.tsx
+ create mode 100644 src/components/ui/use-toast.ts
+ create mode 100644 src/hooks/use-mobile.tsx
+ create mode 100644 src/hooks/use-toast.ts
+ create mode 100644 src/index.css
+ create mode 100644 src/lib/api.ts
+ create mode 100644 src/lib/database.ts
+ create mode 100644 src/lib/deployment.ts
+ create mode 100644 src/lib/mediaProcessing.ts
+ create mode 100644 src/lib/mockData.ts
+ create mode 100644 src/lib/platformConnections.ts
+ create mode 100644 src/lib/utils.ts
+ create mode 100644 src/lib/webhooks.ts
+ create mode 100644 src/main.tsx
+ create mode 100644 src/pages/Admin.tsx
+ create mode 100644 src/pages/AdminPanel.tsx
+ create mode 100644 src/pages/Compliance.tsx
+ create mode 100644 src/pages/Dashboard.tsx
+ create mode 100644 src/pages/Index.tsx
+ create mode 100644 src/pages/MobileCompliance.tsx
+ create mode 100644 src/pages/MobileDashboard.tsx
+ create mode 100644 src/pages/MobileProfile.tsx
+ create mode 100644 src/pages/MobileScheduler.tsx
+ create mode 100644 src/pages/MobileUpload.tsx
+ create mode 100644 src/pages/NotFound.tsx
+ create mode 100644 src/pages/Scheduler.tsx
+ create mode 100644 src/pages/Upload.tsx
+ create mode 100644 src/vite-env.d.ts
+ create mode 100644 tailwind.config.ts
+ create mode 100644 template_config.json
+ create mode 100644 todo.md
+ create mode 100644 tsconfig.app.json
+ create mode 100644 tsconfig.json
+ create mode 100644 tsconfig.node.json
+ create mode 100644 vite.config.ts

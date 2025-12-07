@@ -1,0 +1,546 @@
+{% extends "base.html" %} {% block title %}Scene Manager - FANZ{% endblock %} {%
+block content %}
+<div class="scene-manager-container">
+  <div class="container-fluid">
+    <!-- Scene Manager Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="page-header card gradient-card">
+          <div class="card-body py-4">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h2 class="neon-text neon-pink mb-2">
+                  <i class="fas fa-video me-2"></i>Scene Manager
+                </h2>
+                <p class="lead text-secondary mb-0">
+                  Create, organize, and monetize your most seductive content
+                  scenes
+                </p>
+              </div>
+              <div class="col-md-4 text-end">
+                <button
+                  class="btn btn-primary btn-lg"
+                  data-bs-toggle="modal"
+                  data-bs-target="#createSceneModal"
+                >
+                  <i class="fas fa-plus me-2"></i>New Scene
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene Statistics -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="stat-card card">
+          <div class="card-body text-center">
+            <div class="stat-icon neon-cyan mb-3">
+              <i class="fas fa-film fa-2x"></i>
+            </div>
+            <h4 class="stat-number neon-text neon-cyan">{{ total_scenes }}</h4>
+            <p class="stat-label">Total Scenes</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card card">
+          <div class="card-body text-center">
+            <div class="stat-icon neon-green mb-3">
+              <i class="fas fa-eye fa-2x"></i>
+            </div>
+            <h4 class="stat-number neon-text neon-green">{{ total_views }}</h4>
+            <p class="stat-label">Total Views</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card card">
+          <div class="card-body text-center">
+            <div class="stat-icon neon-yellow mb-3">
+              <i class="fas fa-dollar-sign fa-2x"></i>
+            </div>
+            <h4 class="stat-number neon-text neon-yellow">
+              ${{ total_earnings }}
+            </h4>
+            <p class="stat-label">Total Earnings</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card card">
+          <div class="card-body text-center">
+            <div class="stat-icon neon-pink mb-3">
+              <i class="fas fa-heart fa-2x"></i>
+            </div>
+            <h4 class="stat-number neon-text neon-pink">{{ total_likes }}</h4>
+            <p class="stat-label">Total Likes</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene Grid -->
+    <div class="row">
+      <div class="col-12">
+        <div class="scenes-grid card">
+          <div
+            class="card-header d-flex justify-content-between align-items-center"
+          >
+            <h5 class="mb-0">
+              <i class="fas fa-th-large me-2"></i>Your Seductive Scenes
+            </h5>
+            <div class="scene-filters">
+              <select class="form-select form-select-sm" id="filterCluster">
+                <option value="">All Clusters</option>
+                <option value="boyfanz">BoyFanz</option>
+                <option value="girlfanz">GirlFanz</option>
+                <option value="pupfanz">PupFanz</option>
+                <option value="tranzfanz">TranzFanz</option>
+                <option value="taboofanz">TabooFanz</option>
+                <option value="daddyfanz">DaddyFanz</option>
+                <option value="allmyfanz">AllMyFanz</option>
+                <option value="fanztube">FanzTube</option>
+                <option value="fanzvip">FanzVIP</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row g-4" id="scenesContainer">
+              {% if scenes %} {% for scene in scenes %}
+              <div
+                class="col-lg-4 col-md-6 scene-item"
+                data-cluster="{{ scene.cluster_type.value }}"
+              >
+                <div class="scene-card card h-100 hover-glow">
+                  <div class="scene-thumbnail">
+                    {% if scene.thumbnail_url %}
+                    <img
+                      src="{{ scene.thumbnail_url }}"
+                      alt="{{ scene.title }}"
+                      class="card-img-top"
+                    />
+                    {% else %}
+                    <div class="scene-placeholder">
+                      <i class="fas fa-video fa-3x neon-text neon-cyan"></i>
+                    </div>
+                    {% endif %}
+                    <div class="scene-overlay">
+                      <div class="scene-actions">
+                        <button
+                          class="btn btn-sm btn-outline-light"
+                          onclick="editScene('{{ scene.id }}')"
+                        >
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-outline-light"
+                          onclick="viewStats('{{ scene.id }}')"
+                        >
+                          <i class="fas fa-chart-line"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          onclick="deleteScene('{{ scene.id }}')"
+                        >
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <h6 class="card-title text-truncate">{{ scene.title }}</h6>
+                    <p class="card-text small text-muted text-truncate">
+                      {{ scene.description }}
+                    </p>
+                    <div class="scene-meta">
+                      <span
+                        class="badge bg-{{ 'success' if scene.status == 'published' else 'warning' }}"
+                      >
+                        {{ scene.status.title() }}
+                      </span>
+                      <small class="text-muted"
+                        >{{ scene.created_at.strftime('%b %d, %Y') }}</small
+                      >
+                    </div>
+                    <div class="scene-stats mt-2">
+                      <small class="text-secondary">
+                        <i class="fas fa-eye me-1"></i>{{ scene.views or 0 }}
+                        <i class="fas fa-heart ms-2 me-1"></i>{{ scene.likes or
+                        0 }} <i class="fas fa-dollar-sign ms-2 me-1"></i>${{
+                        scene.earnings or '0.00' }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %} {% else %}
+              <div class="col-12">
+                <div class="empty-state text-center py-5">
+                  <i class="fas fa-video fa-4x neon-text neon-cyan mb-4"></i>
+                  <h4>No scenes yet</h4>
+                  <p class="text-secondary mb-4">
+                    Start creating your first seductive scene to captivate your
+                    audience
+                  </p>
+                  <button
+                    class="btn btn-primary btn-lg"
+                    data-bs-toggle="modal"
+                    data-bs-target="#createSceneModal"
+                  >
+                    <i class="fas fa-plus me-2"></i>Create Your First Scene
+                  </button>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Scene Modal -->
+<div
+  class="modal fade"
+  id="createSceneModal"
+  tabindex="-1"
+  aria-labelledby="createSceneModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createSceneModalLabel">
+          <i class="fas fa-plus me-2"></i>Create New Scene
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="createSceneForm" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group mb-3">
+                <label for="sceneTitle" class="form-label">Scene Title *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="sceneTitle"
+                  name="title"
+                  required
+                  placeholder="Enter a seductive title for your scene"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group mb-3">
+                <label for="sceneCluster" class="form-label">Cluster *</label>
+                <select
+                  class="form-select"
+                  id="sceneCluster"
+                  name="cluster"
+                  required
+                >
+                  <option value="">Select cluster</option>
+                  <option value="boyfanz">BoyFanz</option>
+                  <option value="girlfanz">GirlFanz</option>
+                  <option value="pupfanz">PupFanz</option>
+                  <option value="tranzfanz">TranzFanz</option>
+                  <option value="taboofanz">TabooFanz</option>
+                  <option value="daddyfanz">DaddyFanz</option>
+                  <option value="allmyfanz">AllMyFanz</option>
+                  <option value="fanztube">FanzTube</option>
+                  <option value="fanzvip">FanzVIP</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="sceneDescription" class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              id="sceneDescription"
+              name="description"
+              rows="3"
+              placeholder="Describe what makes this scene irresistible..."
+            ></textarea>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label for="sceneTags" class="form-label">Tags</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="sceneTags"
+                  name="tags"
+                  placeholder="Add tags separated by commas"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label for="scenePrice" class="form-label">Price ($)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="scenePrice"
+                  name="price"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="sceneThumbnail" class="form-label">Thumbnail</label>
+            <div class="file-upload-area" id="thumbnailUpload">
+              <input
+                type="file"
+                class="form-control"
+                id="sceneThumbnail"
+                name="thumbnail"
+                accept="image/*"
+                style="display: none"
+              />
+              <div class="upload-placeholder">
+                <i class="fas fa-image fa-2x neon-text neon-cyan mb-2"></i>
+                <p>Click to upload thumbnail or drag and drop</p>
+                <small class="text-muted">Recommended: 1920x1080 pixels</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="sceneVideo" class="form-label">Video File *</label>
+            <div class="file-upload-area" id="videoUpload">
+              <input
+                type="file"
+                class="form-control"
+                id="sceneVideo"
+                name="video"
+                accept="video/*"
+                required
+                style="display: none"
+              />
+              <div class="upload-placeholder">
+                <i class="fas fa-video fa-2x neon-text neon-pink mb-2"></i>
+                <p>Click to upload video or drag and drop</p>
+                <small class="text-muted">Max size: 500MB</small>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button type="submit" form="createSceneForm" class="btn btn-primary">
+          <i class="fas fa-plus me-2"></i>Create Scene
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .scene-manager-container {
+    padding: 20px 0;
+  }
+
+  .stat-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .stat-icon {
+    display: inline-block;
+    padding: 15px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid currentColor;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .scene-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .scene-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 255, 255, 0.2);
+  }
+
+  .scene-thumbnail {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .scene-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .scene-placeholder {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 255, 255, 0.1),
+      rgba(255, 0, 255, 0.1)
+    );
+  }
+
+  .scene-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .scene-card:hover .scene-overlay {
+    opacity: 1;
+  }
+
+  .scene-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .scene-meta {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .empty-state {
+    color: var(--text-secondary);
+  }
+
+  .file-upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .file-upload-area:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  }
+
+  .upload-placeholder {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .scene-actions {
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+</style>
+{% endblock %} {% block page_scripts %} // Scene Manager JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+initializeSceneManager(); }); function initializeSceneManager() { // File upload
+handlers initializeFileUploads(); // Filter handler
+document.getElementById('filterCluster').addEventListener('change',
+filterScenes); // Form submission
+document.getElementById('createSceneForm').addEventListener('submit',
+handleCreateScene); } function initializeFileUploads() { const thumbnailUpload =
+document.getElementById('thumbnailUpload'); const videoUpload =
+document.getElementById('videoUpload'); if (thumbnailUpload) {
+thumbnailUpload.addEventListener('click', () =>
+document.getElementById('sceneThumbnail').click());
+document.getElementById('sceneThumbnail').addEventListener('change',
+handleThumbnailChange); } if (videoUpload) {
+videoUpload.addEventListener('click', () =>
+document.getElementById('sceneVideo').click());
+document.getElementById('sceneVideo').addEventListener('change',
+handleVideoChange); } } function filterScenes() { const filterValue =
+document.getElementById('filterCluster').value; const sceneItems =
+document.querySelectorAll('.scene-item'); sceneItems.forEach(item => { if
+(!filterValue || item.dataset.cluster === filterValue) { item.style.display =
+'block'; } else { item.style.display = 'none'; } }); } function
+handleThumbnailChange(e) { const file = e.target.files[0]; if (file) { const
+uploadArea = document.getElementById('thumbnailUpload'); const reader = new
+FileReader(); reader.onload = function(event) { uploadArea.innerHTML = `
+<div class="upload-preview">
+  <img
+    src="${event.target.result}"
+    alt="Thumbnail Preview"
+    style="max-width: 100%; max-height: 150px; border-radius: 8px"
+  />
+  <p class="mt-2 mb-0 text-success">Thumbnail selected</p>
+</div>
+`; }; reader.readAsDataURL(file); } } function handleVideoChange(e) { const file
+= e.target.files[0]; if (file) { const uploadArea =
+document.getElementById('videoUpload'); uploadArea.innerHTML = `
+<div class="upload-preview">
+  <i class="fas fa-video fa-2x neon-text neon-green mb-2"></i>
+  <p class="mb-0 text-success">Video selected: ${file.name}</p>
+  <small class="text-muted">${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+</div>
+`; } } function handleCreateScene(e) { e.preventDefault(); const formData = new
+FormData(e.target); // Show loading state const submitButton =
+document.querySelector('button[type="submit"][form="createSceneForm"]'); const
+originalText = submitButton.innerHTML; submitButton.innerHTML = '<i
+  class="fas fa-spinner fa-spin me-2"
+></i
+>Creating...'; submitButton.disabled = true; fetch('/api/scenes', { method:
+'POST', body: formData, headers: { 'X-CSRFToken': formData.get('csrf_token') }
+}) .then(response => response.json()) .then(data => { if (data.success) {
+location.reload(); } else { showAlert(data.error || 'Failed to create scene',
+'error'); } }) .catch(error => { showAlert('An error occurred while creating the
+scene', 'error'); }) .finally(() => { submitButton.innerHTML = originalText;
+submitButton.disabled = false; }); } function editScene(sceneId) { //
+Implementation for editing scene console.log('Edit scene:', sceneId); } function
+viewStats(sceneId) { // Implementation for viewing scene stats console.log('View
+stats:', sceneId); } function deleteScene(sceneId) { if (confirm('Are you sure
+you want to delete this scene? This action cannot be undone.')) {
+fetch(`/api/scenes/${sceneId}`, { method: 'DELETE', headers: { 'X-CSRFToken':
+document.querySelector('meta[name=csrf-token]').getAttribute('content') } })
+.then(response => response.json()) .then(data => { if (data.success) {
+location.reload(); } else { showAlert(data.error || 'Failed to delete scene',
+'error'); } }) .catch(error => { showAlert('An error occurred while deleting the
+scene', 'error'); }); } } {% endblock %}

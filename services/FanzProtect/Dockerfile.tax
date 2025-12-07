@@ -1,0 +1,143 @@
+# FanzProtect Tax Compliance - Multi-stage Docker Build
+# Optimized for Wyoming-based legal services with tax compliance
+
+# Base stage with Node.js
+FROM node:18-alpine AS base
+
+# Install system dependencies
+RUN apk add --no-cache \
+    curl \
+    postgresql-client \
+    openssl \
+    tzdata \
+    && ln -sf /usr/share/zoneinfo/America/Denver /etc/localtime \
+    && echo "America/Denver" > /etc/timezone
+
+# Set working directory
+WORKDIR /app
+
+# Create app user for security
+RUN addgroup -g 1001 -S fanzprotect && \
+    adduser -S fanzprotect -u 1001
+
+# Copy package files
+COPY package*.json ./
+
+# Development stage
+FROM base AS development
+
+# Install all dependencies (including devDependencies)
+RUN npm ci --include=dev
+
+# Copy source code
+COPY . .
+
+# Generate security keys for development
+RUN npm run generate-keys || echo "Keys generation skipped in dev"
+
+# Set ownership
+RUN chown -R fanzprotect:fanzprotect /app
+
+USER fanzprotect
+
+# Expose ports
+EXPOSE 3000 9229
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Development command
+CMD ["npm", "run", "dev:with-tax"]
+
+# Dependencies stage for production
+FROM base AS dependencies
+
+# Install only production dependencies
+RUN npm ci --only=production && npm cache clean --force
+
+# Build stage
+FROM base AS build
+
+# Install all dependencies for building
+RUN npm ci --include=dev
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Production stage
+FROM base AS production
+
+# Install production dependencies
+COPY --from=dependencies /app/node_modules ./node_modules
+
+# Copy built application
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/migrations ./migrations
+COPY --from=build /app/scripts ./scripts
+COPY --from=build /app/package*.json ./
+
+# Copy tax compliance files
+COPY --from=build /app/server/services/tax ./server/services/tax
+COPY --from=build /app/server/routes/tax-compliance.ts ./server/routes/
+COPY --from=build /app/shared/tax-schema.ts ./shared/
+
+# Create directories and set permissions
+RUN mkdir -p /app/logs /app/backups /app/uploads && \
+    chown -R fanzprotect:fanzprotect /app
+
+USER fanzprotect
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Production command
+CMD ["npm", "run", "start:production:tax"]
+
+# Monitoring stage (separate container for tax monitoring)
+FROM base AS monitoring
+
+# Install production dependencies
+COPY --from=dependencies /app/node_modules ./node_modules
+
+# Copy monitoring-specific files
+COPY package*.json ./
+COPY server/services/tax/ ./server/services/tax/
+COPY server/services/monitoring/ ./server/services/monitoring/
+COPY shared/tax-schema.ts ./shared/
+COPY scripts/ ./scripts/
+
+# Set permissions
+RUN chown -R fanzprotect:fanzprotect /app
+
+USER fanzprotect
+
+# Monitoring command
+CMD ["npm", "run", "tax:monitoring:start"]
+
+# Nginx stage for reverse proxy
+FROM nginx:alpine AS nginx
+
+# Copy nginx configuration
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/ssl/ /etc/nginx/ssl/
+
+# Create log directories
+RUN mkdir -p /var/log/nginx && \
+    chown -R nginx:nginx /var/log/nginx
+
+# Expose ports
+EXPOSE 80 443
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/health || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]

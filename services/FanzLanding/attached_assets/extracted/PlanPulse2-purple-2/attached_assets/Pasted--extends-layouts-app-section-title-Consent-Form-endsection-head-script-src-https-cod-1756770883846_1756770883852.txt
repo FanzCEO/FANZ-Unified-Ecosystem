@@ -1,0 +1,547 @@
+@extends('layouts.app')
+
+@section('title') Consent Form -@endsection
+<head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+@section('css')
+    <style>
+        consent-form-template {
+            font-family: Arial, sans-serif;
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2, h3, h4 {
+            color: grey;
+            margin-bottom: 10px;
+        }
+        .h2-outside-form, .p-outside-form{
+            color:grey;
+        }
+        p {
+            color:black;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        label {
+            color: grey;
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="file"], input[type="email"], input[type="date"], input[type="radio"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid black;
+            border-radius: 4px;
+            background-color:grey;
+            box-sizing: border-box;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            /*background-color: #fff;*/
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section h2,h3, h4, p{
+            color:grey;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .radio-group div {
+            display: flex;
+            align-items: center;
+        }
+        .radio-group input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        li{
+            color:grey;
+        }
+        
+        /* Toggle switch styling */
+        .toggle-container {
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.toggle-container span {
+    margin-right: 10px;
+}
+
+.toggle-switch {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.slider {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 20px; /* Adjusted for a round slider */
+    transition: background-color .4s;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    height: 16px; /* Adjusted for better fit */
+    width: 16px; /* Adjusted for better fit */
+    left: 2px; /* Adjusted for better alignment */
+    bottom: 2px; /* Adjusted for better alignment */
+    transition: transform .4s;
+}
+
+.toggle-switch:checked + .slider {
+    background-color: #2196F3;
+}
+
+.toggle-switch:checked + .slider:before {
+    transform: translateX(14px); /* Adjusted for better fit */
+}
+
+#co-star-details, #co-star-age, #co-star-signature, #send-email{
+   display: none; 
+}
+/* Display when the toggle is checked */
+.toggle-switch:checked ~ #co-star {
+            display: block;
+        }
+    </style>
+@endsection
+
+    
+@section('content')
+<!-- <body> -->
+<section class="section section-sm">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-sm">
+            <div class="col-lg-8 py-5" style="margin-top:30px;">
+                <h2 class="mb-0 font-montserrat"><i class="iconmoon icon-Dollar mr-2"></i>Consent Form</h2>
+                <p class="lead text-muted mt-0">Fill the form to start creating content</p>
+            </div>
+        </div>
+        <div class="row">
+
+            @include('includes.cards-settings')
+
+            <div class="col-md-6 col-lg-9 mb-5 mb-lg-0">
+    @if(session('success'))
+        <div id="success-alert" id="success-alert" class="alert alert-info text-center my-3">
+            <p class="mb-0" style="color: white;">
+                {{ session('success') }}
+            </p>
+        </div>
+    @endif
+    
+    @if(isset($form_verification))
+        @if($form_verification == 'Pending')
+            <p>Your form has been successfully submitted and is currently under review. Once accepted/rejected you will see the message here.</p>
+        @elseif($form_verification == 'Approved')
+            <p style="color: green;">
+                <i class="fas fa-check-circle"></i> <!-- Tick mark icon -->
+                Your consent form has been approved.
+            </p>
+        @elseif($form_verification == 'Rejected')
+        <p style="color: red;">
+            <i class="fas fa-times-circle"></i> <!-- Cross mark icon -->
+            Sorry, your consent form has been rejected!!<br>
+            @if(isset($consent_form->form_rejection_reason) && !empty($consent_form->form_rejection_reason))
+                Reason for rejection: {{ $consent_form->form_rejection_reason }}<br>
+            @else
+                Reason for rejection: Not provided.<br>
+            @endif
+            Please submit the form again with necessary changes.
+        </p>
+        @endif
+    @endif
+    
+    @if($form_verification == 'Rejected' || $form_verification=='null')
+        
+            <div class="alert alert-danger" id="error_message" style="display:none;">
+                </div>
+                
+            <div class ="consent-form-template">
+            
+                <h2 class="h2-outside-form">Informed Consent to Comply with MasterCard’s Revised Standards for New Specialty Merchant Registration Requirements for Adult Content Merchants</h2>
+                
+                <p class="p-outside-form">This Consent Agreement (“Agreement”) is a legally binding document between the undersigned participants and Fanz Unlimited LLC (“Company,” “we,” “us,” or “our”). By signing this Agreement, you acknowledge and agree to the terms and conditions outlined below regarding your participation in the creation, distribution, and use of adult content on platforms owned and operated by Fanz Unlimited LLC.</p>
+            
+                
+                
+                <form id="consentForm" action="" method="post">
+                    @csrf
+                    <!-- Content Creator Information -->
+                    <div class="section">
+                        <h3>1. Identification Information</h3>
+                        <h4>1.1 Content Creator Information</h4>
+                        <label for="creator_name">Full Legal Name:</label>
+                        <input type="text" id="creator_name" name="creator_name" value="{{ old('creator_name', $consent_form->creator_name ?? '') }}"  required>
+            
+                        <label for="creator-stage-name">Stage Name (if applicable):</label>
+                        <input type="text" id="creator-stage-name" name="creator_stage_name">
+            
+                        <label for="creator_email">Email:</label>
+                        <input type="text" id="creator_email" name="creator_email" value="{{ old('creator_email', $consent_form->creator_email ?? '' ) }}">
+                    </div>
+                    
+            
+                    <!-- Consent and Authorization -->
+                    <div class="section">
+                        <h3>2. Consent and Authorization</h3>
+            
+                        <h4>2.1 Consent to Use Likeness</h4>
+                        <p>By signing below, the co-star/model consents to the use of their likeness in the content, including its use, editing, and distribution on Fanz Unlimited LLC-owned and operated sites and platforms.</p>
+            
+                        <h4>2.2 Authorization</h4>
+                        <p>The content creator is granted full authorization to use, edit, and distribute the content across the agreed-upon platforms, as specified in this Agreement.</p>
+                    </div>
+            
+                    <!-- Age Verification -->
+                    <div class="section">
+                        <h3>3. Age Verification</h3>
+            
+                        <h4>3.1 Age Confirmation</h4>
+                        <p>All parties involved in the content creation hereby confirm that they are 18 years of age or older.</p>
+            
+                        <h4>3.2 Identification Documentation</h4>
+                        <p>A copy of a valid government-issued ID is required and attached to this Agreement for age verification purposes.</p>
+            
+                        <h4>3.2.a For Creator</h4>
+                        <label for="creator_id_type">Type of ID Produced:</label><br>
+                        <div style="display: flex; gap: 3%;">
+                            <div>
+                                <input type="radio" id="creator-passport" name="creator_id_type" value="Passport" required>
+                                <label for="creator-passport">Passport</label>
+                            </div>
+                            
+                            <div>
+                                <input type="radio" id="creator-citizenship" name="creator_id_type" value="Citizenship" required>
+                                <label for="creator-citizenship">Citizenship</label>
+                            </div>
+                            
+                            <div>
+                                <input type="radio" id="creator-drivers-license" name="creator_id_type" value="Driver's License" required>
+                                <label for="creator-drivers-license">Driver's License</label>
+                            </div>
+                            
+                            <div>
+                                <input type="radio" id="creator-military-card" name="creator_id_type" value="Military Card" required>
+                                <label for="creator-military-card">Military Card</label>
+                            </div>
+                        </div>
+            
+                        <label for="creator_id_picture">Upload the picture of your ID (combine both front and back in a single picture before you submit)</label>
+                        <input type="file" id="creator_id_picture" name="creator_id_picture" style="position: absolute; z-index: -9999; height: 0px; width: 0px; padding: 0px; margin: 0px; line-height: 0; outline: 0px; border: 0px; opacity: 0;" required>
+                        <button type="button" id="img-upload-btn" style="padding:5px 10px; border-radius:5px; border:1px solid black;">Upload Picture</button>
+
+                        <label for="creator_id_number">ID Number:</label>
+                        <input type="text" id="creator_id_number" name="creator_id_number" value="{{ old('creator_id_number', $consent_form->creator_id_number ?? '') }}" required>
+            
+                        <label for="creator_id_state_country">State/Country:</label>
+                        <input type="text" id="creator_id_state_country" name="creator_id_state_country" value="{{ old('creator_id_state_country', $consent_form->creator_id_state_country ?? '') }}" required>
+            
+                        <label for="creator_dob">Date of Birth:</label>
+                        <input type="date" id="creator_dob" name="creator_dob" value="{{ old('creator_dob', $consent_form->creator_dob ?? '') }}" required>
+                    </div>
+                    <br>
+            
+                    <!-- Scope of Use -->
+                    <div class="section">
+                        <h3>4. Scope of Use</h3>
+            
+                        <h4>4.1 Content Usage</h4>
+                        <p>The content may be used on specific platforms owned and operated by Fanz Unlimited LLC, including potential use in marketing materials. The content’s usage rights are outlined as either perpetual or time-limited, as detailed below:</p>
+            
+                        <label for="duration-consent">Duration of Consent:</label>
+                        <p>For the life of the company and/or its platforms.</p>
+                    </div>
+            
+                    <!-- Compensation Terms -->
+                    <div class="section">
+                        <h3>5. Compensation Terms</h3>
+            
+                        <h4>5.1 Compensation Details</h4>
+                        <p>Any compensation provided to the co-star/model in exchange for their participation and consent is detailed below:</p>
+            
+                        <label for="compensation-terms">Compensation Terms:</label>
+                        <input type="text" id="compensation-terms" name="compensation_terms" >
+                    </div>
+            
+                    <!-- Registration and Tagging -->
+                    <div class="section">
+                        <h3>6. Registration and Tagging</h3>
+            
+                        <h4>6.1 Platform Registration</h4>
+                        <p>It is highly recommended that the co-star/model registers a free account on the platform where the media will be uploaded. This allows the model to be tagged in the post, acknowledging their participation and enhancing their visibility on the platform.</p>
+                    </div>
+            
+                    <!-- Signature and Date -->
+                    <div class="section">
+                        <h3>7. Signature and Date</h3>
+            
+                        <h4>7.1 Content Creator Signature</h4>
+                        <label for="creator-signature-canvas">Signature:</label>
+                        <canvas id="creator-signature-canvas" width="400" height="150" style="border: 1px solid #000; background-color:grey;" required></canvas>
+                        <br>
+                        <button type="button" id="creator-clear-signature">Clear Signature</button>
+                        <input type="hidden" id="creator-signature" name="creator_signature" >
+            
+                        <label for="creator_signature_date">Date:</label>
+                        <input type="date" id="creator_signature_date" name="creator_signature_date" value="{{ old('creator_signature_date', $consent_form->creator_signature_date ?? '') }}" required>
+                    </div>
+                    
+            
+                    <!-- Participant Acknowledgement and Consent -->
+                    <div class="section">
+                        <h3>8. Participant Acknowledgement and Consent</h3>
+            
+                        <h4>8.1 Rights and Permissions</h4>
+                        <p>I hereby acknowledge that I am a participant in 18+ content and provide my informed consent for the creation, upload, use, re-use, display, publication, or distribution of both explicit and non-explicit content featuring my image on Fanz Unlimited LLC-owned and operated sites and platforms.</p>
+            
+                        <h4>8.2 Authorization</h4>
+                        <p>I grant Fanz Unlimited LLC the absolute right and permission to use, edit, and distribute my media files, including explicit content, for commercial purposes in accordance with the Scope of Use specified above.</p>
+            
+                        <h4>8.3 Age and Legal Capacity</h4>
+                        <p>I warrant that I am of legal age in my jurisdiction and have the capacity to enter into this Agreement. I confirm that I have read and fully understand this authorization, release, and agreement before signing.</p>
+            
+                        <h4>8.4 Duration of Consent</h4>
+                        <p>This consent is granted for the duration specified in section 4.1 and applies to all content featuring my image submitted by the username provided above. I understand that I may withdraw this consent by contacting Fanz Unlimited LLC support to exercise my legal rights.</p>
+            
+                        <h4>8.5 Third-Party Disclosure</h4>
+                        <p>I acknowledge that this document may be shared with third parties as required by law or by Fanz Unlimited LLC policy.</p>
+                    </div>
+            
+                    <!-- Final Acknowledgement -->
+                    <div class="section">
+                        <h3>Final Acknowledgement</h3>
+                        <p>This document constitutes a legally binding agreement under the applicable jurisdiction between the participant and Fanz Unlimited LLC. By signing, you agree to comply with all terms outlined to protect the legal rights of all parties involved.</p>
+            
+                        <label for="office-signature">Fanz Unlimited LLC Representative Signature:</label>
+                        <input type="text" id="office-signature" name="office_signature" >
+            
+                        <label for="office-sign-date">Date:</label>
+                        <input type="date" id="office-sign-date" name="office_sign_date" >
+                    </div>
+            
+                   
+            
+                    <!-- Submit Button -->
+                    <div class="section">
+                        <button id="submit" type="submit">Submit Consent Form</button>
+                    </div>
+            
+                </form>
+            </div>
+    @endif
+            </div>
+        </div>
+    </div>
+</section>
+@endsection
+
+
+@section('javascript')
+    <!-- Script to sign the canvas -->
+    <script>
+    window.addEventListener('load', function () {
+    const canvas = document.getElementById('creator-signature-canvas');
+
+    const ctx = canvas.getContext('2d');
+    // const costarCtx = costarCanvas.getContext('2d');
+
+    let painting = false;
+    let currentCanvas = null; // Track the current canvas being drawn on
+
+    function getPosition(e, canvas) {
+        const rect = canvas.getBoundingClientRect();
+        if (e.touches) {
+            return {
+                x: e.touches[0].clientX - rect.left,
+                y: e.touches[0].clientY - rect.top
+            };
+        } else {
+            return {
+                x: e.offsetX,
+                y: e.offsetY
+            };
+        }
+    }
+
+    function startPosition(e) {
+        e.preventDefault();
+        painting = true;
+        currentCanvas = e.target; // Set the current canvas
+        draw(e);
+    }
+
+    function endPosition(e) {
+        e.preventDefault();
+        painting = false;
+        if (currentCanvas === canvas) {
+            ctx.beginPath();
+        } 
+    }
+
+    function draw(e) {
+        if (!painting || !currentCanvas) return;
+
+        const { x, y } = getPosition(e, currentCanvas);
+
+        if (currentCanvas === canvas) {
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = 'black';
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+    }
+
+    // Mouse events
+    canvas.addEventListener('mousedown', startPosition);
+    canvas.addEventListener('mouseup', endPosition);
+    canvas.addEventListener('mousemove', draw);
+
+
+    // Touch events
+    canvas.addEventListener('touchstart', startPosition, { passive: false });
+    canvas.addEventListener('touchend', endPosition, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+
+    document.getElementById('creator-clear-signature').addEventListener('click', function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    
+    const submitBtn = document.getElementById('submit');
+    
+});
+
+document.getElementById('img-upload-btn').addEventListener('click', function() {
+        console.log("Upload button clicked");
+
+    // Trigger the file input click event to open file chooser
+    document.getElementById('creator_id_picture').click();
+});
+
+document.getElementById('consentForm').onsubmit = async function(event) {
+    event.preventDefault(); // Prevent default form submission
+    var form = this;
+    try {
+        // Get the current URL and append '/submit' to it
+        var currentUrl = window.location.href;
+        var submitUrl = currentUrl + '/save';
+        
+        // Convert canvas to image Blob
+        const imageBlob = await convertCanvasToImage();
+
+        // Create a FormData object
+        const formData = new FormData();
+        
+
+        // Manually append only the fields you want
+        formData.append('creator_name', document.getElementById('creator_name').value);
+        formData.append('creator_id_type', document.querySelector('input[name="creator_id_type"]:checked').value);
+        formData.append('creator_id_picture', document.getElementById('creator_id_picture').files[0]);
+        formData.append('creator_email', document.getElementById('creator_email').value);
+        formData.append('creator_id_number', document.getElementById('creator_id_number').value);
+        formData.append('creator_id_state_country', document.getElementById('creator_id_state_country').value);
+        formData.append('creator_dob', document.getElementById('creator_dob').value);
+        formData.append('creator_signature', imageBlob, 'signature.png');
+        formData.append('creator_signature_date', document.getElementById('creator_signature_date').value);
+        
+        console.log("submitIUrl: ", submitUrl);
+
+        $.ajax({
+        url: submitUrl,
+        type: 'POST',
+        data: formData,
+        processData: false, // Prevent jQuery from automatically processing the data
+        contentType: false, // Prevent jQuery from automatically setting the content type
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            console.log('Success:', response);
+            // Optionally, you can redirect or display a success message here
+            
+            window.location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            // Optionally, display an error message here
+        }
+    });
+    } catch (error) {
+        console.error('Error:', error.message);
+        // Optionally, handle the error here
+    }
+};
+
+// Convert canvas to image Blob
+function convertCanvasToImage() {
+    return new Promise((resolve, reject) => {
+        var canvas = document.getElementById('creator-signature-canvas');
+        canvas.toBlob(function (blob) {
+            if (blob) {
+                resolve(blob);
+            } else {
+                reject(new Error("Canvas is empty"));
+            }
+        }, 'image/png');
+    });
+}
+
+        // Get the alert element
+        var alertElement = document.getElementById('success-alert');
+        
+        // Check if there's a success message
+        if (alertElement && alertElement.textContent.trim() !== '') {
+            // Show the alert
+            alertElement.style.display = 'block';
+            
+            // Hide the alert after 5 seconds
+            setTimeout(function() {
+                alertElement.style.display = 'none';
+            }, 5000);
+        }
+
+
+
+    </script>
+    
+
+<!-- </body> -->
+@endsection
+
+

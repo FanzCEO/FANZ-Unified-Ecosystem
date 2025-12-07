@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Create Broadcast - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center mb-4">
+                <a href="{{ url_for('broadcasts') }}" class="btn btn-outline-secondary me-3">
+                    <i data-feather="arrow-left" class="me-1"></i>
+                    Back
+                </a>
+                <h2 class="text-primary mb-0">
+                    <i data-feather="send" class="me-2"></i>
+                    Create Broadcast Message
+                </h2>
+            </div>
+
+            <div class="card border-0 shadow">
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <div class="mb-4">
+                            <label for="title" class="form-label">Broadcast Title *</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   value="{{ request.form.title if request.form else '' }}"
+                                   placeholder="Enter a descriptive title for your broadcast" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="message_content" class="form-label">Message Content *</label>
+                            <textarea class="form-control" id="message_content" name="message_content" 
+                                      rows="6" placeholder="Type your message here..." required>{{ request.form.message_content if request.form else '' }}</textarea>
+                            <div class="form-text">This message will be sent to all recipients in your broadcast.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Messaging Type</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="broadcast_type" 
+                                               id="individual" value="individual" checked>
+                                        <label class="form-check-label" for="individual">
+                                            <div class="d-flex align-items-center">
+                                                <i data-feather="user" class="me-2"></i>
+                                                <div>
+                                                    <div class="fw-bold">Individual Messages</div>
+                                                    <div class="small text-muted">Send to each recipient separately</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="broadcast_type" 
+                                               id="group" value="group">
+                                        <label class="form-check-label" for="group">
+                                            <div class="d-flex align-items-center">
+                                                <i data-feather="users" class="me-2"></i>
+                                                <div>
+                                                    <div class="fw-bold">Group Message</div>
+                                                    <div class="small text-muted">Recipients can see each other</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i data-feather="info" class="me-2"></i>
+                            <strong>Next Step:</strong> After creating your broadcast, you'll be able to add recipients and configure delivery settings.
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-primary">
+                                <i data-feather="arrow-right" class="me-2"></i>
+                                Create & Add Recipients
+                            </button>
+                            <a href="{{ url_for('broadcasts') }}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* FANZ Brand Colors */
+:root {
+  --fanz-primary: #7C4DFF;
+  --fanz-secondary: #00D1FF;
+  --fanz-accent: #FF3D71;
+  --fanz-success: #16D19A;
+  --fanz-warning: #FFB020;
+  --fanz-error: #FF5757;
+}
+
+/* Dark theme optimized for adult content */
+:root[data-theme="dark"] {
+  --bg-page: #000000;
+  --bg-elevated: #0E0E14;
+  --text-primary: #F7F7FB;
+  --text-secondary: rgba(247,247,251,.72);
+  --border-muted: rgba(247,247,251,.1);
+}
+
+/* Brand-specific theme variants */
+:root[data-brand="boyfanz"] { --brand-color: #FF1744; }
+:root[data-brand="girlfanz"] { --brand-color: #FF2D95; }
+:root[data-brand="pupfanz"] { --brand-color: #39FF14; }
+:root[data-brand="taboofanz"] { --brand-color: #9C27FF; }
+:root[data-brand="daddiesfanz"] { --brand-color: #276EF1; }
+:root[data-brand="cougarfanz"] { --brand-color: #FFD600; }
+
+/* Base typography */
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+  font-variation-settings: 'opsz' 32;
+  scrollbar-gutter: stable;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-600;
+}
+
+/* Ad container styles */
+.fanz-ad-container {
+  @apply relative overflow-hidden;
+  transition: all 0.2s ease;
+}
+
+.fanz-ad-container:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.3);
+}
+
+/* Loading skeleton for ads */
+.fanz-ad-skeleton {
+  @apply animate-pulse bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-[length:200%_100%];
+  animation: shimmer 2s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Ad disclosure styling */
+.fanz-ad-disclosure {
+  @apply absolute bottom-1 right-1 rounded bg-black/60 px-2 py-1 text-xs text-white/80;
+}
+
+/* Responsive ad containers */
+.fanz-ad-header {
+  @apply w-full max-w-none;
+  min-height: 90px;
+}
+
+@media (max-width: 768px) {
+  .fanz-ad-header {
+    min-height: 60px;
+  }
+}
+
+.fanz-ad-sidebar {
+  @apply w-full max-w-none;
+  min-height: 250px;
+}
+
+.fanz-ad-footer {
+  @apply w-full max-w-none;
+  min-height: 90px;
+}
+
+.fanz-ad-hero {
+  @apply w-full max-w-none;
+  min-height: 250px;
+}
+
+@media (min-width: 1024px) {
+  .fanz-ad-hero {
+    min-height: 400px;
+  }
+}
+
+.fanz-ad-native {
+  @apply w-full max-w-none;
+  min-height: 200px;
+}
+
+.fanz-ad-widget {
+  @apply w-full max-w-none;
+  min-height: 150px;
+}
+
+/* Focus styles for accessibility */
+.fanz-ad-container:focus-visible {
+  @apply outline-2 outline-offset-2 outline-blue-500;
+}
+
+/* Animation utilities */
+@media (prefers-reduced-motion: no-preference) {
+  .fanz-hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .fanz-hover-lift:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .fanz-ad-container {
+    @apply border-2 border-white;
+  }
+  
+  .fanz-ad-disclosure {
+    @apply bg-black text-white;
+  }
+}
+
+/* Print styles */
+@media print {
+  .fanz-ad-container {
+    display: none !important;
+  }
+}

@@ -1,0 +1,314 @@
+say less — here’s the one-command, end-to-end Replit setup for FanzFiliate (FUN’s Impact/Rakuten-style affiliate + CPA engine). It wires auth, offers, links, clicks, conversions, s2s postbacks, deep-links, fraud checks, payouts, dashboards — and auto-verifies there are no missing pages, dead links, or API/UI gaps.
+
+⸻
+
+🔧 One command to wire everything
+
+Run this in the Replit Shell at the repo root:
+
+npm run prep:prod:fanzfiliate
+
+That single command: builds FE+BE, runs migrations + seeds, generates OpenAPI + typed client, parity-checks API↔UI, validates schema drift, verifies webhook/postback signatures, runs unit + E2E tests, crawls all pages for 404s, and prints a big green READY FOR PROD banner if all good.
+
+⸻
+
+1) Root package.json (scripts)
+
+Add/merge:
+
+{
+  "name": "fanzfiliate-monorepo",
+  "private": true,
+  "workspaces": ["app/frontend", "app/backend", "packages/*", "scripts"],
+  "scripts": {
+    "postinstall": "npm run -w app/frontend install && npm run -w app/backend install",
+    "build": "npm run -w app/backend build && npm run -w app/frontend build",
+    "migrate": "npm run -w app/backend migrate",
+    "seed": "npm run -w app/backend seed",
+    "test": "npm -w app/backend run test && npm -w app/frontend run test",
+    "openapi": "npm -w app/backend run openapi && npm -w app/frontend run types:pull",
+    "verify:contracts": "npm -w app/backend run verify:contracts",
+    "verify:drift": "npm -w app/backend run verify:drift",
+    "verify:webhooks": "npm -w app/backend run verify:webhooks",
+    "verify:health": "npm -w app/backend run verify:health",
+    "e2e": "npm -w app/backend run e2e",
+    "crawl": "npm -w app/frontend run crawl",
+    "verify:all": "npm run build && npm run migrate && npm run seed && npm run test && npm run openapi && npm run verify:contracts && npm run verify:drift && npm run verify:webhooks && npm run verify:health && npm run e2e && npm run crawl",
+    "prep:prod:fanzfiliate": "node scripts/env-gate.cjs && npm run verify:all && node scripts/print-ready.cjs"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
+
+
+⸻
+
+2) Backend scripts (app/backend/package.json)
+
+{
+  "name": "fanzfiliate-backend",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "migrate": "drizzle-kit migrate",
+    "studio": "drizzle-kit studio",
+    "seed": "tsx scripts/seed.ts",
+    "test": "vitest run",
+    "openapi": "tsx scripts/generate-openapi.ts > public/docs/openapi.json",
+    "verify:contracts": "tsx scripts/verify-contracts.ts",
+    "verify:drift": "tsx scripts/verify-drift.ts",
+    "verify:webhooks": "tsx scripts/verify-webhooks.ts",
+    "verify:health": "tsx scripts/verify-health.ts",
+    "e2e": "playwright test"
+  }
+}
+
+Backend helper stubs you must include
+	•	scripts/generate-openapi.ts — emit OpenAPI from shared Zod schemas.
+	•	scripts/verify-contracts.ts — scan Express routes vs OpenAPI; ensure each endpoint has a typed client usage (or @serverOnly).
+	•	scripts/verify-drift.ts — drizzle introspect dry-run vs migrations.
+	•	scripts/verify-webhooks.ts — verify HMAC for postbacks and webhooks (uses POSTBACK_SECRET, WEBHOOK_SECRET), checks handlers mounted:
+	•	/postback/s2s (conversion)
+	•	/webhooks/verifymy (compliance)
+	•	scripts/verify-health.ts — DB ping, S3 presign, JWT sign/verify, WS echo.
+	•	scripts/seed.ts — create: 1 admin, 1 advertiser, 2 affiliates, 2 offers, 4 creatives, 1 coupon code, a few clicks + 1 conversion.
+
+⸻
+
+3) Frontend scripts (app/frontend/package.json)
+
+{
+  "name": "fanzfiliate-frontend",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/routes-manifest.cjs",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "routes:manifest": "node scripts/routes-manifest.cjs",
+    "crawl": "node scripts/crawlLinks.cjs",
+    "types:pull": "node scripts/pull-openapi-client.cjs"
+  }
+}
+
+Frontend helper stubs you must include
+	•	scripts/routes-manifest.cjs — emit dist/routeManifest.json with { path, component, requiresAuth, roleGuard } and import each route component once (catch broken imports).
+	•	scripts/crawlLinks.cjs — start preview, crawl from /, visit all links with Playwright headless, assert no 404/console errors, write dist/link-report.json.
+	•	scripts/pull-openapi-client.cjs — regenerate a typed client from /docs/openapi.json.
+
+⸻
+
+4) ENV gate + “READY” banner (root /scripts)
+
+Create /scripts/env-gate.cjs:
+
+const required = [
+  'DATABASE_URL',
+  'S3_ENDPOINT','S3_REGION','S3_BUCKET','S3_ACCESS_KEY_ID','S3_SECRET_ACCESS_KEY',
+  'JWT_ISS','JWT_AUD','JWT_SECRET','JWT_ACCESS_TTL','JWT_REFRESH_TTL',
+  'VERIFYMY_API_URL','VERIFYMY_API_KEY',
+  'WEB_APP_URL','API_URL','NODE_ENV',
+  'PUBLIC_DOMAIN','CLICK_TTL_SECONDS','POSTBACK_SECRET','WEBHOOK_SECRET'
+];
+const missing = required.filter(k => !process.env[k]);
+if (missing.length) {
+  console.error('❌ Missing required env vars:\n' + missing.map(k => ` - ${k}`).join('\n'));
+  process.exit(1);
+}
+console.log('✅ ENV check passed');
+
+Create /scripts/print-ready.cjs:
+
+console.log(`
+███████╗ █████╗ ███╗   ██╗███████╗██████╗ ███████╗██╗██╗     ██╗ █████╗ ████████╗███████╗
+██╔════╝██╔══██╗████╗  ██║██╔════╝██╔══██╗██╔════╝██║██║     ██║██╔══██╗╚══██╔══╝██╔════╝
+█████╗  ███████║██╔██╗ ██║█████╗  ██████╔╝█████╗  ██║██║     ██║███████║   ██║   ███████╗
+██╔══╝  ██╔══██║██║╚██╗██║██╔══╝  ██╔══██╗██╔══╝  ██║██║     ██║██╔══██║   ██║   ╚════██║
+███████╗██║  ██║██║ ╚████║███████╗██║  ██║███████╗██║███████╗██║██║  ██║   ██║   ███████║
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝
+FanzFiliate: ALL CHECKS PASSED — READY FOR PROD ✨
+`);
+
+
+⸻
+
+5) Required ENV (set in Replit → Tools → Secrets)
+
+DATABASE_URL=postgres://...
+S3_ENDPOINT=https://s3.us-east-1.wasabisys.com
+S3_REGION=us-east-1
+S3_BUCKET=fun-fanzfiliate
+S3_ACCESS_KEY_ID=...
+S3_SECRET_ACCESS_KEY=...
+
+JWT_ISS=fun.app
+JWT_AUD=fun.clients
+JWT_SECRET=use-a-64-byte-random-string
+JWT_ACCESS_TTL=900
+JWT_REFRESH_TTL=2592000
+
+VERIFYMY_API_URL=...
+VERIFYMY_API_KEY=...
+
+PUBLIC_DOMAIN=fanzfiliate.fun   # used for link domains & postbacks
+API_URL=http://localhost:5173/api
+WEB_APP_URL=http://localhost:3000
+NODE_ENV=production
+
+# Affiliate tracking
+CLICK_TTL_SECONDS=2592000       # 30 days
+COOKIE_NAME=ff_click
+POSTBACK_SECRET=change-me       # HMAC for s2s conversions
+WEBHOOK_SECRET=change-me        # HMAC for inbound webhooks
+ALLOW_IFRAME_PIXEL=true
+
+
+⸻
+
+6) Route map (no gaps)
+
+Frontend (must render):
+	•	/ (Landing + “Create Offer”/“Join as Affiliate” CTA)
+	•	/auth/login /auth/register /auth/otp /auth/reset
+	•	/dashboard (role-aware)
+	•	/offers (browse) /offers/:id (details + creatives + terms)
+	•	/links (generator: deep link, UTM, coupon, shortlink)
+	•	/clicks (log) /conversions (log)
+	•	/payouts (balance, requests, history)
+	•	/creatives (banners, widgets, embed codes)
+	•	/admin/offers (create/edit, targeting, caps, approval queue)
+	•	/admin/affiliates (KYC, tiers, approvals, fraud flags)
+	•	/admin/advertisers (accounts, billing profile)
+	•	/admin/compliance (2257/KYC status, audit)
+	•	/settings (profile, API keys, webhooks)
+	•	/notifications
+	•	/system (diagnostics)
+	•	/* 404
+
+API (Express):
+	•	/api/auth/* (register/login/refresh/logout/otp)
+	•	/api/users/me
+	•	/api/affiliates/* /api/advertisers/*
+	•	/api/offers/* (CRUD, creatives, caps, geo targeting)
+	•	/api/links/* (generate, shorten, sign)
+	•	/t/:code (click redirect endpoint)  ← public
+	•	/api/clicks/* (list, fraud flags)
+	•	/api/conversions/* (list, manual add by admin)
+	•	/postback/s2s (HMAC verified; registers conversion)  ← public
+	•	/pixel/conversion.js (browser pixel; signed)
+	•	/api/payouts/* (requests, export CSV, status)
+	•	/api/compliance/* (kyc status, 2257)
+	•	/webhooks/verifymy (signature-verified)
+	•	/docs + /docs/openapi.json
+	•	/healthz /version /introspect/*
+
+⸻
+
+7) Data model (Drizzle + migrations + seeds)
+
+Tables + key indexes:
+	•	users (role: admin/advertiser/affiliate), sessions, profiles
+	•	kyc_verifications (user_id, provider=‘verifymy’, status, external_id, data_json)
+	•	offers (advertiser_id, name, status, payout_type CPA/CPS/CPL/RevShare, payout_cents, caps_json, geo_rules_json, terms, landing_url)
+	•	creatives (offer_id, type banner/html/widget, s3_key or html, size, status)
+	•	affiliate_programs (offer_id, default_rate, tier_rules_json)
+	•	affiliate_enrollments (affiliate_id, offer_id, status, custom_rate_cents)
+	•	links (offer_id, affiliate_id, code, deep_link, coupon_code, signed_params_json, expires_at)
+	•	clicks (link_id, affiliate_id, offer_id, ip, ua, ref, geo, ts, fingerprint_hash, status/fraud_flags_json, conversion_id nullable)
+	•	conversions (offer_id, affiliate_id, link_id, click_id nullable, value_cents, currency, status pending/approved/rejected, attribution cookie/s2s/pixel, ext_txn_id, meta_json, ts)
+	•	payout_accounts (user_id, provider, account_ref, status)
+	•	payout_requests (user_id, amount_cents, currency, status, provider_ref, created_at)
+	•	webhooks, api_keys, notifications, audit_logs
+
+Seeds:
+	•	1 admin, 1 advertiser (“FanzCommerce Demo”), 2 affiliates
+	•	2 live offers (one CPA, one RevShare), 4 creatives, 1 coupon
+	•	6 clicks, 2 conversions (1 cookie, 1 s2s)
+
+⸻
+
+8) Tracking & security (built-ins)
+	•	Click redirect /t/:code:
+	•	looks up link, applies geo rules/caps, writes clicks, sets cookie ${COOKIE_NAME} with signed value {linkId, affiliateId} expiring in CLICK_TTL_SECONDS, then 302 → offer landing URL (or deep link)
+	•	Conversion recording:
+	•	S2S Postback /postback/s2s — requires HMAC-SHA256 in header using POSTBACK_SECRET, payload includes: ext_txn_id, value_cents, optional click_id or cookie fallback via linkId+affiliateId
+	•	Pixel /pixel/conversion.js — signed params; used when advertiser can’t S2S
+	•	Fraud checks (baseline):
+	•	duplicate ext_txn_id, click-to-conv time < 2s, VPN/geo mismatch, UA anomalies → mark clicks.fraud_flags_json and conversions.status=pending for manual review
+	•	VerifyMy / 2257:
+	•	Affiliates & advertisers pass KYC; adult creatives/offers require 2257 where applicable
+	•	Rate limits on /t/:code, /postback/s2s, /pixel/conversion.js
+
+⸻
+
+9) Diagnostics & completeness (auto)
+	•	Route Manifest: FE generates routeManifest.json; /system displays routes vs OpenAPI count.
+	•	Link Crawler: visits all links from / → link-report.json (no 404/console errors).
+	•	API↔UI Parity: every OpenAPI endpoint must have a server handler and a typed client usage (or @serverOnly).
+	•	Schema Drift: drizzle introspect vs migrations, fail on drift.
+	•	Webhook/Postback Verifier: HMAC test payloads for /postback/s2s + /webhooks/verifymy.
+	•	Health: DB, S3, JWT, WebSocket echo.
+
+⸻
+
+10) Tests (must pass for the READY banner)
+	•	Unit (Vitest):
+	•	link signing/validation
+	•	click write + cookie set
+	•	S2S HMAC verification
+	•	attribution: cookie → click match; fallback ext_txn_id dedupe
+	•	fraud rules edge cases
+	•	E2E (Playwright) happy path:
+	1.	Advertiser logs in → creates Offer + Creative → gets Postback URL template
+	2.	Affiliate joins offer → generates link → clicks /t/:code (headless) → lands advertiser page
+	3.	Backend fires S2S postback with valid HMAC → conversion recorded → affiliate sees commission
+	4.	Payout request → status changes after mock approval
+	5.	Admin views fraud flags + approves conversion
+	6.	/system shows all checks ✅; link-report.json zero failures
+
+⸻
+
+11) Minimal /system JSON (backend)
+
+Return:
+
+{
+  "db":"ok","s3":"ok","jwt":"ok","wsEcho":"ok",
+  "postbackSignatureTest":"ok","kycSignatureTest":"ok",
+  "openapiEndpoints": 0, "serverRoutes": 0, "uiRoutes": 0,
+  "lastCrawl": {"urls": 0, "failures": 0}
+}
+
+(Replace zeros with live counts.)
+
+⸻
+
+12) Seed credentials (set in scripts/seed.ts)
+	•	Admin: admin@fanzfiliate.app / Admin!234
+	•	Advertiser: adv@fanzfiliate.app / Advertiser!234
+	•	Affiliate A: affA@fanzfiliate.app / Affiliate!234
+	•	Affiliate B: affB@fanzfiliate.app / Affiliate!234
+
+⸻
+
+13) UX must-haves (quick checklist)
+	•	Offer detail: payouts, geo, caps, creatives, terms, allowed traffic, preview landing
+	•	Link generator: deep link, coupon attach, short code, UTM auto-fill
+	•	Creatives: copy-paste embed, instant preview, size tags
+	•	Realtime: notifications on approvals, conversions, payout status
+	•	Exports: CSV for clicks, conversions, payouts
+	•	Compliance: KYC status chips, 2257 upload for explicit creatives
+
+⸻
+
+Run it
+	1.	Add the scripts/files above.
+	2.	Set Secrets (ENV).
+	3.	In the Replit shell, run:
+
+npm run prep:prod:fanzfiliate
+
+You’ll get either a fail with exact reasons (env, routes, tests, parity, drift, webhooks), or the neon READY FOR PROD banner. Go be legendary. 🟡🍌

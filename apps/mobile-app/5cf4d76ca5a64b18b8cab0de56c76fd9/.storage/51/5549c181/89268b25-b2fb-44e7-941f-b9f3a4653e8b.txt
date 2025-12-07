@@ -1,0 +1,72 @@
+$ pnpm run lint && pnpm run build
+
+> shadcnui@ lint /workspace/shadcn-ui
+> eslint --quiet ./src
+
+
+> shadcnui@ build /workspace/shadcn-ui
+> vite build
+
+vite v5.4.19 building for production...
+transforming...
+✓ 145 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   1.81 kB │ gzip:   0.78 kB
+dist/assets/index-BxKREf4O.css   64.44 kB │ gzip:  11.17 kB
+dist/assets/index-DyxPQzvL.js   371.05 kB │ gzip: 114.47 kB
+✓ built in 3.62s
+$ pnpm run lint && pnpm run build
+
+
+> shadcnui@ lint /workspace/shadcn-ui
+> eslint --quiet ./src
+
+
+> shadcnui@ build /workspace/shadcn-ui
+> vite build
+
+vite v5.4.19 building for production...
+transforming...
+✓ 1697 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   1.81 kB │ gzip:   0.77 kB
+dist/assets/index-D1XwM7Q1.css   65.10 kB │ gzip:  11.26 kB
+dist/assets/index-DfwcNTeZ.js   393.04 kB │ gzip: 119.59 kB
+✓ built in 5.01s
+$ pnpm run lint && pnpm run build
+
+
+> shadcnui@ lint /workspace/shadcn-ui
+> eslint --quiet ./src
+
+
+/workspace/shadcn-ui/src/components/CRMDashboard.tsx
+  184:38  error  React Hook "useTemplate" cannot be called inside a callback. React Hooks must be called in a React function component or a custom React Hook function  react-hooks/rules-of-hooks
+
+/workspace/shadcn-ui/src/lib/platformConnections.ts
+  49:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 2 problems (2 errors, 0 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.
+$ pnpm run lint && pnpm run build
+
+
+> shadcnui@ lint /workspace/shadcn-ui
+> eslint --quiet ./src
+
+
+> shadcnui@ build /workspace/shadcn-ui
+> vite build
+
+vite v5.4.19 building for production...
+transforming...
+✓ 158 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   1.81 kB │ gzip:   0.77 kB
+dist/assets/index-CbRxnJOc.css   65.81 kB │ gzip:  11.36 kB
+dist/assets/index-Bjsx3ije.js   437.13 kB │ gzip: 128.21 kB
+✓ built in 3.71s

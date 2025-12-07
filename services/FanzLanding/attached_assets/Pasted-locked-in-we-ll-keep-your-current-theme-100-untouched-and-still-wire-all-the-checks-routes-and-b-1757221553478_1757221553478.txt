@@ -1,0 +1,183 @@
+locked in. we’ll keep your current theme 100% untouched and still wire all the checks, routes, and backend pieces. Here’s exactly how we’ll do it without changing styles, tokens, or UI look/feel.
+
+What I’ll add (without touching theme)
+	•	Only add scripts, services, routes, and diagnostics.
+	•	No edits to tailwind.config.*, globals.css, theme.css, shadcn tokens, or brand assets.
+	•	New pages use your existing layout/components (header/footer/sections) so they inherit styling.
+
+Files I will (and will NOT) touch
+
+WILL create/update (safe):
+	•	/scripts/* (env gate, crawler, parity checks, ready banner)
+	•	/app/backend/* (Express, Drizzle, Zod, APIs)
+	•	/app/frontend/scripts/* (route manifest + crawler + types pull)
+	•	New route files that import your existing layout (no CSS edits)
+
+WILL NOT touch (locked):
+	•	app/frontend/tailwind.config.*
+	•	app/frontend/src/styles/** (e.g., globals.css, theme.css)
+	•	app/frontend/src/components/ui/** (design system/shadcn tokens)
+	•	app/frontend/public/** (logos, fonts, icons)
+
+Theme Lock — guardrails that enforce “no theme changes”
+
+Add these tiny guards so nobody (including Replit AI) can mutate your theme by accident.
+
+1) Hash-based theme lock
+
+Create scripts/theme-lock.cjs:
+
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+
+const protectedFiles = [
+  'app/frontend/tailwind.config.ts',
+  'app/frontend/src/styles/globals.css',
+  'app/frontend/src/styles/theme.css',
+  'app/frontend/src/components/ui/theme-tokens.ts'
+].filter(fs.existsSync);
+
+const newHash = crypto.createHash('sha256');
+for (const f of protectedFiles) newHash.update(fs.readFileSync(f));
+
+const hashFile = '.theme-lock.hash';
+const mode = process.argv[2] || 'check';
+
+if (mode === 'write') {
+  fs.writeFileSync(hashFile, newHash.digest('hex'));
+  console.log('🔒 Theme baseline written.');
+} else {
+  const baseline = fs.existsSync(hashFile) ? fs.readFileSync(hashFile, 'utf8').trim() : '';
+  const current = newHash.digest('hex');
+  if (!baseline) {
+    console.error('❌ No theme baseline. Run: npm run theme:lock');
+    process.exit(1);
+  }
+  if (baseline !== current) {
+    console.error('❌ Theme files changed. Refusing to proceed.');
+    process.exit(2);
+  }
+  console.log('✅ Theme intact.');
+}
+
+Update root package.json scripts section:
+
+{
+  "scripts": {
+    "theme:lock": "node scripts/theme-lock.cjs write",
+    "theme:check": "node scripts/theme-lock.cjs",
+    "prep:prod:fanzlanding": "npm run theme:check && node scripts/env-gate.cjs && npm run verify:all && node scripts/print-ready.cjs"
+  }
+}
+
+Run once to record your current theme:
+npm run theme:lock
+
+2) ESLint rule to block style edits
+
+Add .eslint-theme-guard.json:
+
+{
+  "overrides": [
+    {
+      "files": [
+        "app/frontend/src/styles/**/*",
+        "app/frontend/tailwind.config.*",
+        "app/frontend/src/components/ui/**/*"
+      ],
+      "rules": {
+        "no-warning-comments": ["error", { "terms": ["todo","fixme"], "location": "anywhere" }],
+        "no-restricted-syntax": ["error", "TSAsExpression", "TSTypeAssertion"],
+        "no-restricted-imports": ["error", { "patterns": ["*"] }]
+      }
+    }
+  ]
+}
+
+And extend it from your main ESLint config:
+
+{
+  "extends": ["./.eslint-theme-guard.json"]
+}
+
+3) Visual snapshot (optional but nice)
+
+Keep one baseline hero snapshot to detect visual drift without changing CSS:
+	•	Add a Playwright test that just screenshots / hero and compares. No code styles touched.
+
+// app/backend/tests/visual.spec.ts
+import { test, expect } from '@playwright/test';
+test('homepage hero unchanged', async ({ page }) => {
+  await page.goto(process.env.WEB_APP_URL || 'http://localhost:3000');
+  const hero = page.locator('[data-hero]');
+  await expect(hero).toHaveScreenshot('hero-baseline.png', { maxDiffPixelRatio: 0.01 });
+});
+
+First run will save a baseline; future changes will fail if the hero visually shifts.
+
+How new pages inherit your theme (no edits needed)
+
+When I create new routes (e.g., /security, /platforms, /status, /legal/*, /system), they’ll:
+	•	Import your existing Layout or Shell component.
+	•	Use your Heading, Button, Card, Text components (already themed).
+	•	Add semantic markup only (copy, sections, lists). Zero new global styles.
+
+Example page stub:
+
+// app/frontend/src/routes/Security.tsx
+import { Layout } from '@/components/Layout';
+import { Card } from '@/components/ui/card';
+export default function Security() {
+  return (
+    <Layout>
+      <section aria-labelledby="security-h1" className="space-y-6">
+        <h1 id="security-h1" className="sr-only">Security & Compliance</h1>
+        <Card className="p-6">
+          <div className="prose dark:prose-invert">
+            <h2 data-hero>Trust & Safety</h2>
+            <ul>
+              <li>VerifyMy KYC overview</li>
+              <li>18 USC §2257 policy (link to /legal/2257)</li>
+              <li>Age-gating explanation</li>
+              <li>Data retention & privacy</li>
+            </ul>
+          </div>
+        </Card>
+      </section>
+    </Layout>
+  );
+}
+
+No new CSS. It uses your theme tokens via existing components.
+
+How to run, safely
+	1.	Record your current theme hash (once):
+npm run theme:lock
+	2.	Add the new scripts/APIs/pages I outlined earlier (I’ll give copy-paste blocks per file if you want).
+	3.	Set Secrets (ENV).
+	4.	Run the all-in-one:
+
+npm run prep:prod:fanzlanding
+
+	•	First step theme:check guarantees the theme is unchanged.
+	•	If any verification fails, you’ll get exact reasons (broken link, schema drift, missing webhook, etc.), not style diffs.
+
+Optional: Hard “theme freeze” in the UI
+
+If you’d like an in-app safety, add:
+
+// app/frontend/src/lib/themeFreeze.ts
+export const THEME_FROZEN = true;
+
+And in your Layout:
+
+{process.env.NODE_ENV !== 'production' && THEME_FROZEN && (
+  <div className="fixed bottom-3 right-3 text-xs opacity-70">
+    🎨 Theme frozen — edits blocked by CI
+  </div>
+)}
+
+
+⸻
+
+If you upload your current folder tree (or key files), I’ll tailor the exact file paths for the route stubs and scripts so they drop in with zero theme edits.

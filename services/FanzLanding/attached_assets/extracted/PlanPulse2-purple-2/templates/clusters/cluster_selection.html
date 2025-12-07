@@ -1,0 +1,875 @@
+{% extends "base.html" %} {% block title %}Select Clusters - FANZ{% endblock %}
+{% block content %}
+<div class="cluster-selection-container">
+  <div class="container">
+    <div class="row justify-content-center py-5">
+      <div class="col-lg-10">
+        <!-- Header -->
+        <div class="selection-header mb-5">
+          <div class="card">
+            <div class="card-body text-center py-4">
+              <h2 class="neon-text neon-cyan mb-3">
+                <i class="fas fa-network-wired me-2"></i>Choose Your Clusters
+              </h2>
+              <p class="lead text-secondary mb-4">
+                Join communities that match your interests and content style
+              </p>
+
+              <!-- Current Memberships -->
+              {% if memberships %}
+              <div class="current-memberships">
+                <h6 class="neon-text neon-green mb-3">Your Current Clusters</h6>
+                <div class="membership-badges">
+                  {% for membership in memberships %}
+                  <span class="membership-badge">
+                    <i class="fas fa-check-circle me-1"></i>{{
+                    membership.cluster_type.value.title() }}
+                  </span>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Cluster Grid -->
+        <div class="cluster-grid">
+          <!-- Core Clusters -->
+          <div class="cluster-section mb-5">
+            <h3 class="section-title neon-text neon-pink mb-4">
+              <i class="fas fa-star me-2"></i>Core Communities
+            </h3>
+            <div class="row g-4">
+              <div class="col-md-6 col-lg-4">
+                <div class="cluster-card" data-cluster="boyfanz">
+                  <div class="cluster-header">
+                    <div class="cluster-icon neon-cyan">
+                      <i class="fas fa-male fa-2x"></i>
+                    </div>
+                    <div class="cluster-badge featured">
+                      <i class="fas fa-fire"></i> Popular
+                    </div>
+                  </div>
+                  <div class="cluster-content">
+                    <h5 class="cluster-name">BoyFanz</h5>
+                    <p class="cluster-description">
+                      Male-focused content and community. Connect with creators
+                      and fans who share your interests in masculine expression
+                      and content.
+                    </p>
+                    <div class="cluster-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users me-1"></i>
+                        <span>0 members</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-video me-1"></i>
+                        <span>0 posts</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cluster-actions">
+                    <button
+                      class="join-btn btn btn-primary"
+                      data-cluster="boyfanz"
+                    >
+                      <i class="fas fa-plus me-2"></i>Join Community
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 col-lg-4">
+                <div class="cluster-card" data-cluster="girlfanz">
+                  <div class="cluster-header">
+                    <div class="cluster-icon neon-pink">
+                      <i class="fas fa-female fa-2x"></i>
+                    </div>
+                    <div class="cluster-badge featured">
+                      <i class="fas fa-fire"></i> Popular
+                    </div>
+                  </div>
+                  <div class="cluster-content">
+                    <h5 class="cluster-name">GirlFanz</h5>
+                    <p class="cluster-description">
+                      Female-focused content and community. Celebrate feminine
+                      beauty, empowerment, and creative expression in a
+                      supportive environment.
+                    </p>
+                    <div class="cluster-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users me-1"></i>
+                        <span>0 members</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-video me-1"></i>
+                        <span>0 posts</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cluster-actions">
+                    <button
+                      class="join-btn btn btn-primary"
+                      data-cluster="girlfanz"
+                    >
+                      <i class="fas fa-plus me-2"></i>Join Community
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 col-lg-4">
+                <div class="cluster-card" data-cluster="allmyfanz">
+                  <div class="cluster-header">
+                    <div class="cluster-icon neon-yellow">
+                      <i class="fas fa-star fa-2x"></i>
+                    </div>
+                    <div class="cluster-badge new">
+                      <i class="fas fa-sparkles"></i> Trending
+                    </div>
+                  </div>
+                  <div class="cluster-content">
+                    <h5 class="cluster-name">AllMyFanz</h5>
+                    <p class="cluster-description">
+                      The main hub for all content types. General community for
+                      creators and fans of all interests and content styles.
+                    </p>
+                    <div class="cluster-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users me-1"></i>
+                        <span>0 members</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-video me-1"></i>
+                        <span>0 posts</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cluster-actions">
+                    <button
+                      class="join-btn btn btn-primary"
+                      data-cluster="allmyfanz"
+                    >
+                      <i class="fas fa-plus me-2"></i>Join Community
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Specialized Clusters -->
+          <div class="cluster-section mb-5">
+            <h3 class="section-title neon-text neon-green mb-4">
+              <i class="fas fa-heart me-2"></i>Specialized Communities
+            </h3>
+            <div class="row g-4">
+              <div class="col-md-6 col-lg-4">
+                <div class="cluster-card" data-cluster="tranzfanz">
+                  <div class="cluster-header">
+                    <div class="cluster-icon neon-purple">
+                      <i class="fas fa-transgender fa-2x"></i>
+                    </div>
+                    <div class="cluster-badge inclusive">
+                      <i class="fas fa-heart"></i> Inclusive
+                    </div>
+                  </div>
+                  <div class="cluster-content">
+                    <h5 class="cluster-name">TranzFanz</h5>
+                    <p class="cluster-description">
+                      Trans-inclusive community celebrating gender diversity and
+                      authentic self-expression in a safe, supportive space.
+                    </p>
+                    <div class="cluster-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users me-1"></i>
+                        <span>0 members</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-video me-1"></i>
+                        <span>0 posts</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cluster-actions">
+                    <button
+                      class="join-btn btn btn-primary"
+                      data-cluster="tranzfanz"
+                    >
+                      <i class="fas fa-plus me-2"></i>Join Community
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 col-lg-4">
+                <div class="cluster-card" data-cluster="pupfanz">
+                  <div class="cluster-header">
+                    <div class="cluster-icon neon-orange">
+                      <i class="fas fa-paw fa-2x"></i>
+                    </div>
+                    <div class="cluster-badge mature">
+                      <i class="fas fa-users"></i> 18+
+                    </div>
+                  </div>
+                  <div class="cluster-content">
+                    <h5 class="cluster-name">PupFanz</h5>
+                    <p class="cluster-description">
+                      Pet play and roleplay community for those interested in
+                      this unique form of self-expression and lifestyle.
+                    </p>
+                    <div class="cluster-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users me-1"></i>
+                        <span>0 members</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-video me-1"></i>
+                        <span>0 posts</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cluster-actions">
+                    <button
+                      class="join-btn btn btn-primary"
+                      data-cluster="pupfanz"
+                    >
+                      <i class="fas fa-plus me-2"></i>Join Community
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 col-lg-4">
+                <div class="cluster-card" data-cluster="daddyfanz">
+                  <div class="cluster-header">
+                    <div class="cluster-icon neon-blue">
+                      <i class="fas fa-user-tie fa-2x"></i>
+                    </div>
+                    <div class="cluster-badge mature">
+                      <i class="fas fa-users"></i> 18+
+                    </div>
+                  </div>
+                  <div class="cluster-content">
+                    <h5 class="cluster-name">DaddyFanz</h5>
+                    <p class="cluster-description">
+                      DDLG and age-play community for consenting adults
+                      interested in this dynamic and lifestyle choice.
+                    </p>
+                    <div class="cluster-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users me-1"></i>
+                        <span>0 members</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-video me-1"></i>
+                        <span>0 posts</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cluster-actions">
+                    <button
+                      class="join-btn btn btn-primary"
+                      data-cluster="daddyfanz"
+                    >
+                      <i class="fas fa-plus me-2"></i>Join Community
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Platform Extensions -->
+          <div class="cluster-section mb-5">
+            <h3 class="section-title neon-text neon-yellow mb-4">
+              <i class="fas fa-rocket me-2"></i>Platform Extensions
+            </h3>
+            <div class="row g-4">
+              <div class="col-md-6 col-lg-4">
+                <div class="cluster-card" data-cluster="fanztube">
+                  <div class="cluster-header">
+                    <div class="cluster-icon neon-red">
+                      <i class="fas fa-video fa-2x"></i>
+                    </div>
+                    <div class="cluster-badge beta">
+                      <i class="fas fa-flask"></i> Beta
+                    </div>
+                  </div>
+                  <div class="cluster-content">
+                    <h5 class="cluster-name">FanzTube</h5>
+                    <p class="cluster-description">
+                      Video-focused platform for longer-form content, tutorials,
+                      vlogs, and streaming capabilities.
+                    </p>
+                    <div class="cluster-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users me-1"></i>
+                        <span>0 members</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-video me-1"></i>
+                        <span>0 videos</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cluster-actions">
+                    <button
+                      class="join-btn btn btn-primary"
+                      data-cluster="fanztube"
+                    >
+                      <i class="fas fa-plus me-2"></i>Join Platform
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 col-lg-4">
+                <div class="cluster-card" data-cluster="fanzvarsity">
+                  <div class="cluster-header">
+                    <div class="cluster-icon neon-blue">
+                      <i class="fas fa-graduation-cap fa-2x"></i>
+                    </div>
+                    <div class="cluster-badge educational">
+                      <i class="fas fa-book"></i> Educational
+                    </div>
+                  </div>
+                  <div class="cluster-content">
+                    <h5 class="cluster-name">FanzVarsity</h5>
+                    <p class="cluster-description">
+                      Educational platform for creator courses, tutorials,
+                      coaching, and professional development resources.
+                    </p>
+                    <div class="cluster-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users me-1"></i>
+                        <span>0 students</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-book me-1"></i>
+                        <span>0 courses</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cluster-actions">
+                    <button
+                      class="join-btn btn btn-primary"
+                      data-cluster="fanzvarsity"
+                    >
+                      <i class="fas fa-plus me-2"></i>Enroll Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 col-lg-4">
+                <div class="cluster-card" data-cluster="fanzwork">
+                  <div class="cluster-header">
+                    <div class="cluster-icon neon-green">
+                      <i class="fas fa-briefcase fa-2x"></i>
+                    </div>
+                    <div class="cluster-badge professional">
+                      <i class="fas fa-handshake"></i> Professional
+                    </div>
+                  </div>
+                  <div class="cluster-content">
+                    <h5 class="cluster-name">FanzWork</h5>
+                    <p class="cluster-description">
+                      Freelance marketplace connecting creators with
+                      photographers, editors, managers, and other professional
+                      services.
+                    </p>
+                    <div class="cluster-stats">
+                      <div class="stat-item">
+                        <i class="fas fa-users me-1"></i>
+                        <span>0 freelancers</span>
+                      </div>
+                      <div class="stat-item">
+                        <i class="fas fa-tasks me-1"></i>
+                        <span>0 projects</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cluster-actions">
+                    <button
+                      class="join-btn btn btn-primary"
+                      data-cluster="fanzwork"
+                    >
+                      <i class="fas fa-plus me-2"></i>Join Network
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cross-posting Options -->
+        <div class="cross-post-options card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-share-alt me-2"></i>Cross-Posting Settings
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h6 class="neon-text neon-cyan mb-2">
+                  Enable Cross-Platform Posting
+                </h6>
+                <p class="text-secondary mb-2">
+                  Post your content across multiple clusters simultaneously to
+                  maximize reach and engagement.
+                </p>
+                <small class="text-muted">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Cross-posting requires verification and may have different
+                  content guidelines per cluster.
+                </small>
+              </div>
+              <div class="col-md-4 text-end">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="crossPostToggle"
+                  />
+                  <label class="form-check-label" for="crossPostToggle">
+                    Enable Cross-Posting
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons text-center">
+          <button id="continueBtn" class="btn btn-success btn-lg me-3" disabled>
+            <i class="fas fa-check me-2"></i>Continue to Dashboard
+          </button>
+          <a
+            href="{{ url_for('dashboard') }}"
+            class="btn btn-outline-light btn-lg"
+          >
+            <i class="fas fa-arrow-left me-2"></i>Skip for Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cluster-selection-container {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 255, 255, 0.05),
+      rgba(255, 0, 255, 0.05)
+    );
+    min-height: 100vh;
+  }
+
+  .current-memberships {
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .membership-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .membership-badge {
+    background: var(--neon-green);
+    color: var(--dark-bg);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .section-title {
+    border-bottom: 3px solid currentColor;
+    padding-bottom: 10px;
+    display: inline-block;
+  }
+
+  .cluster-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    padding: 25px;
+    height: 100%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cluster-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      var(--neon-cyan),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: rotate 3s linear infinite;
+  }
+
+  .cluster-card:hover::before {
+    opacity: 0.1;
+  }
+
+  .cluster-card:hover {
+    border-color: var(--neon-cyan);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+  }
+
+  .cluster-card.selected {
+    border-color: var(--neon-green);
+    background: rgba(0, 255, 0, 0.05);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+  }
+
+  .cluster-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cluster-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 15px;
+    border: 3px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px currentColor;
+  }
+
+  .cluster-badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: 2px solid currentColor;
+  }
+
+  .cluster-badge.featured {
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff4444;
+  }
+
+  .cluster-badge.new {
+    background: rgba(255, 255, 0, 0.2);
+    color: var(--neon-yellow);
+  }
+
+  .cluster-badge.inclusive {
+    background: rgba(255, 0, 255, 0.2);
+    color: var(--neon-pink);
+  }
+
+  .cluster-badge.mature {
+    background: rgba(255, 136, 0, 0.2);
+    color: var(--neon-orange);
+  }
+
+  .cluster-badge.beta {
+    background: rgba(0, 255, 255, 0.2);
+    color: var(--neon-cyan);
+  }
+
+  .cluster-badge.educational {
+    background: rgba(0, 0, 255, 0.2);
+    color: var(--neon-blue);
+  }
+
+  .cluster-badge.professional {
+    background: rgba(0, 255, 0, 0.2);
+    color: var(--neon-green);
+  }
+
+  .cluster-content {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 20px;
+  }
+
+  .cluster-name {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+
+  .cluster-description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .cluster-stats {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .cluster-actions {
+    position: relative;
+    z-index: 2;
+  }
+
+  .join-btn {
+    width: 100%;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+
+  .join-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .join-btn.joined {
+    background: var(--neon-green) !important;
+    border-color: var(--neon-green) !important;
+    color: var(--dark-bg) !important;
+  }
+
+  .cross-post-options {
+    background: rgba(0, 255, 255, 0.05);
+    border: 2px solid rgba(0, 255, 255, 0.2);
+  }
+
+  .form-check-input:checked {
+    background-color: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+  }
+
+  #continueBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cluster-card {
+      padding: 20px;
+    }
+
+    .cluster-icon {
+      width: 60px;
+      height: 60px;
+    }
+
+    .cluster-stats {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .membership-badges {
+      justify-content: flex-start;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const clusterCards = document.querySelectorAll(".cluster-card");
+    const joinButtons = document.querySelectorAll(".join-btn");
+    const continueBtn = document.getElementById("continueBtn");
+    const crossPostToggle = document.getElementById("crossPostToggle");
+
+    let selectedClusters = new Set();
+
+    // Handle cluster selection
+    joinButtons.forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const cluster = this.dataset.cluster;
+        const card = this.closest(".cluster-card");
+
+        if (selectedClusters.has(cluster)) {
+          // Remove from selection
+          selectedClusters.delete(cluster);
+          card.classList.remove("selected");
+          this.classList.remove("joined");
+          this.innerHTML = '<i class="fas fa-plus me-2"></i>Join Community';
+        } else {
+          // Add to selection
+          selectedClusters.add(cluster);
+          card.classList.add("selected");
+          this.classList.add("joined");
+          this.innerHTML = '<i class="fas fa-check me-2"></i>Joined';
+
+          // Add join animation
+          card.style.animation = "joinPulse 0.5s ease";
+          setTimeout(() => {
+            card.style.animation = "";
+          }, 500);
+        }
+
+        updateContinueButton();
+      });
+    });
+
+    // Update continue button state
+    function updateContinueButton() {
+      if (selectedClusters.size > 0) {
+        continueBtn.disabled = false;
+        continueBtn.classList.add("glow-pulse");
+        continueBtn.innerHTML = `<i class="fas fa-check me-2"></i>Continue with ${selectedClusters.size} Cluster${selectedClusters.size > 1 ? "s" : ""}`;
+      } else {
+        continueBtn.disabled = true;
+        continueBtn.classList.remove("glow-pulse");
+        continueBtn.innerHTML =
+          '<i class="fas fa-check me-2"></i>Continue to Dashboard';
+      }
+    }
+
+    // Handle continue button
+    continueBtn.addEventListener("click", function () {
+      if (selectedClusters.size === 0) {
+        window.NeonUtils.showNeonAlert(
+          "Please select at least one cluster to continue.",
+          "warning",
+        );
+        return;
+      }
+
+      const clusters = Array.from(selectedClusters);
+      const crossPost = crossPostToggle.checked;
+
+      // Create form data
+      const formData = new FormData();
+      clusters.forEach((cluster) => {
+        formData.append("clusters", cluster);
+      });
+      formData.append("cross_post", crossPost);
+      formData.append("csrf_token", window.FanzLabConfig.csrfToken);
+
+      // Submit selections
+      fetch('{{ url_for("cluster_selection") }}', {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          if (response.redirected) {
+            window.location.href = response.url;
+          } else {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (data && data.error) {
+            window.NeonUtils.showNeonAlert(data.error, "error");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          window.NeonUtils.showNeonAlert(
+            "An error occurred. Please try again.",
+            "error",
+          );
+        });
+
+      // Show loading state
+      this.disabled = true;
+      this.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Joining Clusters...';
+    });
+
+    // Handle cluster card clicks
+    clusterCards.forEach((card) => {
+      card.addEventListener("click", function () {
+        const joinBtn = this.querySelector(".join-btn");
+        if (joinBtn) {
+          joinBtn.click();
+        }
+      });
+    });
+
+    // Cross-post toggle information
+    crossPostToggle.addEventListener("change", function () {
+      if (this.checked) {
+        window.NeonUtils.showNeonAlert(
+          "Cross-posting enabled! Your content will reach multiple clusters.",
+          "info",
+        );
+      }
+    });
+
+    // Add entrance animations
+    clusterCards.forEach((card, index) => {
+      card.style.opacity = "0";
+      card.style.transform = "translateY(30px)";
+
+      setTimeout(() => {
+        card.style.transition = "all 0.6s ease";
+        card.style.opacity = "1";
+        card.style.transform = "translateY(0)";
+      }, index * 100);
+    });
+
+    // Add join pulse animation
+    const joinPulseCSS = `
+        @keyframes joinPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    `;
+    const style = document.createElement("style");
+    style.textContent = joinPulseCSS;
+    document.head.appendChild(style);
+
+    // Pre-select clusters based on user role or preferences
+    const userRole = window.FanzLabConfig.userRole;
+    if (userRole === "star") {
+      // Auto-suggest popular clusters for creators
+      setTimeout(() => {
+        window.NeonUtils.showNeonAlert(
+          "As a STAR creator, we recommend starting with BoyFanz, GirlFanz, or AllMyFanz for maximum reach.",
+          "info",
+        );
+      }, 2000);
+    }
+  });
+</script>
+{% endblock %}

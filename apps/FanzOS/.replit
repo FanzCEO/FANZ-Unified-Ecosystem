@@ -1,0 +1,77 @@
+modules = ["nodejs-20", "go-1.21", "bash"]
+compile = "make"
+run = "run"
+[objectStorage]
+defaultBucketID = "replit-objstore-74d910f3-be85-4460-8df8-625d89d9e40f"
+
+[agent]
+integrations = ["javascript_sendgrid==1.0.0", "javascript_log_in_with_replit==1.0.0", "javascript_websocket==1.0.0", "javascript_object_storage==1.0.0", "javascript_auth_all_persistance==1.0.0", "javascript_database==1.0.0"]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+packages = ["jq", "zip", "openssh_hpnWithKerberos"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[deployment]
+run = ["sh", "-c", "run"]
+deploymentTarget = "gce"
+build = ["sh", "-c", "make"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Start FansLab"
+author = 46450385
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "chmod +x start-servers.sh"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "./start-servers.sh"
+
+[[workflows.workflow]]
+name = "Express Only"
+author = 46450385
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
+[[workflows.workflow]]
+name = "Debug Express"
+author = 46450385
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Server"
+
+[[workflows.workflow]]
+name = "Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"

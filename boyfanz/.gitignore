@@ -1,0 +1,43 @@
+node_modules
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.gznode_modules/
+.env
+.env.local
+dist/
+build/
+*.log
+package-lock.json
+yarn.lock
+
+# Security - Environment Variables
+.env
+.env.*
+!.env.example
+
+# Security - Keys and Certificates
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+*.ppk
+
+# Security - Logs and Reports
+*.log
+security-reports/
+
+
+# Credentials and secrets - DO NOT COMMIT
+.env
+.env.*
+.env.production.ready
+COMPLETE_CREDENTIALS.md
+*_credentials*
+*.key
+*.pem
+ssh-*.expect
+*-env.expect
+auto-deploy.sh

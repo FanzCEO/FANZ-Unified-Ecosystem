@@ -1,0 +1,62 @@
+{
+  "name": "taboofanz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TabooFanz - The dark, alt, underground adult creator platform in the FANZ ecosystem",
+  "keywords": [
+    "creator-platform",
+    "adult-content",
+    "alt-culture",
+    "fanz-ecosystem"
+  ],
+  "license": "UNLICENSED",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@taboofanz/web",
+    "dev:api": "turbo run dev --filter=@taboofanz/api",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=@taboofanz/web",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:coverage": "turbo run test:coverage",
+    "db:generate": "turbo run db:generate --filter=@taboofanz/database",
+    "db:push": "turbo run db:push --filter=@taboofanz/database",
+    "db:migrate": "turbo run db:migrate --filter=@taboofanz/database",
+    "db:seed": "turbo run db:seed --filter=@taboofanz/database",
+    "db:studio": "turbo run db:studio --filter=@taboofanz/database",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "eslint": "^8.55.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.0",
+    "turbo": "^1.11.0",
+    "typescript": "^5.3.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.11.0",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

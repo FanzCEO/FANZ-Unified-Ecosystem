@@ -1,0 +1,703 @@
+{% extends "base.html" %} {% block title %}Theme Manager - FANZ{% endblock %} {%
+block content %}
+<div class="theme-manager-container">
+  <!-- Header Section -->
+  <div class="manager-header">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="manager-title">
+            <i class="fas fa-palette me-3"></i>Theme Manager
+          </h1>
+          <p class="manager-subtitle">
+            Design your platform with Shopify/WordPress/Webflow-style
+            customization
+          </p>
+        </div>
+        <div class="col-lg-4 text-end">
+          <button class="btn btn-primary me-2" onclick="openThemeMarketplace()">
+            <i class="fas fa-store me-2"></i>Browse Marketplace
+          </button>
+          <button class="btn btn-success" onclick="createNewTheme()">
+            <i class="fas fa-plus me-2"></i>Create Theme
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="stats-row">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-eye"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ themes|length }}</h3>
+              <p>Total Themes</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <h3>
+                {% if active_theme %}{{ active_theme.display_name }}{% else
+                %}None{% endif %}
+              </h3>
+              <p>Active Theme</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-images"></i>
+            </div>
+            <div class="stat-content">
+              <h3>0</h3>
+              <p>Custom Assets</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-code"></i>
+            </div>
+            <div class="stat-content">
+              <h3>15</h3>
+              <p>Components</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme Grid -->
+  <div class="themes-section">
+    <div class="container-fluid">
+      <!-- Active Theme Section -->
+      {% if active_theme %}
+      <div class="section-header">
+        <h2><i class="fas fa-star me-2"></i>Currently Active</h2>
+      </div>
+      <div class="active-theme-card">
+        <div class="row align-items-center">
+          <div class="col-md-2">
+            <div class="theme-preview">
+              <div
+                class="preview-screen"
+                style="background: {{ active_theme.color_config.background if active_theme.color_config }};"
+              >
+                <div class="preview-elements">
+                  <div
+                    class="preview-header"
+                    style="background: {{ active_theme.color_config.primary if active_theme.color_config }};"
+                  ></div>
+                  <div class="preview-content">
+                    <div
+                      class="preview-text"
+                      style="background: {{ active_theme.color_config.secondary if active_theme.color_config }};"
+                    ></div>
+                    <div
+                      class="preview-text"
+                      style="background: {{ active_theme.color_config.accent if active_theme.color_config }};"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h3>{{ active_theme.display_name }}</h3>
+            <p class="theme-description">
+              {{ active_theme.description or 'No description available' }}
+            </p>
+            <div class="theme-meta">
+              <span class="badge bg-success me-2">Active</span>
+              <span class="badge bg-info me-2"
+                >{{ active_theme.theme_type.value.replace('_', ' ').title()
+                }}</span
+              >
+              <small class="text-muted"
+                >Updated {{ active_theme.updated_at.strftime('%B %d, %Y')
+                }}</small
+              >
+            </div>
+          </div>
+          <div class="col-md-4 text-end">
+            <button
+              class="btn btn-outline-primary me-2"
+              onclick="openVisualEditor({{ active_theme.id }})"
+            >
+              <i class="fas fa-edit me-2"></i>Visual Editor
+            </button>
+            <button
+              class="btn btn-outline-secondary me-2"
+              onclick="openCustomizer({{ active_theme.id }})"
+            >
+              <i class="fas fa-sliders-h me-2"></i>Customize
+            </button>
+            <button
+              class="btn btn-outline-info"
+              onclick="previewTheme({{ active_theme.id }})"
+            >
+              <i class="fas fa-eye me-2"></i>Preview
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- All Themes Section -->
+      <div class="section-header">
+        <h2><i class="fas fa-th-large me-2"></i>Your Themes</h2>
+        <div class="view-controls">
+          <button
+            class="btn btn-sm btn-outline-secondary active"
+            onclick="setGridView()"
+          >
+            <i class="fas fa-th"></i>
+          </button>
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            onclick="setListView()"
+          >
+            <i class="fas fa-list"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="themes-grid" id="themesGrid">
+        {% for theme in themes %}
+        <div class="theme-card {% if theme.is_active %}active{% endif %}">
+          <div class="theme-preview-container">
+            <div class="theme-preview">
+              <div
+                class="preview-screen"
+                style="background: {{ theme.color_config.background if theme.color_config }};"
+              >
+                <div class="preview-elements">
+                  <div
+                    class="preview-header"
+                    style="background: {{ theme.color_config.primary if theme.color_config }};"
+                  ></div>
+                  <div class="preview-content">
+                    <div
+                      class="preview-text"
+                      style="background: {{ theme.color_config.secondary if theme.color_config }};"
+                    ></div>
+                    <div
+                      class="preview-text"
+                      style="background: {{ theme.color_config.accent if theme.color_config }};"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="theme-overlay">
+              <div class="theme-actions">
+                {% if not theme.is_active %}
+                <button
+                  class="btn btn-primary btn-sm"
+                  onclick="activateTheme({{ theme.id }})"
+                >
+                  <i class="fas fa-check"></i> Activate
+                </button>
+                {% endif %}
+                <button
+                  class="btn btn-secondary btn-sm"
+                  onclick="openVisualEditor({{ theme.id }})"
+                >
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button
+                  class="btn btn-info btn-sm"
+                  onclick="previewTheme({{ theme.id }})"
+                >
+                  <i class="fas fa-eye"></i> Preview
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="theme-info">
+            <h4>{{ theme.display_name }}</h4>
+            <p>
+              {{ theme.description[:60] + '...' if theme.description and
+              theme.description|length > 60 else theme.description or 'No
+              description' }}
+            </p>
+            <div class="theme-meta">
+              {% if theme.is_active %}
+              <span class="badge bg-success">Active</span>
+              {% endif %}
+              <span class="badge bg-secondary"
+                >{{ theme.theme_type.value.replace('_', ' ').title() }}</span
+              >
+              <small class="text-muted d-block mt-2"
+                >{{ theme.updated_at.strftime('%m/%d/%Y') }}</small
+              >
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        <!-- Add New Theme Card -->
+        <div class="theme-card add-new-card" onclick="createNewTheme()">
+          <div class="add-new-content">
+            <i class="fas fa-plus"></i>
+            <h4>Create New Theme</h4>
+            <p>Start from scratch or use a template</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Theme Modal -->
+<div class="modal fade" id="createThemeModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content bg-dark border-primary">
+      <div class="modal-header border-primary">
+        <h5 class="modal-title">Create New Theme</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="createThemeForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="themeName" class="form-label">Theme Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="themeName"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="themeDisplayName" class="form-label"
+                  >Display Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="themeDisplayName"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="themeDescription" class="form-label"
+                  >Description</label
+                >
+                <textarea
+                  class="form-control"
+                  id="themeDescription"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="themeType" class="form-label">Theme Type</label>
+                <select class="form-select" id="themeType">
+                  <option value="custom">Custom</option>
+                  <option value="neon_cyberpunk">Neon Cyberpunk</option>
+                  <option value="dark_minimal">Dark Minimal</option>
+                  <option value="retro_wave">Retro Wave</option>
+                  <option value="galaxy">Galaxy</option>
+                </select>
+              </div>
+              <div class="starter-templates">
+                <label class="form-label">Quick Start Templates</label>
+                <div class="template-grid">
+                  <div class="template-option" data-template="blank">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Blank Theme</span>
+                  </div>
+                  <div class="template-option" data-template="current">
+                    <i class="fas fa-copy"></i>
+                    <span>Copy Current</span>
+                  </div>
+                  <div class="template-option" data-template="default">
+                    <i class="fas fa-star"></i>
+                    <span>Default Starter</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-primary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="submitCreateTheme()"
+        >
+          Create Theme
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .theme-manager-container {
+    min-height: 100vh;
+    background: radial-gradient(
+      ellipse at center,
+      #1a1a2e 0%,
+      #0a0a1a 70%,
+      #000000 100%
+    );
+  }
+
+  .manager-header {
+    background: rgba(26, 26, 46, 0.8);
+    border-bottom: 2px solid transparent;
+    border-image: var(--rainbow-gradient) 1;
+    padding: 30px 0;
+    backdrop-filter: blur(15px);
+  }
+
+  .manager-title {
+    color: var(--text-primary);
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0;
+    background: var(--logo-text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .manager-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+    opacity: 0.9;
+  }
+
+  .stats-row {
+    padding: 30px 0;
+  }
+
+  .stat-card {
+    background: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    backdrop-filter: blur(15px);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+  }
+
+  .stat-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+    transform: translateY(-5px);
+  }
+
+  .stat-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 15px;
+  }
+
+  .stat-content h3 {
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .stat-content p {
+    color: var(--text-secondary);
+    margin-bottom: 0;
+  }
+
+  .themes-section {
+    padding: 30px 0 50px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .section-header h2 {
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    margin-bottom: 0;
+  }
+
+  .active-theme-card {
+    background: rgba(26, 26, 46, 0.9);
+    border: 2px solid var(--primary);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2);
+  }
+
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+  }
+
+  .theme-card {
+    background: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .theme-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+    transform: translateY(-5px);
+  }
+
+  .theme-card.active {
+    border-color: var(--secondary);
+    box-shadow: 0 10px 30px rgba(255, 0, 127, 0.3);
+  }
+
+  .theme-preview-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .theme-preview {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+  }
+
+  .preview-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .preview-elements {
+    width: 100%;
+    height: 100%;
+  }
+
+  .preview-header {
+    height: 25%;
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    opacity: 0.8;
+  }
+
+  .preview-content {
+    padding: 10px;
+    height: 75%;
+  }
+
+  .preview-text {
+    height: 30px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    opacity: 0.6;
+  }
+
+  .theme-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .theme-card:hover .theme-overlay {
+    opacity: 1;
+  }
+
+  .theme-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .theme-info {
+    padding: 20px;
+  }
+
+  .theme-info h4 {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .theme-info p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+
+  .add-new-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px dashed rgba(0, 212, 255, 0.5);
+    background: rgba(26, 26, 46, 0.5);
+  }
+
+  .add-new-card:hover {
+    border-color: var(--primary);
+    background: rgba(0, 212, 255, 0.1);
+  }
+
+  .add-new-content {
+    text-align: center;
+    color: var(--text-secondary);
+  }
+
+  .add-new-content i {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 15px;
+  }
+
+  .template-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .template-option {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .template-option:hover {
+    border-color: var(--primary);
+    background: rgba(0, 212, 255, 0.2);
+  }
+
+  .template-option i {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .template-option span {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+</style>
+
+<script>
+  function createNewTheme() {
+    const modal = new bootstrap.Modal(
+      document.getElementById("createThemeModal"),
+    );
+    modal.show();
+  }
+
+  function submitCreateTheme() {
+    const formData = {
+      name: document
+        .getElementById("themeName")
+        .value.toLowerCase()
+        .replace(/\s+/g, "_"),
+      display_name: document.getElementById("themeDisplayName").value,
+      description: document.getElementById("themeDescription").value,
+      theme_type: document.getElementById("themeType").value,
+    };
+
+    fetch("/admin/themes/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          window.location.href = "/admin/themes/editor/" + data.theme_id;
+        }
+      });
+  }
+
+  function activateTheme(themeId) {
+    fetch(`/admin/themes/${themeId}/activate`, {
+      method: "POST",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          location.reload();
+        }
+      });
+  }
+
+  function openVisualEditor(themeId) {
+    window.location.href = `/admin/themes/editor/${themeId}`;
+  }
+
+  function openThemeMarketplace() {
+    window.location.href = "/admin/themes/marketplace";
+  }
+
+  function previewTheme(themeId) {
+    window.open(`/admin/themes/preview/${themeId}`, "_blank");
+  }
+
+  function setGridView() {
+    document.getElementById("themesGrid").className = "themes-grid";
+    document.querySelector(".view-controls .active").classList.remove("active");
+    event.target.closest("button").classList.add("active");
+  }
+
+  function setListView() {
+    document.getElementById("themesGrid").className = "themes-list";
+    document.querySelector(".view-controls .active").classList.remove("active");
+    event.target.closest("button").classList.add("active");
+  }
+</script>
+{% endblock %}

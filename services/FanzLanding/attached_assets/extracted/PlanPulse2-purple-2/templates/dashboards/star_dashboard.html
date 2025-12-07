@@ -1,0 +1,671 @@
+{% extends "base.html" %} {% block title %}STAR Dashboard - FANZ{% endblock %}
+{% block content %}
+<div class="star-dashboard-container">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Welcome Header -->
+      <div class="col-12">
+        <div class="welcome-banner mb-4">
+          <div class="card gradient-card">
+            <div class="card-body py-4">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h2 class="neon-text neon-pink mb-2">
+                    <i class="fas fa-star me-2"></i>STAR Dashboard - {{
+                    current_user.get_full_name() }}
+                  </h2>
+                  <p class="lead text-secondary mb-2">
+                    Seduce your audience, monetize your allure, and dominate
+                    every seductive cluster
+                  </p>
+                  <div class="creator-stats">
+                    <span class="stat-item">
+                      <i class="fas fa-video neon-cyan me-1"></i>
+                      {{ scenes | length }} Scene{{ 's' if scenes|length != 1
+                      else '' }}
+                    </span>
+                    <span class="stat-item">
+                      <i class="fas fa-network-wired neon-green me-1"></i>
+                      {{ memberships | length }} Cluster{{ 's' if
+                      memberships|length != 1 else '' }}
+                    </span>
+                    <span class="stat-item">
+                      <i
+                        class="fas fa-shield-alt {{ 'neon-green' if compliance_complete else 'neon-yellow' }} me-1"
+                      ></i>
+                      {{ 'Verified' if compliance_complete else 'Pending' }}
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div class="earnings-summary">
+                    <div class="earnings-amount">
+                      <span class="currency">$</span>
+                      <span class="amount">0.00</span>
+                    </div>
+                    <small class="text-muted">Total Earnings</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compliance Alert -->
+      {% if not compliance_complete %}
+      <div class="col-12 mb-4">
+        <div class="compliance-alert alert alert-warning">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h5 class="mb-2">
+                <i class="fas fa-exclamation-triangle me-2"></i>Complete Your
+                Verification
+              </h5>
+              <p class="mb-0">
+                Complete your verification to start sharing your most intimate
+                and seductive content with devoted fans.
+              </p>
+            </div>
+            <div class="col-md-4 text-end">
+              <a
+                href="{{ url_for('verification_status') }}"
+                class="btn btn-warning"
+              >
+                <i class="fas fa-clipboard-check me-2"></i>Complete Verification
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Quick Actions -->
+      <div class="col-12 mb-4">
+        <div class="quick-actions-card card">
+          <div class="card-header">
+            <h4 class="mb-0"><i class="fas fa-bolt me-2"></i>Creator Tools</h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <a
+                  href="{{ url_for('create_scene') }}"
+                  class="action-button {{ 'disabled' if not compliance_complete }}"
+                >
+                  <div class="action-icon neon-pink">
+                    <i class="fas fa-plus"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Create Scene</h6>
+                    <p>Upload new content</p>
+                  </div>
+                </a>
+              </div>
+              <div class="col-md-3">
+                <a href="#" class="action-button">
+                  <div class="action-icon neon-cyan">
+                    <i class="fas fa-chart-line"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Analytics</h6>
+                    <p>View performance</p>
+                  </div>
+                </a>
+              </div>
+              <div class="col-md-3">
+                <a href="#" class="action-button">
+                  <div class="action-icon neon-green">
+                    <i class="fas fa-dollar-sign"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Earnings</h6>
+                    <p>Revenue & payouts</p>
+                  </div>
+                </a>
+              </div>
+              <div class="col-md-3">
+                <a href="#" class="action-button">
+                  <div class="action-icon neon-yellow">
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Fan Messages</h6>
+                    <p>Connect with fans</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Management -->
+      <div class="col-lg-8 mb-4">
+        <div class="content-management-card card">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0"><i class="fas fa-video me-2"></i>My Content</h4>
+              <a
+                href="{{ url_for('create_scene') }}"
+                class="btn btn-primary {{ 'disabled' if not compliance_complete }}"
+              >
+                <i class="fas fa-plus me-2"></i>New Scene
+              </a>
+            </div>
+          </div>
+          <div class="card-body">
+            {% if scenes %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for scene in scenes %}
+                  <tr>
+                    <td>
+                      <div class="scene-title">
+                        <h6 class="mb-1">{{ scene.title }}</h6>
+                        {% if scene.description %}
+                        <small class="text-muted"
+                          >{{ scene.description[:50] }}{{ '...' if
+                          scene.description|length > 50 else '' }}</small
+                        >
+                        {% endif %}
+                      </div>
+                    </td>
+                    <td>
+                      <span class="content-type-badge">
+                        {% if scene.content_type == 'photo' %}
+                        <i class="fas fa-image me-1 neon-cyan"></i>Photo {% elif
+                        scene.content_type == 'video' %}
+                        <i class="fas fa-video me-1 neon-pink"></i>Video {% elif
+                        scene.content_type == 'live' %}
+                        <i class="fas fa-broadcast-tower me-1 neon-green"></i
+                        >Live {% endif %}
+                      </span>
+                    </td>
+                    <td>
+                      {% if scene.is_published %}
+                      <span class="status-badge status-approved">
+                        <i class="fas fa-eye me-1"></i>Published
+                      </span>
+                      {% elif scene.can_publish %}
+                      <span class="status-badge status-pending">
+                        <i class="fas fa-clock me-1"></i>Ready
+                      </span>
+                      {% else %}
+                      <span class="status-badge status-needs-fix">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Blocked
+                      </span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <span class="created-date">
+                        {{ scene.created_at.strftime('%Y-%m-%d') }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="scene-actions">
+                        <button class="btn btn-sm btn-info" title="Edit">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        {% if scene.can_publish and not scene.is_published %}
+                        <button class="btn btn-sm btn-success" title="Publish">
+                          <i class="fas fa-upload"></i>
+                        </button>
+                        {% endif %}
+                        <button class="btn btn-sm btn-danger" title="Delete">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="empty-content text-center py-5">
+              <i class="fas fa-video fa-4x neon-pink mb-3"></i>
+              <h5>No Content Yet</h5>
+              <p class="text-secondary mb-4">
+                Start creating amazing content for your fans
+              </p>
+              {% if compliance_complete %}
+              <a
+                href="{{ url_for('create_scene') }}"
+                class="btn btn-primary btn-lg"
+              >
+                <i class="fas fa-plus me-2"></i>Create Your First Scene
+              </a>
+              {% else %}
+              <p class="text-warning">
+                <i class="fas fa-lock me-2"></i>Complete verification to start
+                creating
+              </p>
+              {% endif %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Stats & Info -->
+      <div class="col-lg-4 mb-4">
+        <!-- Performance Stats -->
+        <div class="stats-card card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-chart-bar me-2"></i>Performance
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="stat-row">
+              <div class="stat-label">
+                <i class="fas fa-eye neon-cyan me-2"></i>Total Views
+              </div>
+              <div class="stat-value">0</div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-label">
+                <i class="fas fa-heart neon-pink me-2"></i>Likes
+              </div>
+              <div class="stat-value">0</div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-label">
+                <i class="fas fa-users neon-green me-2"></i>Subscribers
+              </div>
+              <div class="stat-value">0</div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-label">
+                <i class="fas fa-dollar-sign neon-yellow me-2"></i>Revenue
+              </div>
+              <div class="stat-value">$0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Clusters -->
+        <div class="clusters-card card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-network-wired me-2"></i>Active Clusters
+            </h5>
+          </div>
+          <div class="card-body">
+            {% if memberships %}
+            <div class="cluster-list">
+              {% for membership in memberships %}
+              <div class="cluster-item-small">
+                <div
+                  class="cluster-icon-small {{ 'neon-cyan' if loop.index0 % 4 == 0 else 'neon-pink' if loop.index0 % 4 == 1 else 'neon-green' if loop.index0 % 4 == 2 else 'neon-yellow' }}"
+                >
+                  {% if membership.cluster_type.value == 'boyfanz' %}
+                  <i class="fas fa-male"></i>
+                  {% elif membership.cluster_type.value == 'girlfanz' %}
+                  <i class="fas fa-female"></i>
+                  {% elif membership.cluster_type.value == 'tranzfanz' %}
+                  <i class="fas fa-transgender"></i>
+                  {% elif membership.cluster_type.value == 'allmyfanz' %}
+                  <i class="fas fa-star"></i>
+                  {% elif membership.cluster_type.value == 'fanztube' %}
+                  <i class="fas fa-video"></i>
+                  {% elif membership.cluster_type.value == 'fanzvarsity' %}
+                  <i class="fas fa-graduation-cap"></i>
+                  {% else %}
+                  <i class="fas fa-users"></i>
+                  {% endif %}
+                </div>
+                <div class="cluster-info-small">
+                  <h6>{{ membership.cluster_type.value.title() }}</h6>
+                  {% if membership.can_cross_post %}
+                  <small class="text-success">
+                    <i class="fas fa-share-alt me-1"></i>Cross-post enabled
+                  </small>
+                  {% else %}
+                  <small class="text-muted">Single-post only</small>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="text-center mt-3">
+              <a
+                href="{{ url_for('cluster_selection') }}"
+                class="btn btn-sm btn-outline-light"
+              >
+                <i class="fas fa-plus me-1"></i>Join More
+              </a>
+            </div>
+            {% else %}
+            <div class="empty-clusters text-center py-3">
+              <i class="fas fa-network-wired fa-2x neon-cyan mb-2"></i>
+              <p class="text-muted mb-3">No clusters joined</p>
+              <a
+                href="{{ url_for('cluster_selection') }}"
+                class="btn btn-primary btn-sm"
+              >
+                <i class="fas fa-plus me-1"></i>Join Clusters
+              </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .star-dashboard-container {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 255, 0.05),
+      rgba(255, 192, 203, 0.05)
+    );
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  .gradient-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 255, 0.1),
+      rgba(255, 192, 203, 0.1)
+    );
+    border: 2px solid var(--neon-pink);
+  }
+
+  .creator-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .earnings-summary {
+    text-align: center;
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid var(--neon-green);
+    border-radius: 15px;
+    padding: 20px;
+  }
+
+  .earnings-amount {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--neon-green);
+    margin-bottom: 5px;
+  }
+
+  .currency {
+    font-size: 1.5rem;
+  }
+
+  .compliance-alert {
+    background: rgba(255, 136, 0, 0.1);
+    border: 2px solid var(--neon-orange);
+    border-radius: 15px;
+  }
+
+  .action-button {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+
+  .action-button:hover:not(.disabled) {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+    color: var(--text-primary);
+    transform: translateY(-3px);
+  }
+
+  .action-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .action-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .action-content h6 {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+
+  .action-content p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .scene-title h6 {
+    color: var(--text-primary);
+  }
+
+  .content-type-badge {
+    display: inline-flex;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  .scene-actions {
+    display: flex;
+    gap: 5px;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .stat-row:last-child {
+    border-bottom: none;
+  }
+
+  .stat-label {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .stat-value {
+    font-weight: bold;
+    color: var(--text-primary);
+  }
+
+  .cluster-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .cluster-item-small {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+  }
+
+  .cluster-item-small:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+  }
+
+  .cluster-icon-small {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .cluster-info-small h6 {
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+  }
+
+  .cluster-info-small small {
+    font-size: 0.8rem;
+  }
+
+  .empty-content,
+  .empty-clusters {
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    .creator-stats {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .earnings-amount {
+      font-size: 1.5rem;
+    }
+
+    .action-button {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .scene-actions {
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .compliance-alert .row {
+      text-align: center;
+    }
+
+    .compliance-alert .col-md-4 {
+      margin-top: 15px;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Scene management
+      const sceneActions = document.querySelectorAll('.scene-actions button');
+      sceneActions.forEach(button => {
+          button.addEventListener('click', function(e) {
+              e.stopPropagation();
+              const action = this.title.toLowerCase();
+              const sceneTitle = this.closest('tr').querySelector('.scene-title h6').textContent;
+
+              if (action === 'delete') {
+                  if (confirm(`Are you sure you want to delete "${sceneTitle}"?`)) {
+                      window.NeonUtils.showNeonAlert(`Scene "${sceneTitle}" deleted.`, 'info');
+                      this.closest('tr').remove();
+                  }
+              } else if (action === 'publish') {
+                  window.NeonUtils.showNeonAlert(`Publishing "${sceneTitle}"...`, 'success');
+                  this.textContent = 'Published';
+                  this.classList.remove('btn-success');
+                  this.classList.add('btn-secondary');
+                  this.disabled = true;
+              } else if (action === 'edit') {
+                  window.NeonUtils.showNeonAlert(`Opening editor for "${sceneTitle}"...`, 'info');
+              }
+          });
+      });
+
+      // Animate elements on load
+      const animatedElements = document.querySelectorAll('.cluster-item-small, .stat-row');
+      animatedElements.forEach((element, index) => {
+          element.style.opacity = '0';
+          element.style.transform = 'translateX(-20px)';
+
+          setTimeout(() => {
+              element.style.transition = 'all 0.5s ease';
+              element.style.opacity = '1';
+              element.style.transform = 'translateX(0)';
+          }, index * 100);
+      });
+
+      // Compliance completion check
+      const complianceComplete = {{ 'true' if compliance_complete else 'false' }};
+      if (!complianceComplete) {
+          setTimeout(() => {
+              window.NeonUtils.showNeonAlert('Complete your verification to unlock all STAR features and start publishing content.', 'warning');
+          }, 2000);
+      }
+
+      // Earnings counter animation
+      const earningsAmount = document.querySelector('.earnings-amount .amount');
+      if (earningsAmount) {
+          let target = parseFloat(earningsAmount.textContent) || 0;
+          let current = 0;
+          const increment = target / 50;
+
+          const updateEarnings = () => {
+              if (current < target) {
+                  current += increment;
+                  earningsAmount.textContent = current.toFixed(2);
+                  requestAnimationFrame(updateEarnings);
+              } else {
+                  earningsAmount.textContent = target.toFixed(2);
+              }
+          };
+
+          setTimeout(updateEarnings, 1000);
+      }
+
+      // Auto-refresh earnings (placeholder)
+      setInterval(function() {
+          // In a real implementation, this would fetch updated earnings
+          console.log('Checking for updated earnings...');
+      }, 120000); // Every 2 minutes
+  });
+</script>
+{% endblock %}

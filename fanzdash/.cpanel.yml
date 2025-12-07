@@ -1,0 +1,11 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/username/public_html/fanzdash
+    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp .env.example $DEPLOYPATH/.env
+    - cd $DEPLOYPATH
+    - /opt/cpanel/ea-nodejs22/bin/node --version
+    - /opt/cpanel/ea-nodejs22/bin/npm install pnpm -g
+    - /opt/cpanel/ea-nodejs22/bin/pnpm install --prod
+    - /opt/cpanel/ea-nodejs22/bin/pnpm run build

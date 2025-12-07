@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Templates - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h2 mb-0">Message Templates</h1>
+        <p class="text-muted">Manage automated response templates</p>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
+            <i data-feather="plus" class="me-1"></i>Add Template
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    {% for category in ['availability', 'rates', 'screening', 'booking', 'general'] %}
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i data-feather="file-text" class="me-2"></i>{{ category.title() }} Templates
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% set category_templates = templates|selectattr('category', 'equalto', category)|list %}
+                    {% if category_templates %}
+                        {% for template in category_templates %}
+                            <div class="border rounded p-3 mb-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0">{{ template.name }}</h6>
+                                    <span class="badge bg-{{ 'success' if template.is_active else 'secondary' }}">
+                                        {{ 'Active' if template.is_active else 'Inactive' }}
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-0">{{ template.content }}</p>
+                                <small class="text-muted">
+                                    Created {{ template.created_at.strftime('%b %d, %Y') }}
+                                </small>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted py-3">
+                            <i data-feather="file-text" class="mb-2"></i>
+                            <p class="mb-0">No {{ category }} templates yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Add Template Modal -->
+<div class="modal fade" id="addTemplateModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Template</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_template') }}">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Template Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Category *</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Select a category</option>
+                                <option value="availability">Availability</option>
+                                <option value="rates">Rates</option>
+                                <option value="screening">Screening</option>
+                                <option value="booking">Booking</option>
+                                <option value="general">General</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Template Content *</label>
+                        <textarea class="form-control" id="content" name="content" rows="5" required 
+                                  placeholder="Enter your template message here..."></textarea>
+                        <div class="form-text">
+                            This message will be automatically sent when the system detects the corresponding intent.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Template</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i data-feather="info" class="me-2"></i>Template Usage Guidelines
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Template Categories:</h6>
+                <ul class="list-unstyled">
+                    <li><strong>Availability:</strong> When clients ask about your schedule</li>
+                    <li><strong>Rates:</strong> When clients inquire about pricing</li>
+                    <li><strong>Screening:</strong> For new client verification</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6>Best Practices:</h6>
+                <ul class="list-unstyled">
+                    <li><strong>Booking:</strong> For appointment confirmations</li>
+                    <li><strong>General:</strong> Default response for other messages</li>
+                    <li>Keep messages professional and friendly</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

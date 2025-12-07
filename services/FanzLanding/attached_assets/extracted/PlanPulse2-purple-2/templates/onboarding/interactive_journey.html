@@ -1,0 +1,798 @@
+{% extends "base.html" %} {% block title %}Your Personalized Journey - FANZ{%
+endblock %} {% block extra_head %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/onboarding-interactive.css') }}"
+/>
+<script src="{{ url_for('static', filename='js/interactive-onboarding.js') }}"></script>
+<script src="{{ url_for('static', filename='js/adaptive-onboarding.js') }}"></script>
+<script>
+  // Pass user role to JavaScript
+  document.body.dataset.userRole = "{{ user_role }}";
+</script>
+<style>
+  .journey-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+    position: relative;
+  }
+
+  .journey-step-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(187, 134, 252, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+  }
+
+  .journey-step-card.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 30px rgba(187, 134, 252, 0.3);
+    transform: translateY(-5px);
+  }
+
+  .journey-progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    height: 8px;
+    margin: 1rem 0;
+    overflow: hidden;
+  }
+
+  .journey-progress-fill {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    height: 100%;
+    border-radius: 50px;
+    transition: width 0.5s ease;
+  }
+
+  .step-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: white;
+    font-size: 24px;
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .interactive-tutorial {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .tutorial-video {
+    background: #000;
+    border-radius: 10px;
+    aspect-ratio: 16/9;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tutorial-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+  }
+
+  .feature-spotlight {
+    position: absolute;
+    border: 3px solid var(--primary);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(187, 134, 252, 0.6);
+    z-index: 1000;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .tooltip-interactive {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    max-width: 300px;
+    z-index: 1001;
+    transform: translate(-50%, -100%);
+  }
+
+  .step-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .step-checklist {
+    list-style: none;
+    padding: 0;
+  }
+
+  .step-checklist li {
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .step-checklist li.completed {
+    color: var(--success);
+  }
+
+  .step-checklist li.completed i {
+    color: var(--success);
+  }
+
+  .interactive-element {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .interactive-element:hover {
+    transform: scale(1.05);
+  }
+
+  .interactive-element.highlight {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(187, 134, 252, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(187, 134, 252, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(187, 134, 252, 0);
+    }
+  }
+
+  .journey-sidebar {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    padding: 1rem;
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .journey-nav-item {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .journey-nav-item.completed {
+    background: var(--success);
+    color: white;
+  }
+
+  .journey-nav-item.active {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.2);
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="journey-container">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <!-- Journey Header -->
+        <div class="text-center py-4">
+          <h1 class="display-4 text-white mb-2">Your Personalized Journey</h1>
+          <p class="lead text-white-50">Let's get you set up step by step</p>
+
+          <!-- Overall Progress -->
+          <div class="journey-progress-container mb-4">
+            <div
+              class="d-flex justify-content-between text-white-50 small mb-2"
+            >
+              <span>Progress</span>
+              <span id="overallProgress">0%</span>
+            </div>
+            <div class="journey-progress-bar">
+              <div
+                class="journey-progress-fill"
+                id="overallProgressBar"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Step Container -->
+        <div id="journeyStepsContainer">
+          <!-- Steps will be loaded dynamically -->
+        </div>
+
+        <!-- Journey Navigation -->
+        <div class="journey-sidebar" id="journeyNavigation">
+          <!-- Navigation items will be generated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Interactive Tutorial Modal -->
+<div class="modal fade" id="tutorialModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="tutorialTitle">Interactive Tutorial</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body" id="tutorialContent">
+        <!-- Tutorial content loaded dynamically -->
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Skip
+        </button>
+        <button type="button" class="btn btn-primary" id="tutorialNext">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Feature Highlight Overlay -->
+<div
+  id="featureHighlightOverlay"
+  class="position-fixed w-100 h-100"
+  style="
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    display: none;
+  "
+>
+  <div class="tooltip-interactive" id="interactiveTooltip">
+    <div class="tooltip-content">
+      <h6 id="tooltipTitle">Feature Highlight</h6>
+      <p id="tooltipDescription">Description</p>
+      <div class="tooltip-actions">
+        <button class="btn btn-sm btn-outline-light me-2" id="tooltipSkip">
+          Skip
+        </button>
+        <button class="btn btn-sm btn-primary" id="tooltipNext">Got it</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  class PersonalizedJourney {
+    constructor() {
+      this.currentStepIndex = 0;
+      this.steps = [];
+      this.journeyData = null;
+      this.progressData = null;
+
+      this.init();
+    }
+
+    async init() {
+      await this.loadJourneyData();
+      this.setupEventListeners();
+      this.renderCurrentStep();
+      this.updateProgress();
+    }
+
+    async loadJourneyData() {
+      try {
+        const response = await fetch("/api/onboarding/progress");
+        const data = await response.json();
+
+        if (data.success) {
+          this.progressData = data.progress;
+          this.journeyData = data.journey;
+          this.steps = this.journeyData ? this.journeyData.steps_sequence : [];
+          this.currentStepIndex = this.journeyData
+            ? this.journeyData.current_step_index
+            : 0;
+        }
+      } catch (error) {
+        console.error("Failed to load journey data:", error);
+        // Initialize with basic onboarding
+        await this.initializeBasicJourney();
+      }
+    }
+
+    async initializeBasicJourney() {
+      try {
+        const response = await fetch("/api/onboarding/initialize", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          this.progressData = data.progress;
+          this.steps = [
+            "welcome",
+            "profile_setup",
+            "preferences",
+            "tour_complete",
+          ];
+          this.currentStepIndex = 0;
+        }
+      } catch (error) {
+        console.error("Failed to initialize journey:", error);
+      }
+    }
+
+    setupEventListeners() {
+      // Navigation events
+      document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("step-action-next")) {
+          this.nextStep();
+        } else if (e.target.classList.contains("step-action-prev")) {
+          this.prevStep();
+        } else if (e.target.classList.contains("step-action-skip")) {
+          this.skipStep();
+        } else if (e.target.classList.contains("interactive-element")) {
+          this.handleInteractiveElement(e.target);
+        }
+      });
+
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        switch (e.key) {
+          case "ArrowRight":
+          case "Enter":
+            e.preventDefault();
+            this.nextStep();
+            break;
+          case "ArrowLeft":
+            e.preventDefault();
+            this.prevStep();
+            break;
+          case "Escape":
+            this.closeHighlights();
+            break;
+        }
+      });
+    }
+
+    async renderCurrentStep() {
+      if (this.currentStepIndex >= this.steps.length) {
+        this.completeJourney();
+        return;
+      }
+
+      const stepId = this.steps[this.currentStepIndex];
+      const stepData = await this.getStepData(stepId);
+
+      if (!stepData) {
+        this.nextStep();
+        return;
+      }
+
+      this.renderStep(stepData);
+      this.updateNavigation();
+    }
+
+    async getStepData(stepId) {
+      try {
+        const response = await fetch(`/api/onboarding/step/${stepId}`);
+        const data = await response.json();
+        return data.success ? data.step : null;
+      } catch (error) {
+        console.error(`Failed to load step ${stepId}:`, error);
+        return null;
+      }
+    }
+
+    renderStep(stepData) {
+      const container = document.getElementById("journeyStepsContainer");
+
+      const stepHTML = `
+            <div class="journey-step-card active" id="currentStep">
+                <div class="d-flex">
+                    <div class="step-icon">
+                        ${this.getStepIcon(stepData.step_type)}
+                    </div>
+                    <div class="step-content ms-4">
+                        <h3 class="text-white mb-2">${stepData.title}</h3>
+                        <p class="text-white-50 mb-3">${stepData.description}</p>
+                        
+                        ${this.renderStepContent(stepData)}
+                        
+                        <div class="step-actions">
+                            ${stepData.required ? "" : '<button class="btn btn-outline-secondary step-action-skip">Skip This Step</button>'}
+                            ${this.currentStepIndex > 0 ? '<button class="btn btn-secondary step-action-prev">Previous</button>' : ""}
+                            <button class="btn btn-primary step-action-next">
+                                ${this.currentStepIndex === this.steps.length - 1 ? "Complete Journey" : "Continue"}
+                                <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+      container.innerHTML = stepHTML;
+
+      // Initialize step-specific interactions
+      this.initializeStepInteractions(stepData);
+    }
+
+    renderStepContent(stepData) {
+      switch (stepData.step_type) {
+        case "survey":
+          return this.renderSurveyContent(stepData);
+        case "tutorial":
+          return this.renderTutorialContent(stepData);
+        case "profile_setup":
+          return this.renderProfileSetupContent(stepData);
+        case "preferences":
+          return this.renderPreferencesContent(stepData);
+        case "feature_introduction":
+          return this.renderFeatureIntroContent(stepData);
+        case "verification":
+          return this.renderVerificationContent(stepData);
+        default:
+          return `<div class="interactive-tutorial">${stepData.content.description || "Step content"}</div>`;
+      }
+    }
+
+    renderTutorialContent(stepData) {
+      return `
+            <div class="interactive-tutorial">
+                <div class="tutorial-video">
+                    <div class="tutorial-placeholder">
+                        <i class="fas fa-play-circle fa-3x mb-3"></i>
+                        <h5>Interactive Tutorial</h5>
+                        <p>Click to start the interactive guide</p>
+                        <button class="btn btn-primary interactive-element" data-tutorial="${stepData.step_id}">
+                            Start Tutorial
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <h6 class="text-white">What you'll learn:</h6>
+                    <ul class="step-checklist text-white-50">
+                        ${
+                          stepData.content.learning_objectives
+                            ? stepData.content.learning_objectives
+                                .map(
+                                  (obj) =>
+                                    `<li><i class="fas fa-circle me-2"></i>${obj}</li>`,
+                                )
+                                .join("")
+                            : '<li><i class="fas fa-circle me-2"></i>Platform basics</li>'
+                        }
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+
+    renderFeatureIntroContent(stepData) {
+      const features = stepData.content.features || [];
+      return `
+            <div class="interactive-tutorial">
+                <h6 class="text-white mb-3">Key Features to Explore</h6>
+                <div class="row">
+                    ${features
+                      .map(
+                        (feature) => `
+                        <div class="col-md-6 mb-3">
+                            <div class="feature-card p-3 rounded interactive-element" 
+                                 data-feature="${feature.id}" 
+                                 style="background: rgba(255,255,255,0.1); cursor: pointer;">
+                                <div class="d-flex">
+                                    <i class="${feature.icon} fa-2x text-primary me-3"></i>
+                                    <div>
+                                        <h6 class="text-white mb-1">${feature.name}</h6>
+                                        <small class="text-white-50">${feature.description}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                      )
+                      .join("")}
+                </div>
+            </div>
+        `;
+    }
+
+    renderProfileSetupContent(stepData) {
+      return `
+            <div class="interactive-tutorial">
+                <h6 class="text-white mb-3">Complete Your Profile</h6>
+                <div class="profile-setup-checklist">
+                    <ul class="step-checklist">
+                        <li class="interactive-element" data-action="upload-avatar">
+                            <i class="fas fa-circle me-2"></i>
+                            Upload profile picture
+                            <button class="btn btn-sm btn-outline-primary ms-auto">Upload</button>
+                        </li>
+                        <li class="interactive-element" data-action="add-bio">
+                            <i class="fas fa-circle me-2"></i>
+                            Write your bio
+                            <button class="btn btn-sm btn-outline-primary ms-auto">Add Bio</button>
+                        </li>
+                        <li class="interactive-element" data-action="set-preferences">
+                            <i class="fas fa-circle me-2"></i>
+                            Set content preferences
+                            <button class="btn btn-sm btn-outline-primary ms-auto">Configure</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+
+    getStepIcon(stepType) {
+      const icons = {
+        survey: '<i class="fas fa-poll-h"></i>',
+        tutorial: '<i class="fas fa-graduation-cap"></i>',
+        profile_setup: '<i class="fas fa-user-edit"></i>',
+        preferences: '<i class="fas fa-cog"></i>',
+        verification: '<i class="fas fa-shield-alt"></i>',
+        cluster_selection: '<i class="fas fa-layer-group"></i>',
+        feature_introduction: '<i class="fas fa-magic"></i>',
+        goal_setting: '<i class="fas fa-bullseye"></i>',
+      };
+      return icons[stepType] || '<i class="fas fa-check"></i>';
+    }
+
+    initializeStepInteractions(stepData) {
+      // Initialize tooltips for interactive elements
+      const interactiveElements = document.querySelectorAll(
+        ".interactive-element",
+      );
+      interactiveElements.forEach((element) => {
+        element.addEventListener("mouseenter", () => {
+          this.showTooltip(element);
+        });
+        element.addEventListener("mouseleave", () => {
+          this.hideTooltip();
+        });
+      });
+
+      // Initialize feature highlights
+      if (stepData.step_type === "feature_introduction") {
+        this.scheduleFeatureHighlights(stepData.content.features || []);
+      }
+    }
+
+    showTooltip(element) {
+      const tooltip = document.getElementById("interactiveTooltip");
+      const rect = element.getBoundingClientRect();
+
+      tooltip.style.left = rect.left + rect.width / 2 + "px";
+      tooltip.style.top = rect.top - 10 + "px";
+
+      const tooltipTitle = element.dataset.tooltip || "Interactive Element";
+      const tooltipDesc = element.dataset.description || "Click to interact";
+
+      document.getElementById("tooltipTitle").textContent = tooltipTitle;
+      document.getElementById("tooltipDescription").textContent = tooltipDesc;
+
+      tooltip.style.display = "block";
+    }
+
+    hideTooltip() {
+      document.getElementById("interactiveTooltip").style.display = "none";
+    }
+
+    scheduleFeatureHighlights(features) {
+      features.forEach((feature, index) => {
+        setTimeout(() => {
+          this.highlightFeature(feature);
+        }, index * 2000); // 2 second intervals
+      });
+    }
+
+    highlightFeature(feature) {
+      const element = document.querySelector(`[data-feature="${feature.id}"]`);
+      if (element) {
+        element.classList.add("highlight");
+        setTimeout(() => {
+          element.classList.remove("highlight");
+        }, 3000);
+      }
+    }
+
+    handleInteractiveElement(element) {
+      const action = element.dataset.action;
+      const feature = element.dataset.feature;
+      const tutorial = element.dataset.tutorial;
+
+      if (tutorial) {
+        this.startTutorial(tutorial);
+      } else if (feature) {
+        this.exploreFeature(feature);
+      } else if (action) {
+        this.executeAction(action);
+      }
+    }
+
+    async startTutorial(tutorialId) {
+      // Show tutorial modal with interactive content
+      const modal = new bootstrap.Modal(
+        document.getElementById("tutorialModal"),
+      );
+      modal.show();
+
+      // Load tutorial content
+      document.getElementById("tutorialTitle").textContent =
+        "Interactive Tutorial";
+      document.getElementById("tutorialContent").innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <p>Loading interactive tutorial...</p>
+            </div>
+        `;
+
+      // Simulate tutorial loading
+      setTimeout(() => {
+        this.loadTutorialContent(tutorialId);
+      }, 1000);
+    }
+
+    loadTutorialContent(tutorialId) {
+      const content = `
+            <div class="tutorial-step text-center">
+                <div class="mb-4">
+                    <i class="fas fa-lightbulb fa-4x text-primary mb-3"></i>
+                    <h4>Welcome to the Platform!</h4>
+                    <p class="lead">Let's explore the key features together.</p>
+                </div>
+                
+                <div class="tutorial-navigation">
+                    <button class="btn btn-secondary" onclick="this.previousTutorialStep()">Previous</button>
+                    <span class="mx-3">Step 1 of 5</span>
+                    <button class="btn btn-primary" onclick="this.nextTutorialStep()">Next</button>
+                </div>
+            </div>
+        `;
+
+      document.getElementById("tutorialContent").innerHTML = content;
+    }
+
+    async nextStep() {
+      if (this.currentStepIndex < this.steps.length - 1) {
+        await this.completeCurrentStep();
+        this.currentStepIndex++;
+        this.renderCurrentStep();
+        this.updateProgress();
+      } else {
+        this.completeJourney();
+      }
+    }
+
+    async completeCurrentStep() {
+      const stepId = this.steps[this.currentStepIndex];
+
+      try {
+        const response = await fetch(
+          `/api/onboarding/step/${stepId}/complete`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              time_spent: this.getStepTimeSpent(),
+              feedback: this.getStepFeedback(),
+            }),
+          },
+        );
+
+        const data = await response.json();
+        if (data.success) {
+          this.progressData = data;
+        }
+      } catch (error) {
+        console.error("Failed to complete step:", error);
+      }
+    }
+
+    getStepTimeSpent() {
+      // Calculate time spent on current step
+      return Math.floor(Math.random() * 120) + 30; // Mock implementation
+    }
+
+    getStepFeedback() {
+      // Collect any feedback from the current step
+      return { satisfaction: 5, helpful: true };
+    }
+
+    updateProgress() {
+      const progress = ((this.currentStepIndex + 1) / this.steps.length) * 100;
+      document.getElementById("overallProgress").textContent =
+        Math.round(progress) + "%";
+      document.getElementById("overallProgressBar").style.width =
+        progress + "%";
+
+      this.updateNavigation();
+    }
+
+    updateNavigation() {
+      const nav = document.getElementById("journeyNavigation");
+      nav.innerHTML = this.steps
+        .map(
+          (step, index) => `
+            <div class="journey-nav-item ${index < this.currentStepIndex ? "completed" : ""} ${index === this.currentStepIndex ? "active" : ""}"
+                 onclick="journey.jumpToStep(${index})" 
+                 title="Step ${index + 1}">
+                ${index < this.currentStepIndex ? '<i class="fas fa-check"></i>' : index + 1}
+            </div>
+        `,
+        )
+        .join("");
+    }
+
+    async completeJourney() {
+      // Show completion celebration
+      const container = document.getElementById("journeyStepsContainer");
+      container.innerHTML = `
+            <div class="journey-step-card active text-center">
+                <div class="py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-trophy fa-4x text-warning mb-3"></i>
+                        <h2 class="text-white mb-3">Congratulations!</h2>
+                        <p class="lead text-white-50">You've completed your personalized onboarding journey.</p>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center gap-3">
+                        <button class="btn btn-primary btn-lg" onclick="window.location.href='/dashboard'">
+                            Go to Dashboard <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                        <button class="btn btn-outline-light" onclick="this.restartJourney()">
+                            Restart Journey
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+      // Update progress to 100%
+      document.getElementById("overallProgress").textContent = "100%";
+      document.getElementById("overallProgressBar").style.width = "100%";
+    }
+  }
+
+  // Initialize journey when page loads
+  let journey;
+  document.addEventListener("DOMContentLoaded", () => {
+    journey = new PersonalizedJourney();
+  });
+</script>
+{% endblock %}

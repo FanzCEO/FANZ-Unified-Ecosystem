@@ -1,0 +1,35 @@
+{
+  "name": "fanz-unified-ecosystem",
+  "version": "3.0.0",
+  "description": "FANZ Complete Unified Ecosystem - 77 Microservices + 20 Platforms + Mobile Apps",
+  "main": "platform-router.js",
+  "scripts": {
+    "start": "node platform-router.js",
+    "dev": "turbo run dev",
+    "dev:router": "NODE_ENV=development node platform-router.js",
+    "build": "turbo run build",
+    "build:legacy": "echo 'Building all platforms...' && node scripts/build-all.js",
+    "build:platforms": "turbo run build --filter='./platforms/*'",
+    "build:services": "turbo run build --filter='./fanz*'",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "deploy:pm2": "pm2 start ecosystem.config.cjs"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": ["fanz", "creator-platform", "multi-tenant", "adult-content", "monorepo"],
+  "author": "FANZ Group Holdings",
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}

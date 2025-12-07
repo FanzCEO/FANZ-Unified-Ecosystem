@@ -1,0 +1,54 @@
+{
+  "colors": {
+    "core": {
+      "ink-900": "#0A0A0B",
+      "ink-800": "#111216",
+      "slate-600": "#6A7380"
+    },
+    "neon": {
+      "pink": "#FF2DA1",
+      "cyan": "#19F0FF"
+    },
+    "acid": {
+      "lime": "#C8FF3D"
+    },
+    "infrared": {
+      "500": "#FF3B5C",
+      "700": "#C3112C"
+    },
+    "ultraviolet": {
+      "500": "#7A2CFF",
+      "700": "#4A1BB2"
+    },
+    "support": {
+      "steel-400": "#9BA3AE",
+      "steel-300": "#C7D0DA",
+      "glass-200": "#E6F0FF"
+    }
+  },
+  "typography": {
+    "display": ["Chakra Petch", "Orbitron", "Rajdhani", "system-ui", "sans-serif"],
+    "body": ["Inter", "system-ui", "sans-serif"],
+    "mono": ["Share Tech Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"]
+  },
+  "gradients": {
+    "brand": "linear-gradient(90deg, #FF2DA1 0%, #7A2CFF 50%, #19F0FF 100%)",
+    "lime": "linear-gradient(90deg, #C8FF3D 0%, #19F0FF 100%)"
+  },
+  "shadows": {
+    "neon": "0 0 12px rgba(255,45,161,0.6), 0 0 24px rgba(25,240,255,0.35)",
+    "glass": "inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 20px rgba(0,0,0,0.35)"
+  },
+  "animations": {
+    "durations": {
+      "ui": "120-240ms",
+      "hero": "600-900ms"
+    },
+    "easing": "cubic-bezier(.2,.8,.2,1)",
+    "keyframes": {
+      "flicker": "imperfect bar-sign flicker (uneven, vintage tubes)",
+      "neonbuzz": "subtle brightness variations for neon glow",
+      "scan": "CRT scanline sweep effect"
+    }
+  }
+}

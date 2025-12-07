@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch:*)",
+      "Bash(git push:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm outdated:*)",
+      "Bash(npm ls:*)",
+      "Read(//Users/joshuastone/Library/Mobile Documents/com~apple~CloudDocs/GitHub/FANZ GROUP HOLDINGS DEVELOPMENT/**)",
+      "Bash(timeout 5 ls:*)",
+      "Bash([ -d \"/Users/joshuastone/Desktop/FANZ-Master\" ])",
+      "Read(//Users/joshuastone/Desktop/FANZ-Master/**)",
+      "Bash(npm install:*)",
+      "Bash(tee:*)",
+      "Read(//Users/joshuastone/**)",
+      "Bash(chmod:*)",
+      "Bash(for dir in \"/Users/joshuastone/PycharmProjects/FanzCloud\" \"/Users/joshuastone/Library/Mobile Documents/com~apple~CloudDocs/BoyFanz-2\" \"/Users/joshuastone/Library/Mobile Documents/com~apple~CloudDocs/GitHub/FANZDash-V1\")",
+      "Bash(do echo \"\")",
+      "Bash(ls:*)",
+      "Bash(done)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

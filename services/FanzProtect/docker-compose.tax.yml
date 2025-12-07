@@ -1,0 +1,269 @@
+# FanzProtect Tax Compliance - Docker Compose Configuration
+# Complete development and production environment setup
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Tax Compliance
+  fanzprotect-db:
+    image: postgres:15-alpine
+    container_name: fanzprotect-tax-db
+    environment:
+      POSTGRES_DB: fanzprotect_tax
+      POSTGRES_USER: fanzprotect
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_dev_password_123}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - fanzprotect-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fanzprotect -d fanzprotect_tax"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Redis for Caching and Sessions
+  fanzprotect-redis:
+    image: redis:7-alpine
+    container_name: fanzprotect-redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_dev_password}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - fanzprotect-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Main FanzProtect Application
+  fanzprotect-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.tax
+      target: ${BUILD_TARGET:-development}
+    container_name: fanzprotect-app
+    environment:
+      # Application
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      
+      # Database
+      DATABASE_URL: postgresql://fanzprotect:${DB_PASSWORD:-secure_dev_password_123}@fanzprotect-db:5432/fanzprotect_tax
+      TAX_DB_CONNECTION_STRING: postgresql://fanzprotect:${DB_PASSWORD:-secure_dev_password_123}@fanzprotect-db:5432/fanzprotect_tax
+      
+      # Redis
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev_password}@fanzprotect-redis:6379
+      
+      # Wyoming Tax Compliance
+      WYOMING_BUSINESS_ENTITY: "true"
+      TAX_CALCULATION_ENABLED: "true"
+      DEFAULT_TAX_EXEMPT_LEGAL_SERVICES: "true"
+      NEXUS_MONITORING_ENABLED: "true"
+      
+      # Security
+      TAX_DATA_ENCRYPTION_KEY: ${TAX_DATA_ENCRYPTION_KEY}
+      TAX_API_SECRET_KEY: ${TAX_API_SECRET_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      
+      # FanzDash Integration
+      FANZDASH_API_URL: ${FANZDASH_API_URL:-https://fanzdash.com/api}
+      FANZDASH_API_KEY: ${FANZDASH_API_KEY}
+      NEXUS_ALERT_WEBHOOK_URL: ${NEXUS_ALERT_WEBHOOK_URL}
+      
+      # Payment Processing (Non-Stripe/PayPal per rules)
+      PAYMENT_PROCESSOR: ${PAYMENT_PROCESSOR:-paddle}
+      PADDLE_VENDOR_ID: ${PADDLE_VENDOR_ID}
+      PADDLE_API_KEY: ${PADDLE_API_KEY}
+      PADDLE_WEBHOOK_SECRET: ${PADDLE_WEBHOOK_SECRET}
+      
+      # Monitoring
+      TAX_MONITORING_ENABLED: "true"
+      COMPLIANCE_REPORTING_ENABLED: "true"
+      
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - logs_data:/app/logs
+    ports:
+      - "3000:3000"
+      - "9229:9229" # Debug port
+    networks:
+      - fanzprotect-network
+    depends_on:
+      fanzprotect-db:
+        condition: service_healthy
+      fanzprotect-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Tax Monitoring Service
+  fanzprotect-tax-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile.tax
+      target: monitoring
+    container_name: fanzprotect-tax-monitor
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://fanzprotect:${DB_PASSWORD:-secure_dev_password_123}@fanzprotect-db:5432/fanzprotect_tax
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev_password}@fanzprotect-redis:6379
+      TAX_MONITORING_ENABLED: "true"
+      FANZDASH_API_KEY: ${FANZDASH_API_KEY}
+      NEXUS_ALERT_WEBHOOK_URL: ${NEXUS_ALERT_WEBHOOK_URL}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - logs_data:/app/logs
+    networks:
+      - fanzprotect-network
+    depends_on:
+      fanzprotect-db:
+        condition: service_healthy
+      fanzprotect-redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy with SSL
+  fanzprotect-proxy:
+    image: nginx:alpine
+    container_name: fanzprotect-proxy
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - fanzprotect-network
+    depends_on:
+      - fanzprotect-app
+    restart: unless-stopped
+
+  # Database Backup Service
+  fanzprotect-backup:
+    image: postgres:15-alpine
+    container_name: fanzprotect-backup
+    environment:
+      PGPASSWORD: ${DB_PASSWORD:-secure_dev_password_123}
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    networks:
+      - fanzprotect-network
+    depends_on:
+      - fanzprotect-db
+    command: |
+      sh -c "
+        echo '0 2 * * * /backup.sh' | crontab -
+        crond -f
+      "
+    restart: unless-stopped
+
+  # Log Management with LogRotate
+  fanzprotect-logrotate:
+    image: alpine:latest
+    container_name: fanzprotect-logrotate
+    volumes:
+      - logs_data:/logs
+      - ./scripts/logrotate.conf:/etc/logrotate.conf:ro
+    command: |
+      sh -c "
+        apk add --no-cache logrotate dcron
+        echo '0 1 * * * /usr/sbin/logrotate /etc/logrotate.conf' | crontab -
+        crond -f
+      "
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  logs_data:
+    driver: local
+
+networks:
+  fanzprotect-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Development Override
+# Use: docker-compose -f docker-compose.tax.yml -f docker-compose.dev.yml up
+---
+# docker-compose.dev.yml
+version: '3.8'
+
+services:
+  fanzprotect-app:
+    build:
+      target: development
+    environment:
+      NODE_ENV: development
+      DEBUG_TAX_CALCULATIONS: "true"
+      TAX_TEST_MODE: "true"
+      MOCK_PAYMENTS: "true"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev:with-tax
+
+  fanzprotect-proxy:
+    ports:
+      - "8080:80"
+
+# Production Override  
+# Use: docker-compose -f docker-compose.tax.yml -f docker-compose.prod.yml up
+---
+# docker-compose.prod.yml
+version: '3.8'
+
+services:
+  fanzprotect-app:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+      DEBUG_TAX_CALCULATIONS: "false"
+      TAX_TEST_MODE: "false"
+      MOCK_PAYMENTS: "false"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    restart: always
+
+  fanzprotect-db:
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+    restart: always
+
+  fanzprotect-redis:
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.25'
+    restart: always

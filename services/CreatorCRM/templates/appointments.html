@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Appointments - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h2 mb-0">Appointments</h1>
+        <p class="text-muted">Manage your schedule and bookings</p>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAppointmentModal">
+            <i data-feather="plus" class="me-1"></i>Add Appointment
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Client</th>
+                            <th>Date & Time</th>
+                            <th>Duration</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">{{ appointment.title }}</div>
+                                    {% if appointment.description %}
+                                        <small class="text-muted">{{ appointment.description[:50] }}{% if appointment.description|length > 50 %}...{% endif %}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if appointment.client %}
+                                        {{ appointment.client.name }}
+                                    {% else %}
+                                        <span class="text-muted">No client</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div>{{ appointment.start_time.strftime('%b %d, %Y') }}</div>
+                                    <small class="text-muted">{{ appointment.start_time.strftime('%I:%M %p') }}</small>
+                                </td>
+                                <td>
+                                    {% set duration = (appointment.end_time - appointment.start_time).total_seconds() / 60 %}
+                                    {{ duration|int }}m
+                                </td>
+                                <td>{{ appointment.location or '-' }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if appointment.status == 'confirmed' else 'warning' if appointment.status == 'tentative' else 'danger' if appointment.status == 'cancelled' else 'info' }}">
+                                        {{ appointment.status.title() }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        {% if appointment.status == 'tentative' %}
+                                            <form method="POST" action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}" class="d-inline">
+                                                <input type="hidden" name="status" value="confirmed">
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i data-feather="check" class="me-1"></i>Confirm
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        {% if appointment.status in ['tentative', 'confirmed'] %}
+                                            <form method="POST" action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}" class="d-inline">
+                                                <input type="hidden" name="status" value="cancelled">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                                    <i data-feather="x" class="me-1"></i>Cancel
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center text-muted py-5">
+                <i data-feather="calendar" class="mb-3" style="width: 48px; height: 48px;"></i>
+                <h5>No appointments scheduled</h5>
+                <p>Your appointments will appear here once you start booking sessions.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Appointment Modal -->
+<div class="modal fade" id="addAppointmentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Appointment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_appointment') }}">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="title" class="form-label">Title *</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="client_id" class="form-label">Client</label>
+                            <select class="form-select" id="client_id" name="client_id">
+                                <option value="">Select a client</option>
+                                {% for client in clients %}
+                                    <option value="{{ client.id }}">{{ client.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="start_time" class="form-label">Start Time *</label>
+                            <input type="datetime-local" class="form-control" id="start_time" name="start_time" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="end_time" class="form-label">End Time *</label>
+                            <input type="datetime-local" class="form-control" id="end_time" name="end_time" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Appointment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

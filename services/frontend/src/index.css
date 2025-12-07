@@ -1,0 +1,792 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --neon-pink: #ff0080;
+  --neon-blue: #00d4ff;
+  --neon-purple: #9945ff;
+  --neon-green: #00ff88;
+  --gold-primary: #6b5f24;
+  --dark-primary: #161718;
+  --dark-bg: #0a0a0f;
+  --card-bg: #0f0f1a;
+  --border-color: #1a1a2e;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family:
+    "Rajdhani",
+    -apple-system,
+    sans-serif;
+  background: linear-gradient(to right top, #6b5f24, #161718);
+  color: #e0e0e0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  background-attachment: fixed;
+}
+
+/* Remove overlay backgrounds to show the gradient clearly */
+body::before {
+  display: none;
+}
+
+/* Remove grid overlay to show the gradient clearly */
+body::after {
+  display: none;
+}
+
+@keyframes bgPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+/* Futuristic Typography */
+.heading-futuristic {
+  font-family: "Orbitron", monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.text-neon {
+  background: linear-gradient(
+    45deg,
+    #6b5f24,
+    #161718
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: neonGradient 3s ease-in-out infinite;
+}
+
+.text-glow {
+  text-shadow:
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 30px currentColor,
+    0 0 40px currentColor;
+}
+
+@keyframes neonGradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Futuristic Buttons */
+.btn-futuristic {
+  position: relative;
+  padding: 0.75rem 2rem;
+  font-family: "Orbitron", monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: #6b5f24;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: btnPulse 2s ease-in-out infinite;
+}
+
+.btn-futuristic::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.btn-futuristic:hover::before {
+  left: 100%;
+}
+
+.btn-futuristic:hover {
+  transform: translateY(-2px) scale(1.05);
+  background: #161718;
+  box-shadow:
+    0 10px 25px rgba(107, 95, 36, 0.4),
+    0 0 50px rgba(22, 23, 24, 0.3);
+}
+
+@keyframes btnPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 20px rgba(107, 95, 36, 0.3),
+      inset 0 0 20px rgba(22, 23, 24, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(107, 95, 36, 0.5),
+      inset 0 0 30px rgba(22, 23, 24, 0.2);
+  }
+}
+
+.btn-futuristic-outline {
+  position: relative;
+  padding: 0.75rem 2rem;
+  font-family: "Orbitron", monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: transparent;
+  color: #6b5f24;
+  border: 2px solid #6b5f24;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-futuristic-outline:hover {
+  color: white;
+  background: #6b5f24;
+  box-shadow:
+    0 0 20px rgba(107, 95, 36, 0.5),
+    inset 0 0 20px rgba(107, 95, 36, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Futuristic Cards */
+.card-futuristic {
+  background: rgba(22, 23, 24, 0.9);
+  border: 1px solid #6b5f24;
+  border-radius: 8px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-futuristic::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #6b5f24,
+    transparent
+  );
+  animation: scanline 3s linear infinite;
+}
+
+.card-futuristic:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: #6b5f24;
+  box-shadow:
+    0 20px 40px rgba(107, 95, 36, 0.3),
+    inset 0 0 30px rgba(107, 95, 36, 0.05);
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Futuristic Inputs */
+.input-futuristic {
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  background: rgba(22, 23, 24, 0.8);
+  border: 1px solid #6b5f24;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 1rem;
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.input-futuristic:focus {
+  outline: none;
+  border-color: #6b5f24;
+  background: rgba(22, 23, 24, 0.95);
+  box-shadow:
+    0 0 20px rgba(107, 95, 36, 0.3),
+    inset 0 0 10px rgba(107, 95, 36, 0.1);
+}
+
+.input-futuristic::placeholder {
+  color: rgba(224, 224, 224, 0.3);
+  font-family: "Rajdhani", sans-serif;
+}
+
+/* Navigation */
+.nav-futuristic {
+  background: rgba(22, 23, 24, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid #6b5f24;
+  position: relative;
+}
+
+.nav-futuristic::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #6b5f24;
+  animation: navGlow 3s linear infinite;
+}
+
+@keyframes navGlow {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Dashboard Sidebar */
+.sidebar-futuristic {
+  background: rgba(22, 23, 24, 0.98);
+  border-right: 1px solid #6b5f24;
+  position: relative;
+}
+
+.sidebar-item {
+  position: relative;
+  padding: 0.875rem 1.25rem;
+  color: rgba(224, 224, 224, 0.7);
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+  margin: 0.25rem 0;
+}
+
+.sidebar-item:hover {
+  color: white;
+  background: linear-gradient(90deg, rgba(107, 95, 36, 0.1), transparent);
+  border-left-color: #6b5f24;
+}
+
+.sidebar-item.active {
+  color: #6b5f24;
+  background: linear-gradient(90deg, rgba(107, 95, 36, 0.2), transparent);
+  border-left-color: #6b5f24;
+}
+
+/* Stats Cards */
+.stat-card {
+  background: rgba(22, 23, 24, 0.9);
+  border: 1px solid #6b5f24;
+  border-radius: 8px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: #6b5f24;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.stat-card:hover::before {
+  opacity: 0.3;
+  animation: borderRotate 2s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading Animation */
+.loader-futuristic {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(22, 23, 24, 0.2);
+  border-top-color: #6b5f24;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  position: relative;
+}
+
+.loader-futuristic::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  border: 3px solid rgba(107, 95, 36, 0.2);
+  border-top-color: #161718;
+  border-radius: 50%;
+  animation: spin 0.6s linear reverse infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.animate-slide-right {
+  animation: slideRight 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Notification Badge */
+.badge-glow {
+  background: #6b5f24;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(107, 95, 36, 0.8);
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(107, 95, 36, 0.8),
+      0 0 30px rgba(107, 95, 36, 0.6);
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #161718;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6b5f24;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #161718;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heading-futuristic {
+    font-size: 1.5rem;
+  }
+
+  .btn-futuristic,
+  .btn-futuristic-outline {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Advanced UI Features */
+
+/* Widget Grid Layout */
+.widget-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-auto-rows: minmax(150px, auto);
+}
+
+.widget-grid > *[data-size="small"] {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.widget-grid > *[data-size="medium"] {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.widget-grid > *[data-size="large"] {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* Micro-interaction Animations */
+@keyframes microBounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes microShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes microFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.micro-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.micro-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(107, 95, 36, 0.3);
+}
+
+.micro-bounce {
+  animation: microBounce 0.3s ease-out;
+}
+
+.micro-shake {
+  animation: microShake 0.3s ease-out;
+}
+
+.micro-float {
+  animation: microFloat 2s ease-in-out infinite;
+}
+
+/* Color Palette Transitions */
+.color-transition {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+}
+
+/* Theme Variables */
+[data-theme="golden"] {
+  --primary-color: #6b5f24;
+  --secondary-color: #161718;
+}
+
+[data-theme="neon"] {
+  --primary-color: #ff0080;
+  --secondary-color: #00d4ff;
+}
+
+[data-theme="purple"] {
+  --primary-color: #9945ff;
+  --secondary-color: #4a148c;
+}
+
+[data-theme="emerald"] {
+  --primary-color: #00ff88;
+  --secondary-color: #065f46;
+}
+
+/* Onboarding Tour Styles */
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9998;
+  pointer-events: none;
+}
+
+.onboarding-spotlight {
+  position: relative;
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+.onboarding-tooltip {
+  position: absolute;
+  background: linear-gradient(135deg, #6b5f24, #161718);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  max-width: 320px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.onboarding-tooltip::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #6b5f24;
+  transform: rotate(45deg);
+}
+
+.onboarding-tooltip.position-bottom::before {
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.onboarding-tooltip.position-top::before {
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.onboarding-tooltip.position-right::before {
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.onboarding-tooltip.position-left::before {
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Annotation Layer Styles */
+.annotation-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.annotation-marker {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #6b5f24;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.annotation-popup {
+  position: absolute;
+  background: rgba(22, 23, 24, 0.95);
+  border: 1px solid #6b5f24;
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 200px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+/* Dashboard Widget Styles */
+.dashboard-widget {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.dashboard-widget:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(107, 95, 36, 0.2);
+  border-color: rgba(107, 95, 36, 0.3);
+}
+
+.widget-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dashboard-widget:hover .widget-resize-handle {
+  opacity: 0.5;
+}
+
+.widget-remove-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 24px;
+  height: 24px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.dashboard-widget:hover .widget-remove-btn {
+  opacity: 1;
+}
+
+.widget-remove-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: scale(1.1);
+}
+
+/* Enhanced Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(22, 23, 24, 0.5);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6b5f24, #161718);
+  border-radius: 5px;
+  border: 2px solid rgba(22, 23, 24, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #8b7f3a, #2a2b2c);
+}
+
+/* Glassmorphism Effects */
+.glass-effect {
+  backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Smooth Page Transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease-out;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease-in;
+}

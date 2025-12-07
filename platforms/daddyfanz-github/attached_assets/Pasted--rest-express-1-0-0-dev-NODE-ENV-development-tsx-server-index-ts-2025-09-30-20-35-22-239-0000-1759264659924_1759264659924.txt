@@ -1,0 +1,39 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[2025-09-30 20:35:22.239 +0000] INFO: Payment service initialized with adult-friendly processors
+[2025-09-30 20:35:22.240 +0000] WARN: No push notification services configured
+[2025-09-30 20:35:22.240 +0000] INFO: Notification service initialized
+[2025-09-30 20:35:22.244 +0000] INFO: Object storage configuration loaded
+[2025-09-30 20:35:23.064 +0000] INFO: WebSocket server initialized on path: /ws
+8:35:24 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+8:35:30 PM [express] GET /api/auth/user 401 in 34ms :: {"message":"Unauthorized"}
+8:35:30 PM [express] GET /api/csrf-token 200 in 34ms :: {"token":"c208f5bf6446105a:f7ba1df2b514274e4…
+[2025-09-30 20:35:52.246 +0000] WARN: Service infrastructure health check failed
+[2025-09-30 20:35:52.248 +0000] WARN: Service security health check failed
+[2025-09-30 20:35:52.252 +0000] WARN: Service mobile health check failed
+[2025-09-30 20:35:52.253 +0000] WARN: Service monitoring health check failed
+[2025-09-30 20:35:52.255 +0000] WARN: Service payments health check failed
+[2025-09-30 20:35:52.256 +0000] WARN: Service media health check failed
+[2025-09-30 20:36:22.252 +0000] WARN: Service infrastructure health check failed
+[2025-09-30 20:36:22.256 +0000] WARN: Service security health check failed
+[2025-09-30 20:36:22.257 +0000] WARN: Service mobile health check failed
+[2025-09-30 20:36:22.258 +0000] WARN: Service monitoring health check failed
+[2025-09-30 20:36:22.260 +0000] WARN: Service payments health check failed
+[2025-09-30 20:36:22.261 +0000] WARN: Service media health check failed
+[2025-09-30 20:36:52.245 +0000] WARN: Service infrastructure health check failed
+[2025-09-30 20:36:52.246 +0000] WARN: Service security health check failed
+[2025-09-30 20:36:52.247 +0000] WARN: Service mobile health check failed
+[2025-09-30 20:36:52.249 +0000] WARN: Service monitoring health check failed
+[2025-09-30 20:36:52.253 +0000] WARN: Service payments health check failed
+[2025-09-30 20:36:52.254 +0000] WARN: Service media health check failed
+[2025-09-30 20:37:22.245 +0000] WARN: Service infrastructure health check failed
+[2025-09-30 20:37:22.246 +0000] WARN: Service security health check failed
+[2025-09-30 20:37:22.247 +0000] WARN: Service mobile health check failed
+[2025-09-30 20:37:22.248 +0000] WARN: Service monitoring health check failed
+[2025-09-30 20:37:22.249 +0000] WARN: Service payments health check failed
+[2025-09-30 20:37:22.249 +0000] WARN: Service media health check failed

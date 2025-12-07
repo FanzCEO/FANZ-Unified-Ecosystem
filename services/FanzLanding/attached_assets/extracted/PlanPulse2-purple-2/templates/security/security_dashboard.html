@@ -1,0 +1,908 @@
+{% extends "base.html" %} {% block title %}Security Dashboard - FANZ{% endblock
+%} {% block content %}
+<div class="security-dashboard-container">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Security Header -->
+      <div class="col-12">
+        <div class="security-banner mb-4">
+          <div class="card gradient-card">
+            <div class="card-body py-4">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h2 class="neon-text neon-orange mb-2">
+                    <i class="fas fa-shield-virus me-2"></i>Military Security
+                    Command Center
+                  </h2>
+                  <p class="lead text-secondary mb-2">
+                    Army-grade content protection with proprietary Anti-Media
+                    Theft Technology™
+                  </p>
+                  <div class="security-stats">
+                    <span class="stat-item">
+                      <i
+                        class="fas fa-exclamation-triangle neon-yellow me-1"
+                      ></i>
+                      {{ quarantined_content | length }} Quarantined Items
+                    </span>
+                    <span class="stat-item">
+                      <i class="fas fa-clock neon-cyan me-1"></i>
+                      {{ verification_queue.pending }} Pending Reviews
+                    </span>
+                    <span class="stat-item">
+                      <i class="fas fa-tools neon-green me-1"></i>
+                      {{ verification_queue.needs_fix }} Needs Fix
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div class="security-controls">
+                    <button class="btn btn-danger me-2" id="killSwitchBtn">
+                      <i class="fas fa-power-off me-2"></i>Kill Switch
+                    </button>
+                    <button class="btn btn-warning" id="emergencyLockdownBtn">
+                      <i class="fas fa-lock me-2"></i>Emergency
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="col-12 mb-4">
+        <div class="quick-actions-card card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-bolt me-2"></i>Security Actions
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <button
+                  class="action-button security-action"
+                  data-action="quarantine"
+                >
+                  <div class="action-icon neon-red">
+                    <i class="fas fa-ban"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Quarantine Content</h6>
+                    <p>Block and isolate content</p>
+                  </div>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button
+                  class="action-button security-action"
+                  data-action="freeze"
+                >
+                  <div class="action-icon neon-cyan">
+                    <i class="fas fa-snowflake"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Freeze Payouts</h6>
+                    <p>Stop financial transactions</p>
+                  </div>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button
+                  class="action-button security-action"
+                  data-action="export"
+                >
+                  <div class="action-icon neon-green">
+                    <i class="fas fa-download"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Export Evidence</h6>
+                    <p>Generate compliance bundle</p>
+                  </div>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button
+                  class="action-button security-action"
+                  data-action="alert"
+                >
+                  <div class="action-icon neon-yellow">
+                    <i class="fas fa-bell"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Security Alert</h6>
+                    <p>Send security notification</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quarantined Content -->
+      <div class="col-lg-8 mb-4">
+        <div class="quarantine-content-card card">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0">
+                <i class="fas fa-ban me-2"></i>Quarantined Content
+              </h4>
+              <div class="quarantine-filters">
+                <button
+                  class="btn btn-sm btn-outline-light active"
+                  data-filter="all"
+                >
+                  All
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-light"
+                  data-filter="scene"
+                >
+                  Scenes
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-light"
+                  data-filter="document"
+                >
+                  Documents
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-light"
+                  data-filter="message"
+                >
+                  Messages
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            {% if quarantined_content %}
+            <div class="table-responsive">
+              <table class="table table-hover quarantine-table">
+                <thead>
+                  <tr>
+                    <th>Content Type</th>
+                    <th>Content ID</th>
+                    <th>Reason</th>
+                    <th>Quarantined By</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in quarantined_content %}
+                  <tr data-content-type="{{ item.content_type }}">
+                    <td>
+                      <div class="content-type-badge">
+                        {% if item.content_type == 'scene' %}
+                        <i class="fas fa-video me-2 neon-pink"></i>Scene {% elif
+                        item.content_type == 'document' %}
+                        <i class="fas fa-file me-2 neon-cyan"></i>Document {%
+                        elif item.content_type == 'message' %}
+                        <i class="fas fa-envelope me-2 neon-green"></i>Message
+                        {% endif %}
+                      </div>
+                    </td>
+                    <td>
+                      <code class="content-id">#{{ item.content_id }}</code>
+                    </td>
+                    <td>
+                      <span class="quarantine-reason">{{ item.reason }}</span>
+                    </td>
+                    <td>
+                      <div class="moderator-info">
+                        <i class="fas fa-user-shield me-1"></i>
+                        {{ item.moderator.username }}
+                      </div>
+                    </td>
+                    <td>
+                      <span class="quarantine-date">
+                        {{ item.quarantined_at.strftime('%Y-%m-%d %H:%M') }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="quarantine-actions">
+                        <button
+                          class="btn btn-sm btn-info review-btn"
+                          data-content-id="{{ item.content_id }}"
+                          data-content-type="{{ item.content_type }}"
+                        >
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-success release-btn"
+                          data-quarantine-id="{{ item.id }}"
+                        >
+                          <i class="fas fa-unlock"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-danger delete-btn"
+                          data-quarantine-id="{{ item.id }}"
+                        >
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="empty-quarantine text-center py-5">
+              <i class="fas fa-shield-check fa-4x neon-green mb-3"></i>
+              <h5>No Quarantined Content</h5>
+              <p class="text-secondary">
+                All content is currently approved and active
+              </p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Alerts & Monitoring -->
+      <div class="col-lg-4 mb-4">
+        <div class="security-alerts-card card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-exclamation-triangle me-2"></i>Security Alerts
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="alert-list">
+              <div class="alert-item high-priority">
+                <div class="alert-icon neon-red">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-content">
+                  <h6>High Priority</h6>
+                  <p>Multiple failed login attempts detected</p>
+                  <small class="text-muted">5 minutes ago</small>
+                </div>
+              </div>
+
+              <div class="alert-item medium-priority">
+                <div class="alert-icon neon-yellow">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="alert-content">
+                  <h6>Document Expiry</h6>
+                  <p>3 user documents expire within 7 days</p>
+                  <small class="text-muted">1 hour ago</small>
+                </div>
+              </div>
+
+              <div class="alert-item low-priority">
+                <div class="alert-icon neon-cyan">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="alert-content">
+                  <h6>System Update</h6>
+                  <p>Security patches applied successfully</p>
+                  <small class="text-muted">3 hours ago</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="system-status-card card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-heartbeat me-2"></i>System Status
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="status-metrics">
+              <div class="metric-item">
+                <div class="metric-icon neon-green">
+                  <i class="fas fa-server"></i>
+                </div>
+                <div class="metric-info">
+                  <h6>Server Health</h6>
+                  <span class="status-online">Operational</span>
+                </div>
+              </div>
+
+              <div class="metric-item">
+                <div class="metric-icon neon-green">
+                  <i class="fas fa-database"></i>
+                </div>
+                <div class="metric-info">
+                  <h6>Database</h6>
+                  <span class="status-online">Connected</span>
+                </div>
+              </div>
+
+              <div class="metric-item">
+                <div class="metric-icon neon-yellow">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="metric-info">
+                  <h6>Security Scan</h6>
+                  <span class="status-warning">In Progress</span>
+                </div>
+              </div>
+
+              <div class="metric-item">
+                <div class="metric-icon neon-green">
+                  <i class="fas fa-lock"></i>
+                </div>
+                <div class="metric-info">
+                  <h6>Encryption</h6>
+                  <span class="status-online">Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verification Queue Widget -->
+      <div class="col-12 mb-4">
+        <div class="verification-widget-card card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-clipboard-check me-2"></i>Scene Readiness Widget
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="readiness-stat">
+                  <div class="stat-icon neon-green">
+                    <i class="fas fa-check-circle fa-2x"></i>
+                  </div>
+                  <div class="stat-info">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Ready to Publish</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="readiness-stat">
+                  <div class="stat-icon neon-yellow">
+                    <i class="fas fa-clock fa-2x"></i>
+                  </div>
+                  <div class="stat-info">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Pending Verification</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="readiness-stat">
+                  <div class="stat-icon neon-red">
+                    <i class="fas fa-ban fa-2x"></i>
+                  </div>
+                  <div class="stat-info">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Blocked</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quarantine Modal -->
+<div class="modal fade" id="quarantineModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Quarantine Content</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <form id="quarantineForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Content Type</label>
+            <select class="form-select" name="content_type" required>
+              <option value="">Select content type</option>
+              <option value="scene">Scene</option>
+              <option value="document">Document</option>
+              <option value="message">Message</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Content ID</label>
+            <input
+              type="text"
+              class="form-control"
+              name="content_id"
+              placeholder="Enter content ID"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Quarantine Reason</label>
+            <textarea
+              class="form-control"
+              name="reason"
+              rows="3"
+              placeholder="Describe the reason for quarantine"
+              required
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-danger">
+            <i class="fas fa-ban me-2"></i>Quarantine
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .security-dashboard-container {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 0, 0.05),
+      rgba(255, 136, 0, 0.05)
+    );
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  .gradient-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 0, 0.1),
+      rgba(255, 136, 0, 0.1)
+    );
+    border: 2px solid var(--neon-orange);
+  }
+
+  .security-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .security-controls {
+    display: flex;
+    align-items: center;
+  }
+
+  #killSwitchBtn {
+    animation: kill-switch-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes kill-switch-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+    }
+  }
+
+  .action-button {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .action-button:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+    transform: translateY(-3px);
+  }
+
+  .action-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .neon-red {
+    color: #ff4444;
+  }
+
+  .content-type-badge {
+    font-weight: bold;
+  }
+
+  .content-id {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+
+  .quarantine-reason {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .moderator-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .quarantine-actions {
+    display: flex;
+    gap: 5px;
+  }
+
+  .alert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .alert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border-left: 4px solid currentColor;
+  }
+
+  .alert-item.high-priority {
+    border-color: #ff4444;
+  }
+
+  .alert-item.medium-priority {
+    border-color: var(--neon-yellow);
+  }
+
+  .alert-item.low-priority {
+    border-color: var(--neon-cyan);
+  }
+
+  .alert-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .alert-content h6 {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+
+  .alert-content p {
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+  }
+
+  .status-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .metric-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+  }
+
+  .metric-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .metric-info h6 {
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .status-online {
+    color: var(--neon-green);
+    font-weight: bold;
+  }
+
+  .status-warning {
+    color: var(--neon-yellow);
+    font-weight: bold;
+  }
+
+  .status-offline {
+    color: #ff4444;
+    font-weight: bold;
+  }
+
+  .readiness-stat {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    border: 2px solid var(--border-color);
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-primary);
+  }
+
+  .stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .quarantine-filters .btn {
+    margin-left: 5px;
+  }
+
+  .quarantine-filters .btn.active {
+    background: var(--neon-orange);
+    color: var(--dark-bg);
+  }
+
+  .modal-content {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+  }
+
+  .modal-header {
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .modal-footer {
+    border-top: 2px solid var(--border-color);
+  }
+
+  @media (max-width: 768px) {
+    .security-stats {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .security-controls {
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .action-button {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .readiness-stat {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Filter functionality
+    const filterButtons = document.querySelectorAll(".quarantine-filters .btn");
+    const tableRows = document.querySelectorAll(".quarantine-table tbody tr");
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        this.classList.add("active");
+
+        const filter = this.dataset.filter;
+
+        tableRows.forEach((row) => {
+          if (filter === "all" || row.dataset.contentType === filter) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      });
+    });
+
+    // Security actions
+    document.querySelectorAll(".security-action").forEach((button) => {
+      button.addEventListener("click", function () {
+        const action = this.dataset.action;
+
+        switch (action) {
+          case "quarantine":
+            new bootstrap.Modal(
+              document.getElementById("quarantineModal"),
+            ).show();
+            break;
+          case "freeze":
+            if (
+              confirm(
+                "Are you sure you want to freeze all payouts? This will affect all active creators.",
+              )
+            ) {
+              window.NeonUtils.showNeonAlert(
+                "Payout freeze initiated. All transactions suspended.",
+                "warning",
+              );
+            }
+            break;
+          case "export":
+            const userId = prompt("Enter User ID for compliance export:");
+            if (userId) {
+              window.location.href = `/export-compliance/${userId}`;
+            }
+            break;
+          case "alert":
+            window.NeonUtils.showNeonAlert(
+              "Security alert system activated.",
+              "info",
+            );
+            break;
+        }
+      });
+    });
+
+    // Kill switch
+    document
+      .getElementById("killSwitchBtn")
+      .addEventListener("click", function () {
+        const confirmation = prompt(
+          'DANGER: Kill switch will quarantine ALL content and freeze ALL payouts.\nType "KILL_SWITCH_CONFIRM" to proceed:',
+        );
+        if (confirmation === "KILL_SWITCH_CONFIRM") {
+          window.NeonUtils.showNeonAlert(
+            "KILL SWITCH ACTIVATED: All content quarantined, all payouts frozen.",
+            "error",
+          );
+          this.disabled = true;
+          this.innerHTML = '<i class="fas fa-lock me-2"></i>ACTIVATED';
+        }
+      });
+
+    // Emergency lockdown
+    document
+      .getElementById("emergencyLockdownBtn")
+      .addEventListener("click", function () {
+        if (
+          confirm(
+            "Activate emergency lockdown? This will restrict all user access.",
+          )
+        ) {
+          window.NeonUtils.showNeonAlert(
+            "Emergency lockdown activated. Platform access restricted.",
+            "warning",
+          );
+        }
+      });
+
+    // Quarantine form
+    document
+      .getElementById("quarantineForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch("/quarantine-content", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => {
+            if (response.ok) {
+              window.NeonUtils.showNeonAlert(
+                "Content quarantined successfully.",
+                "success",
+              );
+              bootstrap.Modal.getInstance(
+                document.getElementById("quarantineModal"),
+              ).hide();
+              location.reload();
+            } else {
+              throw new Error("Failed to quarantine content");
+            }
+          })
+          .catch((error) => {
+            window.NeonUtils.showNeonAlert(
+              "Failed to quarantine content.",
+              "error",
+            );
+          });
+      });
+
+    // Release quarantine
+    document.querySelectorAll(".release-btn").forEach((button) => {
+      button.addEventListener("click", function () {
+        const quarantineId = this.dataset.quarantineId;
+        if (
+          confirm(
+            "Are you sure you want to release this content from quarantine?",
+          )
+        ) {
+          // In production, this would make an API call
+          window.NeonUtils.showNeonAlert(
+            "Content released from quarantine.",
+            "success",
+          );
+          this.closest("tr").remove();
+        }
+      });
+    });
+
+    // Delete quarantined content
+    document.querySelectorAll(".delete-btn").forEach((button) => {
+      button.addEventListener("click", function () {
+        const quarantineId = this.dataset.quarantineId;
+        if (
+          confirm(
+            "Are you sure you want to permanently delete this content? This action cannot be undone.",
+          )
+        ) {
+          // In production, this would make an API call
+          window.NeonUtils.showNeonAlert(
+            "Content permanently deleted.",
+            "info",
+          );
+          this.closest("tr").remove();
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

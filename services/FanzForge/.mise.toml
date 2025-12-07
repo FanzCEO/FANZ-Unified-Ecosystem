@@ -1,0 +1,75 @@
+# FANZ Cross-Platform Ad System - mise configuration
+# Tool version management for consistent development environment
+
+[tools]
+# Node.js and package managers
+node = "18.20.4"
+pnpm = "8.15.1" 
+npm = "10.8.2"
+
+# Python for AI/ML components and tooling
+python = "3.12"
+uv = "latest"
+
+# Go for high-performance services
+go = "1.22"
+
+# Rust for WebAssembly and crypto components  
+rust = "1.83"
+
+# Database tools
+postgres = "16"
+
+# Container and orchestration
+docker = "latest"
+kubectl = "latest"
+helm = "latest"
+
+# Development tools
+jq = "latest"
+yq = "latest"
+gh = "latest"
+
+[settings]
+# Enable experimental features for better performance
+experimental = true
+
+# Auto-install missing tools
+auto_install = true
+
+# Plugin repositories
+plugin_autoupdate_last_check_duration = "7 days"
+
+[env]
+# Node environment
+NODE_ENV = "development"
+NODE_OPTIONS = "--max-old-space-size=4096"
+
+# PNPM configuration  
+PNPM_HOME = "$HOME/.local/share/pnpm"
+NPM_CONFIG_UPDATE_NOTIFIER = "false"
+
+# Python configuration
+PYTHONDONTWRITEBYTECODE = "1"
+PYTHONUNBUFFERED = "1"
+UV_CACHE_DIR = "$HOME/.cache/uv"
+
+# Go configuration  
+GOPATH = "$HOME/go"
+GOPROXY = "https://proxy.golang.org,direct"
+
+# Rust configuration
+CARGO_HOME = "$HOME/.cargo"
+RUSTUP_HOME = "$HOME/.rustup"
+
+# FANZ-specific environment
+FANZ_ENV = "development"
+FANZ_LOG_LEVEL = "info"
+
+# Security and compliance
+SSL_VERIFY = "true" 
+AUDIT_LEVEL = "moderate"
+
+# Development optimization
+DISABLE_OPENCOLLECTIVE = "true"
+DISABLE_UPDATE_NOTIFIER = "true"

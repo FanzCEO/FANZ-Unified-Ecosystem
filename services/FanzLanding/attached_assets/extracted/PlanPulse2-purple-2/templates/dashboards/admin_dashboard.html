@@ -1,0 +1,743 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard - FANZ{% endblock %}
+{% block content %}
+<div class="admin-dashboard-container">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Welcome Header -->
+      <div class="col-12">
+        <div class="welcome-banner mb-4">
+          <div class="card gradient-card">
+            <div class="card-body py-4">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h2 class="neon-text neon-orange mb-2">
+                    <i class="fas fa-shield-alt me-2"></i>Admin Dashboard - {{
+                    current_user.get_full_name() }}
+                  </h2>
+                  <p class="lead text-secondary mb-2">
+                    Platform administration and content moderation control
+                    center
+                  </p>
+                  <div class="admin-stats">
+                    <span class="stat-item">
+                      <i class="fas fa-clock neon-yellow me-1"></i>
+                      {{ pending_documents | length }} Pending Reviews
+                    </span>
+                    <span class="stat-item">
+                      <i
+                        class="fas fa-exclamation-triangle neon-orange me-1"
+                      ></i>
+                      {{ pending_verifications | length }} Verification Queue
+                    </span>
+                    <span class="stat-item">
+                      <i class="fas fa-history neon-cyan me-1"></i>
+                      {{ recent_events | length }} Recent Events
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div class="admin-controls">
+                    <a
+                      href="{{ url_for('security_dashboard') }}"
+                      class="btn btn-warning me-2"
+                    >
+                      <i class="fas fa-lock me-2"></i>Security
+                    </a>
+                    <button class="btn btn-danger" id="emergencyBtn">
+                      <i class="fas fa-exclamation-triangle me-2"></i>Emergency
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="col-12 mb-4">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="stat-card card">
+              <div class="card-body text-center">
+                <div class="stat-icon neon-cyan mb-3">
+                  <i class="fas fa-clock fa-2x"></i>
+                </div>
+                <div class="stat-value">{{ pending_documents | length }}</div>
+                <div class="stat-label">Pending Documents</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card card">
+              <div class="card-body text-center">
+                <div class="stat-icon neon-green mb-3">
+                  <i class="fas fa-check-circle fa-2x"></i>
+                </div>
+                <div class="stat-value">0</div>
+                <div class="stat-label">Approved Today</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card card">
+              <div class="card-body text-center">
+                <div class="stat-icon neon-yellow mb-3">
+                  <i class="fas fa-user-shield fa-2x"></i>
+                </div>
+                <div class="stat-value">
+                  {{ pending_verifications | length }}
+                </div>
+                <div class="stat-label">Identity Checks</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card card">
+              <div class="card-body text-center">
+                <div class="stat-icon neon-pink mb-3">
+                  <i class="fas fa-exclamation-circle fa-2x"></i>
+                </div>
+                <div class="stat-value">0</div>
+                <div class="stat-label">Flagged Content</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verification Queue -->
+      <div class="col-lg-8 mb-4">
+        <div class="verification-queue-card card">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0">
+                <i class="fas fa-list-check me-2"></i>Verification Queue
+              </h4>
+              <div class="queue-filters">
+                <button
+                  class="btn btn-sm btn-outline-light active"
+                  data-filter="all"
+                >
+                  All
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-light"
+                  data-filter="pending"
+                >
+                  Pending
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-light"
+                  data-filter="needs_fix"
+                >
+                  Needs Fix
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            {% if pending_documents %}
+            <div class="table-responsive">
+              <table class="table table-hover verification-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Document Type</th>
+                    <th>Uploaded</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for doc in pending_documents %}
+                  <tr data-status="{{ doc.status.value }}">
+                    <td>
+                      <div class="user-info">
+                        <div class="user-avatar">
+                          <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                          <h6>{{ doc.user.username }}</h6>
+                          <small class="text-muted">{{ doc.user.email }}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="doc-type-info">
+                        {% if doc.document_type.value == 'gov_id' %}
+                        <i class="fas fa-id-card me-2 neon-cyan"></i>Government
+                        ID {% elif doc.document_type.value == 'selfie' %}
+                        <i class="fas fa-camera me-2 neon-pink"></i
+                        >Selfie/Liveness {% elif doc.document_type.value ==
+                        'w9_w8ben' %}
+                        <i class="fas fa-file-invoice me-2 neon-yellow"></i>Tax
+                        Form {% elif doc.document_type.value == 'address_proof'
+                        %} <i class="fas fa-home me-2 neon-green"></i>Address
+                        Proof {% elif doc.document_type.value == 'contracts' %}
+                        <i class="fas fa-file-contract me-2 neon-purple"></i
+                        >Contracts {% endif %} <br /><small class="text-muted"
+                          >{{ doc.original_filename }}</small
+                        >
+                      </div>
+                    </td>
+                    <td>
+                      <span class="upload-time">
+                        {{ doc.uploaded_at.strftime('%Y-%m-%d %H:%M') }}
+                      </span>
+                      <br /><small class="text-muted">
+                        {{ (doc.file_size / 1024 / 1024) | round(2) }} MB
+                      </small>
+                    </td>
+                    <td>
+                      <span class="status-badge status-{{ doc.status.value }}">
+                        {% if doc.status.value == 'pending' %}
+                        <i class="fas fa-clock me-1"></i>Pending {% elif
+                        doc.status.value == 'needs_fix' %}
+                        <i class="fas fa-exclamation-triangle me-1"></i>Needs
+                        Fix {% endif %}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button
+                          class="btn btn-sm btn-info view-btn"
+                          data-doc-id="{{ doc.id }}"
+                          data-bs-toggle="modal"
+                          data-bs-target="#documentModal"
+                        >
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <a
+                          href="{{ url_for('approve_document', document_id=doc.id) }}"
+                          class="btn btn-sm btn-success"
+                        >
+                          <i class="fas fa-check"></i>
+                        </a>
+                        <a
+                          href="{{ url_for('deny_document', document_id=doc.id) }}"
+                          class="btn btn-sm btn-danger"
+                        >
+                          <i class="fas fa-times"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="empty-queue text-center py-5">
+              <i class="fas fa-clipboard-check fa-4x neon-green mb-3"></i>
+              <h5>Verification Queue is Empty</h5>
+              <p class="text-secondary">All documents have been reviewed</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Log -->
+      <div class="col-lg-4 mb-4">
+        <div class="activity-log-card card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-history me-2"></i>Recent Activity
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="activity-timeline">
+              {% if recent_events %} {% for event in recent_events %}
+              <div class="timeline-item">
+                <div
+                  class="timeline-marker {{ 'neon-green' if 'approved' in event.event_type else 'neon-orange' if 'denied' in event.event_type else 'neon-cyan' }}"
+                >
+                  {% if 'approved' in event.event_type %}
+                  <i class="fas fa-check"></i>
+                  {% elif 'denied' in event.event_type %}
+                  <i class="fas fa-times"></i>
+                  {% elif 'login' in event.event_type %}
+                  <i class="fas fa-sign-in-alt"></i>
+                  {% elif 'upload' in event.event_type %}
+                  <i class="fas fa-upload"></i>
+                  {% else %}
+                  <i class="fas fa-circle"></i>
+                  {% endif %}
+                </div>
+                <div class="timeline-content">
+                  <p class="event-description">{{ event.event_description }}</p>
+                  <small class="event-time text-muted">
+                    {{ event.created_at.strftime('%H:%M:%S') }}
+                  </small>
+                </div>
+              </div>
+              {% endfor %} {% else %}
+              <div class="empty-timeline text-center py-4">
+                <i class="fas fa-clock fa-2x neon-cyan mb-2"></i>
+                <p class="text-muted">No recent activity</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Health -->
+      <div class="col-12 mb-4">
+        <div class="system-health-card card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-heartbeat me-2"></i>System Health
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-4">
+              <div class="col-md-3">
+                <div class="health-metric">
+                  <div class="metric-icon neon-green">
+                    <i class="fas fa-database"></i>
+                  </div>
+                  <div class="metric-info">
+                    <h6>Database</h6>
+                    <span class="status-online">Online</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="health-metric">
+                  <div class="metric-icon neon-green">
+                    <i class="fas fa-cloud"></i>
+                  </div>
+                  <div class="metric-info">
+                    <h6>File Storage</h6>
+                    <span class="status-online">Online</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="health-metric">
+                  <div class="metric-icon neon-yellow">
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <div class="metric-info">
+                    <h6>VerifyMy API</h6>
+                    <span class="status-warning">Limited</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="health-metric">
+                  <div class="metric-icon neon-green">
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                  <div class="metric-info">
+                    <h6>Email Service</h6>
+                    <span class="status-online">Online</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Document Review Modal -->
+<div class="modal fade" id="documentModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Document Review</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div id="documentPreview">
+          <!-- Document preview will be loaded here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-danger" id="denyDocBtn">
+          Deny
+        </button>
+        <button type="button" class="btn btn-success" id="approveDocBtn">
+          Approve
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .admin-dashboard-container {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 136, 0, 0.05),
+      rgba(255, 0, 0, 0.05)
+    );
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  .gradient-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 136, 0, 0.1),
+      rgba(255, 0, 0, 0.1)
+    );
+    border: 2px solid var(--neon-orange);
+  }
+
+  .admin-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .admin-controls {
+    display: flex;
+    align-items: center;
+  }
+
+  .stat-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .stat-icon {
+    margin-bottom: 15px;
+  }
+
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--text-primary);
+  }
+
+  .stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  .queue-filters .btn {
+    margin-left: 5px;
+  }
+
+  .queue-filters .btn.active {
+    background: var(--neon-cyan);
+    color: var(--dark-bg);
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    color: var(--dark-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .user-details h6 {
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .doc-type-info {
+    font-weight: bold;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 5px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .timeline-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 35px;
+    width: 2px;
+    height: calc(100% + 5px);
+    background: var(--border-color);
+  }
+
+  .timeline-marker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .timeline-content {
+    flex: 1;
+  }
+
+  .event-description {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+  }
+
+  .event-time {
+    font-size: 0.8rem;
+  }
+
+  .health-metric {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+  }
+
+  .health-metric:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+  }
+
+  .metric-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .metric-info h6 {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+
+  .status-online {
+    color: var(--neon-green);
+    font-weight: bold;
+  }
+
+  .status-warning {
+    color: var(--neon-yellow);
+    font-weight: bold;
+  }
+
+  .status-offline {
+    color: #ff4444;
+    font-weight: bold;
+  }
+
+  .modal-content {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+  }
+
+  .modal-header {
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .modal-footer {
+    border-top: 2px solid var(--border-color);
+  }
+
+  #emergencyBtn {
+    animation: emergency-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes emergency-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .admin-stats {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .admin-controls {
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .health-metric {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Filter functionality
+    const filterButtons = document.querySelectorAll(".queue-filters .btn");
+    const tableRows = document.querySelectorAll(".verification-table tbody tr");
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        this.classList.add("active");
+
+        const filter = this.dataset.filter;
+
+        tableRows.forEach((row) => {
+          if (filter === "all" || row.dataset.status === filter) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      });
+    });
+
+    // Document review modal
+    const viewButtons = document.querySelectorAll(".view-btn");
+    let currentDocId = null;
+
+    viewButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        currentDocId = this.dataset.docId;
+        const preview = document.getElementById("documentPreview");
+        preview.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x neon-cyan mb-3"></i>
+                    <p>Loading document...</p>
+                </div>
+            `;
+
+        // Simulate document loading
+        setTimeout(() => {
+          preview.innerHTML = `
+                    <div class="document-info mb-3">
+                        <h6>Document ID: ${currentDocId}</h6>
+                        <p class="text-muted">Document preview would appear here</p>
+                    </div>
+                    <div class="document-preview-placeholder">
+                        <i class="fas fa-file-alt fa-4x neon-cyan mb-3"></i>
+                        <p>Document preview functionality would be implemented here</p>
+                    </div>
+                `;
+        }, 1000);
+      });
+    });
+
+    // Approval/Denial buttons
+    document
+      .getElementById("approveDocBtn")
+      .addEventListener("click", function () {
+        if (currentDocId) {
+          window.location.href = `/approve-document/${currentDocId}`;
+        }
+      });
+
+    document
+      .getElementById("denyDocBtn")
+      .addEventListener("click", function () {
+        if (currentDocId) {
+          if (confirm("Are you sure you want to deny this document?")) {
+            window.location.href = `/deny-document/${currentDocId}`;
+          }
+        }
+      });
+
+    // Emergency button
+    document
+      .getElementById("emergencyBtn")
+      .addEventListener("click", function () {
+        const password = prompt("Enter emergency override password:");
+        if (password === "EMERGENCY_OVERRIDE") {
+          window.NeonUtils.showNeonAlert(
+            "Emergency mode activated. All systems locked down.",
+            "warning",
+          );
+        } else if (password) {
+          window.NeonUtils.showNeonAlert(
+            "Invalid emergency password.",
+            "error",
+          );
+        }
+      });
+
+    // Auto-refresh functionality
+    setInterval(function () {
+      const pendingCount = document.querySelectorAll(
+        '[data-status="pending"]',
+      ).length;
+      if (pendingCount > 0) {
+        console.log("Checking for verification updates...");
+        // In production, this would make an AJAX call to check for updates
+      }
+    }, 30000);
+
+    // Animate stat cards
+    const statCards = document.querySelectorAll(".stat-card");
+    statCards.forEach((card, index) => {
+      card.style.opacity = "0";
+      card.style.transform = "translateY(20px)";
+
+      setTimeout(() => {
+        card.style.transition = "all 0.5s ease";
+        card.style.opacity = "1";
+        card.style.transform = "translateY(0)";
+      }, index * 100);
+    });
+  });
+</script>
+{% endblock %}

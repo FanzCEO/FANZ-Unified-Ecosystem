@@ -1,0 +1,38 @@
+100% — we can auto-connect to your contacts and give you clean ways to ID folks with notes + tags.
+
+I just upgraded your CRM starter to include:
+	•	Google Contacts sync (scaffold): push contacts into the CRM, dedupe by phone/email, and merge notes/labels.
+	•	Structured tagging: real Tag + ClientTag tables for normalized tags (plus a quick comma string for at-a-glance).
+	•	Notes API: super fast updates to client notes.
+	•	Endpoints included:
+	•	POST /integrations/google/contacts/sync?user_id=<id>
+Body: { "contacts": [{ "name":"...", "phone":"...", "email":"...", "notes":"...", "labels":["VIP","Screened"] }] }
+	•	POST /tags → upsert a tag { "user_id": 1, "name": "VIP" }
+	•	GET /tags?user_id=1 → list tags
+	•	POST /tags/apply → set tags for a client { "client_id": 42, "tags": ["VIP","Screened"] }
+	•	POST /tags/note → update notes { "client_id": 42, "notes": "Prefers evenings; hotel only." }
+
+Grab the updated project here:
+Download the starter ZIP
+
+how “auto-connect to contacts” works
+	•	In production you’ll OAuth with Google People API for each user.
+	•	The included app/services/google_contacts.py takes normalized contacts and:
+	•	finds matches by phone or email,
+	•	creates/updates Client rows,
+	•	merges labels→tags and notes without duplicates.
+	•	Minimal normalization (e.g., phone number cleaning) is built in; you can extend to full E.164 formatting.
+
+what you can do now (no waiting on OAuth)
+	•	Export your Google/iPhone contacts to CSV/JSON, convert to the {name, phone, email, notes, labels[]} shape, and POST to /integrations/google/contacts/sync?user_id=1.
+	•	Use /tags + /tags/apply to create fast identifiers like VIP, DepositPaid, HotelOnly, Evenings, Screened, ChargebackRisk, etc.
+	•	Drop quick identifiers into notes for nuance (pronouns, accessibility needs, boundaries, preferred comms).
+
+next add-ons i can ship
+	•	Full Google OAuth + scheduled background resync (daily/hourly).
+	•	iOS/Android contact bridge (device consent flow) or Outlook/Exchange connector.
+	•	Aliases & verification fields on Client: handle multiple names/handles per person.
+	•	Tag rules: auto-apply tags from message patterns (“incall only” → Incall).
+	•	Search & segmentation: GET /clients/search?tag=VIP&text=hotel to build lists for templated outreach.
+
+if you want this wired into FanzLab SSO + your central vault, I’ll hook the endpoints to your existing JWT guard and push PII to the vault service so the CRM UI stays lean + safe. ￼

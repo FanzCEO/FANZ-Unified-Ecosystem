@@ -1,0 +1,596 @@
+{% extends "base.html" %} {% block title %}Analytics Dashboard - FANZ{% endblock
+%} {% block content %}
+<div class="analytics-dashboard">
+  <div class="container-fluid">
+    <!-- Analytics Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="analytics-header card gradient-card">
+          <div class="card-body py-4">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h2 class="neon-text neon-green mb-2">
+                  <i class="fas fa-chart-line me-2"></i>Seduction Analytics
+                </h2>
+                <p class="lead text-secondary mb-0">
+                  Deep insights into what drives your fans wild with desire
+                </p>
+              </div>
+              <div class="col-md-4 text-end">
+                <div class="time-range-selector">
+                  <select class="form-select" id="timeRange">
+                    <option value="7">Last 7 days</option>
+                    <option value="30" selected>Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="365">Last year</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row mb-4">
+      <div class="col-xl-3 col-md-6 mb-3">
+        <div class="metric-card card rainbow-border">
+          <div class="card-body text-center">
+            <div class="metric-icon neon-green mb-3">
+              <i class="fas fa-dollar-sign fa-2x"></i>
+            </div>
+            <h3 class="metric-value neon-text neon-green">
+              ${{ total_revenue }}
+            </h3>
+            <p class="metric-label">Total Revenue</p>
+            <div
+              class="metric-change {{ 'positive' if revenue_change > 0 else 'negative' }}"
+            >
+              <i
+                class="fas fa-arrow-{{ 'up' if revenue_change > 0 else 'down' }}"
+              ></i>
+              {{ revenue_change }}% from last period
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 mb-3">
+        <div class="metric-card card">
+          <div class="card-body text-center">
+            <div class="metric-icon neon-cyan mb-3">
+              <i class="fas fa-eye fa-2x"></i>
+            </div>
+            <h3 class="metric-value neon-text neon-cyan">{{ total_views }}</h3>
+            <p class="metric-label">Total Views</p>
+            <div
+              class="metric-change {{ 'positive' if views_change > 0 else 'negative' }}"
+            >
+              <i
+                class="fas fa-arrow-{{ 'up' if views_change > 0 else 'down' }}"
+              ></i>
+              {{ views_change }}% from last period
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 mb-3">
+        <div class="metric-card card">
+          <div class="card-body text-center">
+            <div class="metric-icon neon-pink mb-3">
+              <i class="fas fa-heart fa-2x"></i>
+            </div>
+            <h3 class="metric-value neon-text neon-pink">{{ total_likes }}</h3>
+            <p class="metric-label">Fan Engagement</p>
+            <div
+              class="metric-change {{ 'positive' if engagement_change > 0 else 'negative' }}"
+            >
+              <i
+                class="fas fa-arrow-{{ 'up' if engagement_change > 0 else 'down' }}"
+              ></i>
+              {{ engagement_change }}% from last period
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 mb-3">
+        <div class="metric-card card">
+          <div class="card-body text-center">
+            <div class="metric-icon neon-yellow mb-3">
+              <i class="fas fa-users fa-2x"></i>
+            </div>
+            <h3 class="metric-value neon-text neon-yellow">
+              {{ unique_fans }}
+            </h3>
+            <p class="metric-label">Devoted Fans</p>
+            <div
+              class="metric-change {{ 'positive' if fans_change > 0 else 'negative' }}"
+            >
+              <i
+                class="fas fa-arrow-{{ 'up' if fans_change > 0 else 'down' }}"
+              ></i>
+              {{ fans_change }}% from last period
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+      <div class="col-lg-8">
+        <div class="chart-card card">
+          <div
+            class="card-header d-flex justify-content-between align-items-center"
+          >
+            <h5 class="mb-0">
+              <i class="fas fa-chart-area me-2"></i>Revenue & Views Trend
+            </h5>
+            <div class="chart-controls">
+              <button
+                class="btn btn-sm btn-outline-primary active"
+                data-chart="revenue"
+              >
+                Revenue
+              </button>
+              <button
+                class="btn btn-sm btn-outline-secondary"
+                data-chart="views"
+              >
+                Views
+              </button>
+              <button
+                class="btn btn-sm btn-outline-secondary"
+                data-chart="both"
+              >
+                Both
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <canvas id="revenueChart" height="300"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="chart-card card h-100">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-chart-pie me-2"></i>Cluster Performance
+            </h5>
+          </div>
+          <div class="card-body">
+            <canvas id="clusterChart" height="300"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance Tables -->
+    <div class="row mb-4">
+      <div class="col-lg-6">
+        <div class="performance-card card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-fire me-2"></i>Top Performing Scenes
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Scene</th>
+                    <th>Views</th>
+                    <th>Revenue</th>
+                    <th>Engagement</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for scene in top_scenes %}
+                  <tr>
+                    <td>
+                      <div class="scene-info">
+                        <strong>{{ scene.title }}</strong>
+                        <br /><small class="text-muted"
+                          >{{ scene.cluster.title() }}</small
+                        >
+                      </div>
+                    </td>
+                    <td>
+                      <span class="metric-highlight neon-cyan"
+                        >{{ scene.views }}</span
+                      >
+                    </td>
+                    <td>
+                      <span class="metric-highlight neon-green"
+                        >${{ scene.revenue }}</span
+                      >
+                    </td>
+                    <td>
+                      <div class="engagement-bar">
+                        <div
+                          class="engagement-fill"
+                          style="width: {{ scene.engagement_rate }}%"
+                        ></div>
+                      </div>
+                      <small>{{ scene.engagement_rate }}%</small>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="performance-card card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-crown me-2"></i>VIP Fan Insights
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="fan-insights">
+              <div class="insight-item mb-4">
+                <div class="insight-icon neon-pink">
+                  <i class="fas fa-heart"></i>
+                </div>
+                <div class="insight-content">
+                  <h6>Most Engaged Fan</h6>
+                  <p class="mb-0">
+                    {{ top_fan.username }} - {{ top_fan.engagement_score }}
+                    interactions
+                  </p>
+                </div>
+              </div>
+              <div class="insight-item mb-4">
+                <div class="insight-icon neon-yellow">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="insight-content">
+                  <h6>Highest Spender</h6>
+                  <p class="mb-0">
+                    {{ top_spender.username }} - ${{ top_spender.total_spent }}
+                  </p>
+                </div>
+              </div>
+              <div class="insight-item mb-4">
+                <div class="insight-icon neon-green">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="insight-content">
+                  <h6>Peak Activity Hours</h6>
+                  <p class="mb-0">
+                    {{ peak_hours.start }} - {{ peak_hours.end }} ({{
+                    peak_hours.timezone }})
+                  </p>
+                </div>
+              </div>
+              <div class="insight-item">
+                <div class="insight-icon neon-cyan">
+                  <i class="fas fa-globe"></i>
+                </div>
+                <div class="insight-content">
+                  <h6>Top Geographic Region</h6>
+                  <p class="mb-0">
+                    {{ top_region.name }} - {{ top_region.percentage }}% of fans
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Analytics -->
+    <div class="row">
+      <div class="col-12">
+        <div class="advanced-analytics card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-brain me-2"></i>AI-Powered Insights
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="ai-insight">
+                  <div class="insight-header">
+                    <i class="fas fa-lightbulb neon-yellow me-2"></i>
+                    <h6>Content Optimization</h6>
+                  </div>
+                  <div class="insight-body">
+                    <p>{{ ai_insights.content_optimization }}</p>
+                    <div class="insight-actions">
+                      <button class="btn btn-sm btn-outline-primary">
+                        Learn More
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="ai-insight">
+                  <div class="insight-header">
+                    <i class="fas fa-target neon-pink me-2"></i>
+                    <h6>Fan Engagement</h6>
+                  </div>
+                  <div class="insight-body">
+                    <p>{{ ai_insights.engagement_tips }}</p>
+                    <div class="insight-actions">
+                      <button class="btn btn-sm btn-outline-primary">
+                        Apply Tips
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="ai-insight">
+                  <div class="insight-header">
+                    <i class="fas fa-chart-line neon-green me-2"></i>
+                    <h6>Revenue Forecast</h6>
+                  </div>
+                  <div class="insight-body">
+                    <p>{{ ai_insights.revenue_forecast }}</p>
+                    <div class="insight-actions">
+                      <button class="btn btn-sm btn-outline-primary">
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .analytics-dashboard {
+    padding: 20px 0;
+  }
+
+  .metric-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  .metric-icon {
+    display: inline-block;
+    padding: 20px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid currentColor;
+  }
+
+  .metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 15px 0 5px;
+    text-shadow: 0 0 10px currentColor;
+  }
+
+  .metric-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+
+  .metric-change {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .metric-change.positive {
+    color: var(--neon-green);
+  }
+
+  .metric-change.negative {
+    color: #ff4444;
+  }
+
+  .chart-card {
+    height: 400px;
+  }
+
+  .chart-controls .btn {
+    margin-left: 5px;
+  }
+
+  .chart-controls .btn.active {
+    background: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+    color: var(--background);
+  }
+
+  .performance-card .table th {
+    border-top: none;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .metric-highlight {
+    font-weight: 700;
+    text-shadow: 0 0 5px currentColor;
+  }
+
+  .engagement-bar {
+    width: 60px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 2px;
+  }
+
+  .engagement-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
+    border-radius: 3px;
+  }
+
+  .fan-insights {
+    padding: 10px 0;
+  }
+
+  .insight-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .insight-item:last-child {
+    border-bottom: none;
+  }
+
+  .insight-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid currentColor;
+    margin-right: 15px;
+    font-size: 1.2rem;
+  }
+
+  .insight-content h6 {
+    margin-bottom: 5px;
+    color: var(--text-primary);
+  }
+
+  .insight-content p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .ai-insight {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    height: 100%;
+  }
+
+  .insight-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .insight-header h6 {
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .insight-body p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+
+  .insight-actions .btn {
+    min-width: 100px;
+  }
+
+  @media (max-width: 768px) {
+    .metric-value {
+      font-size: 2rem;
+    }
+
+    .chart-card {
+      height: auto;
+    }
+
+    .chart-controls {
+      margin-top: 10px;
+    }
+
+    .insight-item {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .insight-icon {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  }
+</style>
+{% endblock %} {% block page_scripts %} // Analytics Dashboard JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+initializeAnalyticsDashboard(); }); function initializeAnalyticsDashboard() { //
+Initialize charts initializeRevenueChart(); initializeClusterChart(); // Time
+range selector document.getElementById('timeRange').addEventListener('change',
+updateAnalytics); // Chart controls
+document.querySelectorAll('[data-chart]').forEach(btn => {
+btn.addEventListener('click', switchChartView); }); // Metric cards click
+handlers document.querySelectorAll('.metric-card').forEach(card => {
+card.addEventListener('click', function() { const icon =
+this.querySelector('.metric-icon i').className; if
+(icon.includes('dollar-sign')) { showRevenueDetails(); } else if
+(icon.includes('eye')) { showViewsDetails(); } else if (icon.includes('heart'))
+{ showEngagementDetails(); } else if (icon.includes('users')) {
+showFansDetails(); } }); }); } function initializeRevenueChart() { const ctx =
+document.getElementById('revenueChart').getContext('2d'); new Chart(ctx, { type:
+'line', data: { labels: {{ chart_labels | tojson }}, datasets: [{ label:
+'Revenue', data: {{ revenue_data | tojson }}, borderColor: '#00ffff',
+backgroundColor: 'rgba(0, 255, 255, 0.1)', tension: 0.4, fill: true }, { label:
+'Views', data: {{ views_data | tojson }}, borderColor: '#ff00ff',
+backgroundColor: 'rgba(255, 0, 255, 0.1)', tension: 0.4, fill: false, yAxisID:
+'y1' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: {
+legend: { labels: { color: '#ffffff' } } }, scales: { x: { ticks: { color:
+'#ffffff' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }, y: { type: 'linear',
+display: true, position: 'left', ticks: { color: '#00ffff', callback:
+function(value) { return '$' + value.toLocaleString(); } }, grid: { color:
+'rgba(0, 255, 255, 0.1)' } }, y1: { type: 'linear', display: true, position:
+'right', ticks: { color: '#ff00ff' }, grid: { drawOnChartArea: false, } } } }
+}); } function initializeClusterChart() { const ctx =
+document.getElementById('clusterChart').getContext('2d'); new Chart(ctx, { type:
+'doughnut', data: { labels: {{ cluster_labels | tojson }}, datasets: [{ data: {{
+cluster_data | tojson }}, backgroundColor: [ '#00ffff', '#ff00ff', '#ffcc00',
+'#00ff00', '#ff8800', '#8800ff', '#0088ff', '#ff0000' ], borderWidth: 2,
+borderColor: '#000000' }] }, options: { responsive: true, maintainAspectRatio:
+false, plugins: { legend: { position: 'bottom', labels: { color: '#ffffff',
+padding: 20 } } } } }); } function updateAnalytics() { const timeRange =
+document.getElementById('timeRange').value; // Show loading state
+showLoadingOverlay(); fetch(`/api/analytics?range=${timeRange}`) .then(response
+=> response.json()) .then(data => { updateCharts(data); updateMetrics(data);
+updateTables(data); }) .catch(error => { console.error('Failed to update
+analytics:', error); showAlert('Failed to update analytics data', 'error'); })
+.finally(() => { hideLoadingOverlay(); }); } function switchChartView(e) { const
+chartType = e.target.getAttribute('data-chart'); // Update button states
+document.querySelectorAll('[data-chart]').forEach(btn => {
+btn.classList.remove('active'); }); e.target.classList.add('active'); // Update
+chart visibility (implementation depends on your chart library)
+console.log('Switching to chart view:', chartType); } function
+showRevenueDetails() { // Implementation for revenue details modal/page
+console.log('Show revenue details'); } function showViewsDetails() { //
+Implementation for views details modal/page console.log('Show views details'); }
+function showEngagementDetails() { // Implementation for engagement details
+modal/page console.log('Show engagement details'); } function showFansDetails()
+{ // Implementation for fans details modal/page console.log('Show fans
+details'); } function showLoadingOverlay() { // Implementation for loading
+overlay console.log('Show loading overlay'); } function hideLoadingOverlay() {
+// Implementation for hiding loading overlay console.log('Hide loading
+overlay'); } function updateCharts(data) { // Implementation for updating charts
+with new data console.log('Update charts with:', data); } function
+updateMetrics(data) { // Implementation for updating metric cards
+console.log('Update metrics with:', data); } function updateTables(data) { //
+Implementation for updating performance tables console.log('Update tables
+with:', data); } {% endblock %}

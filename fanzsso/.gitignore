@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+.turbo/
+coverage/
+
+# OS & Editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.pytest_cache/
+
+# Rust
+target/
+Cargo.lock
+
+# Logs
+*.log
+logs/
+.logs/
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# Adult content specific
+.2257/
+compliance-records/
+verification-cache/

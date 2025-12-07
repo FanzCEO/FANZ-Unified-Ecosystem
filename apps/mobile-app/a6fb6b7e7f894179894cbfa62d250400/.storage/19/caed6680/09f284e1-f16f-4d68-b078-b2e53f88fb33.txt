@@ -1,0 +1,24 @@
+$ find /workspace -type f -name "*.tsx" -o -name "*.ts" -o -name "*.json" -o -name "*.html" | head -20
+/workspace/.MGXEnv.json
+/workspace/.timeline.json
+$ tree /workspace -I 'node_modules|site-packages' -L 2
+
+/workspace
+├── CougarFanz_Research_Framework.md
+├── cougarfanz-platform-development-strategy.md
+├── cougarfanz-platform-development-strategy.pdf
+├── report_sections
+│   ├── Competitive_Analysis_and_Market_Positioning.md
+│   ├── CougarFanz_Branding_and_Marketing_Strategy.md
+│   ├── Executive_Summary_and_Introduction.md
+│   ├── Legal_Compliance_and_Risk_Management.md
+│   └── Platform_Architecture_and_Technical_Implementation.md
+└── web_info_summaries
+    ├── CougarFanz_Branding_Strategy_Summary.md
+    ├── CougarFanz_Competitive_Analysis_Adult_Content_Platforms.md
+    ├── CougarFanz_Platform_Development_Research.md
+    └── Older_Women_Adult_Content_Creators_Research_Summary.md
+
+3 directories, 12 files
+$ cd /workspace/shadcn-ui
+

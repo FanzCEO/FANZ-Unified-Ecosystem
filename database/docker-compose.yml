@@ -1,0 +1,148 @@
+# =====================================================
+# FANZ Unified Ecosystem - Local Development Environment
+# =====================================================
+# Docker Compose setup for local database development
+#
+# Usage:
+#   docker-compose up -d          # Start all services
+#   docker-compose down           # Stop all services
+#   docker-compose logs -f db     # View database logs
+#   docker-compose exec db psql -U postgres fanz_ecosystem  # Connect to database
+# =====================================================
+
+version: '3.8'
+
+services:
+  # =====================================================
+  # PostgreSQL Database
+  # =====================================================
+  db:
+    image: postgres:15-alpine
+    container_name: fanz_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fanz_ecosystem
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: fanz_dev_password_CHANGE_ME
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persist database data
+      - postgres_data:/var/lib/postgresql/data
+
+      # Auto-run initialization scripts
+      - ./init_all_schemas.sql:/docker-entrypoint-initdb.d/01_init_schemas.sql
+      - ./setup_roles.sql:/docker-entrypoint-initdb.d/02_setup_roles.sql
+      - ./seed_data.sql:/docker-entrypoint-initdb.d/03_seed_data.sql
+      - ./seed_discrete_data.sql:/docker-entrypoint-initdb.d/04_seed_discrete_data.sql
+
+      # Custom PostgreSQL config
+      - ./docker/postgresql.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fanz_ecosystem"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fanz_network
+
+  # =====================================================
+  # PgAdmin (Database Management UI)
+  # =====================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: fanz_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@fanzunlimited.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./docker/servers.json:/pgadmin4/servers.json
+    depends_on:
+      - db
+    networks:
+      - fanz_network
+
+  # =====================================================
+  # Redis (Optional - for caching)
+  # =====================================================
+  redis:
+    image: redis:7-alpine
+    container_name: fanz_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - fanz_network
+
+  # =====================================================
+  # PgBouncer (Connection Pooling)
+  # =====================================================
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    container_name: fanz_pgbouncer
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgres://postgres:fanz_dev_password_CHANGE_ME@db:5432/fanz_ecosystem"
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 1000
+      DEFAULT_POOL_SIZE: 25
+      MIN_POOL_SIZE: 5
+      RESERVE_POOL_SIZE: 10
+      RESERVE_POOL_TIMEOUT: 3
+    ports:
+      - "6432:5432"
+    depends_on:
+      - db
+    networks:
+      - fanz_network
+
+  # =====================================================
+  # Adminer (Lightweight Database UI)
+  # =====================================================
+  adminer:
+    image: adminer:latest
+    container_name: fanz_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: nette
+    depends_on:
+      - db
+    networks:
+      - fanz_network
+
+# =====================================================
+# Volumes
+# =====================================================
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# =====================================================
+# Networks
+# =====================================================
+networks:
+  fanz_network:
+    driver: bridge

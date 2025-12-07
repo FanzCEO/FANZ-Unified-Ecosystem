@@ -1,0 +1,737 @@
+{% extends "base.html" %} {% block title %}Verification Status - FANZ{% endblock
+%} {% block content %}
+<div class="verification-status-container">
+  <div class="container">
+    <div class="row justify-content-center py-5">
+      <div class="col-lg-10">
+        <!-- Status Header -->
+        <div class="status-header-card card mb-4">
+          <div class="card-body text-center py-4">
+            <h2 class="neon-text neon-green mb-3">
+              <i class="fas fa-clipboard-check me-2"></i>Verification Status
+            </h2>
+            <p class="lead text-secondary mb-4">
+              Track your compliance verification progress
+            </p>
+
+            <!-- Overall Status -->
+            <div class="overall-status">
+              {% if is_complete %}
+              <div class="status-badge status-approved">
+                <i class="fas fa-check-circle me-2"></i>
+                Verification Complete
+              </div>
+              <p class="text-success mt-2">
+                <i class="fas fa-shield-alt me-2"></i>
+                Your account is fully verified and compliant
+              </p>
+              {% else %}
+              <div class="status-badge status-pending">
+                <i class="fas fa-clock me-2"></i>
+                Verification In Progress
+              </div>
+              <p class="text-warning mt-2">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Complete all steps below to activate your account
+              </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Status -->
+        <div class="documents-status-card card mb-4">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-file-alt me-2"></i>Document Verification
+            </h4>
+          </div>
+          <div class="card-body">
+            {% if documents %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Document Type</th>
+                    <th>Filename</th>
+                    <th>Uploaded</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for doc in documents %}
+                  <tr>
+                    <td>
+                      <div class="doc-type">
+                        {% if doc.document_type.value == 'gov_id' %}
+                        <i class="fas fa-id-card me-2 neon-cyan"></i>Government
+                        ID {% elif doc.document_type.value == 'selfie' %}
+                        <i class="fas fa-camera me-2 neon-pink"></i
+                        >Selfie/Liveness {% elif doc.document_type.value ==
+                        'w9_w8ben' %}
+                        <i class="fas fa-file-invoice me-2 neon-yellow"></i>Tax
+                        Form {% elif doc.document_type.value == 'address_proof'
+                        %} <i class="fas fa-home me-2 neon-green"></i>Address
+                        Proof {% elif doc.document_type.value == 'contracts' %}
+                        <i class="fas fa-file-contract me-2 neon-purple"></i
+                        >Contracts {% endif %}
+                      </div>
+                    </td>
+                    <td>
+                      <span class="filename">{{ doc.original_filename }}</span>
+                      <small class="d-block text-muted">
+                        {{ (doc.file_size / 1024 / 1024) | round(2) }} MB
+                      </small>
+                    </td>
+                    <td>
+                      <span class="upload-date">
+                        {{ doc.uploaded_at.strftime('%Y-%m-%d %H:%M') }}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        class="status-badge status-{{ doc.status.value }}"
+                        data-status="{{ doc.status.value }}"
+                      >
+                        {% if doc.status.value == 'pending' %}
+                        <i class="fas fa-clock me-1"></i>Pending Review {% elif
+                        doc.status.value == 'approved' %}
+                        <i class="fas fa-check me-1"></i>Approved {% elif
+                        doc.status.value == 'denied' %}
+                        <i class="fas fa-times me-1"></i>Denied {% elif
+                        doc.status.value == 'needs_fix' %}
+                        <i class="fas fa-exclamation-triangle me-1"></i>Needs
+                        Fix {% endif %}
+                      </span>
+                      {% if doc.verified_at %}
+                      <small class="d-block text-muted">
+                        Reviewed: {{ doc.verified_at.strftime('%Y-%m-%d %H:%M')
+                        }}
+                      </small>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        {% if doc.status.value in ['denied', 'needs_fix'] %}
+                        <a
+                          href="{{ url_for('document_upload') }}"
+                          class="btn btn-sm btn-warning"
+                        >
+                          <i class="fas fa-upload me-1"></i>Re-upload
+                        </a>
+                        {% endif %} {% if doc.notes %}
+                        <button
+                          class="btn btn-sm btn-info"
+                          data-bs-toggle="modal"
+                          data-bs-target="#notesModal{{ doc.id }}"
+                        >
+                          <i class="fas fa-sticky-note me-1"></i>Notes
+                        </button>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="empty-state text-center py-5">
+              <i class="fas fa-file-upload fa-4x neon-cyan mb-3"></i>
+              <h5>No Documents Uploaded</h5>
+              <p class="text-secondary mb-4">
+                Start your verification process by uploading your first document
+              </p>
+              <a
+                href="{{ url_for('document_upload') }}"
+                class="btn btn-primary"
+              >
+                <i class="fas fa-upload me-2"></i>Upload Documents
+              </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- VerifyMy Status -->
+        {% if verifications %}
+        <div class="verifymy-status-card card mb-4">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-user-shield me-2"></i>Identity Verification
+              (VerifyMy)
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Verification Type</th>
+                    <th>Session ID</th>
+                    <th>Status</th>
+                    <th>Confidence</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for verification in verifications %}
+                  <tr>
+                    <td>
+                      <span class="verification-type">
+                        {% if verification.verification_type == 'identity' %}
+                        <i class="fas fa-id-card me-2 neon-cyan"></i>Identity
+                        Check {% elif verification.verification_type ==
+                        'liveness' %}
+                        <i class="fas fa-camera me-2 neon-pink"></i>Liveness
+                        Detection {% elif verification.verification_type ==
+                        'document' %}
+                        <i class="fas fa-file-check me-2 neon-green"></i
+                        >Document Verification {% endif %}
+                      </span>
+                    </td>
+                    <td>
+                      <code class="verifymy-session">
+                        {{ verification.verifymy_session_id[:8] + '...' if
+                        verification.verifymy_session_id else 'N/A' }}
+                      </code>
+                    </td>
+                    <td>
+                      <span
+                        class="status-badge status-{{ verification.status.value }}"
+                        data-status="{{ verification.status.value }}"
+                      >
+                        {% if verification.status.value == 'pending' %}
+                        <i class="fas fa-clock me-1"></i>Processing {% elif
+                        verification.status.value == 'approved' %}
+                        <i class="fas fa-check me-1"></i>Verified {% elif
+                        verification.status.value == 'denied' %}
+                        <i class="fas fa-times me-1"></i>Failed {% endif %}
+                      </span>
+                    </td>
+                    <td>
+                      {% if verification.confidence_score %}
+                      <div class="confidence-score">
+                        <span class="score-value"
+                          >{{ (verification.confidence_score * 100) | round(1)
+                          }}%</span
+                        >
+                        <div class="score-bar">
+                          <div
+                            class="score-fill"
+                            style="width: {{ (verification.confidence_score * 100) | round(1) }}%"
+                          ></div>
+                        </div>
+                      </div>
+                      {% else %}
+                      <span class="text-muted">N/A</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {{ verification.initiated_at.strftime('%Y-%m-%d %H:%M') }}
+                      {% if verification.completed_at %}
+                      <small class="d-block text-success">
+                        Completed: {{
+                        verification.completed_at.strftime('%H:%M') }}
+                      </small>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Required Documents Checklist -->
+        <div class="checklist-card card mb-4">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-tasks me-2"></i>Verification Checklist
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="checklist">
+              <div class="checklist-item">
+                {% set gov_id_uploaded = documents |
+                selectattr('document_type.value', 'equalto', 'gov_id') | list %}
+                <div
+                  class="item-status {{ 'completed' if gov_id_uploaded else 'pending' }}"
+                >
+                  <i
+                    class="fas fa-{{ 'check' if gov_id_uploaded else 'circle' }}"
+                  ></i>
+                </div>
+                <div class="item-content">
+                  <h6>Government Issued ID</h6>
+                  <p class="text-muted">
+                    Driver's license, passport, or state ID
+                  </p>
+                </div>
+                {% if not gov_id_uploaded %}
+                <a
+                  href="{{ url_for('document_upload') }}"
+                  class="btn btn-sm btn-primary"
+                  >Upload</a
+                >
+                {% endif %}
+              </div>
+
+              <div class="checklist-item">
+                {% set selfie_uploaded = documents |
+                selectattr('document_type.value', 'equalto', 'selfie') | list %}
+                <div
+                  class="item-status {{ 'completed' if selfie_uploaded else 'pending' }}"
+                >
+                  <i
+                    class="fas fa-{{ 'check' if selfie_uploaded else 'circle' }}"
+                  ></i>
+                </div>
+                <div class="item-content">
+                  <h6>Selfie/Liveness Photo</h6>
+                  <p class="text-muted">
+                    Clear photo of yourself for identity verification
+                  </p>
+                </div>
+                {% if not selfie_uploaded %}
+                <a
+                  href="{{ url_for('document_upload') }}"
+                  class="btn btn-sm btn-primary"
+                  >Upload</a
+                >
+                {% endif %}
+              </div>
+
+              {% if current_user.role.value == 'star' %}
+              <div class="checklist-item">
+                {% set tax_uploaded = documents |
+                selectattr('document_type.value', 'equalto', 'w9_w8ben') | list
+                %}
+                <div
+                  class="item-status {{ 'completed' if tax_uploaded else 'pending' }}"
+                >
+                  <i
+                    class="fas fa-{{ 'check' if tax_uploaded else 'circle' }}"
+                  ></i>
+                </div>
+                <div class="item-content">
+                  <h6>Tax Form (W-9/W-8BEN)</h6>
+                  <p class="text-muted">
+                    Required for payment processing and tax reporting
+                  </p>
+                </div>
+                {% if not tax_uploaded %}
+                <a
+                  href="{{ url_for('document_upload') }}"
+                  class="btn btn-sm btn-primary"
+                  >Upload</a
+                >
+                {% endif %}
+              </div>
+
+              <div class="checklist-item">
+                {% set address_uploaded = documents |
+                selectattr('document_type.value', 'equalto', 'address_proof') |
+                list %}
+                <div
+                  class="item-status {{ 'completed' if address_uploaded else 'pending' }}"
+                >
+                  <i
+                    class="fas fa-{{ 'check' if address_uploaded else 'circle' }}"
+                  ></i>
+                </div>
+                <div class="item-content">
+                  <h6>Address Verification</h6>
+                  <p class="text-muted">
+                    Utility bill, bank statement, or lease agreement
+                  </p>
+                </div>
+                {% if not address_uploaded %}
+                <a
+                  href="{{ url_for('document_upload') }}"
+                  class="btn btn-sm btn-primary"
+                  >Upload</a
+                >
+                {% endif %}
+              </div>
+
+              <div class="checklist-item">
+                {% set contracts_uploaded = documents |
+                selectattr('document_type.value', 'equalto', 'contracts') | list
+                %}
+                <div
+                  class="item-status {{ 'completed' if contracts_uploaded else 'pending' }}"
+                >
+                  <i
+                    class="fas fa-{{ 'check' if contracts_uploaded else 'circle' }}"
+                  ></i>
+                </div>
+                <div class="item-content">
+                  <h6>Signed Contracts</h6>
+                  <p class="text-muted">
+                    STAR agreement and compliance documents
+                  </p>
+                </div>
+                {% if not contracts_uploaded %}
+                <a
+                  href="{{ url_for('document_upload') }}"
+                  class="btn btn-sm btn-primary"
+                  >Upload</a
+                >
+                {% endif %}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons-card text-center">
+          {% if is_complete %}
+          <a
+            href="{{ url_for('cluster_selection') }}"
+            class="btn btn-success btn-lg me-3"
+          >
+            <i class="fas fa-network-wired me-2"></i>Choose Clusters
+          </a>
+          <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+          </a>
+          {% else %}
+          <a
+            href="{{ url_for('document_upload') }}"
+            class="btn btn-primary btn-lg me-3"
+          >
+            <i class="fas fa-upload me-2"></i>Upload More Documents
+          </a>
+          <a
+            href="{{ url_for('kyc_form') }}"
+            class="btn btn-outline-light btn-lg"
+          >
+            <i class="fas fa-edit me-2"></i>Update Information
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notes Modals -->
+{% for doc in documents %} {% if doc.notes %}
+<div class="modal fade" id="notesModal{{ doc.id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Document Notes</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <h6>{{ doc.document_type.value.replace('_', ' ').title() }}</h6>
+        <p class="text-muted">{{ doc.original_filename }}</p>
+        <div class="notes-content">{{ doc.notes }}</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %} {% endfor %}
+
+<style>
+  .verification-status-container {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 255, 0, 0.05),
+      rgba(0, 255, 255, 0.05)
+    );
+    min-height: 100vh;
+  }
+
+  .overall-status {
+    margin: 30px 0;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: 2px solid currentColor;
+  }
+
+  .doc-type {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  .filename {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .upload-date {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .empty-state {
+    padding: 60px 20px;
+  }
+
+  .verification-type {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  .verifymy-session {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+
+  .confidence-score {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .score-value {
+    font-weight: bold;
+    color: var(--neon-green);
+    min-width: 45px;
+  }
+
+  .score-bar {
+    width: 60px;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .score-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff4444, #ffaa00, #00ff00);
+    transition: width 0.3s ease;
+  }
+
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    border: 2px solid var(--border-color);
+    transition: all 0.3s ease;
+  }
+
+  .checklist-item:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+  }
+
+  .item-status {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border: 2px solid var(--border-color);
+    background: var(--card-bg);
+    transition: all 0.3s ease;
+  }
+
+  .item-status.completed {
+    background: var(--neon-green);
+    border-color: var(--neon-green);
+    color: var(--dark-bg);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+  }
+
+  .item-status.pending {
+    color: var(--text-secondary);
+  }
+
+  .item-content {
+    flex: 1;
+  }
+
+  .item-content h6 {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+
+  .item-content p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .action-buttons-card {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .modal-content {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+  }
+
+  .modal-header {
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .modal-footer {
+    border-top: 2px solid var(--border-color);
+  }
+
+  .notes-content {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .checklist-item {
+      flex-direction: column;
+      text-align: center;
+      gap: 15px;
+    }
+
+    .item-content {
+      order: 1;
+    }
+
+    .item-status {
+      order: 0;
+    }
+
+    .action-buttons {
+      justify-content: center;
+    }
+
+    .confidence-score {
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Auto-refresh status every 30 seconds
+      let refreshInterval;
+
+      function startAutoRefresh() {
+          refreshInterval = setInterval(function() {
+              // Check if there are any pending verifications
+              const pendingStatuses = document.querySelectorAll('.status-badge[data-status="pending"]');
+
+              if (pendingStatuses.length > 0) {
+                  // Silently check for updates
+                  fetch(window.location.href + '?ajax=1')
+                      .then(response => response.json())
+                      .then(data => {
+                          if (data.updated) {
+                              window.location.reload();
+                          }
+                      })
+                      .catch(error => {
+                          console.log('Auto-refresh failed:', error);
+                      });
+              } else {
+                  // Stop auto-refresh if everything is completed
+                  clearInterval(refreshInterval);
+              }
+          }, 30000);
+      }
+
+      // Start auto-refresh if there are pending items
+      const pendingItems = document.querySelectorAll('.status-badge[data-status="pending"]');
+      if (pendingItems.length > 0) {
+          startAutoRefresh();
+
+          // Show notification about auto-refresh
+          window.NeonUtils.showNeonAlert('Status will auto-refresh every 30 seconds for pending verifications', 'info');
+      }
+
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', function() {
+          if (refreshInterval) {
+              clearInterval(refreshInterval);
+          }
+      });
+
+      // Enhanced status animations
+      const statusBadges = document.querySelectorAll('.status-badge[data-status="pending"]');
+      statusBadges.forEach(badge => {
+          badge.style.animation = 'pulse 2s ease-in-out infinite';
+      });
+
+      // Progress animation for confidence scores
+      const scoreElements = document.querySelectorAll('.score-fill');
+      scoreElements.forEach(element => {
+          const width = element.style.width;
+          element.style.width = '0%';
+          setTimeout(() => {
+              element.style.width = width;
+          }, 500);
+      });
+
+      // Checklist item animations
+      const checklistItems = document.querySelectorAll('.checklist-item');
+      checklistItems.forEach((item, index) => {
+          item.style.opacity = '0';
+          item.style.transform = 'translateY(20px)';
+
+          setTimeout(() => {
+              item.style.transition = 'all 0.5s ease';
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+          }, index * 100);
+      });
+
+      // Show completion celebration
+      const isComplete = {{ 'true' if is_complete else 'false' }};
+      if (isComplete) {
+          setTimeout(() => {
+              window.NeonUtils.showNeonAlert('🎉 Verification Complete! You can now access all platform features.', 'success');
+          }, 1000);
+      }
+  });
+</script>
+{% endblock %}

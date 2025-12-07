@@ -1,0 +1,565 @@
+{% extends "base.html" %} {% block title %}Create Account - FANZ{% endblock %}
+{% block content %}
+<div class="auth-container">
+  <div class="container">
+    <div class="row justify-content-center min-vh-100 align-items-center py-5">
+      <div class="col-md-8 col-lg-6">
+        <div class="auth-card card">
+          <div class="card-header text-center">
+            <h2 class="fanz-logo neon-text neon-pink mb-0">
+              <i class="fas fa-user-plus me-2"></i>Join FANZ
+            </h2>
+            <p class="text-secondary mt-2">
+              Start your creator economy journey
+            </p>
+          </div>
+
+          <div class="card-body p-4">
+            <form method="POST" class="auth-form" novalidate>
+              {{ form.hidden_tag() }}
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-4">
+                    {{ form.first_name.label(class="form-label") }} {{
+                    form.first_name(class="form-control" + (" is-invalid" if
+                    form.first_name.errors else ""), placeholder="First name")
+                    }} {% if form.first_name.errors %}
+                    <div class="invalid-feedback">
+                      {% for error in form.first_name.errors %}{{ error }}{%
+                      endfor %}
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group mb-4">
+                    {{ form.last_name.label(class="form-label") }} {{
+                    form.last_name(class="form-control" + (" is-invalid" if
+                    form.last_name.errors else ""), placeholder="Last name") }}
+                    {% if form.last_name.errors %}
+                    <div class="invalid-feedback">
+                      {% for error in form.last_name.errors %}{{ error }}{%
+                      endfor %}
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-4">
+                {{ form.username.label(class="form-label") }}
+                <div class="input-group">
+                  <span class="input-group-text">@</span>
+                  {{ form.username(class="form-control" + (" is-invalid" if
+                  form.username.errors else ""), placeholder="Choose a unique
+                  username") }}
+                  <div class="username-status"></div>
+                </div>
+                {% if form.username.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.username.errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+                <small class="form-text text-muted">
+                  Your username will be your unique identifier across all
+                  clusters
+                </small>
+              </div>
+
+              <div class="form-group mb-4">
+                {{ form.email.label(class="form-label") }} {{
+                form.email(class="form-control" + (" is-invalid" if
+                form.email.errors else ""), placeholder="Enter your email
+                address") }} {% if form.email.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.email.errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="form-group mb-4">
+                {{ form.password.label(class="form-label") }}
+                <div class="password-input-group">
+                  {{ form.password(class="form-control" + (" is-invalid" if
+                  form.password.errors else ""), placeholder="Create a strong
+                  password") }}
+                  <button
+                    type="button"
+                    class="password-toggle btn"
+                    onclick="togglePassword(this)"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                {% if form.password.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.password.errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+                <div class="password-requirements mt-2">
+                  <small class="text-muted">
+                    Password must be at least 8 characters with uppercase,
+                    lowercase, numbers, and symbols
+                  </small>
+                </div>
+              </div>
+
+              <div class="form-group mb-4">
+                {{ form.password2.label(class="form-label") }}
+                <div class="password-input-group">
+                  {{ form.password2(class="form-control" + (" is-invalid" if
+                  form.password2.errors else ""), placeholder="Confirm your
+                  password") }}
+                  <button
+                    type="button"
+                    class="password-toggle btn"
+                    onclick="togglePassword(this)"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                {% if form.password2.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.password2.errors %}{{ error }}{% endfor
+                  %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Terms and Privacy -->
+              <div class="form-group mb-4">
+                <div class="form-check" onclick="toggleCheckbox('terms')">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="terms"
+                    name="terms"
+                    required
+                  />
+                  <label class="form-check-label small" for="terms">
+                    I agree to the
+                    <a
+                      href="{{ url_for('terms') }}"
+                      class="neon-link neon-cyan"
+                      target="_blank"
+                      onclick="event.stopPropagation()"
+                      >Terms of Service</a
+                    >
+                    and
+                    <a
+                      href="{{ url_for('privacy') }}"
+                      class="neon-link neon-cyan"
+                      target="_blank"
+                      onclick="event.stopPropagation()"
+                      >Privacy Policy</a
+                    >
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group mb-4">
+                <div class="form-check" onclick="toggleCheckbox('age-consent')">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="age-consent"
+                    name="age_consent"
+                    required
+                  />
+                  <label class="form-check-label small" for="age-consent">
+                    I confirm that I am at least 18 years old
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg w-100 glow-pulse"
+              >
+                <i class="fas fa-rocket me-2"></i>Create Account
+              </button>
+            </form>
+
+            <div class="auth-divider my-4">
+              <span class="divider-text">or</span>
+            </div>
+
+            <div class="auth-links text-center">
+              <p class="text-secondary">
+                Already have an account?
+                <a href="{{ url_for('login') }}" class="neon-link neon-pink"
+                  >Sign In</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- What's Next Preview -->
+        <div class="next-steps-preview mt-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <h6 class="neon-text neon-yellow mb-2">
+                <i class="fas fa-route me-2"></i>What's Next?
+              </h6>
+              <div class="next-steps-list">
+                <div class="step-item">
+                  <i class="fas fa-user-tag neon-cyan"></i>
+                  <span>Choose your role (Fan, STAR, etc.)</span>
+                </div>
+                <div class="step-item">
+                  <i class="fas fa-id-card neon-green"></i>
+                  <span>Complete identity verification</span>
+                </div>
+                <div class="step-item">
+                  <i class="fas fa-network-wired neon-pink"></i>
+                  <span>Select your clusters</span>
+                </div>
+                <div class="step-item">
+                  <i class="fas fa-star neon-yellow"></i>
+                  <span>Start creating or enjoying content</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .auth-container {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 255, 0.05),
+      rgba(0, 255, 255, 0.05)
+    );
+    min-height: 100vh;
+  }
+
+  .auth-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .auth-card:hover {
+    border-color: var(--neon-pink);
+    box-shadow: 0 20px 60px rgba(255, 0, 255, 0.2);
+  }
+
+  .input-group-text {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--neon-cyan);
+    border-right: none;
+  }
+
+  .username-status {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+  }
+
+  .username-available {
+    color: var(--neon-green);
+  }
+
+  .username-taken {
+    color: #ff4444;
+  }
+
+  .password-input-group {
+    position: relative;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+
+  .password-toggle:hover {
+    color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.1);
+  }
+
+  .password-requirements {
+    display: none;
+  }
+
+  .form-control:focus + .password-requirements,
+  .password-requirements.show {
+    display: block;
+  }
+
+  .next-steps-preview .card {
+    background: rgba(255, 255, 0, 0.05);
+    border: 1px solid rgba(255, 255, 0, 0.2);
+  }
+
+  .next-steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .step-item i {
+    width: 20px;
+    text-align: center;
+  }
+
+  .auth-divider {
+    position: relative;
+    text-align: center;
+  }
+
+  .auth-divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-color);
+  }
+
+  .divider-text {
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .neon-link {
+    color: currentColor;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .neon-link:hover {
+    text-shadow: 0 0 10px currentColor;
+    color: currentColor;
+  }
+
+  .neon-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+
+  .neon-link:hover::after {
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .auth-card {
+      margin: 20px;
+      border-radius: 15px;
+    }
+
+    .next-steps-list {
+      gap: 8px;
+    }
+
+    .step-item {
+      font-size: 0.8rem;
+      gap: 10px;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  function togglePassword(button) {
+    const input = button.parentElement.querySelector("input");
+    const icon = button.querySelector("i");
+
+    if (input.type === "password") {
+      input.type = "text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+      button.style.color = "var(--neon-cyan)";
+    } else {
+      input.type = "password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+      button.style.color = "";
+    }
+  }
+
+  // Checkbox toggle function
+  function toggleCheckbox(checkboxId) {
+    const checkbox = document.getElementById(checkboxId);
+    if (checkbox && !checkbox.disabled) {
+      checkbox.checked = !checkbox.checked;
+      // Trigger change event for any listeners
+      checkbox.dispatchEvent(new Event("change"));
+    }
+  }
+
+  // Enhanced form validation and UX
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".auth-form");
+    const usernameInput = form.querySelector('input[name="username"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+    const confirmPasswordInput = form.querySelector('input[name="password2"]');
+    const emailInput = form.querySelector('input[name="email"]');
+
+    // Ensure checkboxes are clickable
+    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("click", function (e) {
+        e.stopPropagation(); // Prevent double-toggling
+      });
+    });
+
+    // Username availability check (simulated)
+    if (usernameInput) {
+      let usernameTimeout;
+      usernameInput.addEventListener("input", function () {
+        const statusDiv = document.querySelector(".username-status");
+        clearTimeout(usernameTimeout);
+
+        if (this.value.length >= 3) {
+          statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+          usernameTimeout = setTimeout(() => {
+            // Simulate API call
+            const isAvailable = Math.random() > 0.3; // 70% chance available
+            if (isAvailable) {
+              statusDiv.innerHTML =
+                '<i class="fas fa-check username-available"></i>';
+              statusDiv.className = "username-status username-available";
+            } else {
+              statusDiv.innerHTML =
+                '<i class="fas fa-times username-taken"></i>';
+              statusDiv.className = "username-status username-taken";
+            }
+          }, 1000);
+        } else {
+          statusDiv.innerHTML = "";
+        }
+      });
+    }
+
+    // Password confirmation validation
+    if (confirmPasswordInput) {
+      confirmPasswordInput.addEventListener("input", function () {
+        const password = passwordInput.value;
+        const confirmPassword = this.value;
+
+        if (confirmPassword && password !== confirmPassword) {
+          this.classList.add("is-invalid");
+          this.setCustomValidity("Passwords do not match");
+        } else {
+          this.classList.remove("is-invalid");
+          this.setCustomValidity("");
+        }
+      });
+    }
+
+    // Email validation enhancement
+    if (emailInput) {
+      emailInput.addEventListener("blur", function () {
+        const email = this.value;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (email && !emailRegex.test(email)) {
+          this.classList.add("is-invalid");
+          this.setCustomValidity("Please enter a valid email address");
+        } else {
+          this.classList.remove("is-invalid");
+          this.setCustomValidity("");
+        }
+      });
+    }
+
+    // Form submission enhancement
+    form.addEventListener("submit", function (e) {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const termsCheck = document.getElementById("terms");
+      const ageCheck = document.getElementById("age-consent");
+
+      // Check required checkboxes
+      if (!termsCheck.checked || !ageCheck.checked) {
+        e.preventDefault();
+        window.NeonUtils.showNeonAlert(
+          "Please accept the terms and confirm your age",
+          "warning",
+        );
+        return;
+      }
+
+      // Disable button and show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Creating Account...';
+
+      // Re-enable on error
+      setTimeout(() => {
+        if (submitBtn.disabled) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML =
+            '<i class="fas fa-rocket me-2"></i>Create Account';
+        }
+      }, 10000);
+    });
+
+    // Enhanced input effects
+    const inputs = form.querySelectorAll(".form-control");
+    inputs.forEach((input) => {
+      input.addEventListener("focus", function () {
+        this.parentElement.classList.add("focused");
+      });
+
+      input.addEventListener("blur", function () {
+        if (!this.value) {
+          this.parentElement.classList.remove("focused");
+        }
+      });
+
+      // Check initial values
+      if (input.value) {
+        input.parentElement.classList.add("focused");
+      }
+    });
+  });
+</script>
+{% endblock %}

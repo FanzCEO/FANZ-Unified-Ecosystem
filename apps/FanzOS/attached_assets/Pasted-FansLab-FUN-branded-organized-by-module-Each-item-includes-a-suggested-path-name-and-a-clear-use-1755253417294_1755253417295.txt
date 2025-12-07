@@ -1,0 +1,262 @@
+FansLab (FUN-branded), organized by module. Each item includes a suggested path/name and a clear use case so your team can estimate, assign, and build fast.
+
+⸻
+
+FansLab System Map (Pages & Scripts with Use Cases)
+
+0) Global / Shared
+	•	/ — Marketing Homepage: brand story, creator/fan CTAs, legal footer.
+	•	/pricing — Plans & Fees: fan subs, VIP, creator tiers.
+	•	/legal/* — ToS, Privacy, 2257, DMCA: compliance pages.
+	•	/help — Help Center: FAQs, ticket entry.
+	•	/status — Platform Status: uptime & incidents.
+	•	/auth/* — Auth: login, signup (fan/creator), OAuth, 2FA, KYC.
+
+Scripts
+	•	middleware/authGuard.ts — route protection & role gating.
+	•	middleware/geoGuard.ts — country/region content/payment gating.
+	•	workers/image-video-processor.ts — thumbnails, transcodes, watermarks.
+	•	workers/moderation-queue.ts — AI + human review pipeline.
+	•	cron/db-backup.ts — backups; PITR hooks.
+
+⸻
+
+1) FUNCore (Subscription Social)
+
+Pages
+	•	/feed — Global Feed: follow/subscribed creators.
+	•	/u/:handle — Creator Profile: subs, PPV, tips, bundles.
+	•	/u/:handle/posts/:id — Post Detail: media, comments, tip jar, unlocks.
+	•	/messages — Inbox: DMs, PPV messages, attachments.
+	•	/wallet — Fan/Creator Wallet: XCash balance, history.
+	•	/settings/profile — Profile Settings: avatar, bio, links, age-gate.
+	•	/settings/payouts — Payout Settings: bank/crypto, forms, tax.
+	•	/analytics — Creator Analytics: earnings, subs, retention.
+
+Scripts
+	•	services/subscriptions.ts — create/cancel/renew; proration.
+	•	services/ppv.ts — unlockables & receipts.
+	•	workers/subscription-renewal.ts — nightly rebills & dunning.
+	•	workers/receipt-emailer.ts — transactional emails/SMS.
+
+Use cases: day-to-day creator monetization, PPV upsells, messaging.
+
+⸻
+
+2) FUNfluence (MLM + Affiliate)
+
+Pages
+	•	/partners/overview — Referral Dashboard: links, tiers, trees.
+	•	/partners/tree — Downline Map: multi-level genealogy.
+	•	/affiliates/campaigns — Affiliate Campaigns: offers, creatives, caps.
+	•	/affiliates/leaders — Leaderboards: gamified monthly ranks.
+
+Scripts
+	•	trackers/aff-click.js — pixel/UTM/cookie tracking.
+	•	workers/commission-calc.ts — MTD/YTD commissions (MLM + CPA).
+	•	services/anti-fraud.ts — click spam, VPN, velocity checks.
+
+Use cases: creator-recruits-creator, fan affiliates, payout control.
+
+⸻
+
+3) FUNStream (VOD + Live)
+
+Pages
+	•	/stream/library — My Videos: manage uploads.
+	•	/stream/upload — Uploader: chunked upload + HLS transcode.
+	•	/live/:handle — Live Room: chat, tips, polls, multi-cam.
+	•	/watch/:videoId — VOD Viewer: previews, rentals, PPV.
+
+Scripts
+	•	workers/transcode-hls.ts — 240/480/720/1080p renditions + DRM keys.
+	•	services/live-sfu.ts — WebRTC SFU, latency <500ms.
+	•	services/tip-engine.ts — real-time tipping, on-screen alerts.
+	•	services/polls.ts — paid votes, fetish polls.
+
+Use cases: longform scenes, live interactive shows, upsells.
+
+⸻
+
+4) FUNClips (VIP Short-Clip Zone)
+
+Pages
+	•	/vip — VIP Landing: benefits, get VIP (ViserCard).
+	•	/vip/clips — Vertical Feed: 15–60s clips, swipe UX.
+	•	/vip/challenges — Flash Challenges: time-boxed themes.
+
+Scripts
+	•	services/vip-access.ts — ViserCard token check + tier entitlements.
+	•	workers/clip-curation.ts — trending, NSFW tagging, moderation.
+	•	services/ppv-in-vip.ts — clip-level extra unlocks + tips.
+
+Use cases: high-frequency exclusive feed to drive VIP ARPU & retention.
+
+⸻
+
+5) FUNX (Wallet, Virtual Card, Web3, NFT, Gigs)
+
+Pages
+	•	/wallet/xcash — Wallet Home: load, tip, withdraw.
+	•	/wallet/card — Virtual VIP Card: show, freeze, limits.
+	•	/nft/market — NFT Marketplace: mint, list, buy, resell.
+	•	/gigs — Custom Gigs: request custom video/photo sets (Metalance).
+
+Scripts
+	•	services/card-issuer.ts — create/issue ViserCard, KYC checks.
+	•	workers/payouts.ts — batched payouts; instant card push.
+	•	services/nft-mint.ts — lazy mint, royalties, unlockable attachments.
+	•	escrow/gig-escrow.ts — milestone escrow, disputes.
+
+Use cases: VIP as access credential, crypto fans, NFT collectors, custom content.
+
+⸻
+
+6) FUNShop (Merch, Digital, PPD)
+
+Pages
+	•	/shop/:handle — Creator Store: merch & digital packs.
+	•	/shop/cart — Cart/Checkout: discreet ship + age-gate.
+	•	/download/:orderId — PPD Delivery: secure, watermarked.
+
+Scripts
+	•	services/shipping.ts — carriers, discreet labeling.
+	•	workers/license-watermark.ts — per-buyer watermark & license.
+	•	services/tax-vat.ts — tax calc by region.
+
+Use cases: physical merch, digital packs, one-off full-length sales.
+
+⸻
+
+7) FUNStage (Events, Theater Seating, Appointments)
+
+Pages
+	•	/events — Events Explorer: virtual & IRL; map & list.
+	•	/events/:id — Event Detail: tiers, seat map (TheataLab).
+	•	/book/:handle — Appointments: 1:1 video/in-person slots.
+
+Scripts
+	•	services/ticketing.ts — QR codes, transfer rules.
+	•	services/seating.ts — seat holds, map UI, upgrades.
+	•	workers/reminders.ts — SMS/email reminders & ICS.
+
+Use cases: shows, fan meets, creator coaching, paid 1:1 time.
+
+⸻
+
+8) FUNForum (Community)
+
+Pages
+	•	/forum — Boards: niches, regions, creator-only sections.
+	•	/forum/topic/:id — Thread View: polls, attachments.
+	•	/forum/new — Create Topic: creator collab board.
+
+Scripts
+	•	services/anon-mode.ts — masked handles (creator-only/option).
+	•	services/mod-tools.ts — shadowban, flags, rate limits.
+
+Use cases: safe collab board, fan communities, creator knowledge.
+
+⸻
+
+9) FUNRank (Ratings & Reviews)
+
+Pages
+	•	/reviews/:handle — Creator Reviews: verified purchase gate.
+	•	/reviews/write/:orderId — Write Review: after purchase/attendance.
+
+Scripts
+	•	services/review-verifier.ts — ties review to real purchase/ticket.
+	•	workers/anti-brigade.ts — detect brigading/fake patterns.
+	•	services/creator-badges.ts — Top 1%, Category Leader, etc.
+
+Use cases: trust, discovery, creator-to-creator private ratings.
+
+⸻
+
+10) FUNGames (Contests & Competitions)
+
+Pages
+	•	/contests — Contest Hub: open, past, leaderboard.
+	•	/contests/:id — Contest Detail: entries, tip-to-vote, prizes.
+	•	/battles/live — Live Battles: head-to-head streams.
+
+Scripts
+	•	services/voting.ts — tip-weighted votes, anti-bot guards.
+	•	services/prize-payout.ts — automated prize distribution.
+	•	workers/fairplay.ts — duplicate/asset reuse checks.
+
+Use cases: virality, fan spend, creator discovery.
+
+⸻
+
+11) FUNReach (Marketing: Email, SMS, Short URLs, CPA, SEO)
+
+Pages
+	•	/marketing/campaigns — Email/SMS Blasts: segments, templates.
+	•	/links — Short Links: branded, cloaked previews.
+	•	/funnels — CPA Landing Pages: age gate, offer compare.
+	•	/seo/tools — SEO Toolkit: audits, metadata, sitemaps.
+
+Scripts
+	•	workers/email-sender.ts — bulk with warm-up & throttling.
+	•	services/sms-sender.ts — carrier compliance, quiet hours.
+	•	services/link-redirector.ts — AB tests, geo-routing, UTM.
+	•	services/funnel-builder.ts — drag-drop blocks, ADA check.
+
+Use cases: growth loops for creators & platform, compliant outreach.
+
+⸻
+
+12) FUNMap (Creator-Only Geolocation + Chat)
+
+Pages
+	•	/map — Creator Map: pins, filters (niche, rating, availability).
+	•	/map/safety — Safety Controls: radius, blur, approve visibility.
+
+Scripts
+	•	services/creator-locator.ts — coarse geo, jittered pins, opt-in.
+	•	services/map-chat.ts — in-map DMs with expiring invites.
+	•	workers/geo-events.ts — proximity alerts, geo-drops/NFTs.
+
+Use cases: local collabs, pop-up shoots, proximity-only perks—creators only.
+
+⸻
+
+13) Admin (FUNOps) — Single Pane of Glass
+
+Pages
+	•	/admin/dashboard — KPIs: GMV, ARPU, chargebacks, LTV.
+	•	/admin/users — User/Creator Mgmt: KYC, strikes, bans.
+	•	/admin/content — Moderation Queue: AI flags, 2257 docs.
+	•	/admin/payments — Reconciliation: gateway, ledger, refunds.
+	•	/admin/commissions — MLM/Affiliate: rules, overrides.
+	•	/admin/marketing — Global Campaigns: announcements, banners.
+	•	/admin/contests — Contest Ops: themes, judges, fraud logs.
+	•	/admin/events — Event Approvals: seating, risk scoring.
+	•	/admin/nft — Web3 Ops: collections, royalties, blacklists.
+	•	/admin/settings — Feature Toggles: module on/off, regional rules.
+	•	/admin/compliance — 2257/KYC: audits, expirations, subpoenas.
+
+Scripts
+	•	cron/rebill-dunning.ts — retries + card updater.
+	•	cron/analytics-rollup.ts — daily cohort/LTV churn.
+	•	cron/chargeback-webhooks.ts — alert + auto-lock flows.
+	•	services/geo-compliance-matrix.ts — map of features by country/state.
+	•	services/audit-log.ts — immutable admin actions ledger.
+
+Use cases: governance, safety, money, growth, legal.
+
+⸻
+
+API & Integration Notes (high level)
+	•	REST/GraphQL for internal clients; Webhooks for payment gateways, SMS, email, card issuer, NFT chain.
+	•	Event Bus (e.g., Kafka/NATS) between uploads → transcode → publish; purchase → unlock → notify; tip → alert → analytics.
+	•	Search via OpenSearch/Meilisearch for creators, clips, events, threads.
+	•	Real-time via WebSockets for chat, live tips, contests, live battles.
+	•	Storage: object storage (S3-compatible) + signed URLs; CDN with tokenized paths.
+
+⸻
+
+Data/Compliance (quick checklist)
+	•	Age/KYC (creator + payout), geo-blocking, content classification, DMCA/2257 vault, export/download request handler (GDPR/CCPA), audit logs, payment PCI separation.

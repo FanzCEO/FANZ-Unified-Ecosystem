@@ -1,0 +1,2 @@
+-- This file contains the same schema as schema.sql but formatted for migrations
+-- See shared/database/schema.sql for the complete schema

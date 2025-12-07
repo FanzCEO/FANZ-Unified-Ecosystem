@@ -1,0 +1,723 @@
+<footer class="footer mt-auto">
+  <div class="container">
+    <div class="row">
+      <!-- Brand Section -->
+      <div class="col-lg-4 mb-4">
+        <div class="footer-brand">
+          <h3 class="fanz-logo neon-text neon-yellow mb-3">
+            <i class="fas fa-shield-alt me-2"></i>FANZ
+          </h3>
+          <p class="brand-tagline">
+            Military-grade encrypted creator economy platform with proprietary
+            anti-media theft technology. Army-level security protecting your
+            seductive content.
+          </p>
+          <div class="security-highlights mb-3">
+            <div class="security-item">
+              <i class="fas fa-lock neon-green me-2"></i>
+              <span>AES-256 Military Encryption</span>
+            </div>
+            <div class="security-item">
+              <i class="fas fa-shield-virus neon-cyan me-2"></i>
+              <span>Proprietary Anti-Theft Technology</span>
+            </div>
+            <div class="security-item">
+              <i class="fas fa-user-lock neon-yellow me-2"></i>
+              <span>Zero-Knowledge Architecture</span>
+            </div>
+          </div>
+          <div class="social-links">
+            <a href="#" class="social-link" title="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="social-link" title="Discord">
+              <i class="fab fa-discord"></i>
+            </a>
+            <a href="#" class="social-link" title="Telegram">
+              <i class="fab fa-telegram"></i>
+            </a>
+            <a href="#" class="social-link" title="Reddit">
+              <i class="fab fa-reddit"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-lg-2 col-md-6 mb-4">
+        <h5 class="footer-title neon-text neon-cyan">Platform</h5>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('cluster_selection') }}">Clusters</a></li>
+          {% if current_user.is_authenticated %}
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          {% if current_user.role.value == 'star' %}
+          <li><a href="{{ url_for('create_scene') }}">Upload Content</a></li>
+          {% endif %} {% else %}
+          <li><a href="{{ url_for('register') }}">Sign Up</a></li>
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <!-- Clusters -->
+      <div class="col-lg-2 col-md-6 mb-4">
+        <h5 class="footer-title neon-text neon-pink">Featured Clusters</h5>
+        <ul class="footer-links">
+          <li>
+            <a href="#">BoyFanz <span class="cluster-badge">🔥</span></a>
+          </li>
+          <li>
+            <a href="#">GirlFanz <span class="cluster-badge">💎</span></a>
+          </li>
+          <li>
+            <a href="#">AllMyFanz <span class="cluster-badge">⭐</span></a>
+          </li>
+          <li>
+            <a href="#">TranzFanz <span class="cluster-badge">🌈</span></a>
+          </li>
+          <li>
+            <a href="#">FanzTube <span class="cluster-badge">📹</span></a>
+          </li>
+          <li>
+            <a
+              href="{{ url_for('cluster_selection') if current_user.is_authenticated else url_for('about') + '#clusters' }}"
+              >View All Clusters</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div class="col-lg-2 col-md-6 mb-4">
+        <h5 class="footer-title neon-text neon-green">Support</h5>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Creator Guide</a></li>
+          <li><a href="#">Safety Center</a></li>
+          <li><a href="#">Community Guidelines</a></li>
+          <li><a href="#">Bug Reports</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal & Compliance -->
+      <div class="col-lg-2 col-md-6 mb-4">
+        <h5 class="footer-title neon-text neon-orange">
+          Legal & Compliance
+          <span class="compliance-badges ms-2">
+            <span
+              class="badge bg-success me-1"
+              title="256-bit SSL/TLS Encryption"
+            >
+              <i class="fas fa-lock me-1"></i>SSL
+            </span>
+            <span
+              class="badge bg-primary me-1"
+              title="PCI DSS Level 1 Compliant"
+            >
+              <i class="fas fa-credit-card me-1"></i>PCI
+            </span>
+            <span class="badge bg-info me-1" title="SOC 2 Type II Certified">
+              <i class="fas fa-shield-alt me-1"></i>SOC2
+            </span>
+            <span class="badge bg-warning text-dark" title="GDPR Compliant">
+              <i class="fas fa-user-shield me-1"></i>GDPR
+            </span>
+          </span>
+        </h5>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('terms') }}">Terms of Service</a></li>
+          <li><a href="{{ url_for('privacy') }}">Privacy Policy</a></li>
+          <li><a href="{{ url_for('dmca') }}">DMCA Policy</a></li>
+          <li><a href="{{ url_for('usc2257') }}">USC 2257 Compliance</a></li>
+          <li><a href="{{ url_for('faq') }}">FAQ & Help</a></li>
+          <li><a href="mailto:legal@fanz.com">Legal Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Security & Trust -->
+      <div class="col-lg-2 col-md-6 mb-4">
+        <h5 class="footer-title neon-text neon-red">
+          Security & Trust
+          <span class="security-badges-header ms-2">
+            <span class="badge bg-danger me-1" title="ISO 27001 Certified">
+              <i class="fas fa-certificate me-1"></i>ISO
+            </span>
+            <span
+              class="badge bg-secondary me-1"
+              title="NIST Cybersecurity Framework"
+            >
+              <i class="fas fa-shield me-1"></i>NIST
+            </span>
+            <span class="badge bg-dark me-1" title="CCPA Privacy Compliant">
+              <i class="fas fa-user-secret me-1"></i>CCPA
+            </span>
+          </span>
+        </h5>
+        <ul class="footer-links">
+          <li><a href="#">Security Center</a></li>
+          <li><a href="#">Trust & Safety</a></li>
+          <li><a href="#">Content Protection</a></li>
+          <li><a href="#">Anti-Fraud</a></li>
+          <li><a href="#">Report Abuse</a></li>
+          <li><a href="mailto:security@fanz.com">Security Team</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Security & Compliance Info -->
+    <div class="row">
+      <div class="col-12">
+        <div class="security-notice">
+          <div class="row align-items-center">
+            <div class="col-lg-8">
+              <div class="security-badges">
+                <div class="security-badge">
+                  <i class="fas fa-lock neon-green me-2"></i>
+                  <span>256-bit SSL/TLS Encrypted</span>
+                </div>
+                <div class="security-badge">
+                  <i class="fas fa-shield-virus neon-cyan me-2"></i>
+                  <span>Military AES-256 Encryption</span>
+                </div>
+                <div class="security-badge">
+                  <i class="fas fa-eye-slash neon-red me-2"></i>
+                  <span>Anti-Media Theft Technology™</span>
+                </div>
+                <div class="security-badge">
+                  <i class="fas fa-user-shield neon-yellow me-2"></i>
+                  <span>VerifyMy Age Verified</span>
+                </div>
+                <div class="security-badge">
+                  <i class="fas fa-certificate neon-pink me-2"></i>
+                  <span>2257 Records Compliant</span>
+                </div>
+                <div class="security-badge">
+                  <i class="fas fa-credit-card neon-orange me-2"></i>
+                  <span>PCI DSS Level 1 Certified</span>
+                </div>
+                <div class="security-badge">
+                  <i class="fas fa-server neon-purple me-2"></i>
+                  <span>SOC 2 Type II Audited</span>
+                </div>
+                <div class="security-badge">
+                  <i class="fas fa-shield-alt neon-blue me-2"></i>
+                  <span>ISO 27001 Certified</span>
+                </div>
+                <div class="security-badge">
+                  <i class="fas fa-user-secret neon-white me-2"></i>
+                  <span>CCPA Privacy Protected</span>
+                </div>
+                <div class="security-badge">
+                  <i class="fas fa-fingerprint neon-teal me-2"></i>
+                  <span>Zero-Knowledge Architecture</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+              <div class="compliance-info">
+                <small class="text-white">
+                  <i class="fas fa-exclamation-triangle me-1"></i>
+                  18+ Only (21+ in AL, MS, NE, WY) • Mandatory Age Verification
+                  • Records Maintained Per 18 U.S.C. § 2257
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="row">
+      <div class="col-12">
+        <hr class="footer-divider" />
+        <div class="footer-bottom">
+          <div class="row align-items-center">
+            <div class="col-lg-6">
+              <p class="copyright-text">
+                © 2025 Fanz™ Unlimited Network LLC. All Rights Reserved.
+                Proprietary Anti-Theft Technology. Made For Starz by Starz, Made
+                with <i class="fas fa-heart neon-pink"></i> for creators.
+              </p>
+            </div>
+            <div class="col-lg-6 text-lg-end">
+              <div class="footer-meta">
+                <span class="meta-item">
+                  <i class="fas fa-server neon-green me-1"></i>Status:
+                  <span class="status-online">Operational</span>
+                </span>
+                <span class="meta-item">
+                  <i class="fas fa-clock neon-cyan me-1"></i>
+                  Last updated:
+                  <span id="lastUpdated"
+                    >{{ current_time or 'Loading...' }}</span
+                  >
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Banner Drip Effect -->
+  <div class="banana-drip-banner">
+    <div class="drip-container">
+      <div class="drip drip-1"></div>
+      <div class="drip drip-2"></div>
+      <div class="drip drip-3"></div>
+      <div class="drip drip-4"></div>
+      <div class="drip drip-5"></div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: radial-gradient(
+      ellipse at center,
+      #1a1a2e 0%,
+      #0a0a1a 70%,
+      #000000 100%
+    );
+    border-top: 3px solid transparent;
+    border-image: var(--rainbow-gradient) 1;
+    padding: 60px 0 30px;
+    margin-top: 80px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 -10px 30px rgba(0, 212, 255, 0.1),
+      0 0 60px rgba(255, 0, 127, 0.05);
+  }
+
+  .footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background:
+      radial-gradient(
+        circle at 20% 80%,
+        rgba(255, 0, 127, 0.15) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(0, 212, 255, 0.15) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 50% 50%,
+        rgba(255, 215, 0, 0.05) 0%,
+        transparent 70%
+      );
+    pointer-events: none;
+  }
+
+  .footer-brand {
+    position: relative;
+    z-index: 2;
+  }
+
+  .security-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .security-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .brand-tagline {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 25px;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 15px;
+  }
+
+  .social-link {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(26, 26, 46, 0.8);
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .social-link:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(0, 212, 255, 0.15);
+    transform: translateY(-3px);
+    box-shadow:
+      0 8px 20px rgba(0, 212, 255, 0.4),
+      0 0 40px rgba(255, 0, 127, 0.2);
+  }
+
+  .footer-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid currentColor;
+    display: inline-block;
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-links li {
+    margin-bottom: 12px;
+  }
+
+  .footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    padding-left: 15px;
+  }
+
+  .footer-links a::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--neon-cyan);
+    opacity: 0;
+    transition: all 0.3s ease;
+    transform: translateX(-10px);
+  }
+
+  .footer-links a:hover {
+    color: var(--neon-cyan);
+    padding-left: 20px;
+  }
+
+  .footer-links a:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .security-notice {
+    background: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 40px 0 30px;
+    position: relative;
+    z-index: 2;
+    backdrop-filter: blur(15px);
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba(0, 212, 255, 0.1);
+  }
+
+  .security-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .security-badge {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    background: rgba(26, 26, 46, 0.6);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .security-badge:hover {
+    border-color: var(--primary);
+    background: rgba(0, 212, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+  }
+
+  .compliance-info {
+    background: rgba(255, 136, 0, 0.1);
+    border: 1px solid rgba(255, 136, 0, 0.3);
+    border-radius: 10px;
+    padding: 10px 15px;
+  }
+
+  .footer-divider {
+    border-color: var(--border-color);
+    margin: 30px 0 20px;
+  }
+
+  .footer-bottom {
+    position: relative;
+    z-index: 2;
+  }
+
+  .copyright-text {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .footer-meta {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .status-online {
+    color: var(--neon-green);
+    font-weight: bold;
+  }
+
+  /* Banana Drip Animation */
+  .banana-drip-banner {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .drip-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .drip {
+    position: absolute;
+    width: 8px;
+    height: 15px;
+    background: var(--banana-gradient);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: drip-fall 4s ease-in-out infinite;
+  }
+
+  .drip-1 {
+    left: 10%;
+    animation-delay: 0s;
+  }
+  .drip-2 {
+    left: 30%;
+    animation-delay: 0.8s;
+  }
+  .drip-3 {
+    left: 50%;
+    animation-delay: 1.6s;
+  }
+  .drip-4 {
+    left: 70%;
+    animation-delay: 2.4s;
+  }
+  .drip-5 {
+    left: 90%;
+    animation-delay: 3.2s;
+  }
+
+  @keyframes drip-fall {
+    0% {
+      top: -15px;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    10% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      top: 40px;
+      opacity: 0;
+      transform: scale(0.3);
+    }
+  }
+
+  /* Additional neon colors for trust badges */
+  .neon-white {
+    color: #ffffff;
+    text-shadow:
+      0 0 5px #ffffff,
+      0 0 10px #ffffff,
+      0 0 15px #ffffff;
+  }
+
+  .neon-teal {
+    color: #20b2aa;
+    text-shadow:
+      0 0 5px #20b2aa,
+      0 0 10px #20b2aa,
+      0 0 15px #20b2aa;
+  }
+
+  /* Cluster badges */
+  .cluster-badge {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+  }
+
+  .footer-links li:hover .cluster-badge {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .footer {
+      padding: 40px 0 20px;
+      text-align: center;
+    }
+
+    .social-links {
+      justify-content: center;
+    }
+
+    .security-badges {
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .security-badge {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+    }
+
+    .footer-meta {
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .meta-item {
+      font-size: 0.75rem;
+    }
+
+    .footer-links a {
+      padding-left: 0;
+    }
+
+    .footer-links a::before {
+      display: none;
+    }
+
+    .compliance-badges,
+    .security-badges-header {
+      display: none;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .security-badges {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .footer-meta {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .drip {
+      animation: none;
+    }
+
+    .social-link:hover {
+      transform: none;
+    }
+
+    .security-badge:hover {
+      transform: none;
+    }
+  }
+
+  /* Print Styles */
+  @media print {
+    .footer {
+      background: white !important;
+      color: black !important;
+      border-top: 1px solid black !important;
+    }
+
+    .banana-drip-banner,
+    .social-links {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Update last updated time
+    const lastUpdatedElement = document.getElementById("lastUpdated");
+    if (lastUpdatedElement) {
+      const now = new Date();
+      lastUpdatedElement.textContent = now.toLocaleTimeString();
+    }
+
+    // Add hover effects to footer sections
+    const footerSections = document.querySelectorAll(".footer-title");
+    footerSections.forEach((section) => {
+      section.addEventListener("mouseenter", function () {
+        this.style.textShadow = "0 0 15px currentColor";
+      });
+
+      section.addEventListener("mouseleave", function () {
+        this.style.textShadow = "";
+      });
+    });
+
+    // Social links tracking (placeholder)
+    const socialLinks = document.querySelectorAll(".social-link");
+    socialLinks.forEach((link) => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const platform = this.title;
+        console.log(`Social link clicked: ${platform}`);
+        // In production, this would track analytics
+      });
+    });
+  });
+</script>

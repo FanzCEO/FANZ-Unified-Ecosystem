@@ -1,0 +1,30 @@
+# Gitleaks configuration for FANZ repositories
+
+[extend]
+# Use default ruleset
+useDefault = true
+
+[allowlist]
+description = "FANZ specific allowlist"
+
+# Allow common patterns that aren't actually secrets
+[[allowlist.regexes]]
+description = "Placeholder tokens"
+regex = '''(YOUR_|REPLACE_|EXAMPLE_|TEST_|DEMO_)[A-Z_]+'''
+
+[[allowlist.regexes]]
+description = "Base64 encoded placeholder"
+regex = '''(dGVzdA==|ZXhhbXBsZQ==)'''
+
+# Paths to ignore
+[[allowlist.paths]]
+description = "Test files"
+regex = '''.*.(test|spec).(js|ts|tsx|jsx)$'''
+
+[[allowlist.paths]]
+description = "Example and template files"
+regex = '''.*.(example|template|sample).*'''
+
+[[allowlist.paths]]
+description = "Documentation"
+regex = '''.*.(md|rst|txt)$'''

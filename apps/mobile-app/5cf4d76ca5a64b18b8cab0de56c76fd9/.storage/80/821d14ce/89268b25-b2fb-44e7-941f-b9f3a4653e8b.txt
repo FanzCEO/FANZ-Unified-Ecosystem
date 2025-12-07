@@ -1,0 +1,12 @@
+$ cd /workspace/shadcn-ui && git add -A
+$ cd /workspace/shadcn-ui && git status
+
+On branch master
+nothing to commit, working tree clean
+$ cd /workspace/shadcn-ui && git branch -M main
+
+$ cd /workspace/shadcn-ui && git log --oneline -1
+
+ff3efb2 Initial commit: FANZ Mobile Creator Platform with complete features
+$ cd /workspace/shadcn-ui && git remote add origin https://github.com/FanzCEO/fanz-mobile-app.git
+

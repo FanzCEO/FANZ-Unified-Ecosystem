@@ -1,0 +1,506 @@
+{% extends "base.html" %} {% block title %}FANZ - Professional Creator
+Platform{% endblock %} {% block content %}
+<!-- Age Verification Modal -->
+<div id="ageVerificationModal" class="age-verification-modal">
+  <div class="age-verification-content">
+    <div class="age-verification-header">
+      <img
+        src="{{ url_for('static', filename='images/fanz-logo-neon.png') }}"
+        alt="FANZ"
+        class="verification-logo"
+      />
+      <h2 class="verification-title">AGE VERIFICATION REQUIRED</h2>
+    </div>
+    <div class="age-verification-body">
+      <p class="verification-warning">
+        ⚠️ This platform contains adult content.
+      </p>
+      <p class="verification-text">By entering, you confirm that you are:</p>
+      <ul class="verification-requirements">
+        <li>At least 18 years old (21+ in AL, MS, NE, WY)</li>
+        <li>Not offended by sexually explicit material</li>
+        <li>Legally permitted to view such content in your jurisdiction</li>
+      </ul>
+      <div class="verification-buttons">
+        <button
+          id="ageVerifyYes"
+          class="btn btn-primary btn-lg verification-btn-yes"
+        >
+          <i class="fas fa-check me-2"></i>I AM 18+ ENTER SITE
+        </button>
+        <button
+          id="ageVerifyNo"
+          class="btn btn-outline-light btn-lg verification-btn-no"
+        >
+          <i class="fas fa-times me-2"></i>I AM UNDER 18 - EXIT
+        </button>
+      </div>
+    </div>
+    <div class="verification-footer">
+      <small class="text-muted">Records maintained per 18 U.S.C. § 2257</small>
+    </div>
+  </div>
+</div>
+<div class="simple-landing">
+  <div class="container">
+    <div class="row min-vh-100 align-items-center justify-content-center">
+      <div class="col-lg-8 text-center">
+        <!-- Logo -->
+        <div class="logo-container mb-4">
+          <img
+            src="{{ url_for('static', filename='images/fanz-logo-neon.png') }}"
+            alt="FANZ"
+            class="main-logo"
+          />
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-banner mb-4">
+          <span class="stat-item">14 CLUSTERS</span>
+          <span class="stat-divider">|</span>
+          <span class="stat-item">AES-256 Military Encryption</span>
+          <span class="stat-divider">|</span>
+          <span class="stat-item">2257 COMPLIANT</span>
+        </div>
+
+        <!-- Main CTA -->
+        <div class="main-cta mb-4">
+          <a
+            href="{{ url_for('about') }}"
+            class="btn btn-primary btn-lg discover-btn"
+          >
+            <i class="fas fa-eye me-2"></i>SEE WHAT'S INSIDE
+          </a>
+        </div>
+
+        <!-- Role Selection -->
+        <div class="role-selection mb-5">
+          <h3 class="text-light mb-4">Join Free Now</h3>
+          <div class="role-buttons">
+            <a
+              href="{{ url_for('register') }}?role=star"
+              class="role-btn star-btn"
+            >
+              <div class="role-icon">
+                <i class="fas fa-star fa-3x"></i>
+              </div>
+              <h4>STARZ</h4>
+              <p>Start earning with your content</p>
+            </a>
+
+            <a
+              href="{{ url_for('register') }}?role=fan"
+              class="role-btn fan-btn"
+            >
+              <div class="role-icon">
+                <i class="fas fa-heart fa-3x"></i>
+              </div>
+              <h4>FANZ</h4>
+              <p>let us pleasure you</p>
+            </a>
+          </div>
+        </div>
+
+        <!-- Featured Creator Starz -->
+        <div class="featured-creators mb-5">
+          <h3 class="text-center mb-4">⭐ FEATURED STARZ ⭐</h3>
+          <div class="creators-grid">
+            <div class="creator-card">
+              <div class="creator-preview">
+                <div class="preview-placeholder">
+                  <i class="fas fa-star fa-3x"></i>
+                  <div class="preview-overlay">
+                    <span class="preview-text">PREMIUM CONTENT</span>
+                  </div>
+                </div>
+              </div>
+              <div class="creator-info">
+                <h5 class="creator-name">@VelvetQueen</h5>
+                <div class="creator-stats">
+                  <span class="stat"><i class="fas fa-heart"></i> 12.5K</span>
+                  <span class="stat"><i class="fas fa-eye"></i> 89K</span>
+                </div>
+                <div class="creator-tags">
+                  <span class="tag">Glamour</span>
+                  <span class="tag">Fashion</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="creator-card">
+              <div class="creator-preview">
+                <div class="preview-placeholder">
+                  <i class="fas fa-fire fa-3x"></i>
+                  <div class="preview-overlay">
+                    <span class="preview-text">EXCLUSIVE CLIPS</span>
+                  </div>
+                </div>
+              </div>
+              <div class="creator-info">
+                <h5 class="creator-name">@MidnightRose</h5>
+                <div class="creator-stats">
+                  <span class="stat"><i class="fas fa-heart"></i> 8.7K</span>
+                  <span class="stat"><i class="fas fa-eye"></i> 45K</span>
+                </div>
+                <div class="creator-tags">
+                  <span class="tag">Artistic</span>
+                  <span class="tag">Sensual</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="creator-card">
+              <div class="creator-preview">
+                <div class="preview-placeholder">
+                  <i class="fas fa-crown fa-3x"></i>
+                  <div class="preview-overlay">
+                    <span class="preview-text">VIP ACCESS</span>
+                  </div>
+                </div>
+              </div>
+              <div class="creator-info">
+                <h5 class="creator-name">@DiamondLux</h5>
+                <div class="creator-stats">
+                  <span class="stat"><i class="fas fa-heart"></i> 15.2K</span>
+                  <span class="stat"><i class="fas fa-eye"></i> 92K</span>
+                </div>
+                <div class="creator-tags">
+                  <span class="tag">Luxury</span>
+                  <span class="tag">Elite</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-4">
+            <a
+              href="{{ url_for('register') }}?role=fan"
+              class="btn btn-outline-primary btn-lg"
+            >
+              <i class="fas fa-users me-2"></i>VIEW ALL CREATORS
+            </a>
+          </div>
+        </div>
+
+        <!-- Login Link -->
+        <div class="login-section">
+          <p class="text-light"><strong>ALREADY A MEMBER?</strong></p>
+          <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-sign-in-alt me-2"></i>SIGN IN
+          </a>
+        </div>
+
+        <!-- Content Gallery Preview -->
+        <div class="content-gallery-preview mb-5">
+          <h3 class="text-center mb-4">🔥 PREMIUM CONTENT PREVIEW 🔥</h3>
+          <div class="gallery-grid">
+            <div class="gallery-item">
+              <div class="media-placeholder">
+                <i class="fas fa-image fa-2x"></i>
+                <div class="blur-overlay">
+                  <span class="blur-text">MEMBERS ONLY</span>
+                </div>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <div class="media-placeholder video">
+                <i class="fas fa-play-circle fa-2x"></i>
+                <div class="blur-overlay">
+                  <span class="blur-text">EXCLUSIVE VIDEO</span>
+                </div>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <div class="media-placeholder">
+                <i class="fas fa-camera fa-2x"></i>
+                <div class="blur-overlay">
+                  <span class="blur-text">PREMIUM SHOTS</span>
+                </div>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <div class="media-placeholder live">
+                <i class="fas fa-broadcast-tower fa-2x"></i>
+                <div class="blur-overlay">
+                  <span class="blur-text">LIVE SHOWS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-4">
+            <p class="text-warning mb-3">
+              <i class="fas fa-lock me-2"></i>Unlock thousands of exclusive
+              photos, videos & live shows
+            </p>
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+              <i class="fas fa-unlock me-2"></i>UNLOCK PREMIUM CONTENT
+            </a>
+          </div>
+        </div>
+
+        <!-- Learn More -->
+        <div class="learn-more mt-5">
+          <p class="text-light mb-3">
+            <strong
+              >PROFESSIONAL CREATOR PLATFORM WITH ENTERPRISE SECURITY</strong
+            >
+          </p>
+          <a href="{{ url_for('about') }}" class="btn btn-outline-warning">
+            Learn about the FANZ Revolution →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .simple-landing {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.9),
+      rgba(26, 26, 26, 0.9)
+    );
+    min-height: 100vh;
+    padding: 40px 0;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+
+  .main-logo {
+    height: 80px;
+    width: auto;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 0, 0.4));
+  }
+
+  .brand-text {
+    color: var(--neon-yellow);
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--neon-yellow);
+    margin: 0;
+  }
+
+  .stats-banner {
+    background: rgba(26, 26, 46, 0.8);
+    border: 2px solid transparent;
+    border-image: var(--rainbow-gradient) 1;
+    border-radius: 25px;
+    padding: 15px 30px;
+    margin: 30px auto;
+    display: inline-block;
+    backdrop-filter: blur(15px);
+    box-shadow:
+      0 0 30px rgba(0, 212, 255, 0.2),
+      inset 0 0 20px rgba(255, 0, 127, 0.1);
+  }
+
+  .stat-item {
+    color: var(--neon-cyan);
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-shadow: 0 0 5px var(--neon-cyan);
+  }
+
+  .stat-divider {
+    color: var(--text-muted);
+    margin: 0 15px;
+  }
+
+  .discover-btn {
+    background: var(--rainbow-gradient) !important;
+    border: none !important;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 30px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    box-shadow:
+      0 5px 25px rgba(0, 212, 255, 0.4),
+      0 0 50px rgba(255, 0, 127, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .discover-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+      0 8px 35px rgba(0, 212, 255, 0.5),
+      0 0 70px rgba(255, 0, 127, 0.3);
+    filter: brightness(1.2);
+  }
+
+  .discover-btn::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: rotate 3s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .discover-btn:hover::before {
+    opacity: 1;
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .role-selection h3 {
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+
+  .role-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .role-btn {
+    background: rgba(26, 26, 46, 0.8);
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 200px;
+    backdrop-filter: blur(15px);
+    box-shadow:
+      0 8px 25px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba(0, 212, 255, 0.1);
+  }
+
+  .star-btn:hover {
+    border-color: var(--secondary);
+    background: rgba(255, 0, 127, 0.15);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow:
+      0 15px 40px rgba(255, 0, 127, 0.3),
+      0 0 60px rgba(255, 0, 127, 0.15);
+  }
+
+  .fan-btn:hover {
+    border-color: var(--primary);
+    background: rgba(0, 212, 255, 0.15);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow:
+      0 15px 40px rgba(0, 212, 255, 0.3),
+      0 0 60px rgba(0, 212, 255, 0.15);
+  }
+
+  .role-icon {
+    margin-bottom: 20px;
+  }
+
+  .star-btn .role-icon {
+    color: var(--secondary);
+    text-shadow: 0 0 20px var(--secondary);
+  }
+
+  .fan-btn .role-icon {
+    color: var(--primary);
+    text-shadow: 0 0 20px var(--primary);
+  }
+
+  .role-btn h4 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .role-btn p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .login-section {
+    margin: 40px 0;
+  }
+
+  .login-section p {
+    margin-bottom: 15px;
+  }
+
+  .text-cyan {
+    color: var(--neon-cyan) !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .text-cyan:hover {
+    color: var(--neon-pink) !important;
+    text-shadow: 0 0 10px var(--neon-pink);
+  }
+
+  .learn-more {
+    padding: 30px 0;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .learn-more p {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .brand-text {
+      font-size: 2rem;
+    }
+
+    .main-logo {
+      height: 60px;
+    }
+
+    .role-buttons {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .role-btn {
+      min-width: 250px;
+    }
+
+    .stats-banner {
+      padding: 10px 20px;
+      font-size: 0.8rem;
+    }
+
+    .stat-divider {
+      margin: 0 8px;
+    }
+  }
+</style>
+{% endblock %} {% block page_scripts %} // Simple landing page interactions
+document.addEventListener('DOMContentLoaded', function() { // Add subtle hover
+effects const roleButtons = document.querySelectorAll('.role-btn');
+roleButtons.forEach(btn => { btn.addEventListener('mouseenter', function() {
+this.style.transform = 'translateY(-5px) scale(1.02)'; });
+btn.addEventListener('mouseleave', function() { this.style.transform = ''; });
+}); }); {% endblock %}

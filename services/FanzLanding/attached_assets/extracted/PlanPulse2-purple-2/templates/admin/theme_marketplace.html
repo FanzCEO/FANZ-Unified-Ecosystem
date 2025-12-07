@@ -1,0 +1,917 @@
+{% extends "base.html" %} {% block title %}Theme Marketplace - FANZ{% endblock
+%} {% block content %}
+<div class="marketplace-container">
+  <!-- Marketplace Header -->
+  <div class="marketplace-header">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="marketplace-title">
+            <i class="fas fa-store me-3"></i>Theme Marketplace
+          </h1>
+          <p class="marketplace-subtitle">
+            Discover professional themes and templates for your platform
+          </p>
+        </div>
+        <div class="col-lg-4 text-end">
+          <button class="btn btn-outline-secondary me-2" onclick="goBack()">
+            <i class="fas fa-arrow-left me-2"></i>Back to Manager
+          </button>
+          <button class="btn btn-primary" onclick="uploadTheme()">
+            <i class="fas fa-upload me-2"></i>Upload Theme
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter and Search -->
+  <div class="marketplace-filters">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <div class="search-box">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search themes..."
+              id="themeSearch"
+            />
+            <button class="btn btn-primary" onclick="searchThemes()">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="filter-controls">
+            <select class="form-select me-2" id="categoryFilter">
+              <option value="">All Categories</option>
+              <option value="business">Business</option>
+              <option value="creative">Creative</option>
+              <option value="ecommerce">E-commerce</option>
+              <option value="portfolio">Portfolio</option>
+              <option value="blog">Blog</option>
+            </select>
+            <select class="form-select me-2" id="sortFilter">
+              <option value="popular">Most Popular</option>
+              <option value="newest">Newest</option>
+              <option value="rating">Highest Rated</option>
+              <option value="price_low">Price: Low to High</option>
+              <option value="price_high">Price: High to Low</option>
+            </select>
+            <button class="btn btn-outline-secondary" onclick="toggleView()">
+              <i class="fas fa-th" id="viewIcon"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Themes Section -->
+  <div class="featured-section">
+    <div class="container-fluid">
+      <h2 class="section-title">
+        <i class="fas fa-star me-2"></i>Featured Themes
+      </h2>
+      <div class="featured-carousel">
+        {% for theme in predefined_themes %}
+        <div class="featured-theme-card">
+          <div class="theme-preview-large">
+            <img
+              src="{{ theme.preview_image }}"
+              alt="{{ theme.name }}"
+              class="preview-image"
+            />
+            <div class="preview-overlay">
+              <button
+                class="btn btn-primary"
+                onclick="previewTheme('{{ theme.name }}')"
+              >
+                <i class="fas fa-eye me-2"></i>Live Preview
+              </button>
+              <button
+                class="btn btn-success"
+                onclick="installTheme('{{ theme.name }}')"
+              >
+                <i class="fas fa-download me-2"></i>Install
+              </button>
+            </div>
+          </div>
+          <div class="theme-info-large">
+            <h3>{{ theme.name }}</h3>
+            <p>{{ theme.description }}</p>
+            <div class="theme-meta">
+              <span class="badge bg-primary">Featured</span>
+              <span class="badge bg-success">Free</span>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <span class="rating-text">5.0 (128 reviews)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- All Themes Grid -->
+  <div class="themes-section">
+    <div class="container-fluid">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-th-large me-2"></i>All Themes
+        </h2>
+        <div class="results-info">
+          <span class="results-count">24 themes found</span>
+        </div>
+      </div>
+
+      <div class="themes-marketplace-grid" id="themesGrid">
+        <!-- Predefined Themes -->
+        {% for theme in predefined_themes %}
+        <div class="marketplace-theme-card" data-category="featured">
+          <div class="theme-preview-container">
+            <img
+              src="{{ theme.preview_image }}"
+              alt="{{ theme.name }}"
+              class="theme-preview-img"
+            />
+            <div class="theme-overlay">
+              <div class="overlay-content">
+                <button
+                  class="btn btn-sm btn-outline-light me-2"
+                  onclick="previewTheme('{{ theme.name }}')"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-light"
+                  onclick="installTheme('{{ theme.name }}')"
+                >
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+            </div>
+            <div class="theme-badge">
+              <span class="badge bg-success">Free</span>
+            </div>
+          </div>
+          <div class="theme-card-info">
+            <h4>{{ theme.name }}</h4>
+            <p>{{ theme.description }}</p>
+            <div class="theme-stats">
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <span>4.8</span>
+              </div>
+              <div class="downloads">
+                <i class="fas fa-download"></i>
+                <span>1.2k</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        <!-- User Themes -->
+        {% for theme in user_themes %}
+        <div class="marketplace-theme-card" data-category="custom">
+          <div class="theme-preview-container">
+            <div
+              class="theme-preview-generated"
+              style="background: {{ theme.color_config.background if theme.color_config }};"
+            >
+              <div class="preview-mockup">
+                <div
+                  class="mockup-header"
+                  style="background: {{ theme.color_config.primary if theme.color_config }};"
+                ></div>
+                <div class="mockup-content">
+                  <div
+                    class="mockup-text"
+                    style="background: {{ theme.color_config.secondary if theme.color_config }};"
+                  ></div>
+                  <div
+                    class="mockup-text"
+                    style="background: {{ theme.color_config.accent if theme.color_config }};"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div class="theme-overlay">
+              <div class="overlay-content">
+                <button
+                  class="btn btn-sm btn-outline-light me-2"
+                  onclick="previewUserTheme({{ theme.id }})"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-light"
+                  onclick="editTheme({{ theme.id }})"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+              </div>
+            </div>
+            <div class="theme-badge">
+              <span class="badge bg-info">Custom</span>
+            </div>
+          </div>
+          <div class="theme-card-info">
+            <h4>{{ theme.display_name }}</h4>
+            <p>{{ theme.description or 'Custom theme created by you' }}</p>
+            <div class="theme-stats">
+              <div class="created-date">
+                <i class="fas fa-calendar"></i>
+                <span>{{ theme.created_at.strftime('%b %d') }}</span>
+              </div>
+              {% if theme.is_active %}
+              <div class="active-indicator">
+                <i class="fas fa-check-circle text-success"></i>
+                <span>Active</span>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        <!-- Additional Premium Themes -->
+        <div class="marketplace-theme-card" data-category="business">
+          <div class="theme-preview-container">
+            <img
+              src="/static/theme-previews/corporate-pro.jpg"
+              alt="Corporate Pro"
+              class="theme-preview-img"
+            />
+            <div class="theme-overlay">
+              <div class="overlay-content">
+                <button
+                  class="btn btn-sm btn-outline-light me-2"
+                  onclick="previewTheme('corporate-pro')"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-warning"
+                  onclick="upgradeRequired()"
+                >
+                  <i class="fas fa-crown"></i>
+                </button>
+              </div>
+            </div>
+            <div class="theme-badge">
+              <span class="badge bg-warning">Premium</span>
+            </div>
+          </div>
+          <div class="theme-card-info">
+            <h4>Corporate Pro</h4>
+            <p>Professional business theme with advanced features</p>
+            <div class="theme-stats">
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <span>4.9</span>
+              </div>
+              <div class="price">
+                <span class="price-value">$49</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="marketplace-theme-card" data-category="creative">
+          <div class="theme-preview-container">
+            <img
+              src="/static/theme-previews/artistic-vision.jpg"
+              alt="Artistic Vision"
+              class="theme-preview-img"
+            />
+            <div class="theme-overlay">
+              <div class="overlay-content">
+                <button
+                  class="btn btn-sm btn-outline-light me-2"
+                  onclick="previewTheme('artistic-vision')"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-warning"
+                  onclick="upgradeRequired()"
+                >
+                  <i class="fas fa-crown"></i>
+                </button>
+              </div>
+            </div>
+            <div class="theme-badge">
+              <span class="badge bg-warning">Premium</span>
+            </div>
+          </div>
+          <div class="theme-card-info">
+            <h4>Artistic Vision</h4>
+            <p>Creative portfolio theme for artists and designers</p>
+            <div class="theme-stats">
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <span>4.7</span>
+              </div>
+              <div class="price">
+                <span class="price-value">$39</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Load More Button -->
+      <div class="load-more-section">
+        <button
+          class="btn btn-outline-primary btn-lg"
+          onclick="loadMoreThemes()"
+        >
+          <i class="fas fa-plus me-2"></i>Load More Themes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Theme Preview Modal -->
+<div class="modal fade" id="themePreviewModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content bg-dark border-primary">
+      <div class="modal-header border-primary">
+        <h5 class="modal-title">Theme Preview</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body p-0">
+        <iframe
+          id="themePreviewFrame"
+          width="100%"
+          height="600"
+          frameborder="0"
+        ></iframe>
+      </div>
+      <div class="modal-footer border-primary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-success"
+          onclick="installCurrentTheme()"
+        >
+          Install Theme
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .marketplace-container {
+    min-height: 100vh;
+    background: radial-gradient(
+      ellipse at center,
+      #1a1a2e 0%,
+      #0a0a1a 70%,
+      #000000 100%
+    );
+  }
+
+  .marketplace-header {
+    background: rgba(26, 26, 46, 0.8);
+    border-bottom: 2px solid transparent;
+    border-image: var(--rainbow-gradient) 1;
+    padding: 40px 0;
+    backdrop-filter: blur(15px);
+  }
+
+  .marketplace-title {
+    color: var(--text-primary);
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0;
+    background: var(--logo-text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .marketplace-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+    opacity: 0.9;
+  }
+
+  .marketplace-filters {
+    background: rgba(26, 26, 46, 0.6);
+    padding: 25px 0;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  .search-box {
+    position: relative;
+    display: flex;
+  }
+
+  .search-box .form-control {
+    border-radius: 25px 0 0 25px;
+    border-right: none;
+  }
+
+  .search-box .btn {
+    border-radius: 0 25px 25px 0;
+    border-left: none;
+  }
+
+  .filter-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .featured-section {
+    padding: 50px 0;
+  }
+
+  .section-title {
+    color: var(--text-primary);
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  .featured-carousel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+  }
+
+  .featured-theme-card {
+    background: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .featured-theme-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 20px 50px rgba(0, 212, 255, 0.3);
+    transform: translateY(-10px);
+  }
+
+  .theme-preview-large {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+  }
+
+  .preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+  }
+
+  .featured-theme-card:hover .preview-image {
+    transform: scale(1.05);
+  }
+
+  .preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .featured-theme-card:hover .preview-overlay {
+    opacity: 1;
+  }
+
+  .theme-info-large {
+    padding: 25px;
+  }
+
+  .theme-info-large h3 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .theme-info-large p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .theme-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #ffc107;
+  }
+
+  .rating-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-left: 5px;
+  }
+
+  .themes-section {
+    padding: 50px 0;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .results-count {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .themes-marketplace-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+  }
+
+  .marketplace-theme-card {
+    background: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .marketplace-theme-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+    transform: translateY(-5px);
+  }
+
+  .theme-preview-container {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+  }
+
+  .theme-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .theme-preview-generated {
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+  }
+
+  .preview-mockup {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .mockup-header {
+    height: 30%;
+    width: 100%;
+  }
+
+  .mockup-content {
+    padding: 10px;
+    height: 70%;
+  }
+
+  .mockup-text {
+    height: 20px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+
+  .theme-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .marketplace-theme-card:hover .theme-overlay {
+    opacity: 1;
+  }
+
+  .overlay-content {
+    display: flex;
+    gap: 10px;
+  }
+
+  .theme-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+  }
+
+  .theme-card-info {
+    padding: 20px;
+  }
+
+  .theme-card-info h4 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .theme-card-info p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    line-height: 1.4;
+  }
+
+  .theme-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .theme-stats > div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .price-value {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  .load-more-section {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  /* List View Styles */
+  .themes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .themes-list .marketplace-theme-card {
+    display: flex;
+    align-items: center;
+    height: 120px;
+  }
+
+  .themes-list .theme-preview-container {
+    width: 200px;
+    height: 100%;
+    flex-shrink: 0;
+  }
+
+  .themes-list .theme-card-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .active-indicator {
+    color: var(--success) !important;
+  }
+</style>
+
+<script>
+  let currentPreviewTheme = null;
+  let viewMode = "grid";
+
+  function goBack() {
+    window.location.href = "/admin/themes";
+  }
+
+  function searchThemes() {
+    const searchTerm = document
+      .getElementById("themeSearch")
+      .value.toLowerCase();
+    const cards = document.querySelectorAll(".marketplace-theme-card");
+
+    cards.forEach((card) => {
+      const title = card.querySelector("h4").textContent.toLowerCase();
+      const description = card.querySelector("p").textContent.toLowerCase();
+
+      if (title.includes(searchTerm) || description.includes(searchTerm)) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    });
+
+    updateResultsCount();
+  }
+
+  function updateResultsCount() {
+    const visibleCards = document.querySelectorAll(
+      '.marketplace-theme-card:not([style*="display: none"])',
+    );
+    document.querySelector(".results-count").textContent =
+      `${visibleCards.length} themes found`;
+  }
+
+  function toggleView() {
+    const grid = document.getElementById("themesGrid");
+    const icon = document.getElementById("viewIcon");
+
+    if (viewMode === "grid") {
+      viewMode = "list";
+      grid.className = "themes-list";
+      icon.className = "fas fa-th";
+    } else {
+      viewMode = "grid";
+      grid.className = "themes-marketplace-grid";
+      icon.className = "fas fa-list";
+    }
+  }
+
+  function previewTheme(themeName) {
+    currentPreviewTheme = themeName;
+    const modal = new bootstrap.Modal(
+      document.getElementById("themePreviewModal"),
+    );
+
+    // Load preview in iframe
+    const iframe = document.getElementById("themePreviewFrame");
+    iframe.src = `/admin/themes/preview/demo/${themeName}`;
+
+    modal.show();
+  }
+
+  function previewUserTheme(themeId) {
+    const iframe = document.getElementById("themePreviewFrame");
+    iframe.src = `/admin/themes/preview/${themeId}`;
+
+    const modal = new bootstrap.Modal(
+      document.getElementById("themePreviewModal"),
+    );
+    modal.show();
+  }
+
+  function installTheme(themeName) {
+    // Create theme from predefined template
+    const themeData = {
+      name: themeName.toLowerCase().replace(/\s+/g, "_"),
+      display_name: themeName,
+      description: `Professional ${themeName} theme`,
+      theme_type: "custom",
+    };
+
+    fetch("/admin/themes/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(themeData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          showNotification(
+            `${themeName} theme installed successfully!`,
+            "success",
+          );
+          setTimeout(() => {
+            window.location.href = `/admin/themes/editor/${data.theme_id}`;
+          }, 1500);
+        }
+      });
+  }
+
+  function installCurrentTheme() {
+    if (currentPreviewTheme) {
+      installTheme(currentPreviewTheme);
+      bootstrap.Modal.getInstance(
+        document.getElementById("themePreviewModal"),
+      ).hide();
+    }
+  }
+
+  function editTheme(themeId) {
+    window.location.href = `/admin/themes/editor/${themeId}`;
+  }
+
+  function upgradeRequired() {
+    showNotification("Premium themes require an upgraded plan", "warning");
+  }
+
+  function uploadTheme() {
+    showNotification("Theme upload feature coming soon!", "info");
+  }
+
+  function loadMoreThemes() {
+    showNotification("Loading more themes...", "info");
+    // Simulate loading more themes
+    setTimeout(() => {
+      showNotification("All available themes loaded", "success");
+    }, 1000);
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `alert alert-${type} position-fixed`;
+    notification.style.cssText =
+      "top: 20px; right: 20px; z-index: 9999; min-width: 300px;";
+    notification.innerHTML = `
+        <i class="fas fa-${type === "success" ? "check" : type === "warning" ? "exclamation-triangle" : "info"}-circle me-2"></i>
+        ${message}
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  }
+
+  // Initialize filters
+  document
+    .getElementById("categoryFilter")
+    .addEventListener("change", function () {
+      const category = this.value;
+      const cards = document.querySelectorAll(".marketplace-theme-card");
+
+      cards.forEach((card) => {
+        if (
+          !category ||
+          card.dataset.category === category ||
+          card.dataset.category === "featured"
+        ) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      updateResultsCount();
+    });
+
+  document.getElementById("sortFilter").addEventListener("change", function () {
+    // Implement sorting logic
+    showNotification(
+      `Sorted by: ${this.options[this.selectedIndex].text}`,
+      "info",
+    );
+  });
+
+  // Search on enter key
+  document
+    .getElementById("themeSearch")
+    .addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        searchThemes();
+      }
+    });
+</script>
+{% endblock %}

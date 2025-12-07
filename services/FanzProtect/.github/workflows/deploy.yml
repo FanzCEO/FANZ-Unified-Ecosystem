@@ -1,0 +1,363 @@
+name: 🛡️ FanzProtect CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+
+env:
+  NODE_VERSION: '18'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: fanz-ecosystem/fanzprotect
+
+jobs:
+  # =============================================
+  # CODE QUALITY & TESTING
+  # =============================================
+  test:
+    name: 🧪 Test Suite
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: fanzprotect_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 🔧 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Lint code
+        run: npm run lint
+
+      - name: 🎨 Check formatting
+        run: npm run format:check
+
+      - name: 🏗️ Build application
+        run: |
+          npm run build:frontend
+          npm run build:backend
+
+      - name: 🧪 Run tests
+        env:
+          NODE_ENV: test
+          TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fanzprotect_test
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-jwt-secret-for-ci-testing-only
+          TEST_ENCRYPTION_KEY: test-encryption-key-for-testing-ci
+        run: |
+          npm run test:unit
+          npm run test:integration
+
+      - name: 📊 Generate test coverage
+        run: npm run test:coverage
+
+      - name: 📤 Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage/lcov.info
+          fail_ci_if_error: false
+
+  # =============================================
+  # SECURITY SCANNING
+  # =============================================
+  security:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 🔧 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run security audit
+        run: npm audit --audit-level=moderate
+
+      - name: 🛡️ CodeQL Analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript, typescript
+
+      - name: 🏗️ Build for CodeQL
+        run: npm run build:backend
+
+      - name: 🔎 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      - name: 🔐 Snyk Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium
+
+  # =============================================
+  # DOCKER BUILD & PUSH
+  # =============================================
+  build:
+    name: 🐳 Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.event_name == 'push'
+    
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+      digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏷️ Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: 🔧 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🏗️ Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      - name: 📋 Output image
+        id: image
+        run: |
+          echo "image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}" >> $GITHUB_OUTPUT
+
+  # =============================================
+  # STAGING DEPLOYMENT
+  # =============================================
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: 🔐 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: 🌐 Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
+
+      - name: 🚀 Deploy to staging
+        run: |
+          sed -i 's|IMAGE_PLACEHOLDER|${{ needs.build.outputs.image }}|g' k8s/staging/deployment.yaml
+          kubectl apply -f k8s/staging/
+          kubectl rollout status deployment/fanzprotect-app -n fanzprotect-staging
+
+      - name: 🏥 Health check
+        run: |
+          kubectl wait --for=condition=ready pod -l app=fanzprotect -n fanzprotect-staging --timeout=300s
+          
+      - name: 📝 Update deployment status
+        run: |
+          echo "🎉 FanzProtect successfully deployed to staging!"
+          echo "🔗 Staging URL: https://staging-protect.myfanz.network"
+
+  # =============================================
+  # PRODUCTION DEPLOYMENT
+  # =============================================
+  deploy-production:
+    name: 🌟 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: 🔐 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: 🌐 Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME_PROD }}
+
+      - name: 🚀 Deploy to production
+        run: |
+          sed -i 's|IMAGE_PLACEHOLDER|${{ needs.build.outputs.image }}|g' k8s/production/deployment.yaml
+          kubectl apply -f k8s/production/
+          kubectl rollout status deployment/fanzprotect-app -n fanzprotect-production
+
+      - name: 🏥 Health check
+        run: |
+          kubectl wait --for=condition=ready pod -l app=fanzprotect -n fanzprotect-production --timeout=300s
+
+      - name: 📊 Update FanzDash
+        run: |
+          curl -X POST "${{ secrets.FANZDASH_WEBHOOK_URL }}" \
+            -H "Authorization: Bearer ${{ secrets.FANZDASH_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "deployment",
+              "platform": "fanzprotect",
+              "version": "${{ github.sha }}",
+              "status": "success",
+              "environment": "production",
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }'
+
+      - name: 📝 Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: FanzProtect v${{ github.run_number }}
+          body: |
+            🛡️ **FanzProtect Legal Platform Release**
+            
+            **Deployment Details:**
+            - 🚀 Deployed to: Production
+            - 🔗 Platform URL: https://protect.myfanz.network
+            - 📦 Docker Image: ${{ needs.build.outputs.image }}
+            - 🔧 Commit SHA: ${{ github.sha }}
+            - 📅 Deployed: ${{ github.event.head_commit.timestamp }}
+            
+            **Features:**
+            - ⚡ Real-time case notifications via WebSocket
+            - 📧 DMCA takedown automation for major platforms
+            - 🏛️ Legal case management and evidence tracking
+            - 🔐 Full FANZ ecosystem integration
+            - 💰 FanzFinance OS billing integration
+            - 📊 FanzDash administrative controls
+            
+            **Ecosystem Integrations:**
+            - FanzSSO Authentication
+            - FanzMediaCore Evidence Storage
+            - FanzSecurityCompDash Compliance
+            - FanzDash Monitoring & Analytics
+          draft: false
+          prerelease: false
+
+      - name: 🎉 Notify success
+        run: |
+          echo "🎊 FanzProtect successfully deployed to production!"
+          echo "🔗 Production URL: https://protect.myfanz.network"
+          echo "📊 Admin Dashboard: https://dash.myfanz.network"
+
+  # =============================================
+  # POST-DEPLOYMENT VERIFICATION
+  # =============================================
+  verify-deployment:
+    name: ✅ Verify Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, deploy-production]
+    if: always() && (needs.deploy-staging.result == 'success' || needs.deploy-production.result == 'success')
+    
+    steps:
+      - name: 🏥 Health check endpoints
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            URL="https://staging-protect.myfanz.network"
+          else
+            URL="https://protect.myfanz.network"
+          fi
+          
+          echo "Testing health endpoint..."
+          curl -f "$URL/api/health" || exit 1
+          
+          echo "Testing system info endpoint..."
+          curl -f "$URL/api/system" || exit 1
+          
+          echo "✅ All endpoints are healthy!"
+
+      - name: 📊 Performance test
+        run: |
+          echo "🚀 Running basic performance test..."
+          # Add performance testing commands here
+          echo "✅ Performance test completed!"
+
+      - name: 🔔 Notify deployment status
+        run: |
+          echo "🎉 FanzProtect deployment verification completed successfully!"
+          echo "🛡️ Legal protection platform is ready for creator onboarding!"

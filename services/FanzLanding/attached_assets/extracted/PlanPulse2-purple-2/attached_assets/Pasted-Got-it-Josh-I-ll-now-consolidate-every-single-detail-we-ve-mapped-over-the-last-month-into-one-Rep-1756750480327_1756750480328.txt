@@ -1,0 +1,143 @@
+Got it Josh — I’ll now consolidate every single detail we’ve mapped over the last month into one Replit-ready directive. This will be your master system doc to hand off to your devs so they can spin up FanzLab 2.0 exactly as envisioned: neon-drip style, full-featured, clusterized, and compliance-driven.
+
+⸻
+
+⚡ SYSTEM / PROJECT DIRECTIVE — “FanzLab 2.0 Neon Portal”
+
+🎯 Objective
+
+Build FanzLab 2.0:
+	•	The front-door landing portal for the entire Fanz ecosystem.
+	•	One login → one compliance brain → multi-cluster creator economy.
+	•	Styled after the neon-drip Fanz logo (glowing banana, rainbow outlines, dripping animations).
+	•	Integrates compliance (2257, VerifyMy), monetization, media, AI moderation, security, and community into one connected experience.
+
+⸻
+
+🖼️ Non-Negotiable Theme
+	•	Dark mode base with neon glow UI.
+	•	Motion effects: hover glows, drip animations, neon flicker.
+	•	Cluster logos = neon variants of main brand.
+	•	Banana drip TM integrated into loading screens & success banners.
+
+⸻
+
+🔑 Core Flows
+	•	Signup/Login: Single Sign-On (SSO) across ecosystem.
+	•	Role selection: Fan / STAR (Creator) / Moderator / Admin / Exec.
+	•	Verification pipeline: Inline VerifyMy inside your 2257 form.
+	•	Platform selection: Join any cluster (BoyFanz, GirlFanz, PupFanz, TranzFanz, TabooFanz, DaddyFanz, AllMyFanz, RecoveryFanz, etc.).
+	•	Cross-post toggle: one-click posting across clusters.
+
+⸻
+
+📑 2257 Compliance (Hosted on FanzLab)
+	•	Native 2257 form with embedded VerifyMy (ID + liveness).
+	•	Uploads: Gov ID, selfie, W-9/W-8BEN, address docs.
+	•	Forensic e-signature: IP, device hash, timestamp, geo, PDF hash.
+	•	Checkboxes: 18+, 2257 compliance, platform policies, NDA, IP assignment.
+	•	STAR/STARZ contracts: NDA, non-disparagement, policies signed here.
+	•	Co-star tagging: all must pass VerifyMy + sign scene-level consent.
+
+⸻
+
+🏛️ FanzHubVault (Central Repository)
+	•	Stores all people & compliance data:
+	•	Signed 2257 packets.
+	•	VerifyMy result JSON + artifacts.
+	•	Tax forms, contracts, signatures.
+	•	Co-star attestations, audit events.
+	•	Immutable, encrypted (AES-256 at rest, TLS 1.2+ in transit).
+	•	Audit trail: every change hashed, append-only.
+	•	Lifecycle: doc expiry alerts, re-verification prompts.
+
+⸻
+
+🛡️ FanzSecurityDash (Admin & Moderation)
+	•	Verification Queue (Pending / Approved / Denied / Needs Fix).
+	•	Drill-down user profiles (KYC status, contracts, docs).
+	•	Scene readiness widget (blocks publishing if missing verifications).
+	•	Kill-switch: quarantine flagged content, freeze payouts.
+	•	Export packs: subpoena/LE bundles (2257 + hashes).
+	•	Alerts: expired IDs, failed VerifyMy checks, unusual activity.
+
+⸻
+
+🌐 Cluster & Ecosystem Connections
+	•	Cluster options visible in neon grid:
+	•	BoyFanz / GirlFanz / PupFanz / TranzFanz / DaddyFanz / TabooFanz / AllMyFanz / RecoveryFanz.
+	•	Expansion clusters: FanzTube, FanzVarsity, FanzWork, FanzFluence, FanzVIP, FanzAI.
+	•	Fans/STARZ can join multiple, manage from one dashboard.
+	•	FANZVIP bundles = one membership spanning all chosen clusters.
+
+⸻
+
+💸 Payments & Monetization
+	•	Integrated gateways: Paxum, CCBill, NMI, Host Merchant Services, Payoneer.
+	•	STARZ dashboard: combined + per-platform earnings view.
+	•	Multi-level affiliate program baked in.
+	•	FanzCoin (Ethereum token) option for payments/rewards.
+
+⸻
+
+📊 Dashboards
+	•	Fan Dashboard: subs, favorites, inbox, wallet.
+	•	STAR Dashboard: content, analytics, earnings, cross-post settings.
+	•	Admin Dashboard: approvals, moderation queue, compliance alerts.
+	•	Exec Dashboard: growth KPIs, cluster performance, revenue roll-ups.
+
+⸻
+
+🎥 Media & AI Tools
+	•	Upload hub with AI-enhanced editing (filters, blur, auto-enhance).
+	•	Manual editor: cropping, watermarking, censor tools.
+	•	Metadata tagging for SEO & compliance.
+	•	Cross-post pipeline: publish to multiple clusters in one click.
+
+⸻
+
+📣 Community Modules
+	•	Inbox (fan ↔ STAR direct messages).
+	•	FanzForum (boards, resources).
+	•	FanzVarsity: courses, coaching, learning tools.
+	•	FanzWork: freelance marketplace for creators/managers/photographers.
+	•	FanzFluence: social marketing toolkit.
+
+⸻
+
+🔧 Developer & Infra Requirements
+	•	Clusterized microservices: each platform standalone but tied via central APIs.
+	•	Databases:
+	•	NeonDB/Postgres for compliance & users.
+	•	Object storage for media.
+	•	Drizzle migrations:
+	•	users, documents, verifications, consents, audit_events, scenes.
+	•	API Endpoints:
+	•	/kyc/verifymy/webhook
+	•	/2257/submit
+	•	/consents
+	•	/scenes/{id}/participants
+	•	/security/content/{id}/quarantine
+	•	Deployment: Dockerized, CI/CD to Render/Google Cloud.
+	•	Mail & Security: DNS templates (SPF, DKIM, DMARC, MTA-STS), Rspamd, ClamAV.
+	•	Kill-switch protocols wired into Admin Dash.
+
+⸻
+
+✅ Acceptance Criteria
+	•	User signs up → verifies → signs contracts → selects clusters → lands in neon dashboard.
+	•	VerifyMy webhooks update status within 60s.
+	•	STAR cannot publish content until all co-stars verified + signed.
+	•	All signed packets stored in FanzHubVault with hash + audit event.
+	•	Kill-switch freezes payouts & quarantines linked content instantly.
+	•	Export pack bundles compliance docs in one click (with access log).
+	•	All UI styled neon-glow (logo aesthetic across flows).
+
+⸻
+
+🔥 One Sentence Pitch:
+FanzLab 2.0 = The neon-dripping banana gateway to the new creator economy — one login, one vault, infinite clusters.
+
+⸻
+
+Josh — this is the full master directive. Do you want me to expand this into a visual cluster diagram (main portal → verification → FanzHubVault → clusters → dashboards) so your devs see the architecture at a glance?

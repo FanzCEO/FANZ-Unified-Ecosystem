@@ -1,0 +1,48 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+8:16:03 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+8:17:54 PM [express] GET /api/auth/user 401 in 3ms :: {"message":"Unauthorized"}
+8:17:58 PM [express] GET /api/auth/user 401 in 1ms :: {"message":"Unauthorized"}
+8:18:14 PM [express] GET /api/login 302 in 2496ms
+8:18:20 PM [express] GET /api/callback 302 in 2393ms
+8:18:25 PM [express] GET /api/auth/user 200 in 73ms :: {"id":"46450385","email":"josh@fanzunlimited.…
+8:18:25 PM [express] GET /api/stats 200 in 90ms :: {"totalEarnings":0,"fanCount":0,"contentPosts":"0…
+8:18:25 PM [express] GET /api/media 200 in 114ms :: []
+8:18:25 PM [express] GET /api/placeholder/48/48 200 in 40ms
+WebSocket verification - token present: false
+WebSocket connection attempt from: 172.31.114.98
+8:18:28 PM [express] GET /api/placeholder/48/48 200 in 35ms
+8:18:28 PM [express] GET /api/conversations 200 in 49ms :: []
+WebSocket message received: auth (unauthenticated)
+User 46450385 successfully authenticated via WebSocket
+User 46450385 disconnected from WebSocket
+8:18:31 PM [express] GET /api/placeholder/48/48 200 in 34ms
+8:18:45 PM [express] GET /api/placeholder/48/48 200 in 140ms
+WebSocket verification - token present: false
+WebSocket connection attempt from: 172.31.114.98
+WebSocket message received: auth (unauthenticated)
+User 46450385 successfully authenticated via WebSocket
+User 46450385 disconnected from WebSocket
+8:18:46 PM [express] GET /api/payouts/earnings 200 in 145ms :: {"totalEarnings":0,"averageMonthly":0…
+8:18:52 PM [express] GET /api/placeholder/48/48 200 in 37ms
+8:18:55 PM [express] GET /api/placeholder/48/48 200 in 36ms
+8:18:59 PM [express] GET /api/placeholder/48/48 200 in 36ms
+8:19:00 PM [express] GET /api/placeholder/48/48 200 in 37ms
+8:19:10 PM [express] GET /api/placeholder/48/48 200 in 36ms
+8:19:21 PM [express] GET /api/profile 404 in 124ms :: {"message":"Profile not found"}
+8:19:21 PM [express] GET /api/placeholder/48/48 200 in 35ms
+8:19:21 PM [express] GET /api/placeholder/128/128 200 in 145ms
+8:19:29 PM [express] GET /api/placeholder/48/48 200 in 33ms
+WebSocket verification - token present: false
+WebSocket connection attempt from: 172.31.114.98
+WebSocket message received: auth (unauthenticated)
+User 46450385 successfully authenticated via WebSocket
+User 46450385 disconnected from WebSocket
+8:19:31 PM [express] GET /api/placeholder/48/48 200 in 34ms
+8:26:27 PM [express] GET /api/auth/user 401 in 2ms :: {"message":"Unauthorized"}
+8:37:50 PM [express] GET /api/auth/user 401 in 1ms :: {"message":"Unauthorized"}

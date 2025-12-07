@@ -1,0 +1,608 @@
+<div class="loading-overlay">
+  <div class="loading-container">
+    <!-- Neon Loading Animation -->
+    <div class="neon-loader">
+      <div class="loader-ring-container">
+        <div class="loader-ring ring-1"></div>
+        <div class="loader-ring ring-2"></div>
+        <div class="loader-ring ring-3"></div>
+      </div>
+
+      <!-- Banana Drip Logo -->
+      <div class="loading-logo">
+        <div class="logo-text fanz-logo">FANZ</div>
+        <div class="drip-animation">
+          <div class="drip-drop"></div>
+        </div>
+      </div>
+
+      <!-- Loading Text -->
+      <div class="loading-text">
+        <span class="loading-message">Loading...</span>
+        <div class="loading-dots">
+          <span class="dot dot-1">.</span>
+          <span class="dot dot-2">.</span>
+          <span class="dot dot-3">.</span>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="loading-progress">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="progress-text">Initializing platform...</div>
+      </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="system-status">
+      <div class="status-item" id="statusDatabase">
+        <div class="status-icon">
+          <i class="fas fa-database"></i>
+        </div>
+        <span class="status-label">Database</span>
+        <span class="status-value">Connecting...</span>
+      </div>
+      <div class="status-item" id="statusSecurity">
+        <div class="status-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <span class="status-label">Security</span>
+        <span class="status-value">Verifying...</span>
+      </div>
+      <div class="status-item" id="statusClusters">
+        <div class="status-icon">
+          <i class="fas fa-network-wired"></i>
+        </div>
+        <span class="status-label">Clusters</span>
+        <span class="status-value">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+  }
+
+  .loading-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    max-width: 500px;
+    padding: 40px;
+  }
+
+  .neon-loader {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  /* Neon Rings Animation */
+  .loader-ring-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+  }
+
+  .loader-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    animation: ring-spin 2s linear infinite;
+  }
+
+  .ring-1 {
+    width: 120px;
+    height: 120px;
+    border-top-color: var(--neon-cyan);
+    border-right-color: var(--neon-cyan);
+    animation-duration: 2s;
+  }
+
+  .ring-2 {
+    width: 90px;
+    height: 90px;
+    top: 15px;
+    left: 15px;
+    border-top-color: var(--neon-pink);
+    border-left-color: var(--neon-pink);
+    animation-duration: 1.5s;
+    animation-direction: reverse;
+  }
+
+  .ring-3 {
+    width: 60px;
+    height: 60px;
+    top: 30px;
+    left: 30px;
+    border-top-color: var(--neon-yellow);
+    border-bottom-color: var(--neon-yellow);
+    animation-duration: 1s;
+  }
+
+  @keyframes ring-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Loading Logo */
+  .loading-logo {
+    position: relative;
+    margin: 20px 0;
+  }
+
+  .logo-text {
+    font-size: 2.5rem;
+    background: var(--banana-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: bold;
+    animation: logo-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes logo-glow {
+    0% {
+      filter: drop-shadow(0 0 10px rgba(255, 255, 0, 0.5));
+      transform: scale(1);
+    }
+    100% {
+      filter: drop-shadow(0 0 25px rgba(255, 255, 0, 0.8));
+      transform: scale(1.05);
+    }
+  }
+
+  /* Drip Animation */
+  .drip-animation {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .drip-drop {
+    width: 12px;
+    height: 15px;
+    background: var(--banana-gradient);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: drip-fall 3s ease-in-out infinite;
+  }
+
+  @keyframes drip-fall {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(20px) scale(0.8);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(40px) scale(0.5);
+      opacity: 0;
+    }
+  }
+
+  /* Loading Text */
+  .loading-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--neon-cyan);
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .loading-message {
+    animation: text-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes text-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  .loading-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .dot {
+    color: var(--neon-pink);
+    font-size: 1.5rem;
+    animation: dot-bounce 1.5s ease-in-out infinite;
+  }
+
+  .dot-1 {
+    animation-delay: 0s;
+  }
+  .dot-2 {
+    animation-delay: 0.3s;
+  }
+  .dot-3 {
+    animation-delay: 0.6s;
+  }
+
+  @keyframes dot-bounce {
+    0%,
+    80%,
+    100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+  }
+
+  /* Progress Bar */
+  .loading-progress {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--neon-cyan),
+      var(--neon-pink),
+      var(--neon-yellow)
+    );
+    border-radius: 3px;
+    width: 0%;
+    animation: progress-fill 4s ease-in-out infinite;
+  }
+
+  @keyframes progress-fill {
+    0% {
+      width: 0%;
+    }
+    50% {
+      width: 70%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  .progress-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    animation: progress-text-cycle 4s ease-in-out infinite;
+  }
+
+  @keyframes progress-text-cycle {
+    0% {
+      opacity: 1;
+    }
+    25% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 0.7;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  /* System Status */
+  .system-status {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .status-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+
+  .status-label {
+    flex: 1;
+    color: var(--text-primary);
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .status-value {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  /* Status States */
+  .status-item.connecting .status-icon {
+    border-color: var(--neon-yellow);
+    color: var(--neon-yellow);
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+
+  .status-item.connected .status-icon {
+    border-color: var(--neon-green);
+    color: var(--neon-green);
+    background: rgba(0, 255, 0, 0.1);
+  }
+
+  .status-item.error .status-icon {
+    border-color: #ff4444;
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+  }
+
+  @keyframes status-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 5px currentColor;
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 15px currentColor;
+      transform: scale(1.05);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .loading-container {
+      padding: 20px;
+      gap: 30px;
+    }
+
+    .loader-ring-container {
+      width: 80px;
+      height: 80px;
+    }
+
+    .ring-1 {
+      width: 80px;
+      height: 80px;
+    }
+
+    .ring-2 {
+      width: 60px;
+      height: 60px;
+      top: 10px;
+      left: 10px;
+    }
+
+    .ring-3 {
+      width: 40px;
+      height: 40px;
+      top: 20px;
+      left: 20px;
+    }
+
+    .logo-text {
+      font-size: 2rem;
+    }
+
+    .loading-text {
+      font-size: 1rem;
+    }
+
+    .system-status {
+      max-width: 100%;
+    }
+
+    .status-item {
+      padding: 12px;
+    }
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .loader-ring,
+    .logo-text,
+    .drip-drop,
+    .loading-message,
+    .dot,
+    .progress-fill,
+    .status-icon {
+      animation: none;
+    }
+
+    .progress-fill {
+      width: 100%;
+    }
+  }
+
+  /* Dark mode adjustments */
+  @media (prefers-color-scheme: light) {
+    .loading-overlay {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+  }
+</style>
+
+<script>
+  // Loading simulation script
+  document.addEventListener("DOMContentLoaded", function () {
+    const statusItems = document.querySelectorAll(".status-item");
+    const progressText = document.querySelector(".progress-text");
+    const loadingMessage = document.querySelector(".loading-message");
+
+    // Status updates sequence
+    const statusSequence = [
+      {
+        delay: 500,
+        action: () => {
+          updateStatus("statusDatabase", "connected", "Connected");
+          updateProgressText("Database connection established...");
+        },
+      },
+      {
+        delay: 1500,
+        action: () => {
+          updateStatus("statusSecurity", "connected", "Verified");
+          updateProgressText("Security protocols verified...");
+        },
+      },
+      {
+        delay: 2500,
+        action: () => {
+          updateStatus("statusClusters", "connected", "Ready");
+          updateProgressText("Cluster network synchronized...");
+        },
+      },
+      {
+        delay: 3500,
+        action: () => {
+          updateProgressText("Platform ready!");
+          updateLoadingMessage("Launching FANZ...");
+        },
+      },
+    ];
+
+    // Execute status sequence
+    statusSequence.forEach((item) => {
+      setTimeout(item.action, item.delay);
+    });
+
+    function updateStatus(itemId, statusClass, statusText) {
+      const item = document.getElementById(itemId);
+      if (item) {
+        item.classList.add(statusClass);
+        const statusValue = item.querySelector(".status-value");
+        if (statusValue) {
+          statusValue.textContent = statusText;
+          if (statusClass === "connected") {
+            statusValue.style.color = "var(--neon-green)";
+          }
+        }
+      }
+    }
+
+    function updateProgressText(text) {
+      if (progressText) {
+        progressText.textContent = text;
+      }
+    }
+
+    function updateLoadingMessage(text) {
+      if (loadingMessage) {
+        loadingMessage.textContent = text;
+      }
+    }
+
+    // Auto-hide loading overlay after initialization
+    setTimeout(() => {
+      const overlay = document.querySelector(".loading-overlay");
+      if (overlay && !overlay.classList.contains("persistent")) {
+        overlay.style.opacity = "0";
+        overlay.style.pointerEvents = "none";
+        setTimeout(() => {
+          overlay.style.display = "none";
+        }, 500);
+      }
+    }, 4000);
+  });
+
+  // Global loading functions
+  window.showLoading = function (message = "Loading...") {
+    const overlay = document.querySelector(".loading-overlay");
+    const loadingMessage = document.querySelector(".loading-message");
+
+    if (overlay) {
+      overlay.style.display = "flex";
+      overlay.style.opacity = "1";
+      overlay.style.pointerEvents = "all";
+      overlay.classList.add("persistent");
+    }
+
+    if (loadingMessage) {
+      loadingMessage.textContent = message;
+    }
+  };
+
+  window.hideLoading = function () {
+    const overlay = document.querySelector(".loading-overlay");
+
+    if (overlay) {
+      overlay.classList.remove("persistent");
+      overlay.style.opacity = "0";
+      overlay.style.pointerEvents = "none";
+
+      setTimeout(() => {
+        overlay.style.display = "none";
+      }, 500);
+    }
+  };
+
+  window.updateLoadingProgress = function (percentage, message) {
+    const progressFill = document.querySelector(".progress-fill");
+    const progressText = document.querySelector(".progress-text");
+
+    if (progressFill) {
+      progressFill.style.width = percentage + "%";
+      progressFill.style.animation = "none";
+    }
+
+    if (progressText && message) {
+      progressText.textContent = message;
+    }
+  };
+</script>

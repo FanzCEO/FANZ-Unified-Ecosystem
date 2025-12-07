@@ -1,0 +1,122 @@
+# FANZ Cross-Platform Ad System - Prometheus Configuration
+# Monitoring and metrics collection for development environment
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    environment: 'development'
+    project: 'fanz-ads'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "alert_rules.yml"
+  - "recording_rules.yml"
+
+# Scrape configuration
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+    metrics_path: '/metrics'
+    
+  # FANZ Ad Service
+  - job_name: 'fanz-ad-service'
+    static_configs:
+      - targets: ['ad-service:4000']
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    scrape_timeout: 10s
+    honor_labels: false
+    params:
+      format: ['prometheus']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: ad-service:4000
+
+  # FANZ Demo App (Next.js)
+  - job_name: 'fanz-demo-app'
+    static_configs:
+      - targets: ['demo-app:3100']
+    scrape_interval: 30s
+    metrics_path: '/api/metrics'
+    scrape_timeout: 10s
+    
+  # PostgreSQL Exporter
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 30s
+    
+  # Redis Exporter  
+  - job_name: 'redis-exporter'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 30s
+    
+  # Node Exporter (system metrics)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+    
+  # Container metrics (cAdvisor)
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 30s
+
+  # FANZ-specific business metrics
+  - job_name: 'fanz-business-metrics'
+    static_configs:
+      - targets: ['ad-service:4000']
+    metrics_path: '/metrics/business'
+    scrape_interval: 60s
+    params:
+      format: ['prometheus']
+    metric_relabel_configs:
+      # Add FANZ-specific labels
+      - source_labels: [__name__]
+        regex: 'fanz_(.*)'
+        target_label: 'fanz_metric_type'
+        replacement: '${1}'
+      - source_labels: [platform]
+        regex: '(boyfanz|girlfanz|pupfanz)'
+        target_label: 'fanz_platform'
+        replacement: '${1}'
+      - source_labels: [payment_processor]
+        regex: '(ccbill|segpay|epoch|verotel|bitcoin|ethereum)'
+        target_label: 'fanz_processor'
+        replacement: '${1}'
+
+# Remote write configuration for long-term storage
+remote_write: []
+  # Example for sending to external systems:
+  # - url: "https://prometheus-remote-write.example.com/api/v1/write"
+  #   basic_auth:
+  #     username: "fanz"
+  #     password: "secret"
+
+# Remote read configuration
+remote_read: []
+
+# Storage configuration
+storage:
+  tsdb:
+    path: /prometheus
+    retention.time: 15d
+    retention.size: 10GB
+    wal-compression: true

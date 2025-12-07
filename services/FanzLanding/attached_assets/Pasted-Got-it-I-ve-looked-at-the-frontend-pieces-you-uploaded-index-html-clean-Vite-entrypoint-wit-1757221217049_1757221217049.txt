@@ -1,0 +1,102 @@
+Got it ✅ — I’ve looked at the frontend pieces you uploaded:
+	•	index.html: clean Vite entrypoint with Google Fonts and your main.tsx bootstrap ￼.
+	•	index.css: your full theme variables + Tailwind layers + custom FUN colors (--fun-yellow, --fun-purple, --fun-pink, etc.) ￼.
+	•	This confirms your visual identity and theme are already locked in: neon gradients, purple/pink highlight, glow effects, and FUN-brand accent colors.
+
+So here’s how we wrap up the enterprise hub + landing page without altering design:
+
+⸻
+
+🟡 Enterprise Hub & Landing Final Setup (Theme-Safe)
+
+1. Don’t Touch These
+	•	index.css (your FUN theme + animations) ￼
+	•	tailwind.config.ts
+	•	components.json (shadcn tokens)
+
+These are the “style law” files. All new routes/components will just import your Layout + UI components so they auto-inherit the look.
+
+⸻
+
+2. Add Verification Scripts
+
+Drop into /scripts (root):
+	•	env-gate.cjs → checks env vars
+	•	print-ready.cjs → neon READY banner
+	•	client/scripts/routes-manifest.cjs → lists all landing routes (so no missing pages)
+	•	client/scripts/crawlLinks.cjs → headless Playwright crawl (catches 404s/console errors)
+
+⸻
+
+3. Required Landing Routes
+
+Based on your uploaded pages (home.tsx, platforms-services.tsx, compliance.tsx, login.tsx, not-found.tsx), add/verify these routes in routes.ts:
+	•	/ → home.tsx
+	•	/platforms → platforms-services.tsx
+	•	/services → same as above (if split, create a services.tsx)
+	•	/compliance → compliance.tsx (links to 2257 policy)
+	•	/login → login.tsx (SSO handoff)
+	•	/signup → duplicate login flow with CTA to register
+	•	/ref/:code → referral handler (just parse + store cookie)
+	•	/status → placeholder page, later wired to uptime provider
+	•	/legal/tos, /legal/privacy, /legal/acceptable-use, /legal/2257 → static JSX pages
+	•	/contact → lead form (creators/partners)
+	•	/system → diagnostics summary
+	•	/* → not-found.tsx
+
+⸻
+
+4. Diagnostics Page (/system)
+
+Add a simple diagnostic page that reads the manifest + crawler report:
+
+import manifest from '@/dist/routeManifest.json';
+import report from '@/dist/link-report.json';
+
+export default function System() {
+  return (
+    <div className="p-8">
+      <h1 className="text-2xl font-bold gradient-text">System Diagnostics</h1>
+      <pre className="mt-4 bg-card p-4 rounded-md overflow-auto">
+        {JSON.stringify({ routes: manifest.length, links: report }, null, 2)}
+      </pre>
+    </div>
+  );
+}
+
+It’ll show you route count and last crawl results.
+
+⸻
+
+5. NPM Scripts (Root package.json)
+
+Add:
+
+"scripts": {
+  "crawl": "node client/scripts/crawlLinks.cjs",
+  "routes:manifest": "node client/scripts/routes-manifest.cjs",
+  "verify:all": "npm run build && npm run routes:manifest && npm run crawl",
+  "prep:prod:fanzlanding": "node scripts/env-gate.cjs && npm run verify:all && node scripts/print-ready.cjs"
+}
+
+
+⸻
+
+6. Run It
+
+npm run prep:prod:fanzlanding
+
+	•	Checks env vars
+	•	Builds FE+BE
+	•	Emits route manifest
+	•	Crawls every page for 404s/console errors
+	•	Prints neon READY banner
+
+⸻
+
+⚠️ Theme Guarantee:
+No changes made to your index.css FUN palette ￼ or Tailwind/shadcn settings. Your neon gradient + floating animation + glow effects stay intact. All additions are scripts + routes + backend checks.
+
+⸻
+
+Do you want me to write out the actual routes-manifest.cjs and crawlLinks.cjs scripts now so you can just drop them into /client/scripts and run without coding them yourself?

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/lintstagedrc.schema.json",
+  "*.{js,jsx,ts,tsx}": [
+    "eslint --fix --max-warnings=0",
+    "prettier --write"
+  ],
+  "*.{json,md,yml,yaml}": [
+    "prettier --write"
+  ],
+  "*.{css,scss,sass,less}": [
+    "prettier --write"
+  ],
+  "*.sql": [
+    "prettier --write --parser=sql"
+  ],
+  "package.json": [
+    "prettier --write"
+  ],
+  "*.{sh,bash}": [
+    "shellcheck"
+  ]
+}

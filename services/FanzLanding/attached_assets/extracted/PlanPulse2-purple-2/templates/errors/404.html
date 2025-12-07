@@ -1,0 +1,115 @@
+{% extends "base.html" %} {% block title %}Page Not Found - FANZ{% endblock %}
+{% block content %}
+<div
+  class="container-fluid min-vh-100 d-flex align-items-center justify-content-center"
+>
+  <div class="row w-100">
+    <div class="col-12 col-md-8 col-lg-6 mx-auto text-center">
+      <div class="error-page">
+        <!-- Neon 404 -->
+        <div class="neon-text mb-4">
+          <h1 class="display-1 fw-bold" style="font-size: 8rem">404</h1>
+        </div>
+
+        <!-- Dripping banana icon -->
+        <div class="mb-4">
+          <i
+            class="fas fa-exclamation-triangle neon-icon"
+            style="font-size: 4rem; color: var(--neon-yellow)"
+          ></i>
+        </div>
+
+        <!-- Error message -->
+        <div class="mb-4">
+          <h2 class="h3 text-white mb-3">Page Not Found</h2>
+          <p class="text-light mb-4">
+            The page you're looking for doesn't exist in the neon realm. It
+            might have been moved, deleted, or you entered the wrong URL.
+          </p>
+        </div>
+
+        <!-- Action buttons -->
+        <div
+          class="d-flex flex-column flex-sm-row gap-3 justify-content-center"
+        >
+          <a href="{{ url_for('index') }}" class="btn btn-neon-primary btn-lg">
+            <i class="fas fa-home me-2"></i>
+            Go Home
+          </a>
+          <button
+            onclick="history.back()"
+            class="btn btn-neon-secondary btn-lg"
+          >
+            <i class="fas fa-arrow-left me-2"></i>
+            Go Back
+          </button>
+        </div>
+
+        <!-- Additional help -->
+        <div class="mt-5">
+          <p class="text-muted small">
+            Need help? Contact our support team or visit our
+            <a href="{{ url_for('index') }}" class="neon-link">main page</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .error-page {
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 20, 147, 0.3);
+    box-shadow: 0 0 30px rgba(255, 20, 147, 0.2);
+  }
+
+  .neon-text h1 {
+    color: var(--neon-pink);
+    text-shadow:
+      0 0 10px var(--neon-pink),
+      0 0 20px var(--neon-pink),
+      0 0 40px var(--neon-pink);
+    animation: pulse-neon 2s ease-in-out infinite alternate;
+  }
+
+  .neon-icon {
+    filter: drop-shadow(0 0 10px var(--neon-yellow))
+      drop-shadow(0 0 20px var(--neon-yellow));
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes pulse-neon {
+    from {
+      text-shadow:
+        0 0 10px var(--neon-pink),
+        0 0 20px var(--neon-pink),
+        0 0 40px var(--neon-pink);
+    }
+    to {
+      text-shadow:
+        0 0 5px var(--neon-pink),
+        0 0 10px var(--neon-pink),
+        0 0 20px var(--neon-pink);
+    }
+  }
+
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
+</style>
+{% endblock %}

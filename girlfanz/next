@@ -1,0 +1,84 @@
+#!/usr/bin/env node
+
+// This is a wrapper that intercepts Next.js commands 
+// and runs the appropriate Vite/Express commands instead
+
+const args = process.argv.slice(2);
+const { spawn } = require('child_process');
+
+// Check the first argument to determine the command
+const command = args[0];
+
+if (command === 'dev') {
+  console.log('🔄 Redirecting to Express server...');
+  
+  // Set environment variables
+  process.env.JWT_SECRET = process.env.JWT_SECRET || 'development-secret-' + Math.random().toString(36).substring(7);
+  process.env.PORT = '5000'; // Override the port from Next.js
+  process.env.SESSION_SECRET = process.env.SESSION_SECRET || 'session-secret-' + Math.random().toString(36).substring(7);
+  
+  // Load and run our Express server
+  require('tsx/cjs');
+  require('tsconfig-paths/register');
+  // Use absolute path to server-entry.ts
+  require('/home/runner/workspace/server-entry.ts');
+} else if (command === 'build') {
+  console.log('🔨 Building Vite application...');
+  
+  // Use custom build script to bypass vite.config.ts issues
+  const buildScript = require.resolve('/home/runner/workspace/build-vite.js');
+  const child = spawn(process.execPath, [buildScript], {
+    stdio: 'inherit',
+    cwd: process.cwd(),
+    env: { ...process.env, NODE_ENV: 'production' }
+  });
+  
+  child.on('exit', (code) => {
+    if (code === 0) {
+      console.log('✅ Vite build completed successfully!');
+      console.log('📦 Output directory: dist/public');
+      
+      // Also build the server TypeScript files
+      console.log('🔧 Compiling server TypeScript files...');
+      const tscPath = require.resolve('typescript/bin/tsc');
+      const tscChild = spawn(process.execPath, [tscPath, '--project', 'tsconfig.server.json', '--noEmit', 'false'], {
+        stdio: 'inherit',
+        cwd: process.cwd()
+      });
+      
+      tscChild.on('exit', (tscCode) => {
+        if (tscCode === 0) {
+          console.log('✅ Server build completed successfully!');
+        } else {
+          console.log('❌ Server build failed with exit code:', tscCode);
+        }
+        process.exit(tscCode);
+      });
+    } else {
+      console.log('❌ Vite build failed with exit code:', code);
+      process.exit(code);
+    }
+  });
+} else if (command === 'start') {
+  console.log('🚀 Starting production server...');
+  
+  // Set production environment
+  process.env.NODE_ENV = 'production';
+  process.env.JWT_SECRET = process.env.JWT_SECRET || 'production-secret-' + Math.random().toString(36).substring(7);
+  process.env.PORT = process.env.PORT || '5000';
+  process.env.SESSION_SECRET = process.env.SESSION_SECRET || 'session-secret-' + Math.random().toString(36).substring(7);
+  
+  // Load and run our Express server in production mode
+  require('tsx/cjs');
+  require('tsconfig-paths/register');
+  require('/home/runner/workspace/server-entry.ts');
+} else {
+  // For any other commands, show help
+  console.log('GirlFanz Build System Commands:');
+  console.log('  npm run dev   - Start development server (Express + Vite)');
+  console.log('  npm run build - Build production assets with Vite');
+  console.log('  npm run start - Start production server');
+  console.log('');
+  console.log('Unknown command:', args.join(' '));
+  process.exit(1);
+}

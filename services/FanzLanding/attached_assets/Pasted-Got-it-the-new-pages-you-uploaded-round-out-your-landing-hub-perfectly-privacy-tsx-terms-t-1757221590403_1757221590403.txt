@@ -1,0 +1,146 @@
+Got it ✅ — the new pages you uploaded round out your landing hub perfectly:
+	•	privacy.tsx & terms.tsx → your legal pages.
+	•	register.tsx → signup flow (pairs with login.tsx).
+	•	star-consent.tsx, kyc.tsx, documents.tsx, age-gate.tsx → compliance flows.
+	•	creator-spotlight.tsx → highlight creators.
+	•	footer.tsx & header.tsx → your global layout components.
+
+That means your FanzLanding portal now covers:
+	•	Home, Platforms/Services, Compliance, Login/Register.
+	•	Legal (Privacy, Terms, Age Gate, 2257/Consent).
+	•	Creator-focused features (Spotlight, Docs).
+	•	Layout (Header + Footer).
+
+⸻
+
+🔐 Next Steps (to lock this down for enterprise-readiness)
+
+1. Route Manifest
+
+Create /client/scripts/routes-manifest.cjs so every page is listed and verified:
+
+import fs from "node:fs";
+import path from "node:path";
+
+const routes = [
+  "/", "/platforms", "/services", "/compliance",
+  "/login", "/register", "/ref/:code",
+  "/status", "/blog", "/blog/:slug",
+  "/legal/privacy", "/legal/tos", "/legal/acceptable-use", "/legal/2257",
+  "/star-consent", "/kyc", "/documents", "/age-gate",
+  "/creator-spotlight", "/contact", "/system"
+];
+
+const manifest = routes.map(r => ({ path: r, component: "Auto", requiresAuth: false }));
+
+fs.mkdirSync(path.resolve("client/dist"), { recursive: true });
+fs.writeFileSync(
+  path.resolve("client/dist/routeManifest.json"),
+  JSON.stringify(manifest, null, 2)
+);
+
+console.log("✅ routeManifest.json written with", manifest.length, "routes");
+
+2. Crawler
+
+Create /client/scripts/crawlLinks.cjs to spider your site after build:
+
+import fs from "node:fs";
+import path from "node:path";
+import { chromium } from "playwright";
+
+const base = process.env.WEB_APP_URL || "http://localhost:3000";
+const seen = new Set([base]);
+const failures = [];
+
+const browser = await chromium.launch();
+const page = await browser.newPage();
+
+while (seen.size) {
+  const url = [...seen][0];
+  seen.delete(url);
+
+  try {
+    const res = await page.goto(url, { waitUntil: "networkidle" });
+    const status = res?.status?.() || 0;
+    if (status >= 400 || status === 0) failures.push({ url, status });
+
+    const links = await page.$$eval("a[href]", els => els.map(a => a.href));
+    links.forEach(h => {
+      if (h.startsWith(base)) {
+        const clean = h.split("#")[0];
+        if (!seen.has(clean)) seen.add(clean);
+      }
+    });
+  } catch (e) {
+    failures.push({ url, error: e.message });
+  }
+}
+
+await browser.close();
+
+const report = { checked: seen.size, failures };
+fs.mkdirSync(path.resolve("client/dist"), { recursive: true });
+fs.writeFileSync(path.resolve("client/dist/link-report.json"), JSON.stringify(report, null, 2));
+
+if (failures.length) {
+  console.error("❌ Crawl found issues:", failures);
+  process.exit(1);
+} else {
+  console.log("✅ Crawl passed — no broken links");
+}
+
+3. Update Scripts in package.json
+
+Add:
+
+"scripts": {
+  "routes:manifest": "node client/scripts/routes-manifest.cjs",
+  "crawl": "node client/scripts/crawlLinks.cjs",
+  "verify:all": "npm run build && npm run routes:manifest && npm run crawl",
+  "prep:prod:fanzlanding": "node scripts/env-gate.cjs && npm run verify:all && node scripts/print-ready.cjs"
+}
+
+4. Diagnostics Page (/system)
+
+Make a lightweight diagnostics page (system.tsx) that shows your manifest + crawl results:
+
+import manifest from "@/dist/routeManifest.json";
+import report from "@/dist/link-report.json";
+
+export default function System() {
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold">System Diagnostics</h1>
+      <section className="mt-4">
+        <h2 className="font-semibold">Routes</h2>
+        <p>{manifest.length} routes registered</p>
+      </section>
+      <section className="mt-4">
+        <h2 className="font-semibold">Link Crawl</h2>
+        <pre className="bg-gray-900 text-gray-100 p-3 rounded">
+          {JSON.stringify(report, null, 2)}
+        </pre>
+      </section>
+    </div>
+  );
+}
+
+
+⸻
+
+🚀 How to Use
+	1.	Drop the two scripts into /client/scripts/.
+	2.	Add the new NPM scripts.
+	3.	Build + run verification:
+
+npm run prep:prod:fanzlanding
+
+
+	4.	Open /system to see diagnostics.
+
+⸻
+
+✨ Theme-safe: None of this touches your index.css, Tailwind, or shadcn tokens. Everything just layers diagnostics + completeness checks on top.
+
+Do you want me to also wire the age-gate.tsx into the startup flow (e.g., modal that shows before / loads) so it’s auto-enforced?

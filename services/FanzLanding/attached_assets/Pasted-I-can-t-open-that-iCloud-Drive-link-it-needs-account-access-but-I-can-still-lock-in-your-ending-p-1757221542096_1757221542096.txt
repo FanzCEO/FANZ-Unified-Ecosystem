@@ -1,0 +1,248 @@
+I can’t open that iCloud Drive link (it needs account access), but I can still lock in your ending prompt + demands so Replit will build FanzLanding exactly as your enterprise hub + adult media landing requires. Paste the prompt below into Replit AI and it’ll scaffold, connect, and self-verify everything. After it runs, I can tune copy/branding with you.
+
+⸻
+
+⚡ FanzLanding — Enterprise Hub & Adult Media Portal (Replit Super-Prompt)
+
+You are a senior staff engineer inside Replit. Build FanzLanding end-to-end: public portal + hub for FUN (Fanz Unlimited Network). Ship a production-ready app with pages, APIs, CMS blocks, SSO handoff, referrals, newsletter, SEO/a11y, trust & safety, and self-verification. Do not ask questions; make sensible defaults. Ensure no missing pages, no dead links, no API↔UI gaps.
+
+0) Identity & Guardrails
+	•	Org: Fanz Unlimited Network (FUN)
+	•	Product: FanzLanding (enterprise hub + public portal)
+	•	Audience: creators, fans, partners, press, regulators
+	•	Brand: Neon/Varsity, dark-mode default, accessible (WCAG AA)
+	•	Adult-compliance stance: Allowed & respected. Must show age gating, VerifyMy overview, 2257 policy, content moderation statements.
+	•	Prohibited: Docker/Laravel/Stripe/PayPal. Use Replit-friendly stack.
+
+1) Tech Stack (Replit-safe)
+	•	Frontend: React 18 + TS + Vite, Tailwind, Radix/shadcn, TanStack Query, Wouter router.
+	•	Backend: Node/Express + TS, Zod validation, Drizzle ORM + drizzle-kit (Neon Postgres).
+	•	Assets/Storage: Local/public for landing; S3 optional for blog/MDX images.
+	•	Docs: Zod → OpenAPI JSON at /docs/openapi.json + Redoc.
+	•	Testing: Vitest (unit), Playwright (E2E), optional axe for a11y report.
+	•	Realtime: not required for landing (optional ws for notifications).
+	•	Analytics: privacy-friendly stub (Plausible adapter, opt-in).
+
+2) Pages (must exist & render)
+	•	/ Home: hero, value props, creator CTA, enterprise CTA, trust badges, platform tiles.
+	•	/platforms: BoyFanz, GirlFanz, PupFanz, FanzCommerce, FanzFiliate, FanzBook, FanzRadio/Podcast, FanzDash (each tile links out).
+	•	/services: payouts, KYC/compliance, moderation, ads, creator tools, enterprise integrations.
+	•	/security: Trust & Safety, Privacy, Abuse reporting, 2257 compliance, VerifyMy overview, data retention.
+	•	/pricing: creators keep 100% by default; enterprise contact card.
+	•	/signup: SSO handoff → FUN SSO (short-lived token + redirect).
+	•	/signin: SSO handoff.
+	•	/ref/:code: referral capture (signed cookie) → CTA to signup.
+	•	/status: service status summary + incidents feed.
+	•	/blog and /blog/:slug (MDX or HTML).
+	•	/legal/tos, /legal/privacy, /legal/acceptable-use, /legal/2257.
+	•	/contact: lead form (creator/partner/press).
+	•	/careers, /accessibility.
+	•	/system: diagnostics dashboard (see §7).
+	•	/* 404 with friendly nav.
+
+3) API (must be implemented, typed, and used)
+	•	/api/landing/sections CMS (home blocks).
+	•	/api/platforms list + icons + deep links.
+	•	/api/blog/* list/post (mock MDX loader).
+	•	/api/leads contact submissions.
+	•	/api/newsletter/subscribe (ESP stub + webhook).
+	•	/api/referrals/* generate/validate stats.
+	•	/api/status/* summary/incidents.
+	•	/api/ab/* experiments/feature flags (for hero A/B).
+	•	/api/sso/handoff mint short-lived token & redirect URL.
+	•	/webhooks/newsletter (HMAC), /webhooks/status (HMAC), /webhooks/verifymy (optional pre-KYC).
+	•	/docs + /docs/openapi.json, /healthz, /version, /introspect/*.
+	•	Static: /sitemap.xml, /robots.txt, /humans.txt.
+
+4) Data Model (Drizzle + migrations + seed)
+	•	cms_sections (key, content_json, published)
+	•	platforms (slug, name, tagline, icon_url, deep_link_url, category, order_index, status)
+	•	blog_posts (slug, title, author, mdx_s3_key or html, cover_url, published_at, tags)
+	•	leads (name, email, type creator/partner/press, message, source, utm_json, status)
+	•	newsletter_subs (email, consent_ts, source, ref_code)
+	•	referral_codes (code, owner_user_id nullable, campaign, clicks, signups)
+	•	status_incidents (provider, ext_id, title, status, impact, started_at, resolved_at, updates_json)
+	•	ab_experiments (key, variants_json, active, traffic_alloc)
+	•	feature_flags (key, value_json, active)
+	•	webhooks (url, secret, events_json, status)
+	•	api_keys, audit_logs
+
+Seed: Home hero blocks, 8 platform tiles, 1 blog post, 2 flags, 1 experiment (hero_B 30%), 1 incident (resolved), 2 referral codes, 1 newsletter list.
+
+5) Compliance & Trust Requirements (must be visible and linked)
+	•	Age Gate: modal or banner with country-appropriate disclaimers; remember consent with secure cookie.
+	•	VerifyMy & §2257: clear explanation pages and links; /legal/2257 details custodian of records.
+	•	Moderation policy: overview + appeal workflow.
+	•	Privacy/DSR: opt-out instructions; link to data request email/process.
+	•	Security badges: encryption, payout safety, KYC provider, uptime.
+
+6) SEO/Perf/A11y
+	•	Dynamic meta/OG tags per route; canonical from PUBLIC_DOMAIN.
+	•	Generate /sitemap.xml and serve /robots.txt.
+	•	Lazy-load media; prefetch critical links.
+	•	A11y: semantic headings, focus states, aria labels. Provide axe report (warning-only).
+
+7) Diagnostics & Self-Verification (the “no missing anything” part)
+	•	Route Manifest: FE emits dist/routeManifest.json with {path, component, requiresAuth}; import all components once to catch broken imports; display manifest on /system.
+	•	Link Crawler: headless crawl from /, visit all discovered links; write dist/link-report.json; fail if any 404 or console error.
+	•	API↔UI Parity: generate OpenAPI from Zod; verify every documented endpoint has a server handler and at least one typed client usage (or @serverOnly); fail on orphans.
+	•	Schema Drift: drizzle introspect dry-run vs migrations; fail on drift.
+	•	Webhooks: simulate HMAC-signed newsletter + status events; verify handlers mounted.
+	•	Health: /system shows DB/JWT OK, sitemap/robots/rss present, counts for UI routes / server routes / OpenAPI endpoints, last crawl summary, a11y summary.
+
+8) Required ENV (fail fast if missing)
+
+DATABASE_URL=postgres://...
+PUBLIC_DOMAIN=fanz.fun
+WEB_APP_URL=http://localhost:3000
+API_URL=http://localhost:5173/api
+NODE_ENV=production
+
+# Auth for lightweight sessions & SSO handoff
+JWT_ISS=fun.app
+JWT_AUD=fun.public
+JWT_SECRET=<<<64B random>>>
+JWT_ACCESS_TTL=900
+JWT_REFRESH_TTL=2592000
+
+# ESP / Newsletter
+ESP_PROVIDER=mock            # mock|postmark|mailgun|sendgrid
+ESP_API_KEY=dev
+
+# Status / Incident intake
+STATUS_PROVIDER=mock         # mock|betterstack|instatus|custom
+STATUS_WEBHOOK_SECRET=change-me
+
+# SSO handoff (validate & redirect)
+SSO_ISSUER=https://sso.fun
+SSO_JWKS_URL=https://sso.fun/.well-known/jwks.json
+
+# Analytics (optional)
+PLAUSIBLE_DOMAIN=fanz.fun
+PLAUSIBLE_API=dev
+
+If any are missing, startup must fail with a checklist of what to set.
+
+9) Project Layout (create now)
+
+/app
+  /frontend   (Vite React TS + Tailwind + shadcn)
+  /backend    (Express TS + Drizzle + Zod)
+  /packages
+    /types    (Zod schemas → OpenAPI)
+    /config   (eslint, tsconfig, tailwind preset)
+/scripts
+  env-gate.cjs
+  print-ready.cjs
+  a11y-check.cjs
+  routes-manifest.cjs
+  crawlLinks.cjs
+  pull-openapi-client.cjs
+
+10) NPM Scripts (root)
+	•	build: build BE+FE; FE emits route manifest
+	•	migrate, seed
+	•	test: vitest FE+BE
+	•	openapi: generate JSON + FE types pull
+	•	verify:contracts, verify:drift, verify:webhooks, verify:health, crawl, verify:a11y
+	•	verify:all: run everything in strict order
+	•	prep:prod:fanzlanding: env-gate → verify:all → print-ready banner
+
+One command to run:
+
+npm run prep:prod:fanzlanding
+
+11) Acceptance Criteria (Definition of Done)
+	1.	All pages in §2 render; /system shows zero missing routes, zero broken imports.
+	2.	link-report.json: 0 failures.
+	3.	OpenAPI ↔ server handlers ↔ typed client usage all in parity.
+	4.	Drizzle no drift vs migrations.
+	5.	Webhook simulations (newsletter/status) pass signature checks.
+	6.	Sitemap, robots, RSS served; canonical URLs valid.
+	7.	Age-gate + compliance/legal pages present and linked from footer & security page.
+	8.	E2E: visitor → platforms → signup (SSO handoff) → referral cookie set; blog loads; status renders last incident.
+	9.	/system shows all checks ✅ and prints READY FOR PROD banner.
+
+12) Copy Blocks (drop these into seed so the landing has voice from day 1)
+	•	Hero h1: “Creators keep 100%. The future of adult media is FUN.”
+	•	Subhead: “Neon-powered platforms for creators and fans: safe, compliant, and uncensored.”
+	•	Trust bullets: “VerifyMy KYC • 2257 Compliance • Encrypted Payouts • Zero Platform Tax”
+	•	CTAs: “I’m a Creator” (to /signup), “Explore Platforms” (to /platforms)
+	•	Security intro: “We protect creators first. Age gates, ID checks, and audit-ready records.”
+	•	Footer: legal links + short compliance note: “FUN supports lawful, consensual content. Learn more → /legal/2257”
+
+⸻
+
+Bonus: paste-in scripts (ready to drop)
+
+/scripts/env-gate.cjs
+
+const required = [
+  'DATABASE_URL','PUBLIC_DOMAIN','WEB_APP_URL','API_URL','NODE_ENV',
+  'JWT_ISS','JWT_AUD','JWT_SECRET','JWT_ACCESS_TTL','JWT_REFRESH_TTL',
+  'ESP_PROVIDER','ESP_API_KEY','STATUS_PROVIDER','STATUS_WEBHOOK_SECRET',
+  'SSO_ISSUER','SSO_JWKS_URL'
+];
+const miss = required.filter(k => !process.env[k]);
+if (miss.length) { console.error('❌ Missing env:\n' + miss.map(x=>' - '+x).join('\n')); process.exit(1); }
+console.log('✅ ENV check passed');
+
+/scripts/print-ready.cjs
+
+console.log(`
+███████╗ █████╗ ███╗   ██╗███████╗██╗      █████╗ ███╗   ██╗██████╗ ██╗███╗   ██╗ ██████╗
+██╔════╝██╔══██╗████╗  ██║██╔════╝██║     ██╔══██╗████╗  ██║██╔══██╗██║████╗  ██║██╔════╝
+█████╗  ███████║██╔██╗ ██║█████╗  ██║     ███████║██╔██╗ ██║██║  ██║██║██╔██╗ ██║██║  ███╗
+██╔══╝  ██╔══██║██║╚██╗██║██╔══╝  ██║     ██╔══██║██║╚██╗██║██║  ██║██║██║╚██╗██║██║   ██║
+███████╗██║  ██║██║ ╚████║███████╗███████╗██║  ██║██║ ╚████║██████╔╝██║██║ ╚████║╚██████╔╝
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝
+FanzLanding: ALL CHECKS PASSED — READY FOR PROD ✨
+`);
+
+/app/frontend/scripts/routes-manifest.cjs
+
+import fs from 'node:fs';
+import path from 'node:path';
+const routes = [
+  '/', '/platforms','/services','/security','/pricing','/signup','/signin',
+  '/ref/:code','/status','/blog','/blog/:slug','/legal/tos','/legal/privacy',
+  '/legal/acceptable-use','/legal/2257','/contact','/careers','/accessibility',
+  '/system'
+];
+const manifest = routes.map(p => ({ path: p, component: 'Auto', requiresAuth: false }));
+fs.mkdirSync(path.resolve('app/frontend/dist'), { recursive: true });
+fs.writeFileSync(path.resolve('app/frontend/dist/routeManifest.json'), JSON.stringify(manifest, null, 2));
+console.log('✅ routeManifest.json emitted');
+
+/app/frontend/scripts/crawlLinks.cjs (Playwright mini crawler)
+
+import fs from 'node:fs'; import path from 'node:path';
+import { chromium } from 'playwright';
+const base = process.env.WEB_APP_URL || 'http://localhost:3000';
+const queue = new Set([base]); const seen = new Set(); const failures = [];
+const browser = await chromium.launch(); const page = await browser.newPage();
+while (queue.size) {
+  const url = [...queue][0]; queue.delete(url); if (seen.has(url)) continue; seen.add(url);
+  const res = await page.goto(url, { waitUntil: 'networkidle' }).catch(e => ({ status: 0, error: e.message }));
+  const status = res?.status?.() ?? res?.status ?? 0;
+  const logs = []; page.on('console', m => logs.push(m.type()+':'+m.text()));
+  if (status >= 400 || status === 0) failures.push({ url, status, logs });
+  const hrefs = await page.$$eval('a[href]', as => as.map(a => a.href));
+  for (const h of hrefs) if (h.startsWith(base)) queue.add(h.split('#')[0]);
+}
+await browser.close();
+const out = { urls: seen.size, failures };
+fs.writeFileSync(path.resolve('app/frontend/dist/link-report.json'), JSON.stringify(out, null, 2));
+console.log(failures.length ? '❌ crawl failures' : '✅ crawl passed');
+process.exit(failures.length ? 1 : 0);
+
+
+⸻
+
+What I need from you next
+
+Since I can’t open iCloud, either:
+	1.	Paste your repo tree + key files here (package.json, scripts, any routes/components), or
+	2.	Upload the extracted files (not the ZIP) here.
+
+I’ll diff against the prompt above and give you copy-paste fixes so your current Replit hits READY FOR PROD with the diagnostics clean.

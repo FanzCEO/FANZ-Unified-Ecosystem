@@ -1,0 +1,113 @@
+{
+  "categories": {
+    "allowed": [
+      "creator-promo",
+      "fashion",
+      "beauty",
+      "gaming",
+      "music",
+      "events",
+      "lifestyle",
+      "fitness",
+      "dating",
+      "entertainment"
+    ],
+    "restricted": [
+      "alcohol",
+      "tobacco",
+      "gambling",
+      "pharmaceuticals"
+    ],
+    "blocked": [
+      "malware",
+      "hate",
+      "illegal",
+      "political",
+      "weapons",
+      "violence",
+      "scams",
+      "fake-news"
+    ]
+  },
+  "creative": {
+    "maxBytes": {
+      "image": 200000,
+      "video": 1500000,
+      "html": 100000
+    },
+    "dimensions": {
+      "HEADER": ["970x90", "728x90", "320x50"],
+      "FOOTER": ["728x90", "320x50"], 
+      "SIDEPANEL": ["300x250", "300x600"],
+      "HOMEPAGE_HERO": ["1200x400", "970x250"],
+      "HOMEPAGE_NATIVE": ["responsive"],
+      "DASHBOARD_WIDGET": ["responsive"]
+    },
+    "requiredFields": ["type", "url", "landingUrl"]
+  },
+  "targeting": {
+    "geoBlacklist": ["CU", "KP", "SY", "IR"],
+    "minBudget": 5,
+    "maxBudget": 100000
+  },
+  "frequency": {
+    "defaultPerUserPerDay": 3,
+    "windowHours": 24
+  },
+  "billing": {
+    "allowedProcessors": [
+      "ccbill",
+      "segpay", 
+      "epoch",
+      "vendo",
+      "verotel",
+      "netbilling",
+      "commercegate",
+      "rocketgate",
+      "centrobill",
+      "bitpay",
+      "coinbase_commerce",
+      "nowpayments",
+      "coinsaid",
+      "gocoin"
+    ],
+    "prohibitedProcessors": [
+      "stripe",
+      "paypal",
+      "square",
+      "venmo",
+      "cashapp"
+    ],
+    "cryptoSupported": [
+      "BTC",
+      "ETH", 
+      "USDT",
+      "USDC",
+      "LTC"
+    ]
+  },
+  "compliance": {
+    "wcagLevel": "AA",
+    "privacyPolicyUrl": "https://fanz.foundation/privacy",
+    "termsOfServiceUrl": "https://fanz.foundation/terms",
+    "supportEmail": "support@fanz.network"
+  },
+  "platforms": {
+    "supported": [
+      "boyfanz",
+      "girlfanz", 
+      "pupfanz",
+      "taboofanz",
+      "daddiesfanz",
+      "cougarfanz"
+    ],
+    "urls": {
+      "boyfanz": "https://boyfanz.com",
+      "girlfanz": "https://girlfanz.com",
+      "pupfanz": "https://pupfanz.com", 
+      "taboofanz": "https://taboofanz.com",
+      "daddiesfanz": "https://daddiesfanz.com",
+      "cougarfanz": "https://cougarfanz.com"
+    }
+  }
+}

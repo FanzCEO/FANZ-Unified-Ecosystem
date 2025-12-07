@@ -1,0 +1,152 @@
+{% extends "base.html" %} {% block title %}Access Forbidden - FANZ{% endblock %}
+{% block content %}
+<div class="error-page-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="error-card card rainbow-border">
+          <div class="card-body text-center py-5">
+            <div class="error-icon mb-4">
+              <i class="fas fa-lock fa-5x neon-text neon-red"></i>
+            </div>
+            <h1 class="error-code neon-text neon-red mb-3">403</h1>
+            <h3 class="error-title mb-4">Access Forbidden</h3>
+            <p class="error-description mb-4">
+              This exclusive area is reserved for verified members only. Your
+              current access level doesn't permit entry to this seductive
+              sanctuary.
+            </p>
+
+            <div class="error-actions">
+              <a
+                href="{{ url_for('index') }}"
+                class="btn btn-primary btn-lg me-3"
+              >
+                <i class="fas fa-home me-2"></i>Return Home
+              </a>
+              <a
+                href="{{ url_for('login') }}"
+                class="btn btn-outline-light btn-lg"
+              >
+                <i class="fas fa-key me-2"></i>Login
+              </a>
+            </div>
+
+            <div class="error-help mt-4">
+              <small class="text-muted">
+                Need access?
+                <a href="{{ url_for('kyc_form') }}" class="neon-link neon-cyan"
+                  >Complete verification</a
+                >
+                or contact support for assistance.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .error-page-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 255, 0.1),
+      rgba(255, 68, 68, 0.1)
+    );
+  }
+
+  .error-card {
+    background: var(--card-bg) !important;
+    backdrop-filter: blur(20px);
+    border: 2px solid;
+    animation: rainbow-border-cycle 4s ease-in-out infinite;
+  }
+
+  .error-icon {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .error-code {
+    font-size: 6rem;
+    font-weight: 900;
+    text-shadow: 0 0 30px currentColor;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .error-title {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .error-description {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .error-actions .btn {
+    min-width: 140px;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      text-shadow: 0 0 30px currentColor;
+    }
+    50% {
+      text-shadow:
+        0 0 50px currentColor,
+        0 0 70px currentColor;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .error-code {
+      font-size: 4rem;
+    }
+
+    .error-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .error-actions .btn {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %} {% block page_scripts %} // 403 Error page enhancements
+document.addEventListener('DOMContentLoaded', function() { // Add particle
+effects createErrorParticles(); // Animate error elements const errorIcon =
+document.querySelector('.error-icon'); const errorCode =
+document.querySelector('.error-code'); if (errorIcon) {
+errorIcon.style.animationDelay = '0.2s'; } if (errorCode) {
+errorCode.style.animationDelay = '0.5s'; } }); function createErrorParticles() {
+const container = document.querySelector('.error-page-container'); for (let i =
+0; i < 15; i++) { const particle = document.createElement('div');
+particle.style.cssText = ` position: absolute; width: 3px; height: 3px;
+background: #ff4444; border-radius: 50%; box-shadow: 0 0 8px #ff4444; animation:
+error-float ${3 + Math.random() * 6}s ease-in-out infinite; left:
+${Math.random() * 100}%; top: ${Math.random() * 100}%; animation-delay:
+${Math.random() * 3}s; z-index: 1; `; container.appendChild(particle); } // Add
+CSS for error particle animation const style = document.createElement('style');
+style.textContent = ` @keyframes error-float { 0%, 100% { transform:
+translateY(0px) rotate(0deg); opacity: 0.7; } 50% { transform: translateY(-15px)
+rotate(180deg); opacity: 1; } } `; document.head.appendChild(style); } {%
+endblock %}

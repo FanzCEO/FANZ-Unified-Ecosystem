@@ -1,0 +1,912 @@
+{% extends "base.html" %} {% block title %}STAR Consent Form - FANZ{% endblock
+%} {% block content %}
+<div class="consent-container">
+  <div class="container">
+    <div class="row justify-content-center py-5">
+      <div class="col-lg-10">
+        <!-- Header Section -->
+        <div class="consent-header-card card mb-4">
+          <div class="card-body text-center py-4">
+            <h2 class="neon-text neon-pink mb-3">
+              <i class="fas fa-file-contract me-2"></i>STAR Consent Form
+            </h2>
+            <p class="lead text-secondary mb-0">
+              Fill the form to start creating content
+            </p>
+          </div>
+        </div>
+
+        <!-- Status Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div
+          class="alert alert-{{ 'success' if category == 'success' else 'info' if category == 'info' else 'danger' }} text-center my-3"
+        >
+          <p class="mb-0">{{ message }}</p>
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+
+        <div class="consent-form-card card">
+          <div class="card-header">
+            <h3 class="mb-0">
+              Informed Consent to Comply with MasterCard's Revised Standards
+            </h3>
+            <small class="text-muted"
+              >For New Specialty Merchant Registration Requirements for Adult
+              Content Merchants</small
+            >
+          </div>
+
+          <div class="card-body p-4">
+            <div class="legal-intro mb-4">
+              <p class="text-muted">
+                This Consent Agreement ("Agreement") is a legally binding
+                document between the undersigned participants and Fanz Unlimited
+                LLC ("Company," "we," "us," or "our"). By signing this
+                Agreement, you acknowledge and agree to the terms and conditions
+                outlined below regarding your participation in the creation,
+                distribution, and use of adult content on platforms owned and
+                operated by Fanz Unlimited LLC.
+              </p>
+            </div>
+
+            <form
+              method="POST"
+              class="consent-form"
+              enctype="multipart/form-data"
+              novalidate
+            >
+              {{ form.hidden_tag() }}
+
+              <!-- Section 1: Identification Information -->
+              <div class="consent-section mb-4">
+                <h4 class="section-title neon-text neon-cyan mb-3">
+                  <i class="fas fa-id-card me-2"></i>1. Identification
+                  Information
+                </h4>
+
+                <h5 class="subsection-title">
+                  1.1 Content Creator Information
+                </h5>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label for="creator_name" class="form-label"
+                        >Full Legal Name *</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="creator_name"
+                        name="creator_name"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label for="creator_stage_name" class="form-label"
+                        >Stage Name (if applicable)</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="creator_stage_name"
+                        name="creator_stage_name"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="creator_email" class="form-label">Email *</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="creator_email"
+                    name="creator_email"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Section 2: Consent and Authorization -->
+              <div class="consent-section mb-4">
+                <h4 class="section-title neon-text neon-green mb-3">
+                  <i class="fas fa-handshake me-2"></i>2. Consent and
+                  Authorization
+                </h4>
+
+                <h5 class="subsection-title">2.1 Consent to Use Likeness</h5>
+                <p>
+                  By signing below, the co-star/model consents to the use of
+                  their likeness in the content, including its use, editing, and
+                  distribution on Fanz Unlimited LLC-owned and operated sites
+                  and platforms.
+                </p>
+
+                <h5 class="subsection-title">2.2 Authorization</h5>
+                <p>
+                  The content creator is granted full authorization to use,
+                  edit, and distribute the content across the agreed-upon
+                  platforms, as specified in this Agreement.
+                </p>
+              </div>
+
+              <!-- Section 3: Age Verification -->
+              <div class="consent-section mb-4">
+                <h4 class="section-title neon-text neon-yellow mb-3">
+                  <i class="fas fa-calendar-check me-2"></i>3. Age Verification
+                </h4>
+
+                <h5 class="subsection-title">3.1 Age Confirmation</h5>
+                <p>
+                  All parties involved in the content creation hereby confirm
+                  that they are 18 years of age or older.
+                </p>
+
+                <h5 class="subsection-title">
+                  3.2 Identification Documentation
+                </h5>
+                <p>
+                  A copy of a valid government-issued ID is required and
+                  attached to this Agreement for age verification purposes.
+                </p>
+
+                <h5 class="subsection-title">3.2.a For Creator</h5>
+
+                <div class="form-group mb-3">
+                  <label class="form-label">Type of ID Produced *</label>
+                  <div class="id-type-options">
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="creator_id_type"
+                        id="creator-passport"
+                        value="Passport"
+                        required
+                      />
+                      <label class="form-check-label" for="creator-passport"
+                        >Passport</label
+                      >
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="creator_id_type"
+                        id="creator-citizenship"
+                        value="Citizenship"
+                        required
+                      />
+                      <label class="form-check-label" for="creator-citizenship"
+                        >Citizenship</label
+                      >
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="creator_id_type"
+                        id="creator-drivers-license"
+                        value="Driver's License"
+                        required
+                      />
+                      <label
+                        class="form-check-label"
+                        for="creator-drivers-license"
+                        >Driver's License</label
+                      >
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="creator_id_type"
+                        id="creator-military-card"
+                        value="Military Card"
+                        required
+                      />
+                      <label
+                        class="form-check-label"
+                        for="creator-military-card"
+                        >Military Card</label
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="creator_id_picture" class="form-label"
+                    >Upload ID Picture *</label
+                  >
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="creator_id_picture"
+                    name="creator_id_picture"
+                    accept="image/*"
+                    required
+                  />
+                  <small class="form-text text-muted"
+                    >Combine both front and back in a single picture before you
+                    submit</small
+                  >
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label for="creator_id_number" class="form-label"
+                        >ID Number *</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="creator_id_number"
+                        name="creator_id_number"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label for="creator_id_state_country" class="form-label"
+                        >State/Country *</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="creator_id_state_country"
+                        name="creator_id_state_country"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="creator_dob" class="form-label"
+                    >Date of Birth *</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="creator_dob"
+                    name="creator_dob"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Section 4: Scope of Use -->
+              <div class="consent-section mb-4">
+                <h4 class="section-title neon-text neon-pink mb-3">
+                  <i class="fas fa-globe me-2"></i>4. Scope of Use
+                </h4>
+
+                <h5 class="subsection-title">4.1 Content Usage</h5>
+                <p>
+                  The content may be used on specific platforms owned and
+                  operated by Fanz Unlimited LLC, including potential use in
+                  marketing materials. The content's usage rights are outlined
+                  as either perpetual or time-limited, as detailed below:
+                </p>
+
+                <div class="form-group mb-3">
+                  <label class="form-label"
+                    ><strong>Duration of Consent:</strong></label
+                  >
+                  <p class="consent-duration">
+                    For the life of the company and/or its platforms.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Section 5: Compensation Terms -->
+              <div class="consent-section mb-4">
+                <h4 class="section-title neon-text neon-orange mb-3">
+                  <i class="fas fa-dollar-sign me-2"></i>5. Compensation Terms
+                </h4>
+
+                <h5 class="subsection-title">5.1 Compensation Details</h5>
+                <p>
+                  Any compensation provided to the co-star/model in exchange for
+                  their participation and consent is detailed below:
+                </p>
+
+                <div class="form-group mb-3">
+                  <label for="compensation_terms" class="form-label"
+                    >Compensation Terms</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="compensation_terms"
+                    name="compensation_terms"
+                    rows="3"
+                    placeholder="Enter compensation details..."
+                  ></textarea>
+                </div>
+              </div>
+
+              <!-- Co-Star Section Toggle -->
+              <div class="consent-section mb-4">
+                <div class="toggle-container mb-3">
+                  <span>Does this scene include a co-star?</span>
+                  <label class="toggle-switch-label">
+                    <input
+                      type="checkbox"
+                      id="costar-toggle"
+                      class="toggle-switch"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <!-- Co-Star Details (Hidden by default) -->
+                <div id="costar-details" style="display: none">
+                  <h4 class="section-title neon-text neon-purple mb-3">
+                    <i class="fas fa-users me-2"></i>Co-Star Information
+                  </h4>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group mb-3">
+                        <label for="costar_name" class="form-label"
+                          >Co-Star Full Legal Name</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="costar_name"
+                          name="costar_name"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group mb-3">
+                        <label for="costar_stage_name" class="form-label"
+                          >Co-Star Stage Name</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="costar_stage_name"
+                          name="costar_stage_name"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group mb-3">
+                    <label for="costar_email" class="form-label"
+                      >Co-Star Email</label
+                    >
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="costar_email"
+                      name="costar_email"
+                    />
+                  </div>
+
+                  <div class="form-group mb-3">
+                    <label for="costar_dob" class="form-label"
+                      >Co-Star Date of Birth</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="costar_dob"
+                      name="costar_dob"
+                    />
+                  </div>
+
+                  <div class="form-group mb-3">
+                    <label for="costar_id_picture" class="form-label"
+                      >Co-Star ID Picture</label
+                    >
+                    <input
+                      type="file"
+                      class="form-control"
+                      id="costar_id_picture"
+                      name="costar_id_picture"
+                      accept="image/*"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Final Consent Agreement -->
+              <div class="consent-section mb-4">
+                <h4 class="section-title neon-text neon-red mb-3">
+                  <i class="fas fa-signature me-2"></i>Final Consent
+                </h4>
+
+                <div class="consent-checkboxes">
+                  <div class="form-check mb-3">
+                    <input
+                      type="checkbox"
+                      class="form-check-input required-consent"
+                      id="age-verification"
+                      name="age_verification"
+                      required
+                    />
+                    <label class="form-check-label" for="age-verification">
+                      I confirm that I am at least 18 years of age and have
+                      provided valid identification
+                    </label>
+                  </div>
+
+                  <div class="form-check mb-3">
+                    <input
+                      type="checkbox"
+                      class="form-check-input required-consent"
+                      id="content-consent"
+                      name="content_consent"
+                      required
+                    />
+                    <label class="form-check-label" for="content-consent">
+                      I consent to the creation, use, editing, and distribution
+                      of adult content featuring my likeness
+                    </label>
+                  </div>
+
+                  <div class="form-check mb-3">
+                    <input
+                      type="checkbox"
+                      class="form-check-input required-consent"
+                      id="platform-consent"
+                      name="platform_consent"
+                      required
+                    />
+                    <label class="form-check-label" for="platform-consent">
+                      I understand this content will be distributed on Fanz
+                      Unlimited LLC platforms and potentially used in marketing
+                      materials
+                    </label>
+                  </div>
+
+                  <div class="form-check mb-3">
+                    <input
+                      type="checkbox"
+                      class="form-check-input required-consent"
+                      id="withdrawal-understanding"
+                      name="withdrawal_understanding"
+                      required
+                    />
+                    <label
+                      class="form-check-label"
+                      for="withdrawal-understanding"
+                    >
+                      I understand I have the right to withdraw consent during
+                      recording, but not after content is distributed
+                    </label>
+                  </div>
+
+                  <div class="form-check mb-3">
+                    <input
+                      type="checkbox"
+                      class="form-check-input required-consent"
+                      id="legal-agreement"
+                      name="legal_agreement"
+                      required
+                    />
+                    <label class="form-check-label" for="legal-agreement">
+                      I acknowledge this is a legally binding agreement and I
+                      have read and understood all terms
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Digital Signature -->
+              <div class="consent-section mb-4">
+                <h4 class="section-title neon-text neon-green mb-3">
+                  <i class="fas fa-pen me-2"></i>Digital Signature
+                </h4>
+
+                <div class="form-group mb-3">
+                  <label for="digital_signature" class="form-label"
+                    >Type your full legal name as digital signature *</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="digital_signature"
+                    name="digital_signature"
+                    placeholder="Type your full legal name"
+                    required
+                  />
+                  <small class="form-text text-muted"
+                    >By typing your name, you are providing a legally binding
+                    digital signature</small
+                  >
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="signature_date" class="form-label">Date</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="signature_date"
+                    name="signature_date"
+                    value="{{ current_time.strftime('%Y-%m-%d') }}"
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="form-actions text-center">
+                <button
+                  type="submit"
+                  class="btn btn-success btn-lg px-5 glow-pulse"
+                  id="submit-consent"
+                  disabled
+                >
+                  <i class="fas fa-signature me-2"></i>Submit Consent Form
+                </button>
+                <a
+                  href="{{ url_for('dashboard') }}"
+                  class="btn btn-secondary btn-lg px-5 ms-3"
+                >
+                  <i class="fas fa-times me-2"></i>Cancel
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Legal Notice -->
+        <div class="legal-notice-card card mt-4">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-2 text-center">
+                <i class="fas fa-shield-alt fa-3x neon-green"></i>
+              </div>
+              <div class="col-md-10">
+                <h6 class="neon-text neon-green mb-2">
+                  Legal Protection & Compliance
+                </h6>
+                <p class="text-secondary mb-0">
+                  This consent form ensures full compliance with USC 2257
+                  record-keeping requirements and MasterCard's revised standards
+                  for adult content merchants. All information is encrypted and
+                  stored securely with immutable audit trails.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .consent-container {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 255, 0.05),
+      rgba(0, 255, 255, 0.05)
+    );
+    min-height: 100vh;
+  }
+
+  .consent-header-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .consent-form-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .consent-section {
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .consent-section:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.02);
+  }
+
+  .section-title {
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .subsection-title {
+    color: var(--text-primary);
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+
+  .legal-intro {
+    background: rgba(255, 136, 0, 0.05);
+    border: 1px solid rgba(255, 136, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .id-type-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 10px;
+  }
+
+  .consent-checkboxes {
+    background: rgba(255, 0, 0, 0.05);
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .consent-duration {
+    background: rgba(255, 0, 255, 0.05);
+    border: 1px solid rgba(255, 0, 255, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+    font-weight: bold;
+  }
+
+  /* Toggle Switch Styling */
+  .toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: Arial, sans-serif;
+  }
+
+  .toggle-switch-label {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    cursor: pointer;
+  }
+
+  .toggle-switch {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-color);
+    border-radius: 24px;
+    transition: background-color 0.3s;
+  }
+
+  .slider:before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+
+  .toggle-switch:checked + .slider {
+    background-color: var(--neon-green);
+  }
+
+  .toggle-switch:checked + .slider:before {
+    transform: translateX(26px);
+  }
+
+  .legal-notice-card {
+    background: rgba(0, 255, 0, 0.05);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+  }
+
+  #submit-consent:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .consent-form-card,
+    .consent-header-card {
+      margin: 20px;
+      border-radius: 15px;
+    }
+
+    .consent-section {
+      padding: 15px;
+    }
+
+    .id-type-options {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-actions .btn {
+      display: block;
+      width: 100%;
+      margin: 10px 0 !important;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".consent-form");
+    const submitBtn = document.getElementById("submit-consent");
+    const requiredConsents = document.querySelectorAll(".required-consent");
+    const costarToggle = document.getElementById("costar-toggle");
+    const costarDetails = document.getElementById("costar-details");
+    const digitalSignature = document.getElementById("digital_signature");
+    const creatorName = document.getElementById("creator_name");
+
+    // Co-star toggle functionality
+    costarToggle.addEventListener("change", function () {
+      if (this.checked) {
+        costarDetails.style.display = "block";
+      } else {
+        costarDetails.style.display = "none";
+        // Clear co-star fields when hiding
+        const costarFields = costarDetails.querySelectorAll("input");
+        costarFields.forEach((field) => (field.value = ""));
+      }
+    });
+
+    // Check if all required consents are checked and form is valid
+    function checkFormValidity() {
+      const allConsentsChecked = Array.from(requiredConsents).every(
+        (checkbox) => checkbox.checked,
+      );
+      const signatureValid = digitalSignature.value.trim() !== "";
+      const creatorNameValid = creatorName.value.trim() !== "";
+
+      // Check required fields
+      const requiredFields = form.querySelectorAll(
+        "input[required], select[required]",
+      );
+      const allFieldsValid = Array.from(requiredFields).every((field) => {
+        if (field.type === "file") {
+          // For file inputs, check if parent section is visible and file is selected
+          const isVisible = field.closest("#costar-details")
+            ? costarToggle.checked
+            : true;
+          return !isVisible || field.files.length > 0;
+        }
+        return field.value.trim() !== "";
+      });
+
+      const formValid =
+        allConsentsChecked &&
+        signatureValid &&
+        creatorNameValid &&
+        allFieldsValid;
+
+      submitBtn.disabled = !formValid;
+
+      if (formValid) {
+        submitBtn.classList.add("glow-pulse");
+      } else {
+        submitBtn.classList.remove("glow-pulse");
+      }
+    }
+
+    // Add event listeners to all form elements
+    requiredConsents.forEach((checkbox) => {
+      checkbox.addEventListener("change", checkFormValidity);
+    });
+
+    digitalSignature.addEventListener("input", checkFormValidity);
+    creatorName.addEventListener("input", checkFormValidity);
+
+    // Add listeners to all required fields
+    const allInputs = form.querySelectorAll("input, select, textarea");
+    allInputs.forEach((input) => {
+      input.addEventListener("input", checkFormValidity);
+      input.addEventListener("change", checkFormValidity);
+    });
+
+    // Validate signature matches creator name
+    digitalSignature.addEventListener("blur", function () {
+      const creatorNameValue = creatorName.value.trim().toLowerCase();
+      const signatureValue = this.value.trim().toLowerCase();
+
+      if (
+        creatorNameValue &&
+        signatureValue &&
+        creatorNameValue !== signatureValue
+      ) {
+        this.classList.add("is-invalid");
+        let feedback = this.parentElement.querySelector(".invalid-feedback");
+        if (!feedback) {
+          feedback = document.createElement("div");
+          feedback.className = "invalid-feedback";
+          this.parentElement.appendChild(feedback);
+        }
+        feedback.textContent =
+          "Digital signature must match your full legal name exactly";
+      } else {
+        this.classList.remove("is-invalid");
+        const feedback = this.parentElement.querySelector(".invalid-feedback");
+        if (feedback) feedback.remove();
+      }
+    });
+
+    // Age validation for date of birth
+    const dobInputs = document.querySelectorAll(
+      'input[type="date"][name*="dob"]',
+    );
+    dobInputs.forEach((input) => {
+      input.addEventListener("change", function () {
+        const dob = new Date(this.value);
+        const today = new Date();
+        const age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+
+        let actualAge = age;
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < dob.getDate())
+        ) {
+          actualAge--;
+        }
+
+        if (actualAge < 18) {
+          this.classList.add("is-invalid");
+          let feedback = this.parentElement.querySelector(".invalid-feedback");
+          if (!feedback) {
+            feedback = document.createElement("div");
+            feedback.className = "invalid-feedback";
+            this.parentElement.appendChild(feedback);
+          }
+          feedback.textContent = "Must be at least 18 years old";
+        } else {
+          this.classList.remove("is-invalid");
+          const feedback =
+            this.parentElement.querySelector(".invalid-feedback");
+          if (feedback) feedback.remove();
+        }
+
+        checkFormValidity();
+      });
+    });
+
+    // Form submission with loading state
+    form.addEventListener("submit", function (e) {
+      if (!submitBtn.disabled) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+      }
+    });
+
+    // Initial validation check
+    checkFormValidity();
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,408 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* DaddyFanz Brand Colors */
+  --df-cyan: hsl(195, 100%, 50%);
+  --df-gold: hsl(45, 93%, 59%);
+  --df-steel: hsl(220, 7%, 52%);
+  --df-ink: hsl(240, 10%, 4%);
+  --df-brick: hsl(240, 10%, 7%);
+  --df-snow: hsl(210, 40%, 96%);
+  --df-fog: hsl(215, 16%, 65%);
+
+  /* System Colors */
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(210, 40%, 96%);
+  --card: hsl(240, 10%, 7%);
+  --card-foreground: hsl(210, 40%, 96%);
+  --popover: hsl(240, 10%, 7%);
+  --popover-foreground: hsl(210, 40%, 96%);
+  --primary: hsl(195, 100%, 50%);
+  --primary-foreground: hsl(210, 40%, 96%);
+  --secondary: hsl(45, 93%, 59%);
+  --secondary-foreground: hsl(240, 10%, 4%);
+  --muted: hsl(240, 5%, 26%);
+  --muted-foreground: hsl(215, 16%, 65%);
+  --accent: hsl(220, 7%, 52%);
+  --accent-foreground: hsl(210, 40%, 96%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(210, 40%, 96%);
+  --border: hsl(220, 7%, 52%);
+  --input: hsl(240, 10%, 7%);
+  --ring: hsl(195, 100%, 50%);
+  --radius: 8px;
+
+  /* Success, Warning, Error */
+  --success: hsl(142, 76%, 36%);
+  --warning: hsl(38, 92%, 50%);
+  --error: hsl(0, 84%, 60%);
+
+  /* Font Families */
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'Menlo', monospace;
+
+  /* Shadows */
+  --shadow-glow: 0 0 24px rgba(0, 207, 255, 0.5);
+  --shadow-glow-gold: 0 0 24px rgba(245, 194, 55, 0.3);
+  --shadow-inner-glow: inset 0 0 20px rgba(0, 207, 255, 0.1);
+
+  /* Gradients */
+  --gradient-dom: linear-gradient(135deg, #00CFFF 0%, #0047FF 60%, #F5C237 100%);
+  --gradient-dungeon: radial-gradient(1200px 600px at 60% -15%, rgba(0,207,255,0.11) 0%, rgba(0,0,0,0.7) 65%);
+  --gradient-gold: linear-gradient(90deg, #F5C237, #FFD97A);
+}
+
+.dark {
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(210, 40%, 96%);
+  --card: hsl(240, 10%, 7%);
+  --card-foreground: hsl(210, 40%, 96%);
+  --popover: hsl(240, 10%, 7%);
+  --popover-foreground: hsl(210, 40%, 96%);
+  --primary: hsl(195, 100%, 50%);
+  --primary-foreground: hsl(210, 40%, 96%);
+  --secondary: hsl(45, 93%, 59%);
+  --secondary-foreground: hsl(240, 10%, 4%);
+  --muted: hsl(240, 5%, 26%);
+  --muted-foreground: hsl(215, 16%, 65%);
+  --accent: hsl(220, 7%, 52%);
+  --accent-foreground: hsl(210, 40%, 96%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(210, 40%, 96%);
+  --border: hsl(220, 7%, 52%);
+  --input: hsl(240, 10%, 7%);
+  --ring: hsl(195, 100%, 50%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased text-foreground;
+    font-family: var(--font-sans);
+    position: relative;
+    min-height: 100vh;
+  }
+
+  /* Fixed background for all screens - mobile compatible */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('./assets/shutterstock_2147591959_1759133066572.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -2;
+  }
+
+  /* Gradient overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-dungeon);
+    z-index: -1;
+  }
+
+  /* Mobile-specific optimizations */
+  @media (max-width: 768px) {
+    body::before {
+      background-size: cover;
+      background-position: center center;
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  /* DaddyFanz Neon Sign Typography - Toned Down */
+  .glow-text {
+    text-shadow: 
+      0 0 3px currentColor,
+      0 0 6px currentColor,
+      0 0 12px rgba(0, 207, 255, 0.6),
+      0 0 18px rgba(0, 207, 255, 0.4);
+    animation: neon-flicker 8s linear infinite alternate;
+  }
+
+  .glow-text-gold {
+    color: var(--df-gold);
+    text-shadow: 
+      0 0 3px currentColor,
+      0 0 6px currentColor,
+      0 0 12px rgba(245, 194, 55, 0.6),
+      0 0 18px rgba(245, 194, 55, 0.4);
+    animation: neon-flicker-gold 7s linear infinite alternate;
+  }
+
+  .neon-heading {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--df-cyan);
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 5px currentColor,
+      0 0 10px rgba(0, 207, 255, 0.7),
+      0 0 20px rgba(0, 207, 255, 0.5),
+      0 0 30px rgba(0, 207, 255, 0.3);
+    animation: neon-buzz 12s ease-in-out infinite alternate;
+  }
+
+  .neon-heading-caps {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--df-cyan);
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 5px currentColor,
+      0 0 10px rgba(0, 207, 255, 0.7),
+      0 0 20px rgba(0, 207, 255, 0.5),
+      0 0 30px rgba(0, 207, 255, 0.3);
+    animation: neon-buzz 12s ease-in-out infinite alternate;
+  }
+
+  .neon-subheading {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--df-gold);
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 5px currentColor,
+      0 0 10px rgba(245, 194, 55, 0.7),
+      0 0 18px rgba(245, 194, 55, 0.5);
+    animation: neon-pulse 10s ease-in-out infinite alternate;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  .glow-image {
+    filter: drop-shadow(0 0 20px rgba(0, 207, 255, 0.3));
+    transition: filter 0.3s ease, transform 0.2s ease;
+  }
+
+  .glow-image:hover {
+    filter: drop-shadow(0 0 30px rgba(0, 207, 255, 0.6));
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow-image 3s ease-in-out infinite alternate;
+  }
+
+  .chain-divider {
+    background: linear-gradient(90deg, transparent, var(--df-steel), transparent);
+    height: 1px;
+    position: relative;
+  }
+
+  .chain-divider::after {
+    content: '⛓️';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--df-brick);
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply bg-df-cyan text-df-snow font-semibold py-2 px-4 rounded-md;
+    @apply hover:shadow-glow transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-df-cyan focus:ring-opacity-50;
+  }
+
+  .btn-secondary {
+    @apply bg-df-gold text-df-ink font-semibold py-2 px-4 rounded-md;
+    @apply hover:bg-opacity-90 transition-colors duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-df-gold focus:ring-opacity-50;
+  }
+
+  .btn-outline {
+    @apply border border-df-steel text-df-snow py-2 px-4 rounded-md;
+    @apply hover:bg-df-steel hover:bg-opacity-20 transition-colors duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-df-steel focus:ring-opacity-50;
+  }
+
+  /* Card styles */
+  .card-df {
+    @apply bg-df-brick border border-df-steel rounded-lg;
+    box-shadow: var(--shadow-inner-glow);
+  }
+
+  /* Input styles */
+  .input-df {
+    @apply bg-df-ink border border-df-steel rounded-md px-4 py-2;
+    @apply text-df-snow placeholder-df-fog;
+    @apply focus:border-df-cyan focus:ring-1 focus:ring-df-cyan;
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  /* Color utilities */
+  .text-df-cyan { color: var(--df-cyan); }
+  .text-df-gold { color: var(--df-gold); }
+  .text-df-steel { color: var(--df-steel); }
+  .text-df-ink { color: var(--df-ink); }
+  .text-df-brick { color: var(--df-brick); }
+  .text-df-snow { color: var(--df-snow); }
+  .text-df-fog { color: var(--df-fog); }
+
+  .bg-df-cyan { background-color: var(--df-cyan); }
+  .bg-df-gold { background-color: var(--df-gold); }
+  .bg-df-steel { background-color: var(--df-steel); }
+  .bg-df-ink { background-color: var(--df-ink); }
+  .bg-df-brick { background-color: var(--df-brick); }
+  .bg-df-snow { background-color: var(--df-snow); }
+  .bg-df-fog { background-color: var(--df-fog); }
+
+  .border-df-cyan { border-color: var(--df-cyan); }
+  .border-df-gold { border-color: var(--df-gold); }
+  .border-df-steel { border-color: var(--df-steel); }
+  .border-df-ink { border-color: var(--df-ink); }
+  .border-df-brick { border-color: var(--df-brick); }
+  .border-df-snow { border-color: var(--df-snow); }
+  .border-df-fog { border-color: var(--df-fog); }
+
+  /* Gradient utilities */
+  .bg-df-dom { background: var(--gradient-dom); }
+  .bg-df-dungeon { background: var(--gradient-dungeon); }
+  .bg-df-gold-gradient { background: var(--gradient-gold); }
+
+  /* Shadow utilities */
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .shadow-glow-gold { box-shadow: var(--shadow-glow-gold); }
+  .shadow-inner-glow { box-shadow: var(--shadow-inner-glow); }
+}
+
+@keyframes pulse-glow {
+  from { box-shadow: 0 0 24px rgba(0, 207, 255, 0.3); }
+  to { box-shadow: 0 0 36px rgba(0, 207, 255, 0.6); }
+}
+
+@keyframes pulse-glow-image {
+  from { filter: drop-shadow(0 0 15px rgba(0, 207, 255, 0.4)); }
+  to { filter: drop-shadow(0 0 25px rgba(0, 207, 255, 0.8)); }
+}
+
+@keyframes neon-flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    text-shadow: 
+      0 0 3px currentColor,
+      0 0 6px currentColor,
+      0 0 12px rgba(0, 207, 255, 0.6),
+      0 0 18px rgba(0, 207, 255, 0.4);
+  }
+  20%, 24%, 55% {
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 4px currentColor,
+      0 0 8px rgba(0, 207, 255, 0.4);
+  }
+}
+
+@keyframes neon-flicker-gold {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow: 
+      0 0 3px currentColor,
+      0 0 6px currentColor,
+      0 0 12px rgba(245, 194, 55, 0.6),
+      0 0 18px rgba(245, 194, 55, 0.4);
+  }
+  20%, 22%, 24%, 55% {
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 4px currentColor,
+      0 0 8px rgba(245, 194, 55, 0.4);
+  }
+}
+
+@keyframes neon-buzz {
+  0%, 100% {
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 5px currentColor,
+      0 0 10px rgba(0, 207, 255, 0.7),
+      0 0 20px rgba(0, 207, 255, 0.5),
+      0 0 30px rgba(0, 207, 255, 0.3);
+  }
+  50% {
+    text-shadow: 
+      0 0 3px currentColor,
+      0 0 7px currentColor,
+      0 0 14px rgba(0, 207, 255, 0.8),
+      0 0 25px rgba(0, 207, 255, 0.6),
+      0 0 35px rgba(0, 207, 255, 0.4);
+  }
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 5px currentColor,
+      0 0 10px rgba(245, 194, 55, 0.7),
+      0 0 18px rgba(245, 194, 55, 0.5);
+  }
+  50% {
+    text-shadow: 
+      0 0 3px currentColor,
+      0 0 6px currentColor,
+      0 0 14px rgba(245, 194, 55, 0.8),
+      0 0 22px rgba(245, 194, 55, 0.6);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--df-ink);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--df-steel);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--df-cyan);
+}
+
+/* Selection styling */
+::selection {
+  background: var(--df-cyan);
+  color: var(--df-ink);
+}
+
+/* Focus visible styling */
+:focus-visible {
+  outline: 2px solid var(--df-cyan);
+  outline-offset: 2px;
+}

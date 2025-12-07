@@ -1,0 +1,395 @@
+{% extends "base.html" %} {% block title %}Tell Us About Yourself - FANZ{%
+endblock %} {% block extra_head %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/onboarding-interactive.css') }}"
+/>
+{% endblock %} {% block content %}
+<div class="container-fluid onboarding-container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+      <!-- Progress Header -->
+      <div class="onboarding-progress-header text-center mb-4">
+        <div class="progress-indicator">
+          <div class="progress-bar-container">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 20%"></div>
+            </div>
+            <span class="progress-text">Step 1 of 5</span>
+          </div>
+        </div>
+        <h2 class="onboarding-title">Tell Us About Yourself</h2>
+        <p class="onboarding-subtitle">
+          Help us create a personalized experience just for you
+        </p>
+      </div>
+
+      <!-- Survey Form -->
+      <div class="card onboarding-survey-card">
+        <div class="card-body">
+          <form id="personalizedSurveyForm" method="post">
+            {{ form.hidden_tag() }}
+
+            <!-- Goals Section -->
+            <div class="survey-section">
+              <div class="section-icon">
+                <i class="fas fa-bullseye"></i>
+              </div>
+              <h4 class="section-title">Your Goals</h4>
+              <p class="section-description">
+                What brings you to our platform?
+              </p>
+
+              <div class="form-group">
+                <div class="custom-radio-grid">
+                  {% for value, label in form.goals.choices %}
+                  <div class="custom-radio-item">
+                    <input
+                      type="radio"
+                      id="goal_{{ value }}"
+                      name="goals"
+                      value="{{ value }}"
+                      class="custom-radio-input"
+                    />
+                    <label for="goal_{{ value }}" class="custom-radio-label">
+                      <div class="radio-icon">
+                        {% if value == 'explore_content' %}
+                        <i class="fas fa-search"></i>
+                        {% elif value == 'connect_creators' %}
+                        <i class="fas fa-users"></i>
+                        {% elif value == 'create_content' %}
+                        <i class="fas fa-camera"></i>
+                        {% elif value == 'build_audience' %}
+                        <i class="fas fa-chart-line"></i>
+                        {% elif value == 'monetize_content' %}
+                        <i class="fas fa-dollar-sign"></i>
+                        {% elif value == 'network_community' %}
+                        <i class="fas fa-network-wired"></i>
+                        {% elif value == 'learn_skills' %}
+                        <i class="fas fa-graduation-cap"></i>
+                        {% else %}
+                        <i class="fas fa-heart"></i>
+                        {% endif %}
+                      </div>
+                      <span class="radio-text">{{ label }}</span>
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Interests Section -->
+            <div class="survey-section">
+              <div class="section-icon">
+                <i class="fas fa-star"></i>
+              </div>
+              <h4 class="section-title">Content Interests</h4>
+              <p class="section-description">
+                What type of content excites you most?
+              </p>
+
+              <div class="form-group">
+                <div class="custom-radio-grid">
+                  {% for value, label in form.interests.choices %}
+                  <div class="custom-radio-item">
+                    <input
+                      type="radio"
+                      id="interest_{{ value }}"
+                      name="interests"
+                      value="{{ value }}"
+                      class="custom-radio-input"
+                    />
+                    <label
+                      for="interest_{{ value }}"
+                      class="custom-radio-label"
+                    >
+                      <div class="radio-icon">
+                        {% if value == 'lifestyle' %}
+                        <i class="fas fa-home"></i>
+                        {% elif value == 'fitness' %}
+                        <i class="fas fa-dumbbell"></i>
+                        {% elif value == 'gaming' %}
+                        <i class="fas fa-gamepad"></i>
+                        {% elif value == 'music' %}
+                        <i class="fas fa-music"></i>
+                        {% elif value == 'art' %}
+                        <i class="fas fa-palette"></i>
+                        {% elif value == 'fashion' %}
+                        <i class="fas fa-tshirt"></i>
+                        {% elif value == 'food' %}
+                        <i class="fas fa-utensils"></i>
+                        {% elif value == 'travel' %}
+                        <i class="fas fa-plane"></i>
+                        {% else %}
+                        <i class="fas fa-lightbulb"></i>
+                        {% endif %}
+                      </div>
+                      <span class="radio-text">{{ label }}</span>
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Experience Level Section -->
+            <div class="survey-section">
+              <div class="section-icon">
+                <i class="fas fa-chart-bar"></i>
+              </div>
+              <h4 class="section-title">Experience Level</h4>
+              <p class="section-description">
+                How familiar are you with creator platforms?
+              </p>
+
+              <div class="form-group">
+                <div class="custom-radio-list">
+                  {% for value, label in form.experience_level.choices %}
+                  <div class="custom-radio-item large">
+                    <input
+                      type="radio"
+                      id="exp_{{ value }}"
+                      name="experience_level"
+                      value="{{ value }}"
+                      class="custom-radio-input"
+                    />
+                    <label for="exp_{{ value }}" class="custom-radio-label">
+                      <div class="radio-icon">
+                        {% if value == 'beginner' %}
+                        <i class="fas fa-seedling"></i>
+                        {% elif value == 'intermediate' %}
+                        <i class="fas fa-tree"></i>
+                        {% elif value == 'advanced' %}
+                        <i class="fas fa-trophy"></i>
+                        {% else %}
+                        <i class="fas fa-crown"></i>
+                        {% endif %}
+                      </div>
+                      <span class="radio-text">{{ label }}</span>
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Learning Preferences Section -->
+            <div class="survey-section">
+              <div class="section-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <h4 class="section-title">Learning Style</h4>
+              <p class="section-description">
+                How do you prefer to learn new features?
+              </p>
+
+              <div class="form-group">
+                <div class="custom-radio-list">
+                  {% for value, label in form.learning_style.choices %}
+                  <div class="custom-radio-item large">
+                    <input
+                      type="radio"
+                      id="learn_{{ value }}"
+                      name="learning_style"
+                      value="{{ value }}"
+                      class="custom-radio-input"
+                    />
+                    <label for="learn_{{ value }}" class="custom-radio-label">
+                      <div class="radio-icon">
+                        {% if value == 'visual' %}
+                        <i class="fas fa-eye"></i>
+                        {% elif value == 'hands-on' %}
+                        <i class="fas fa-hands"></i>
+                        {% elif value == 'guided' %}
+                        <i class="fas fa-route"></i>
+                        {% else %}
+                        <i class="fas fa-compass"></i>
+                        {% endif %}
+                      </div>
+                      <span class="radio-text">{{ label }}</span>
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Time Commitment Section -->
+            <div class="survey-section">
+              <div class="section-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <h4 class="section-title">Time Commitment</h4>
+              <p class="section-description">
+                How much time do you plan to spend on the platform?
+              </p>
+
+              <div class="form-group">
+                <div class="custom-radio-list">
+                  {% for value, label in form.time_availability.choices %}
+                  <div class="custom-radio-item large">
+                    <input
+                      type="radio"
+                      id="time_{{ value }}"
+                      name="time_availability"
+                      value="{{ value }}"
+                      class="custom-radio-input"
+                    />
+                    <label for="time_{{ value }}" class="custom-radio-label">
+                      <div class="radio-icon">
+                        {% if value == 'casual' %}
+                        <i class="fas fa-coffee"></i>
+                        {% elif value == 'part-time' %}
+                        <i class="fas fa-clock"></i>
+                        {% else %}
+                        <i class="fas fa-rocket"></i>
+                        {% endif %}
+                      </div>
+                      <span class="radio-text">{{ label }}</span>
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Role-Specific Sections (conditionally shown) -->
+            <div class="survey-section creator-only" style="display: none">
+              <div class="section-icon">
+                <i class="fas fa-video"></i>
+              </div>
+              <h4 class="section-title">Creator Goals</h4>
+              <p class="section-description">
+                What are your main goals as a creator?
+              </p>
+
+              <div class="form-group">
+                {{ form.content_creation_goals(class="form-select
+                custom-select") }}
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="onboarding-actions">
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                id="skipSurvey"
+              >
+                Skip for Now
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg"
+                id="continueSurvey"
+              >
+                Continue <i class="fas fa-arrow-right ms-2"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Survey Progress Modal (for loading states) -->
+<div
+  class="modal fade"
+  id="surveyProgressModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center p-4">
+        <div class="spinner-border text-primary mb-3" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5>Creating Your Personalized Experience</h5>
+        <p class="mb-0 text-muted">This will just take a moment...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const surveyForm = document.getElementById("personalizedSurveyForm");
+    const skipButton = document.getElementById("skipSurvey");
+    const continueButton = document.getElementById("continueSurvey");
+    const progressModal = new bootstrap.Modal(
+      document.getElementById("surveyProgressModal"),
+    );
+
+    // Handle form submission
+    surveyForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // Show loading modal
+      progressModal.show();
+
+      // Collect form data
+      const formData = new FormData(surveyForm);
+      const surveyData = {};
+
+      for (let [key, value] of formData.entries()) {
+        surveyData[key] = value;
+      }
+
+      // Submit to API
+      fetch("/api/onboarding/survey", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(surveyData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          progressModal.hide();
+
+          if (data.success) {
+            // Redirect to personalized onboarding flow
+            window.location.href = "/onboarding/journey";
+          } else {
+            alert("Error processing survey. Please try again.");
+          }
+        })
+        .catch((error) => {
+          progressModal.hide();
+          console.error("Error:", error);
+          alert("Error processing survey. Please try again.");
+        });
+    });
+
+    // Handle skip button
+    skipButton.addEventListener("click", function () {
+      // Initialize with default preferences
+      fetch("/api/onboarding/initialize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            window.location.href = "/dashboard";
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          window.location.href = "/dashboard";
+        });
+    });
+
+    // Show creator-specific sections based on user role
+    const userRole = document.body.dataset.userRole;
+    if (userRole === "star") {
+      document.querySelector(".creator-only").style.display = "block";
+    }
+  });
+</script>
+{% endblock %}

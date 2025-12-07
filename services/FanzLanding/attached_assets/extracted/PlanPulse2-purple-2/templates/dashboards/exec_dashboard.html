@@ -1,0 +1,905 @@
+{% extends "base.html" %} {% block title %}Executive Dashboard - FANZ{% endblock
+%} {% block content %}
+<div class="exec-dashboard-container">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Welcome Header -->
+      <div class="col-12">
+        <div class="welcome-banner mb-4">
+          <div class="card gradient-card">
+            <div class="card-body py-4">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h2 class="neon-text neon-purple mb-2">
+                    <i class="fas fa-crown me-2"></i>Executive Dashboard - {{
+                    current_user.get_full_name() }}
+                  </h2>
+                  <p class="lead text-secondary mb-2">
+                    Strategic oversight and business intelligence for FanzLab
+                    ecosystem
+                  </p>
+                  <div class="exec-stats">
+                    <span class="stat-item">
+                      <i class="fas fa-users neon-cyan me-1"></i>
+                      {{ stats.total_users }} Total Users
+                    </span>
+                    <span class="stat-item">
+                      <i class="fas fa-check-circle neon-green me-1"></i>
+                      {{ stats.verification_rate | round(1) }}% Verified
+                    </span>
+                    <span class="stat-item">
+                      <i class="fas fa-video neon-pink me-1"></i>
+                      {{ stats.published_scenes }} Published Scenes
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div class="revenue-summary">
+                    <div class="revenue-amount">
+                      <span class="currency">$</span>
+                      <span class="amount">0.00</span>
+                    </div>
+                    <small class="text-muted">Monthly Revenue</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="col-12 mb-4">
+        <div class="row g-3">
+          <div class="col-lg-3 col-md-6">
+            <div class="metric-card card">
+              <div class="card-body">
+                <div class="metric-header">
+                  <div class="metric-icon neon-cyan">
+                    <i class="fas fa-users fa-2x"></i>
+                  </div>
+                  <div class="metric-trend">
+                    <i class="fas fa-arrow-up text-success"></i>
+                    <span class="trend-value">+12%</span>
+                  </div>
+                </div>
+                <div class="metric-value">{{ stats.total_users }}</div>
+                <div class="metric-label">Total Users</div>
+                <div class="metric-breakdown">
+                  <small class="text-muted">
+                    {{ stats.verified_users }} verified • {{ stats.total_users -
+                    stats.verified_users }} pending
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="metric-card card">
+              <div class="card-body">
+                <div class="metric-header">
+                  <div class="metric-icon neon-green">
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                  </div>
+                  <div class="metric-trend">
+                    <i class="fas fa-arrow-up text-success"></i>
+                    <span class="trend-value">+8%</span>
+                  </div>
+                </div>
+                <div class="metric-value">$0.00</div>
+                <div class="metric-label">Monthly Revenue</div>
+                <div class="metric-breakdown">
+                  <small class="text-muted">
+                    $0.00 subscriptions • $0.00 tips
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="metric-card card">
+              <div class="card-body">
+                <div class="metric-header">
+                  <div class="metric-icon neon-pink">
+                    <i class="fas fa-video fa-2x"></i>
+                  </div>
+                  <div class="metric-trend">
+                    <i class="fas fa-arrow-up text-success"></i>
+                    <span class="trend-value">+15%</span>
+                  </div>
+                </div>
+                <div class="metric-value">{{ stats.published_scenes }}</div>
+                <div class="metric-label">Published Content</div>
+                <div class="metric-breakdown">
+                  <small class="text-muted">
+                    {{ stats.total_scenes }} total • {{ stats.total_scenes -
+                    stats.published_scenes }} draft
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="metric-card card">
+              <div class="card-body">
+                <div class="metric-header">
+                  <div class="metric-icon neon-yellow">
+                    <i class="fas fa-shield-alt fa-2x"></i>
+                  </div>
+                  <div class="metric-trend">
+                    <i class="fas fa-arrow-up text-success"></i>
+                    <span class="trend-value">+5%</span>
+                  </div>
+                </div>
+                <div class="metric-value">
+                  {{ stats.verification_rate | round(1) }}%
+                </div>
+                <div class="metric-label">Verification Rate</div>
+                <div class="metric-breakdown">
+                  <small class="text-muted">
+                    {{ stats.verified_users }}/{{ stats.total_users }} completed
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cluster Performance -->
+      <div class="col-lg-8 mb-4">
+        <div class="cluster-performance-card card">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0">
+                <i class="fas fa-network-wired me-2"></i>Cluster Performance
+              </h4>
+              <div class="time-selector">
+                <button
+                  class="btn btn-sm btn-outline-light active"
+                  data-period="7d"
+                >
+                  7 Days
+                </button>
+                <button class="btn btn-sm btn-outline-light" data-period="30d">
+                  30 Days
+                </button>
+                <button class="btn btn-sm btn-outline-light" data-period="90d">
+                  90 Days
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="cluster-stats">
+              {% for cluster_stat in stats.cluster_stats %}
+              <div class="cluster-stat-item">
+                <div class="cluster-header">
+                  <div
+                    class="cluster-icon {{ 'neon-cyan' if loop.index0 % 4 == 0 else 'neon-pink' if loop.index0 % 4 == 1 else 'neon-green' if loop.index0 % 4 == 2 else 'neon-yellow' }}"
+                  >
+                    {% if cluster_stat.name == 'boyfanz' %}
+                    <i class="fas fa-male"></i>
+                    {% elif cluster_stat.name == 'girlfanz' %}
+                    <i class="fas fa-female"></i>
+                    {% elif cluster_stat.name == 'tranzfanz' %}
+                    <i class="fas fa-transgender"></i>
+                    {% elif cluster_stat.name == 'allmyfanz' %}
+                    <i class="fas fa-star"></i>
+                    {% elif cluster_stat.name == 'fanztube' %}
+                    <i class="fas fa-video"></i>
+                    {% elif cluster_stat.name == 'fanzvarsity' %}
+                    <i class="fas fa-graduation-cap"></i>
+                    {% else %}
+                    <i class="fas fa-users"></i>
+                    {% endif %}
+                  </div>
+                  <div class="cluster-info">
+                    <h6>{{ cluster_stat.name.title() }}</h6>
+                    <span class="member-count"
+                      >{{ cluster_stat.members }} members</span
+                    >
+                  </div>
+                </div>
+                <div class="cluster-metrics">
+                  <div class="metric-item">
+                    <span class="metric-value">$0.00</span>
+                    <span class="metric-label">Revenue</span>
+                  </div>
+                  <div class="metric-item">
+                    <span class="metric-value">0</span>
+                    <span class="metric-label">Content</span>
+                  </div>
+                  <div class="metric-item">
+                    <span class="metric-value">0%</span>
+                    <span class="metric-label">Growth</span>
+                  </div>
+                </div>
+                <div class="cluster-progress">
+                  <div class="progress">
+                    <div
+                      class="progress-bar"
+                      style="width: {{ (cluster_stat.members / (stats.total_users if stats.total_users > 0 else 1) * 100) | round(1) }}%"
+                    ></div>
+                  </div>
+                  <small class="text-muted">
+                    {{ (cluster_stat.members / (stats.total_users if
+                    stats.total_users > 0 else 1) * 100) | round(1) }}% of total
+                    users
+                  </small>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Overview -->
+      <div class="col-lg-4 mb-4">
+        <div class="financial-overview-card card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-chart-pie me-2"></i>Financial Overview
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="revenue-breakdown">
+              <div class="revenue-item">
+                <div class="revenue-source">
+                  <div class="source-icon neon-green">
+                    <i class="fas fa-credit-card"></i>
+                  </div>
+                  <div class="source-info">
+                    <h6>Subscriptions</h6>
+                    <span class="revenue-amount">$0.00</span>
+                  </div>
+                </div>
+                <div class="revenue-percentage">0%</div>
+              </div>
+
+              <div class="revenue-item">
+                <div class="revenue-source">
+                  <div class="source-icon neon-pink">
+                    <i class="fas fa-gift"></i>
+                  </div>
+                  <div class="source-info">
+                    <h6>Tips & Gifts</h6>
+                    <span class="revenue-amount">$0.00</span>
+                  </div>
+                </div>
+                <div class="revenue-percentage">0%</div>
+              </div>
+
+              <div class="revenue-item">
+                <div class="revenue-source">
+                  <div class="source-icon neon-cyan">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
+                  <div class="source-info">
+                    <h6>PPV Content</h6>
+                    <span class="revenue-amount">$0.00</span>
+                  </div>
+                </div>
+                <div class="revenue-percentage">0%</div>
+              </div>
+
+              <div class="revenue-item">
+                <div class="revenue-source">
+                  <div class="source-icon neon-yellow">
+                    <i class="fas fa-percentage"></i>
+                  </div>
+                  <div class="source-info">
+                    <h6>Platform Fees</h6>
+                    <span class="revenue-amount">$0.00</span>
+                  </div>
+                </div>
+                <div class="revenue-percentage">0%</div>
+              </div>
+            </div>
+
+            <div class="payout-summary mt-4">
+              <h6 class="neon-text neon-orange mb-3">Payout Summary</h6>
+              <div class="payout-stat">
+                <span class="label">Pending Payouts:</span>
+                <span class="value">$0.00</span>
+              </div>
+              <div class="payout-stat">
+                <span class="label">Processed This Month:</span>
+                <span class="value">$0.00</span>
+              </div>
+              <div class="payout-stat">
+                <span class="label">Platform Revenue:</span>
+                <span class="value">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Growth Analytics -->
+      <div class="col-12 mb-4">
+        <div class="growth-analytics-card card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-chart-line me-2"></i>Growth Analytics
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <div class="analytics-section">
+                  <h6 class="neon-text neon-cyan mb-3">User Acquisition</h6>
+                  <div class="chart-placeholder">
+                    <i class="fas fa-chart-area fa-4x neon-cyan mb-3"></i>
+                    <p class="text-muted">
+                      User growth chart would be displayed here
+                    </p>
+                    <small>Integration with analytics service required</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="analytics-section">
+                  <h6 class="neon-text neon-pink mb-3">Revenue Growth</h6>
+                  <div class="chart-placeholder">
+                    <i class="fas fa-chart-line fa-4x neon-pink mb-3"></i>
+                    <p class="text-muted">
+                      Revenue trend chart would be displayed here
+                    </p>
+                    <small>Integration with payment processor required</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Executive Actions -->
+      <div class="col-12 mb-4">
+        <div class="exec-actions-card card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-tools me-2"></i>Executive Actions
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <a href="{{ url_for('admin_dashboard') }}" class="action-btn">
+                  <div class="action-icon neon-orange">
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Admin Dashboard</h6>
+                    <p>Access admin controls</p>
+                  </div>
+                </a>
+              </div>
+              <div class="col-md-3">
+                <a
+                  href="{{ url_for('security_dashboard') }}"
+                  class="action-btn"
+                >
+                  <div class="action-icon neon-yellow">
+                    <i class="fas fa-lock"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Security Center</h6>
+                    <p>Monitor security</p>
+                  </div>
+                </a>
+              </div>
+              <div class="col-md-3">
+                <button class="action-btn" id="exportReportBtn">
+                  <div class="action-icon neon-green">
+                    <i class="fas fa-download"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>Export Reports</h6>
+                    <p>Generate business reports</p>
+                  </div>
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button class="action-btn" id="systemSettingsBtn">
+                  <div class="action-icon neon-purple">
+                    <i class="fas fa-cogs"></i>
+                  </div>
+                  <div class="action-content">
+                    <h6>System Settings</h6>
+                    <p>Platform configuration</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .exec-dashboard-container {
+    background: linear-gradient(
+      135deg,
+      rgba(136, 0, 255, 0.05),
+      rgba(255, 0, 255, 0.05)
+    );
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  .gradient-card {
+    background: linear-gradient(
+      135deg,
+      rgba(136, 0, 255, 0.1),
+      rgba(255, 0, 255, 0.1)
+    );
+    border: 2px solid var(--neon-purple);
+  }
+
+  .exec-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .revenue-summary {
+    text-align: center;
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid var(--neon-green);
+    border-radius: 15px;
+    padding: 20px;
+  }
+
+  .revenue-amount {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--neon-green);
+    margin-bottom: 5px;
+  }
+
+  .currency {
+    font-size: 1.5rem;
+  }
+
+  .metric-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .metric-header {
+    display: flex;
+    justify-content: between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+  }
+
+  .metric-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: auto;
+  }
+
+  .metric-trend {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .metric-value {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+
+  .metric-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .metric-breakdown {
+    font-size: 0.8rem;
+  }
+
+  .time-selector .btn {
+    margin-left: 5px;
+  }
+
+  .time-selector .btn.active {
+    background: var(--neon-cyan);
+    color: var(--dark-bg);
+  }
+
+  .cluster-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .cluster-stat-item {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .cluster-stat-item:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+  }
+
+  .cluster-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .cluster-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .cluster-info h6 {
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .member-count {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .cluster-metrics {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 15px;
+  }
+
+  .metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .metric-item .metric-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .metric-item .metric-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin: 0;
+  }
+
+  .cluster-progress .progress {
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    margin-bottom: 5px;
+  }
+
+  .cluster-progress .progress-bar {
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+    border-radius: 3px;
+  }
+
+  .revenue-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .revenue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+  }
+
+  .revenue-source {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .source-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .source-info h6 {
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .revenue-amount {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .revenue-percentage {
+    font-weight: bold;
+    color: var(--text-primary);
+  }
+
+  .payout-summary {
+    background: rgba(255, 136, 0, 0.1);
+    border: 1px solid rgba(255, 136, 0, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+  }
+
+  .payout-stat {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .payout-stat:last-child {
+    margin-bottom: 0;
+  }
+
+  .payout-stat .label {
+    color: var(--text-secondary);
+  }
+
+  .payout-stat .value {
+    color: var(--text-primary);
+    font-weight: bold;
+  }
+
+  .analytics-section {
+    text-align: center;
+  }
+
+  .chart-placeholder {
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px dashed var(--border-color);
+    border-radius: 15px;
+    padding: 40px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .action-btn:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+    color: var(--text-primary);
+    transform: translateY(-3px);
+  }
+
+  .action-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .action-content h6 {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+
+  .action-content p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    .exec-stats {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .revenue-amount {
+      font-size: 1.5rem;
+    }
+
+    .cluster-metrics {
+      gap: 15px;
+    }
+
+    .action-btn {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .metric-header {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Time period selector
+    const timePeriodButtons = document.querySelectorAll(".time-selector .btn");
+    timePeriodButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        timePeriodButtons.forEach((btn) => btn.classList.remove("active"));
+        this.classList.add("active");
+
+        const period = this.dataset.period;
+        // In production, this would trigger data refresh for the selected period
+        window.NeonUtils.showNeonAlert(`Loading data for ${period}...`, "info");
+      });
+    });
+
+    // Export reports functionality
+    document
+      .getElementById("exportReportBtn")
+      .addEventListener("click", function () {
+        const reportType = prompt(
+          "Select report type:\n1. Financial Summary\n2. User Analytics\n3. Cluster Performance\n4. Compliance Report\n\nEnter number (1-4):",
+        );
+
+        if (reportType >= 1 && reportType <= 4) {
+          const reports = [
+            "Financial Summary",
+            "User Analytics",
+            "Cluster Performance",
+            "Compliance Report",
+          ];
+          window.NeonUtils.showNeonAlert(
+            `Generating ${reports[reportType - 1]} report...`,
+            "success",
+          );
+
+          // Simulate report generation
+          setTimeout(() => {
+            window.NeonUtils.showNeonAlert(
+              "Report generated successfully! Download would start in production.",
+              "info",
+            );
+          }, 2000);
+        }
+      });
+
+    // System settings
+    document
+      .getElementById("systemSettingsBtn")
+      .addEventListener("click", function () {
+        window.NeonUtils.showNeonAlert(
+          "System settings panel would open here.",
+          "info",
+        );
+      });
+
+    // Animate metric cards
+    const metricCards = document.querySelectorAll(".metric-card");
+    metricCards.forEach((card, index) => {
+      card.style.opacity = "0";
+      card.style.transform = "translateY(20px)";
+
+      setTimeout(() => {
+        card.style.transition = "all 0.5s ease";
+        card.style.opacity = "1";
+        card.style.transform = "translateY(0)";
+      }, index * 100);
+    });
+
+    // Revenue counter animation
+    const revenueAmount = document.querySelector(".revenue-amount .amount");
+    if (revenueAmount) {
+      let target = parseFloat(revenueAmount.textContent) || 0;
+      let current = 0;
+      const increment = target / 50;
+
+      const updateRevenue = () => {
+        if (current < target) {
+          current += increment;
+          revenueAmount.textContent = current.toFixed(2);
+          requestAnimationFrame(updateRevenue);
+        } else {
+          revenueAmount.textContent = target.toFixed(2);
+        }
+      };
+
+      setTimeout(updateRevenue, 1000);
+    }
+
+    // Cluster performance animations
+    const progressBars = document.querySelectorAll(
+      ".cluster-progress .progress-bar",
+    );
+    progressBars.forEach((bar) => {
+      const width = bar.style.width;
+      bar.style.width = "0%";
+      setTimeout(() => {
+        bar.style.transition = "width 1s ease";
+        bar.style.width = width;
+      }, 500);
+    });
+
+    // Auto-refresh data
+    setInterval(function () {
+      console.log("Refreshing executive dashboard data...");
+      // In production, this would fetch updated metrics
+    }, 300000); // Every 5 minutes
+
+    // Real-time notifications
+    setTimeout(() => {
+      window.NeonUtils.showNeonAlert(
+        "Executive dashboard loaded with real-time data.",
+        "success",
+      );
+    }, 1500);
+  });
+</script>
+{% endblock %}

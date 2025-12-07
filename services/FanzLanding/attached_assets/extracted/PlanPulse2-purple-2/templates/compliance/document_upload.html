@@ -1,0 +1,611 @@
+{% extends "base.html" %} {% block title %}Document Upload - FANZ{% endblock %}
+{% block content %}
+<div class="document-upload-container">
+  <div class="container">
+    <div class="row justify-content-center py-5">
+      <div class="col-lg-8">
+        <!-- Progress Header -->
+        <div class="verification-progress-header mb-5">
+          <div class="card">
+            <div class="card-body text-center py-4">
+              <h2 class="neon-text neon-pink mb-3">
+                <i class="fas fa-upload me-2"></i>Document Upload
+              </h2>
+              <p class="lead text-secondary mb-4">
+                Upload required documents for verification and compliance
+              </p>
+
+              <!-- Progress Steps -->
+              <div class="verification-steps">
+                <div class="step completed">
+                  <div class="step-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>Personal Info</span>
+                </div>
+                <div class="step active">
+                  <div class="step-icon">
+                    <i class="fas fa-upload"></i>
+                  </div>
+                  <span>Documents</span>
+                </div>
+                <div class="step">
+                  <div class="step-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>Review</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Form -->
+        <div class="upload-form-card card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-file-upload me-2"></i>Upload Documents
+            </h4>
+            <small class="text-muted"
+              >All documents are encrypted and securely stored</small
+            >
+          </div>
+
+          <div class="card-body p-4">
+            <form
+              method="POST"
+              enctype="multipart/form-data"
+              class="upload-form"
+            >
+              {{ form.hidden_tag() }}
+
+              <div class="form-group mb-4">
+                {{ form.document_type.label(class="form-label") }} {{
+                form.document_type(class="form-control" + (" is-invalid" if
+                form.document_type.errors else "")) }} {% if
+                form.document_type.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.document_type.errors %}{{ error }}{%
+                  endfor %}
+                </div>
+                {% endif %}
+                <small class="form-text text-muted">
+                  Select the type of document you're uploading
+                </small>
+              </div>
+
+              <div class="form-group mb-4">
+                {{ form.document_file.label(class="form-label") }}
+                <div class="file-upload-area" id="fileUploadArea">
+                  <div class="upload-content">
+                    <div class="upload-icon">
+                      <i class="fas fa-cloud-upload-alt fa-4x neon-cyan"></i>
+                    </div>
+                    <h5 class="upload-title">
+                      Drop your file here or click to browse
+                    </h5>
+                    <p class="upload-subtitle">
+                      Supported formats: JPG, PNG, PDF, GIF (Max 16MB)
+                    </p>
+                    {{ form.document_file(class="file-input", style="display:
+                    none;") }}
+                    <button
+                      type="button"
+                      class="btn btn-outline-light mt-3"
+                      onclick="document.querySelector('.file-input').click()"
+                    >
+                      <i class="fas fa-folder-open me-2"></i>Choose File
+                    </button>
+                  </div>
+                </div>
+                {% if form.document_file.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.document_file.errors %}{{ error }}{%
+                  endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="form-group mb-4">
+                {{ form.notes.label(class="form-label") }} {{
+                form.notes(class="form-control", rows="3", placeholder="Optional
+                notes about this document") }} {% if form.notes.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.notes.errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="form-actions text-center">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg px-5 glow-pulse"
+                  id="uploadBtn"
+                  disabled
+                >
+                  <i class="fas fa-upload me-2"></i>Upload Document
+                </button>
+                <a
+                  href="{{ url_for('verification_status') }}"
+                  class="btn btn-outline-light btn-lg ms-3"
+                >
+                  <i class="fas fa-list me-2"></i>View Status
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Required Documents Info -->
+        <div class="required-docs-card card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="fas fa-list-check me-2"></i>Required Documents
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="neon-text neon-yellow mb-3">For All Users</h6>
+                <div class="doc-requirement">
+                  <i class="fas fa-id-card neon-cyan me-2"></i>
+                  <span>Government Issued ID</span>
+                </div>
+                <div class="doc-requirement">
+                  <i class="fas fa-camera neon-cyan me-2"></i>
+                  <span>Selfie/Liveness Photo</span>
+                </div>
+              </div>
+              {% if current_user.role.value == 'star' %}
+              <div class="col-md-6">
+                <h6 class="neon-text neon-pink mb-3">Additional for STARs</h6>
+                <div class="doc-requirement">
+                  <i class="fas fa-file-invoice neon-pink me-2"></i>
+                  <span>W-9 or W-8BEN Tax Form</span>
+                </div>
+                <div class="doc-requirement">
+                  <i class="fas fa-home neon-pink me-2"></i>
+                  <span>Address Verification</span>
+                </div>
+                <div class="doc-requirement">
+                  <i class="fas fa-file-contract neon-pink me-2"></i>
+                  <span>Signed Contracts</span>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Notice -->
+        <div class="security-notice-card card mt-4">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-2 text-center">
+                <i class="fas fa-shield-alt fa-3x neon-green"></i>
+              </div>
+              <div class="col-md-10">
+                <h6 class="neon-text neon-green mb-2">Document Security</h6>
+                <p class="text-secondary mb-2">
+                  Your documents are processed with bank-level security measures
+                  and stored in our encrypted FanzHubVault.
+                </p>
+                <ul class="security-features">
+                  <li>
+                    <i class="fas fa-check neon-green me-2"></i>Forensic
+                    tracking (IP, timestamp, device fingerprint)
+                  </li>
+                  <li>
+                    <i class="fas fa-check neon-green me-2"></i>SHA-256 file
+                    hashing for integrity
+                  </li>
+                  <li>
+                    <i class="fas fa-check neon-green me-2"></i>Immutable audit
+                    trail
+                  </li>
+                  <li>
+                    <i class="fas fa-check neon-green me-2"></i>2257 compliance
+                    ready
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .document-upload-container {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 255, 0.05),
+      rgba(0, 255, 255, 0.05)
+    );
+    min-height: 100vh;
+  }
+
+  .verification-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 30px 0;
+    position: relative;
+  }
+
+  .verification-steps::before {
+    content: "";
+    position: absolute;
+    top: 25px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--border-color);
+    z-index: 1;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .step-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 3px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .step.active .step-icon {
+    border-color: var(--neon-pink);
+    background: var(--neon-pink);
+    color: var(--dark-bg);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+  }
+
+  .step.completed .step-icon {
+    border-color: var(--neon-green);
+    background: var(--neon-green);
+    color: var(--dark-bg);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+  }
+
+  .step span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .step.active span {
+    color: var(--neon-pink);
+  }
+
+  .step.completed span {
+    color: var(--neon-green);
+  }
+
+  .file-upload-area {
+    border: 3px dashed var(--border-color);
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .file-upload-area:hover,
+  .file-upload-area.dragover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+  }
+
+  .file-upload-area.has-file {
+    border-color: var(--neon-green);
+    background: rgba(0, 255, 0, 0.05);
+  }
+
+  .upload-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .upload-icon {
+    margin-bottom: 20px;
+  }
+
+  .upload-title {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .upload-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .file-preview {
+    display: none;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(0, 255, 0, 0.1);
+    border-radius: 10px;
+    border: 2px solid var(--neon-green);
+  }
+
+  .file-preview.show {
+    display: flex;
+  }
+
+  .preview-image {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 10px;
+    border: 2px solid var(--neon-green);
+  }
+
+  .file-info {
+    flex: 1;
+  }
+
+  .file-name {
+    color: var(--neon-green);
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .file-size {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .required-docs-card {
+    background: rgba(255, 255, 0, 0.05);
+    border: 1px solid rgba(255, 255, 0, 0.2);
+  }
+
+  .doc-requirement {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+  }
+
+  .security-notice-card {
+    background: rgba(0, 255, 0, 0.05);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+  }
+
+  .security-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+  }
+
+  .security-features li {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  #uploadBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .verification-steps {
+      gap: 20px;
+    }
+
+    .verification-steps::before {
+      display: none;
+    }
+
+    .step {
+      flex-direction: row;
+      gap: 15px;
+    }
+
+    .step-icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    .file-upload-area {
+      padding: 30px 20px;
+    }
+
+    .security-features {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fileInput = document.querySelector(".file-input");
+    const uploadArea = document.getElementById("fileUploadArea");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const form = document.querySelector(".upload-form");
+
+    // File upload handling
+    function handleFileSelect(file) {
+      if (!file) return;
+
+      // Validate file
+      if (!validateFile(file)) return;
+
+      // Update UI
+      updateUploadArea(file);
+      uploadBtn.disabled = false;
+      uploadBtn.classList.add("glow-pulse");
+    }
+
+    function validateFile(file) {
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "application/pdf",
+      ];
+      const maxSize = 16 * 1024 * 1024; // 16MB
+
+      if (!allowedTypes.includes(file.type)) {
+        window.NeonUtils.showNeonAlert(
+          "Invalid file type. Please upload JPG, PNG, GIF, or PDF files only.",
+          "error",
+        );
+        return false;
+      }
+
+      if (file.size > maxSize) {
+        window.NeonUtils.showNeonAlert(
+          "File too large. Maximum size is 16MB.",
+          "error",
+        );
+        return false;
+      }
+
+      return true;
+    }
+
+    function updateUploadArea(file) {
+      uploadArea.classList.add("has-file");
+
+      const uploadContent = uploadArea.querySelector(".upload-content");
+
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          uploadContent.innerHTML = `
+                    <div class="file-preview show">
+                        <img src="${e.target.result}" alt="Preview" class="preview-image">
+                        <div class="file-info">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                            <button type="button" class="btn btn-outline-light btn-sm mt-2" onclick="resetUpload()">
+                                <i class="fas fa-times me-1"></i>Remove
+                            </button>
+                        </div>
+                    </div>
+                `;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        uploadContent.innerHTML = `
+                <div class="file-preview show">
+                    <i class="fas fa-file-alt fa-4x neon-green"></i>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                        <button type="button" class="btn btn-outline-light btn-sm mt-2" onclick="resetUpload()">
+                            <i class="fas fa-times me-1"></i>Remove
+                        </button>
+                    </div>
+                </div>
+            `;
+      }
+    }
+
+    window.resetUpload = function () {
+      fileInput.value = "";
+      uploadArea.classList.remove("has-file");
+      uploadArea.querySelector(".upload-content").innerHTML = `
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt fa-4x neon-cyan"></i>
+            </div>
+            <h5 class="upload-title">Drop your file here or click to browse</h5>
+            <p class="upload-subtitle">Supported formats: JPG, PNG, PDF, GIF (Max 16MB)</p>
+            <button type="button" class="btn btn-outline-light mt-3" onclick="document.querySelector('.file-input').click()">
+                <i class="fas fa-folder-open me-2"></i>Choose File
+            </button>
+        `;
+      uploadBtn.disabled = true;
+      uploadBtn.classList.remove("glow-pulse");
+    };
+
+    // Event listeners
+    fileInput.addEventListener("change", function () {
+      if (this.files.length > 0) {
+        handleFileSelect(this.files[0]);
+      }
+    });
+
+    // Drag and drop
+    uploadArea.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      this.classList.add("dragover");
+    });
+
+    uploadArea.addEventListener("dragleave", function () {
+      this.classList.remove("dragover");
+    });
+
+    uploadArea.addEventListener("drop", function (e) {
+      e.preventDefault();
+      this.classList.remove("dragover");
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect(files[0]);
+      }
+    });
+
+    uploadArea.addEventListener("click", function () {
+      if (!this.classList.contains("has-file")) {
+        fileInput.click();
+      }
+    });
+
+    // Form submission
+    form.addEventListener("submit", function (e) {
+      if (!fileInput.files.length) {
+        e.preventDefault();
+        window.NeonUtils.showNeonAlert(
+          "Please select a file to upload.",
+          "warning",
+        );
+        return;
+      }
+
+      const docType = form.querySelector('select[name="document_type"]').value;
+      if (!docType) {
+        e.preventDefault();
+        window.NeonUtils.showNeonAlert(
+          "Please select a document type.",
+          "warning",
+        );
+        return;
+      }
+
+      // Disable button and show loading state
+      uploadBtn.disabled = true;
+      uploadBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+
+      window.NeonUtils.showNeonAlert("Document upload in progress...", "info");
+    });
+  });
+</script>
+{% endblock %}

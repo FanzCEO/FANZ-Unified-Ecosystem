@@ -1,0 +1,654 @@
+{% extends "base.html" %} {% block title %}DMCA Notice & Takedown Policy |
+FANZ{% endblock %} {% block content %}
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="legal-document">
+        <div class="document-header text-center mb-5">
+          <h1 class="display-4 text-white mb-3">
+            DMCA Notice & Takedown Policy
+          </h1>
+          <p class="lead text-muted">
+            Last Updated: {{ current_date or 'January 1, 2025' }}
+          </p>
+        </div>
+
+        <div class="legal-content">
+          <div class="intro-section mb-5 p-4 bg-dark rounded border-warning">
+            <h3 class="text-warning mb-3">
+              <i class="fas fa-copyright me-2"></i>Digital Millennium Copyright
+              Act Compliance
+            </h3>
+            <p class="text-light">
+              <strong>Fanz Unlimited Network LLC</strong> operates www.fanz.com
+              ("FANZ") and qualifies as a "Service Provider" within the meaning
+              of 17 U.S.C. § 512(k)(1) of the Digital Millennium Copyright Act
+              ("DMCA"). We respect intellectual property rights and have adopted
+              this Notice and Takedown Policy relating to claims of copyright
+              infringement by our users.
+            </p>
+          </div>
+
+          <section class="dmca-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              1. How to Submit a Notice of Claimed Infringement
+            </h2>
+
+            <div
+              class="process-overview p-4 bg-dark rounded border-primary mb-4"
+            >
+              <h4 class="text-primary mb-3">
+                Required Information for DMCA Notice
+              </h4>
+              <p class="text-light">
+                If you believe that your work has been copied and published on
+                FANZ in a way that constitutes copyright infringement, please
+                provide our Designated Agent with the following information:
+              </p>
+            </div>
+
+            <div class="requirements-grid">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="requirement-card p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">
+                      <i class="fas fa-signature me-2"></i>Signature
+                    </h5>
+                    <p class="text-light">
+                      An electronic or physical signature of the person
+                      authorized to act on behalf of the copyright owner
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="requirement-card p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">
+                      <i class="fas fa-file-alt me-2"></i>Work Description
+                    </h5>
+                    <p class="text-light">
+                      A description of the copyrighted work that you claim has
+                      been infringed
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="requirement-card p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">
+                      <i class="fas fa-map-marker-alt me-2"></i>Location
+                      Information
+                    </h5>
+                    <p class="text-light">
+                      A description of where the material that you claim is
+                      infringing is located on FANZ (including specific URLs)
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="requirement-card p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">
+                      <i class="fas fa-address-card me-2"></i>Contact
+                      Information
+                    </h5>
+                    <p class="text-light">
+                      Your address, telephone number, and email address
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="requirement-card p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">
+                      <i class="fas fa-balance-scale me-2"></i>Good Faith
+                      Statement
+                    </h5>
+                    <p class="text-light">
+                      A statement that you have a good faith belief that the
+                      disputed use is not authorized by the copyright owner,
+                      agent, or law
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="requirement-card p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h5 class="text-primary">
+                      <i class="fas fa-gavel me-2"></i>Perjury Statement
+                    </h5>
+                    <p class="text-light">
+                      A statement made under penalty of perjury that the above
+                      information is accurate and that you are authorized to act
+                      on the copyright owner's behalf
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="dmca-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              2. Designated Copyright Agent
+            </h2>
+
+            <div class="agent-info p-4 bg-dark rounded border-primary">
+              <h4 class="text-primary mb-3">Send Your DMCA Notice To:</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="contact-method mb-3">
+                    <h5 class="text-light">
+                      <i class="fas fa-user-tie me-2"></i>DMCA Agent
+                    </h5>
+                    <p class="text-light mb-1">
+                      <strong>Legal Department</strong>
+                    </p>
+                    <p class="text-light mb-1">Fanz Unlimited Network LLC</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="contact-method mb-3">
+                    <h5 class="text-light">
+                      <i class="fas fa-envelope me-2"></i>Email (Preferred)
+                    </h5>
+                    <p class="text-light mb-1">
+                      <strong>dmca@fanz.com</strong>
+                    </p>
+                    <p class="text-light mb-1">Response within 24-48 hours</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="important-notice p-3 bg-warning rounded mt-3">
+                <p class="text-dark mb-0">
+                  <strong>Important:</strong> Please do not send other inquiries
+                  or information to our Designated Agent. Customer service
+                  inquiries, payment questions, and cancellation requests will
+                  not receive a response and must be directed to our customer
+                  service department.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="dmca-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              3. How We Respond to Takedown Notices
+            </h2>
+
+            <div class="response-process">
+              <div
+                class="process-step mb-4 p-4 bg-dark rounded border-secondary"
+              >
+                <div class="step-header d-flex align-items-center mb-3">
+                  <div
+                    class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                    style="width: 40px; height: 40px; font-weight: bold"
+                  >
+                    1
+                  </div>
+                  <h4 class="text-primary mb-0">Notice Receipt & Review</h4>
+                </div>
+                <p class="text-light">
+                  We review all DMCA notices within 24 hours of receipt. If the
+                  notice complies with DMCA requirements, we proceed to
+                  takedown. If not compliant, we may contact you to help
+                  complete the requirements.
+                </p>
+              </div>
+
+              <div
+                class="process-step mb-4 p-4 bg-dark rounded border-secondary"
+              >
+                <div class="step-header d-flex align-items-center mb-3">
+                  <div
+                    class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                    style="width: 40px; height: 40px; font-weight: bold"
+                  >
+                    2
+                  </div>
+                  <h4 class="text-primary mb-0">Content Removal</h4>
+                </div>
+                <p class="text-light">
+                  Upon receiving a valid notice, FANZ will expeditiously remove
+                  and/or disable access to the infringing material and notify
+                  the affected user of the takedown action.
+                </p>
+              </div>
+
+              <div
+                class="process-step mb-4 p-4 bg-dark rounded border-secondary"
+              >
+                <div class="step-header d-flex align-items-center mb-3">
+                  <div
+                    class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                    style="width: 40px; height: 40px; font-weight: bold"
+                  >
+                    3
+                  </div>
+                  <h4 class="text-primary mb-0">Counter-Notification Period</h4>
+                </div>
+                <p class="text-light">
+                  The affected user may submit a counter-notification. If we
+                  receive a valid counter-notification, we will restore the
+                  material within 10-14 business days unless the copyright owner
+                  files a court action.
+                </p>
+              </div>
+
+              <div
+                class="process-step mb-4 p-4 bg-dark rounded border-secondary"
+              >
+                <div class="step-header d-flex align-items-center mb-3">
+                  <div
+                    class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                    style="width: 40px; height: 40px; font-weight: bold"
+                  >
+                    4
+                  </div>
+                  <h4 class="text-primary mb-0">Repeat Infringer Policy</h4>
+                </div>
+                <p class="text-light">
+                  It is FANZ's policy to terminate the accounts of repeat
+                  copyright infringers when appropriate, and we act
+                  expeditiously to remove access to all infringing material.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="dmca-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              4. How to Submit a Counter-Notification
+            </h2>
+
+            <div
+              class="counter-notification-info p-4 bg-dark rounded border-info mb-4"
+            >
+              <h4 class="text-info mb-3">
+                <i class="fas fa-reply me-2"></i>Disputing a Takedown
+              </h4>
+              <p class="text-light">
+                If you believe that your content was removed as a result of
+                mistake or misidentification, you may submit a
+                counter-notification pursuant to DMCA § 512(g)(2)-(3).
+                Counter-notifications must be accurate and truthful - you will
+                be liable for any misrepresentations.
+              </p>
+            </div>
+
+            <div class="counter-requirements">
+              <h4 class="text-light mb-3">
+                Required Information for Counter-Notification:
+              </h4>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="counter-req p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h6 class="text-info">Material Description</h6>
+                    <p class="text-light">
+                      A specific description of the material that was removed or
+                      disabled
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="counter-req p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h6 class="text-info">Location Information</h6>
+                    <p class="text-light">
+                      Where the material was located before removal (including
+                      URLs)
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="counter-req p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h6 class="text-info">Good Faith Statement</h6>
+                    <p class="text-light">
+                      Statement under penalty of perjury that removal was due to
+                      mistake or misidentification
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="counter-req p-3 bg-dark rounded border-secondary h-100"
+                  >
+                    <h6 class="text-info">Contact & Jurisdiction</h6>
+                    <p class="text-light">
+                      Your contact information and consent to jurisdiction of
+                      federal district court
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="suggested-language p-4 bg-dark rounded border-info mt-4"
+            >
+              <h5 class="text-info mb-3">
+                Suggested Good Faith Statement Language:
+              </h5>
+              <div class="statement-text p-3 bg-secondary rounded">
+                <p class="text-light mb-0 fst-italic">
+                  "I swear, under penalty of perjury, that I have a good faith
+                  belief that the referenced material was removed or disabled by
+                  the service provider as a result of mistake or
+                  misidentification of the material to be removed or disabled."
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="dmca-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              5. False Claims and Abuse
+            </h2>
+
+            <div class="abuse-warning p-4 bg-danger rounded">
+              <h4 class="text-white mb-3">
+                <i class="fas fa-exclamation-triangle me-2"></i>Warning: Abuse
+                of DMCA Procedures
+              </h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <p class="text-white mb-3">
+                    <strong>Legal Consequences:</strong>
+                  </p>
+                  <ul class="text-white">
+                    <li>Legal liability for damages</li>
+                    <li>Court costs and attorney fees</li>
+                    <li>Federal penalties under 17 U.S.C. § 512(f)</li>
+                  </ul>
+                </div>
+                <div class="col-md-6">
+                  <p class="text-white mb-3">
+                    <strong>Platform Consequences:</strong>
+                  </p>
+                  <ul class="text-white">
+                    <li>Account suspension or termination</li>
+                    <li>Blocking of future DMCA submissions</li>
+                    <li>Referral to law enforcement if appropriate</li>
+                  </ul>
+                </div>
+              </div>
+              <p class="text-white mb-0">
+                <strong
+                  >These procedures only apply to copyright infringement
+                  claims</strong
+                >
+                - not to any other kind of abuse, harassment, or legal claim. We
+                will investigate and take action against anyone abusing the DMCA
+                notification or counter-notification procedure.
+              </p>
+            </div>
+          </section>
+
+          <section class="dmca-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              6. Content Protection Tools
+            </h2>
+
+            <div class="protection-tools">
+              <h4 class="text-light mb-4">
+                FANZ provides creators with additional content protection:
+              </h4>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <div
+                    class="tool-card p-3 bg-dark rounded border-success h-100 text-center"
+                  >
+                    <i class="fas fa-shield-alt fa-2x text-success mb-3"></i>
+                    <h5 class="text-light">Watermarking</h5>
+                    <p class="text-light">
+                      Automatic watermarking on all content uploads
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <div
+                    class="tool-card p-3 bg-dark rounded border-success h-100 text-center"
+                  >
+                    <i class="fas fa-search fa-2x text-success mb-3"></i>
+                    <h5 class="text-light">Piracy Monitoring</h5>
+                    <p class="text-light">
+                      AI-powered detection of unauthorized distribution
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <div
+                    class="tool-card p-3 bg-dark rounded border-success h-100 text-center"
+                  >
+                    <i class="fas fa-gavel fa-2x text-success mb-3"></i>
+                    <h5 class="text-light">Legal Support</h5>
+                    <p class="text-light">
+                      Assistance with DMCA takedowns and legal action
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="dmca-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              7. English Language Requirement
+            </h2>
+
+            <div
+              class="language-requirement p-4 bg-dark rounded border-warning"
+            >
+              <h4 class="text-warning mb-3">
+                <i class="fas fa-language me-2"></i>Language Policy
+              </h4>
+              <p class="text-light">
+                All DMCA notices and counter-notifications must be written in
+                the English language. Any attempted notifications written in
+                foreign languages or using foreign characters will be deemed
+                non-compliant and disregarded.
+              </p>
+              <p class="text-light mb-0">
+                If you need assistance translating your notice into English, we
+                recommend using professional legal translation services to
+                ensure accuracy and compliance.
+              </p>
+            </div>
+          </section>
+
+          <section class="dmca-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              8. Policy Modifications
+            </h2>
+
+            <p class="text-light">
+              Fanz Unlimited Network LLC reserves the right to modify, alter, or
+              add to this policy at any time. All affected persons should
+              regularly check this page to stay current on any changes. We will
+              notify users of material changes through platform notifications or
+              email.
+            </p>
+          </section>
+
+          <section class="dmca-section mb-5">
+            <h2 class="section-title text-primary mb-4">
+              9. Additional Resources
+            </h2>
+
+            <div class="resources-grid">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="resource-card p-4 bg-dark rounded border-primary h-100"
+                  >
+                    <h5 class="text-primary">
+                      <i class="fas fa-book me-2"></i>DMCA Law Reference
+                    </h5>
+                    <p class="text-light">
+                      Complete text of the Digital Millennium Copyright Act
+                    </p>
+                    <a
+                      href="https://www.law.cornell.edu/uscode/text/17/512"
+                      class="btn btn-outline-primary btn-sm"
+                      target="_blank"
+                      >View 17 U.S.C. § 512</a
+                    >
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div
+                    class="resource-card p-4 bg-dark rounded border-primary h-100"
+                  >
+                    <h5 class="text-primary">
+                      <i class="fas fa-question-circle me-2"></i>Copyright Help
+                    </h5>
+                    <p class="text-light">
+                      U.S. Copyright Office information and resources
+                    </p>
+                    <a
+                      href="https://www.copyright.gov"
+                      class="btn btn-outline-primary btn-sm"
+                      target="_blank"
+                      >Visit Copyright.gov</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div class="contact-support p-4 bg-primary rounded">
+            <h4 class="text-white mb-3">
+              <i class="fas fa-headset me-2"></i>Need Help with DMCA Issues?
+            </h4>
+            <div class="row">
+              <div class="col-md-8">
+                <p class="text-white mb-0">
+                  Our legal team is here to help with copyright questions and
+                  DMCA procedures. We process valid takedown notices within 24
+                  hours and provide status updates throughout the process.
+                </p>
+              </div>
+              <div class="col-md-4 text-md-end">
+                <a href="mailto:dmca@fanz.com" class="btn btn-light btn-lg">
+                  <i class="fas fa-envelope me-2"></i>Contact DMCA Team
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .legal-document {
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    line-height: 1.6;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .requirement-card,
+  .counter-req,
+  .tool-card,
+  .resource-card {
+    transition: all 0.3s ease;
+  }
+
+  .requirement-card:hover,
+  .counter-req:hover,
+  .tool-card:hover,
+  .resource-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary) !important;
+  }
+
+  .process-step {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .process-step:hover {
+    background-color: rgba(0, 168, 255, 0.05) !important;
+    border-color: var(--primary) !important;
+  }
+
+  .step-number {
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .agent-info {
+    background: rgba(26, 26, 46, 0.9) !important;
+  }
+
+  .abuse-warning {
+    background: rgba(220, 53, 69, 0.9) !important;
+  }
+
+  .protection-tools .tool-card {
+    border-color: rgba(40, 167, 69, 0.3) !important;
+  }
+
+  .contact-support {
+    background: var(--primary) !important;
+  }
+
+  .statement-text {
+    background: rgba(108, 117, 125, 0.3) !important;
+    border-left: 4px solid var(--info);
+  }
+
+  @media (max-width: 768px) {
+    .legal-document {
+      font-size: 0.9rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .step-header {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .step-number {
+      margin-bottom: 1rem;
+    }
+
+    .contact-support .col-md-4 {
+      text-align: center !important;
+      margin-top: 1rem;
+    }
+  }
+</style>
+{% endblock %}

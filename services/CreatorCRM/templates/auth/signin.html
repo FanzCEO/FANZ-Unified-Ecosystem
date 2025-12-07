@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="container-fluid h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h2 class="h4 text-primary">
+                            <i data-feather="log-in" class="me-2"></i>
+                            Sign In to Creator CRM
+                        </h2>
+                        <p class="text-muted">Welcome back! Please enter your credentials.</p>
+                    </div>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ request.form.email if request.form else '' }}" 
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+                            <label class="form-check-label" for="remember_me">
+                                Remember me
+                            </label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i data-feather="log-in" class="me-2"></i>
+                                Sign In
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted mb-2">
+                            <a href="{{ url_for('forgot_password') }}" class="text-primary text-decoration-none">
+                                <i data-feather="help-circle" class="me-1"></i>
+                                Forgot your password?
+                            </a>
+                        </p>
+                        
+                        <p class="text-muted">
+                            Don't have an account? 
+                            <a href="{{ url_for('signup') }}" class="text-primary text-decoration-none">
+                                Create one here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-focus on first input
+        const emailField = document.getElementById('email');
+        if (emailField) {
+            emailField.focus();
+        }
+    });
+</script>
+{% endblock %}

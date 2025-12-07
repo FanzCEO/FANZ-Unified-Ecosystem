@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - FANZ_SSO_URL=https://sso.fanz.fans
+      - FANZ_PROFILE_API=https://profile-api.fanz.fans
+    volumes:
+      - .:/app
+      - /app/node_modules

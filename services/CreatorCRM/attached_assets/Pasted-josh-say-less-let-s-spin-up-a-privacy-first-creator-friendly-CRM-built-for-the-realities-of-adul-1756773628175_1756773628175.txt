@@ -1,0 +1,65 @@
+josh, say less — let’s spin up a privacy-first, creator-friendly CRM built for the realities of adult work. i packaged a working MVP starter you can run right now:
+Download the starter ZIP
+
+what it does (out of the box)
+	•	AI-ish auto-scheduling from texts: parse “Fri 8pm for 90m, downtown?” → hold a slot + send a confirmation prompt.
+	•	Smart replies: template keys (e.g., availability, screening, rates) and rules to auto-reply fast.
+	•	Multi-channel ready: SMS webhook included (Twilio-compatible). Add WhatsApp/Telegram/Email next.
+	•	Calendar feeds: personal iCal endpoint you can subscribe to in Google/Apple Calendar.
+	•	Safety layers: blocklist flag, double-booking guard, and hooks for red-flag heuristics.
+	•	Privacy-first: per-user isolation, audit trail stubs, easy path to encryption + role-based access.
+
+quickstart
+	1.	unzip → open terminal in folder
+	2.	python -m venv .venv && source .venv/bin/activate
+	3.	pip install -r requirements.txt
+	4.	cp .env.example .env (drop your Twilio creds if you want SMS replies)
+	5.	uvicorn app.main:app --reload --port 8000
+	6.	set your SMS provider webhook to: POST https://<your-domain>/webhooks/twilio/sms (for local dev, use ngrok)
+
+core flows baked in
+	•	inbound message → instant triage
+	•	NLP parses date/time, duration, and loose location hints (uses dateparser with future bias).
+	•	If confident: creates tentative appointment and returns TwiML:
+“Holding Fri Sep 5 @ 8:00 PM for 90m — reply Y to confirm or N to change.”
+	•	If unsure: asks for missing pieces instead of guessing.
+	•	calendar sync: GET /appointments/ics?user_id=<id> gives a live .ics feed.
+	•	client management: /clients for CRUD with notes/tags and a soft block flag.
+	•	templates: /templates to upsert canned responses your auto-reply rules can use.
+
+files you care about
+	•	app/routers/webhooks.py → Twilio SMS webhook (no SDK needed; returns TwiML)
+	•	app/parsing.py → booking extraction (date/time, duration, basic location)
+	•	app/services/messaging.py → minimal Twilio REST sender (optional)
+	•	app/services/calendar.py → iCal generator
+	•	app/models.py → Users, Clients, Messages, Appointments, Templates
+	•	README.md → setup notes + roadmap
+
+what to add next (fast wins)
+	•	“Y / N” confirmations: when user replies Y, flip appointment tentative → confirmed; N triggers a reschedule template.
+	•	Real intent classifier: wire app/services/llm.py to your provider; route new messages to {availability|rates|screening|booking|general} templates.
+	•	Screening form: secure link to short form (reference checks, light KYC) that lands in the client record.
+	•	Touring & travel mode: city calendars, auto-replies with local availability windows + minimum notice rules.
+	•	No-show & deposit policy: templated flows + automated reminders (“24h before”, “2h before”).
+	•	Safety check-ins: timed “I’m safe” pings + emergency contact/panic flow (no location stored by default; opt-in only).
+
+design for legality & safety (non-negotiables)
+	•	Legal use only: this is a scheduling/comms CRM. configure it to comply with your local laws.
+	•	Consent + boundaries: keep a timestamped note field per client; don’t store explicit content in messages.
+	•	Data minimization: store only what’s necessary; add encryption-at-rest for PII and strict retention windows.
+	•	Access controls: role-based auth before production; per-brand and per-user data isolation.
+
+⸻
+
+if you want this plugged straight into FanzLab as a microservice (FanzCRM):
+	•	add SSO (your existing JWT/SSO) at app/security/auth.py
+	•	map brand numbers → user_id so inbound To: routes correctly
+	•	pipe events to FanzSecurityDash (moderation/audit) and FanzHubVault (PII vault) with your existing queues
+
+want me to wire confirmations, WhatsApp, and an ultra-clean neon UI next? i can extend this starter with:
+	•	a minimal React/HTMX front-end (availability grid, unified inbox)
+	•	Google Calendar OAuth sync
+	•	templated DM flows (“availability”, “screening”, “rates”, “reschedule”, “tour dates”)
+	•	red-flag detector (scam patterns, chargeback phrases, spoofed numbers)
+
+say the word and i’ll ship the next iteration. ￼

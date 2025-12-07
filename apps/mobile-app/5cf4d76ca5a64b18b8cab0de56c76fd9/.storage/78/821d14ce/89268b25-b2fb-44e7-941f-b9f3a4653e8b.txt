@@ -1,0 +1,7 @@
+$ cd /workspace/shadcn-ui && git add -A
+$ cd /workspace/shadcn-ui && git status
+
+On branch master
+nothing to commit, working tree clean
+$ cd /workspace/shadcn-ui && git branch -M main
+

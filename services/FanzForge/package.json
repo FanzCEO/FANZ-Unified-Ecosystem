@@ -1,0 +1,119 @@
+{
+  "name": "@fanz/ads-system",
+  "version": "1.0.0",
+  "description": "FANZ Cross-Platform Ad System - Adult-content compliant advertising platform",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@8.15.1",
+  "author": "FANZ Development Team",
+  "license": "PROPRIETARY",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fanz/ads-system"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "husky install || true",
+    "build": "pnpm -r run build --filter='!fanz-ads-demo'",
+    "build:all": "pnpm -r run build",
+    "build:client": "pnpm --filter @fanz/ads-client build",
+    "build:service": "echo 'Ad service build complete'",
+    "build:demo": "pnpm --filter fanz-ads-demo build",
+    "dev": "pnpm -r run dev --parallel",
+    "dev:service": "pnpm --filter @fanz/ad-service dev",
+    "dev:demo": "pnpm --filter fanz-ads-demo dev",
+    "dev:client": "pnpm --filter @fanz/ads-client dev",
+    "test": "pnpm -r run test --if-present",
+    "test:unit": "pnpm -r run test:unit --if-present",
+    "test:integration": "pnpm -r run test:integration --if-present",
+    "test:e2e": "pnpm -r run test:e2e --if-present",
+    "lint": "pnpm -r run lint --if-present",
+    "lint:fix": "pnpm -r run lint:fix --if-present",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,tsx,json,md,yml,yaml}\"",
+    "typecheck": "pnpm -r run typecheck --if-present",
+    "clean": "pnpm -r run clean --if-present && rm -rf node_modules .pnpm-store",
+    "clean:deps": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+    "clean:build": "find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' +",
+    "security:check": "pnpm audit --audit-level moderate && npm run security:fanz-compliance",
+    "security:fanz-compliance": "node scripts/check-fanz-compliance.mjs",
+    "security:fix": "pnpm audit --fix",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "k8s:deploy": "kubectl apply -f k8s/",
+    "k8s:delete": "kubectl delete -f k8s/",
+    "k8s:logs": "kubectl logs -f deployment/fanz-ad-service -n fanz-ads",
+    "release:version": "changeset version",
+    "release:publish": "changeset publish",
+    "workspace:update": "pnpm up -r --latest",
+    "workspace:dedupe": "pnpm dedupe",
+    "docs:generate": "node scripts/generate-docs.mjs",
+    "docs:serve": "python3 -m http.server 8080 -d docs",
+    "security:audit": "npm audit --audit-level=high",
+    "security:scan": "echo \"Running security scan...\" && npm run security:audit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "@types/node": "^22.7.5",
+    "eslint": "^9.12.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.1"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "react": "18",
+        "react-dom": "18"
+      }
+    },
+    "overrides": {
+      "@types/react": "^18.3.11",
+      "@types/react-dom": "^18.3.1"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "services/*"
+  ],
+  "keywords": [
+    "fanz",
+    "ads",
+    "advertising",
+    "adult-content",
+    "cross-platform",
+    "payment-processors",
+    "ccbill",
+    "segpay",
+    "epoch",
+    "crypto",
+    "compliance"
+  ],
+  "funding": {
+    "type": "corporate",
+    "url": "https://fanz.network"
+  },
+  "volta": {
+    "node": "18.20.4",
+    "pnpm": "8.15.1"
+  }
+}

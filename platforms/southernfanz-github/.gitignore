@@ -1,0 +1,42 @@
+node_modules/
+dist/
+.env
+.DS_Store
+*.node
+.next/
+build/
+*.log
+package-lock.json
+yarn.lock
+
+# Security - Environment Variables
+.env
+.env.*
+!.env.example
+
+# Security - Keys and Certificates
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+*.ppk
+
+# Security - Logs and Reports
+*.log
+security-reports/
+
+# Replit
+.local/
+.config/
+.replit
+replit.nix
+
+# OS
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

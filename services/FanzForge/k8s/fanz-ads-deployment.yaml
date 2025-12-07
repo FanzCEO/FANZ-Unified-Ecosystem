@@ -1,0 +1,619 @@
+# FANZ Cross-Platform Ad System - Kubernetes Deployment
+# Production-ready configuration with high availability and security
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fanz-ads
+  labels:
+    name: fanz-ads
+    environment: production
+
+---
+# ConfigMap for FANZ Ad Service configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fanz-ads-config
+  namespace: fanz-ads
+data:
+  NODE_ENV: "production"
+  PORT: "4000"
+  API_RATE_LIMIT: "1000"
+  ADS_RATE_LIMIT: "60"
+  ANALYTICS_ENDPOINT: "https://analytics.fanz.network"
+  TRACKER_ENDPOINT: "https://tracker.fanz.network"
+  POSTGRES_DB: "fanz_ads"
+  POSTGRES_USER: "fanz"
+  REDIS_HOST: "fanz-redis"
+  REDIS_PORT: "6379"
+
+---
+# Secret for adult-friendly payment processors (NO Stripe/PayPal)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fanz-ads-secrets
+  namespace: fanz-ads
+type: Opaque
+data:
+  # Base64 encoded secrets
+  JWT_SECRET: "" # Add your JWT secret
+  CCBILL_API_KEY: "" # Adult-friendly processor
+  SEGPAY_API_KEY: "" # Adult-friendly processor
+  EPOCH_API_KEY: "" # Adult-friendly processor
+  VENDO_API_KEY: "" # Adult-friendly processor
+  BITPAY_API_KEY: "" # Crypto processor
+  COINBASE_COMMERCE_KEY: "" # Crypto processor
+  NOWPAYMENTS_API_KEY: "" # Crypto processor
+  POSTGRES_PASSWORD: ""
+  REDIS_PASSWORD: ""
+
+---
+# FANZ Ad Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fanz-ad-service
+  namespace: fanz-ads
+  labels:
+    app: fanz-ad-service
+    component: backend
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: fanz-ad-service
+  template:
+    metadata:
+      labels:
+        app: fanz-ad-service
+        component: backend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      containers:
+      - name: fanz-ad-service
+        image: registry.fanz.network/ad-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4000
+          name: http
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: fanz-ads-config
+              key: NODE_ENV
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: fanz-ads-config
+              key: PORT
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: fanz-ads-secrets
+              key: JWT_SECRET
+        - name: CCBILL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: fanz-ads-secrets
+              key: CCBILL_API_KEY
+        - name: SEGPAY_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: fanz-ads-secrets
+              key: SEGPAY_API_KEY
+        - name: POSTGRES_HOST
+          value: "fanz-postgres"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fanz-ads-secrets
+              key: POSTGRES_PASSWORD
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: fanz-ads-config
+              key: REDIS_HOST
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fanz-ads-secrets
+              key: REDIS_PASSWORD
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 4000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 4000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: logs
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+      imagePullSecrets:
+      - name: fanz-registry-secret
+
+---
+# FANZ Ad Service Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-ad-service
+  namespace: fanz-ads
+  labels:
+    app: fanz-ad-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 4000
+    targetPort: 4000
+    protocol: TCP
+    name: http
+  selector:
+    app: fanz-ad-service
+
+---
+# FANZ Ads Demo Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fanz-ads-demo
+  namespace: fanz-ads
+  labels:
+    app: fanz-ads-demo
+    component: frontend
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: fanz-ads-demo
+  template:
+    metadata:
+      labels:
+        app: fanz-ads-demo
+        component: frontend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      containers:
+      - name: fanz-ads-demo
+        image: registry.fanz.network/ads-demo:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3100
+          name: http
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3100"
+        - name: NEXT_PUBLIC_ADS_API
+          value: "https://api.fanz.network"
+        - name: NEXT_PUBLIC_PLATFORM
+          value: "boyfanz"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3100
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3100
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: nextjs-cache
+          mountPath: /app/.next/cache
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: nextjs-cache
+        emptyDir: {}
+
+---
+# FANZ Ads Demo Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-ads-demo
+  namespace: fanz-ads
+  labels:
+    app: fanz-ads-demo
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3100
+    targetPort: 3100
+    protocol: TCP
+    name: http
+  selector:
+    app: fanz-ads-demo
+
+---
+# Redis Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fanz-redis
+  namespace: fanz-ads
+  labels:
+    app: fanz-redis
+    component: cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fanz-redis
+  template:
+    metadata:
+      labels:
+        app: fanz-redis
+        component: cache
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+          name: redis
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fanz-ads-secrets
+              key: REDIS_PASSWORD
+        command:
+        - redis-server
+        - --requirepass
+        - $(REDIS_PASSWORD)
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: fanz-redis-pvc
+
+---
+# Redis Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-redis
+  namespace: fanz-ads
+  labels:
+    app: fanz-redis
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+    name: redis
+  selector:
+    app: fanz-redis
+
+---
+# PostgreSQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fanz-postgres
+  namespace: fanz-ads
+  labels:
+    app: fanz-postgres
+    component: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fanz-postgres
+  template:
+    metadata:
+      labels:
+        app: fanz-postgres
+        component: database
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: fanz-ads-config
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: fanz-ads-config
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fanz-ads-secrets
+              key: POSTGRES_PASSWORD
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - fanz
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - fanz
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: fanz-postgres-pvc
+
+---
+# PostgreSQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanz-postgres
+  namespace: fanz-ads
+  labels:
+    app: fanz-postgres
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+    name: postgres
+  selector:
+    app: fanz-postgres
+
+---
+# Persistent Volume Claims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fanz-postgres-pvc
+  namespace: fanz-ads
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ssd
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fanz-redis-pvc
+  namespace: fanz-ads
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ssd
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# Ingress for external access
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fanz-ads-ingress
+  namespace: fanz-ads
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-connections: "10"
+spec:
+  tls:
+  - hosts:
+    - api.fanz.network
+    - ads-demo.fanz.network
+    secretName: fanz-ads-tls
+  rules:
+  - host: api.fanz.network
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fanz-ad-service
+            port:
+              number: 4000
+  - host: ads-demo.fanz.network
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fanz-ads-demo
+            port:
+              number: 3100
+
+---
+# Horizontal Pod Autoscaler for Ad Service
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: fanz-ad-service-hpa
+  namespace: fanz-ads
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fanz-ad-service
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+# Network Policy for security
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fanz-ads-network-policy
+  namespace: fanz-ads
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    - podSelector:
+        matchLabels:
+          app: fanz-ads-demo
+    - podSelector:
+        matchLabels:
+          app: fanz-ad-service
+    ports:
+    - protocol: TCP
+      port: 4000
+    - protocol: TCP
+      port: 3100
+  egress:
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 5432
+    - protocol: TCP
+      port: 6379

@@ -1,0 +1,299 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* TabooFanz - Neon Noir + Cyber Fetish + Goth Club Theme */
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
+
+    --card: 258 30% 14%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 258 30% 12%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 300 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 180 100% 50%;
+    --secondary-foreground: 0 0% 0%;
+
+    --muted: 240 5% 25%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 300 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 345 80% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 5% 20%;
+    --input: 240 5% 20%;
+    --ring: 300 100% 50%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-taboo-bg text-foreground font-sans antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-size: 100px 100px;
+    background-blend-mode: overlay;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-taboo-bg;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-taboo-surface rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-taboo-surface-hover;
+  }
+
+  /* Selection highlight */
+  ::selection {
+    @apply bg-taboo-accent-primary/30 text-white;
+  }
+}
+
+@layer components {
+  /* Neon glow effect for buttons */
+  .btn-neon {
+    @apply relative overflow-hidden;
+    @apply bg-gradient-to-r from-taboo-accent-primary to-taboo-glitch;
+    @apply text-white font-bold py-3 px-6 rounded-lg;
+    @apply transition-all duration-300;
+    @apply hover:shadow-[0_0_30px_rgba(255,0,255,0.5)];
+  }
+
+  .btn-neon::before {
+    content: '';
+    @apply absolute inset-0;
+    @apply bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    @apply -translate-x-full;
+    @apply transition-transform duration-500;
+  }
+
+  .btn-neon:hover::before {
+    @apply translate-x-full;
+  }
+
+  /* Glitch text effect */
+  .text-glitch {
+    @apply relative;
+    animation: glitch 0.3s ease-in-out infinite alternate;
+  }
+
+  .text-glitch::before,
+  .text-glitch::after {
+    content: attr(data-text);
+    @apply absolute inset-0;
+    @apply opacity-80;
+  }
+
+  .text-glitch::before {
+    @apply text-taboo-accent-primary;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    animation: glitch 0.15s ease-in-out infinite alternate-reverse;
+  }
+
+  .text-glitch::after {
+    @apply text-taboo-glitch;
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    animation: glitch 0.2s ease-in-out infinite alternate;
+  }
+
+  /* Card with neon border */
+  .card-neon {
+    @apply bg-taboo-surface rounded-xl;
+    @apply border border-taboo-border;
+    @apply transition-all duration-300;
+  }
+
+  .card-neon:hover {
+    @apply border-taboo-accent-primary/50;
+    @apply shadow-[0_0_20px_rgba(255,0,255,0.15)];
+  }
+
+  /* Scanline overlay */
+  .scanlines::after {
+    content: '';
+    @apply absolute inset-0 pointer-events-none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(0, 0, 0, 0.1) 2px,
+      transparent 3px
+    );
+    animation: scanline 8s linear infinite;
+  }
+
+  /* Archetype badge styles */
+  .badge-archetype {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full;
+    @apply text-xs font-bold uppercase tracking-wider;
+    @apply border backdrop-blur-sm;
+  }
+
+  .badge-archetype-siren {
+    @apply bg-pink-500/20 text-pink-300 border-pink-500/40;
+  }
+
+  .badge-archetype-phantom {
+    @apply bg-slate-500/20 text-slate-300 border-slate-500/40;
+  }
+
+  .badge-archetype-rebel {
+    @apply bg-red-500/20 text-red-300 border-red-500/40;
+  }
+
+  .badge-archetype-doll {
+    @apply bg-rose-500/20 text-rose-300 border-rose-500/40;
+  }
+
+  .badge-archetype-beast {
+    @apply bg-amber-500/20 text-amber-300 border-amber-500/40;
+  }
+
+  .badge-archetype-enigma {
+    @apply bg-purple-500/20 text-purple-300 border-purple-500/40;
+  }
+
+  .badge-archetype-oracle {
+    @apply bg-indigo-500/20 text-indigo-300 border-indigo-500/40;
+  }
+
+  .badge-archetype-switch {
+    @apply bg-cyan-500/20 text-cyan-300 border-cyan-500/40;
+  }
+
+  .badge-archetype-sovereign {
+    @apply bg-yellow-500/20 text-yellow-300 border-yellow-500/40;
+  }
+
+  /* Tag pills */
+  .tag-pill {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full;
+    @apply text-xs font-medium;
+    @apply bg-taboo-surface hover:bg-taboo-surface-hover;
+    @apply border border-taboo-border;
+    @apply transition-colors;
+  }
+
+  /* Power energy indicators */
+  .energy-dominant {
+    @apply text-red-400;
+  }
+
+  .energy-submissive {
+    @apply text-blue-400;
+  }
+
+  .energy-switch {
+    @apply text-purple-400;
+  }
+
+  /* Verified badge */
+  .verified-badge {
+    @apply inline-flex items-center justify-center;
+    @apply w-5 h-5 rounded-full;
+    @apply bg-taboo-accent-primary;
+    @apply text-white text-xs;
+  }
+
+  /* Blurred content overlay */
+  .content-blur {
+    @apply relative;
+  }
+
+  .content-blur::after {
+    content: '';
+    @apply absolute inset-0;
+    @apply backdrop-blur-xl bg-taboo-bg/60;
+    @apply flex items-center justify-center;
+  }
+
+  /* Live indicator */
+  .live-indicator {
+    @apply inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full;
+    @apply bg-red-500 text-white text-xs font-bold uppercase;
+    @apply animate-pulse;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    @apply bg-gradient-to-r from-taboo-accent-primary to-taboo-glitch;
+    @apply bg-clip-text text-transparent;
+  }
+
+  /* Respect boundaries notice */
+  .boundaries-notice {
+    @apply bg-taboo-glitch/10 border border-taboo-glitch/30;
+    @apply rounded-lg p-4;
+    @apply text-sm text-taboo-glitch;
+  }
+}
+
+/* Animation keyframes */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 0, 255, 0.6);
+  }
+}

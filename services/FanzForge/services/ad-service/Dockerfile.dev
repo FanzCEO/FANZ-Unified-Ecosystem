@@ -1,0 +1,40 @@
+# FANZ Cross-Platform Ad Service - Development Dockerfile
+# Optimized for hot reload and debugging
+
+FROM node:18-alpine
+
+# Install development dependencies
+RUN apk add --no-cache \
+    git \
+    curl \
+    bash \
+    postgresql-client
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json pnpm-lock.yaml* ./
+COPY services/ad-service/package*.json services/ad-service/
+
+# Install pnpm and dependencies
+RUN npm install -g pnpm@8.15.1
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY services/ad-service/ services/ad-service/
+COPY packages/ packages/
+
+# Set working directory to service
+WORKDIR /app/services/ad-service
+
+# Expose ports
+EXPOSE 4000 9229
+
+# Environment variables
+ENV NODE_ENV=development
+ENV DEBUG=fanz:*
+ENV FANZ_LOG_LEVEL=debug
+
+# Development command with hot reload and debugging
+CMD ["pnpm", "run", "dev:debug"]

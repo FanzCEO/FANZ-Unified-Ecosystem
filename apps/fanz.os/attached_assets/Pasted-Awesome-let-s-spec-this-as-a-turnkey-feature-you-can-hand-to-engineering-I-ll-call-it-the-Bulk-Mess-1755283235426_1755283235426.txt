@@ -1,0 +1,185 @@
+Awesome—let’s spec this as a turnkey feature you can hand to engineering. I’ll call it the Bulk Messaging Orchestrator.
+
+What it does (at a glance)
+
+Send a single campaign to Fanz, Creators, Admins, Moderators, or “Everyone”—and choose delivery channels: Email, Direct Message (DM), and/or In‑Platform Popup (any combination). Includes targeting, scheduling, personalization, throttling, compliance, and analytics.
+
+⸻
+
+Key requirements
+
+Audience & Targeting
+	•	Primary dropdown (required): Fanz | Creators | Admins | Moderators | Everyone
+	•	Advanced filters (optional):
+	•	Engagement (e.g., “active in last 30 days”, “unverified”, “paid subs only”)
+	•	Geography (country/region), language
+	•	Subscription status & tier, creator vertical/category
+	•	Compliance state (age-verified, KYC status)
+	•	Exclusions: specific users/roles, suppression lists, unsubscribed, high-complaint users.
+	•	Deduplication: if “Everyone” is selected, the same account isn’t messaged twice across overlapping roles.
+
+Channels (multi-select)
+	•	Email
+	•	Direct Message (internal inbox)
+	•	In‑Platform Popup (modal or banner with CTA)
+	•	Optional Send to all selected channels toggle.
+
+Content & Personalization
+	•	Template picker per channel + live preview.
+	•	Liquid-style variables: {{display_name}}, {{role}}, {{creator_name}}, {{subscription_tier}}, {{cta_url}}, etc.
+	•	Localization: auto-select template by user language; fallback to default.
+	•	Attachments: email only (with size limits).
+	•	A/B test (optional): subject/body variants; even split or weighted.
+
+Scheduling & Throttling
+	•	Send now or schedule (with timezone awareness).
+	•	Batching & rate limits per provider (e.g., SES/Sendgrid).
+	•	Safe-mode cap (e.g., max 10k/hr) + progressive ramp-up.
+	•	Quiet hours policy support (e.g., no push/popup 10pm–8am local).
+
+Compliance & Preferences
+	•	Honors email opt-out, DM opt-out, popup opt-out independently.
+	•	CAN‑SPAM/GDPR/CASL compliant footers + required sender identity.
+	•	Age-sensitive audiences: no explicit previews in email subjects; use neutral copy.
+	•	Unsubscribe & preference center links; per-channel toggles.
+	•	Suppression lists (bounces, complaints, hard unsubscribes).
+
+Approvals, Security & Audit
+	•	RBAC: only Admins/Moderators with permission can send to global audiences.
+	•	Two-person approval for >10k recipients or cross-role blasts.
+	•	Full audit log: who created/edited/approved/sent, timestamps, diffs.
+	•	Dry run to test group of 10 recipients + seed list.
+
+Analytics & Reporting
+	•	Email: sent/delivered/bounce/complaint/open/click; domain breakdown.
+	•	DM: delivered/read/replied.
+	•	Popup: impression/close/CTA click; device breakdown.
+	•	Per-segment metrics + export CSV.
+	•	Conversion tracking (e.g., “verified email” completion after reminder).
+
+⸻
+
+Creator‑friendly UX (Admin Panel)
+	1.	Campaign > New Bulk Message
+
+	•	Name (internal), Audience (dropdown), Optional filters, Exclusions.
+
+	2.	Channels
+
+	•	Checkboxes: Email, DM, Popup.
+	•	For each selected channel: pick template, edit content, preview, A/B (optional).
+
+	3.	Personalization
+
+	•	Variable helper (click to insert), sample data preview.
+
+	4.	Schedule & Delivery Controls
+
+	•	Send now / Schedule (datetime).
+	•	Rate limit, quiet hours toggle, retry policy.
+	•	Test send to seed list.
+
+	5.	Compliance
+
+	•	Confirm: respects opt-outs, correct footer selected.
+
+	6.	Review & Approval
+
+	•	Summary page → Request approval → Approver clicks Approve & Schedule.
+
+	7.	Monitor
+
+	•	Real-time dashboard + error panel; download recipient-level logs.
+
+⸻
+
+Data model (tables or collections)
+	•	campaigns
+	•	id, name, created_by, status (draft|pending_approval|scheduled|sending|paused|complete|failed), audience_base (fanz|creators|admins|moderators|everyone), filters (JSON), exclusions (JSON), schedule_at, created_at, updated_at.
+	•	campaign_channels
+	•	id, campaign_id, channel (email|dm|popup), template_id, variant_config (JSON A/B), localization_map (JSON), attachments (JSON).
+	•	campaign_jobs
+	•	id, campaign_id, state (queued|running|paused|done|failed), rate_limit, batch_size, provider.
+	•	deliveries
+	•	id, campaign_id, user_id, channel, status (queued|sent|delivered|opened|clicked|bounced|complained|read|dismissed), timestamps, metadata (providerMsgId, errorCode).
+	•	suppression_lists
+	•	id, user_id/email, channel, reason (unsubscribe|bounce|complaint|manual), created_at.
+	•	user_preferences
+	•	user_id, email_opt_in (bool), dm_opt_in (bool), popup_opt_in (bool), language, quiet_hours.
+	•	templates
+	•	id, channel, name, subject, body_html, body_text, variables (JSON), locale, is_default.
+
+⸻
+
+API endpoints (example)
+	•	POST /api/campaigns – create campaign
+	•	PUT /api/campaigns/{id} – update audience/filters
+	•	POST /api/campaigns/{id}/channels – add channel config
+	•	POST /api/campaigns/{id}/validate – lint templates & variables
+	•	POST /api/campaigns/{id}/test-send – to seed list
+	•	POST /api/campaigns/{id}/submit – request approval
+	•	POST /api/campaigns/{id}/approve – approve & schedule (RBAC)
+	•	POST /api/campaigns/{id}/send – send now (RBAC)
+	•	GET /api/campaigns/{id}/analytics – rollups + per-channel
+	•	Webhooks: /webhooks/email (delivery, bounce, complaint), /webhooks/dm, /webhooks/popup
+
+⸻
+
+Delivery flow (high level)
+	1.	Audience resolution (respecting roles, filters, exclusions, preferences).
+	2.	Deduplicate recipients across roles; tag each with final channel list after preference checks.
+	3.	Chunking to batches → enqueue per channel.
+	4.	Send workers per channel provider:
+	•	Email: SES/SendGrid/Mailgun SDK; DKIM/SPF aligned.
+	•	DM: internal message service; push inbox notification.
+	•	Popup: create notification entity; client fetch or WebSocket push; show once per user/session with snooze/dismiss states.
+	5.	Webhooks update deliveries table; analytics aggregates roll up to campaigns.
+
+⸻
+
+UI details you asked for
+	•	Single dropdown to pick Fanz / Creators / Admin / Moderators / Everyone.
+	•	Channel toggles:
+	•	Send Email
+	•	Send Direct Message
+	•	Show Platform Popup
+	•	plus Also send to all selected channels (enables multi-channel delivery).
+	•	Preview panel with tabs: Email | DM | Popup.
+	•	“Remind unverified” templates you already use (2, 5, 7, 10‑day) can be re-used here as prebuilt templates.
+
+⸻
+
+Guardrails & edge cases
+	•	Unverified emails → auto-route to DM + Popup if email bounces or is unverified.
+	•	Quiet hours → queue popups until allowed window; email can still send if compliant, or delay if configured.
+	•	High-risk words in subject/body (adult platform) → lint against blocklist; suggest safer copy.
+	•	Rate limit spikes → auto-throttle, backoff + retry with jitter; pause campaign if bounce/complaint rate crosses threshold.
+	•	Accessibility → larger default font for verification emails (you noted), ARIA labels on popups, keyboard dismiss.
+	•	Privacy → no sensitive content previews in popup/DM unless user opted in.
+
+⸻
+
+“Never-before-done” smart add-ons (optional but powerful)
+	•	Channel Mix Optimizer: for each recipient, predict best channel combo (email-only vs email+popup) using past open/read/dismiss behavior to maximize reach while minimizing annoyance.
+	•	Auto-Goal Campaigns: choose an outcome (e.g., “complete email verification”) and the system sequences the right messages (email→popup→DM) until the goal is met or a limit is hit.
+	•	Engagement Cooldown: if a user saw >2 platform messages today, hold popups and switch to DM or defer to next day.
+
+⸻
+
+Acceptance criteria (checklist)
+	•	Dropdown supports roles: Fanz, Creators, Admin, Moderators, Everyone
+	•	Multi-channel selection: Email, DM, Popup (any combination)
+	•	Templates per channel with variables + preview
+	•	Audience filters + exclusions + dedupe
+	•	Schedule now/later, rate limiting, quiet hours
+	•	Test send & two-person approval for large sends
+	•	Per-channel analytics (deliveries, opens, reads, clicks, dismiss)
+	•	Opt-out & suppression respected per channel
+	•	Full audit log and exportable reports
+
+⸻
+
+If you want, I can convert this into:
+	•	a Jira-ready epic with user stories & acceptance criteria,
+	•	a DB migration script plan, and
+	•	provider integration tickets (SES/Sendgrid + internal DM/Popup workers).

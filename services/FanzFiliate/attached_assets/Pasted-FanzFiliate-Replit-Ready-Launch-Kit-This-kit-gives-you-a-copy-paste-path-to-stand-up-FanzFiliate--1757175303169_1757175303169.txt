@@ -1,0 +1,519 @@
+FanzFiliate — Replit‑Ready Launch Kit
+
+This kit gives you a copy‑paste path to stand up FanzFiliate (AffiLab‑based) inside Replit or any Linux host, wired for FUN:
+	•	FanzSSO (JWT)
+	•	VerifyMy KYC webhooks
+	•	FanzDash approvals
+	•	FanzHubVault compliance storage
+	•	MediaCore creatives CDN
+	•	Adult‑friendly payouts (Paxum, CosmoPayment, Bitsafe, USDT)
+
+⚠️ Replace placeholders marked YOUR_... before running.
+
+⸻
+
+1) Replit setup script — setup.sh
+
+#!/usr/bin/env bash
+set -euo pipefail
+
+# 0) Vars
+APP_DIR="app"
+ENV_FILE=".env"
+PHP_VERSION="8.2"
+NODE_VERSION="20"
+DB_NAME="fanzfiliate"
+DB_USER="fanz"
+DB_PASS="${DB_PASSWORD:-ChangeMe_$(openssl rand -hex 4)}"
+
+# 1) System deps (Replit uses nix; fallback apt for generic hosts)
+if command -v apt-get >/dev/null 2>&1; then
+  sudo apt-get update -y
+  sudo apt-get install -y git curl unzip jq nginx redis-server postgresql postgresql-contrib php${PHP_VERSION} \
+    php${PHP_VERSION}-fpm php${PHP_VERSION}-pgsql php${PHP_VERSION}-mbstring php${PHP_VERSION}-xml php${PHP_VERSION}-curl \
+    php${PHP_VERSION}-zip composer
+fi
+
+# 2) Node (for asset build)
+if ! command -v node >/dev/null 2>&1; then
+  curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+fi
+
+# 3) Clone/import AffiLab into ./app if not present
+if [ ! -d "$APP_DIR" ]; then
+  echo "\n>>> Place AffiLab source zip here and unzip to ./app (required)."; exit 1
+fi
+
+# 4) Composer deps
+pushd "$APP_DIR"
+composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# 5) Env
+if [ ! -f "$ENV_FILE" ]; then
+  cp .env.example .env || true
+fi
+php artisan key:generate
+
+# 6) DB create & migrate (Postgres)
+if command -v psql >/dev/null 2>&1; then
+  sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname = '${DB_NAME}';" | grep -q 1 || \
+    sudo -u postgres createdb ${DB_NAME}
+  sudo -u postgres psql -v ON_ERROR_STOP=1 -c "DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname='${DB_USER}') THEN CREATE ROLE ${DB_USER} LOGIN PASSWORD '${DB_PASS}'; END IF; END $$;"
+  sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${DB_USER};"
+fi
+
+php artisan migrate --force
+php artisan storage:link || true
+
+# 7) Frontend build
+if [ -f package.json ]; then
+  npm ci || npm install
+  npm run build || true
+fi
+
+# 8) Queue worker (screen/tmux optional)
+php artisan optimize
+
+popd
+
+echo "\n>>> Setup complete. Export env: DB_PASSWORD=${DB_PASS}"
+
+
+⸻
+
+2) Replit Nix file — replit.nix
+
+{ pkgs }: {
+  deps = [
+    pkgs.php82
+    pkgs.php82Extensions.pgsql
+    pkgs.php82Extensions.mbstring
+    pkgs.php82Extensions.curl
+    pkgs.php82Extensions.dom
+    pkgs.php82Extensions.zip
+    pkgs.php82Packages.composer
+    pkgs.nodejs_20
+    pkgs.yarn
+    pkgs.postgresql
+    pkgs.redis
+    pkgs.nginx
+    pkgs.openssl
+    pkgs.git
+    pkgs.curl
+    pkgs.jq
+    pkgs.unzip
+  ];
+}
+
+
+⸻
+
+3) Run commands — .replit
+
+run = "bash -lc 'DB_PASSWORD=${DB_PASSWORD:-ChangeMe} ./setup.sh && php -S 0.0.0.0:3000 -t app/public'"
+entrypoint = "bash"
+
+For production, front with nginx; for Replit preview, PHP’s built‑in server is fine.
+
+⸻
+
+4) ENV template — .env.template
+
+APP_NAME=FanzFiliate
+APP_ENV=production
+APP_KEY=
+APP_DEBUG=false
+APP_URL=https://fanzfiliate.com
+
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=fanzfiliate
+DB_USERNAME=fanz
+DB_PASSWORD=CHANGE_ME
+
+CACHE_DRIVER=redis
+QUEUE_CONNECTION=redis
+SESSION_DRIVER=redis
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+
+# SSO (JWT)
+SSO_JWT_ISS=https://sso.fanzos.com
+SSO_JWT_AUD=fanzfiliate
+SSO_JWT_JWKS_URL=https://sso.fanzos.com/.well-known/jwks.json
+
+# VerifyMy
+VERIFYMY_CLIENT_ID=
+VERIFYMY_CLIENT_SECRET=
+VERIFYMY_WEBHOOK_SECRET=
+
+# Postback HMAC
+POSTBACK_HMAC_SECRET=
+
+# Email/SMS
+POSTMARK_TOKEN=
+TWILIO_SID=
+TWILIO_TOKEN=
+
+# Payout rails
+PAXUM_API_KEY=
+COSMOPAYMENT_API_KEY=
+BITSAFE_API_KEY=
+USDT_WALLET=
+
+# Analytics
+POSTHOG_KEY=
+POSTHOG_HOST=https://app.posthog.com
+
+
+⸻
+
+5) Tracking migrations — database/migrations/2025_09_06_000001_clicks_conversions.php
+
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+  public function up(): void {
+    Schema::create('clicks', function (Blueprint $t) {
+      $t->bigIncrements('id');
+      $t->unsignedBigInteger('offer_id');
+      $t->unsignedBigInteger('pub_id');
+      $t->string('sub1')->nullable();
+      $t->string('sub2')->nullable();
+      $t->string('sub3')->nullable();
+      $t->string('traffic_type')->nullable();
+      $t->string('ip', 45)->nullable();
+      $t->string('ua', 512)->nullable();
+      $t->string('ref', 512)->nullable();
+      $t->string('device_fp', 128)->nullable();
+      $t->string('gclid', 64)->nullable();
+      $t->string('fbc', 128)->nullable();
+      $t->string('fbp', 128)->nullable();
+      $t->timestamps();
+      $t->index(['offer_id','pub_id','created_at']);
+    });
+
+    Schema::create('conversions', function (Blueprint $t) {
+      $t->bigIncrements('id');
+      $t->unsignedBigInteger('click_id')->nullable();
+      $t->string('txid', 128)->unique();
+      $t->enum('status', ['pending','approved','rejected'])->default('pending');
+      $t->decimal('amount', 12, 2)->default(0);
+      $t->string('currency', 8)->default('USD');
+      $t->timestamp('approved_at')->nullable();
+      $t->jsonb('meta')->nullable();
+      $t->timestamps();
+      $t->index(['status','approved_at']);
+    });
+  }
+  public function down(): void {
+    Schema::dropIfExists('conversions');
+    Schema::dropIfExists('clicks');
+  }
+};
+
+
+⸻
+
+6) Controllers — app/Http/Controllers/TrackController.php
+
+<?php
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class TrackController extends Controller {
+  public function click(Request $r) {
+    $id = DB::table('clicks')->insertGetId([
+      'offer_id' => (int)$r->get('offer_id'),
+      'pub_id'   => (int)$r->get('pub_id'),
+      'sub1'     => $r->get('sub1'),
+      'sub2'     => $r->get('sub2'),
+      'sub3'     => $r->get('sub3'),
+      'traffic_type' => $r->get('tt'),
+      'ip'       => $r->ip(),
+      'ua'       => substr($r->userAgent() ?? '', 0, 512),
+      'ref'      => substr($r->headers->get('referer') ?? '', 0, 512),
+      'device_fp'=> $r->get('fp')
+    ]);
+    return response()->json(['click_id' => $id]);
+  }
+
+  public function postback(Request $r) {
+    $secret = config('services.postback.hmac');
+    $sig = $r->get('sig');
+    $qs = http_build_query(collect($r->query())->except('sig')->all());
+    $calc = hash_hmac('sha256', $qs, $secret);
+    abort_unless(hash_equals($calc, $sig), 403);
+
+    $txid = (string)$r->get('txid');
+    $status = $r->get('status','approved');
+    $amount = (float)$r->get('amount', 0);
+    $currency = $r->get('currency','USD');
+
+    $clickId = $r->get('click_id');
+    if (!$clickId && $r->get('pub_id')) {
+      $click = DB::table('clicks')
+        ->where('pub_id', (int)$r->get('pub_id'))
+        ->orderByDesc('id')->first();
+      $clickId = $click?->id;
+    }
+
+    DB::table('conversions')->updateOrInsert(
+      ['txid' => $txid],
+      [
+        'click_id' => $clickId,
+        'status' => $status,
+        'amount' => $amount,
+        'currency' => $currency,
+        'approved_at' => $status === 'approved' ? Carbon::now() : null,
+        'meta' => json_encode($r->all())
+      ]
+    );
+
+    return response()->json(['ok' => true]);
+  }
+}
+
+
+⸻
+
+7) FUN SSO middleware — app/Http/Middleware/EnforceFanzSSO.php
+
+<?php
+namespace App\Http\Middleware;
+
+use Closure; use Firebase\JWT\JWK; use Firebase\JWT\JWT; use Illuminate\Support\Facades\Cache; use App\Models\User;
+
+class EnforceFanzSSO {
+  public function handle($request, Closure $next) {
+    $jwt = $request->bearerToken();
+    abort_unless($jwt, 401);
+
+    $jwks = Cache::remember('sso_jwks', 3600, function(){
+      return json_decode(file_get_contents(config('services.sso.jwks_url')), true);
+    });
+    $decoded = JWT::decode($jwt, JWK::parseKeySet($jwks));
+    $claims = (array)$decoded;
+
+    abort_unless(($claims['iss'] ?? '') === config('services.sso.iss'), 401);
+    abort_unless(in_array('fanzfiliate', (array)($claims['aud'] ?? [])), 401);
+
+    $user = User::firstOrCreate(
+      ['sso_user_id' => $claims['sub']],
+      ['email' => $claims['email'] ?? ("user-".uniqid().'@example.com'), 'name' => $claims['name'] ?? '']
+    );
+    auth()->login($user);
+    return $next($request);
+  }
+}
+
+Add to app/Http/Kernel.php and protect internal routes with fanzsso.
+
+⸻
+
+8) VerifyMy webhook — app/Http/Controllers/WebhookController.php
+
+<?php
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request; use Illuminate\Support\Facades\Log; use App\Models\User; use Illuminate\Support\Facades\Http;
+
+class WebhookController extends Controller {
+  public function verifymy(Request $r) {
+    $sig = $r->header('X-VerifyMy-Signature');
+    abort_unless(hash_equals(hash_hmac('sha256', $r->getContent(), config('services.verifymy.webhook_secret')), $sig), 403);
+
+    $payload = $r->json()->all();
+    $ssoId = $payload['user_id'] ?? null; // map accordingly
+    if ($ssoId) {
+      $user = User::where('sso_user_id',$ssoId)->first();
+      if ($user) {
+        $user->kyc_status = $payload['status'];
+        $user->kyc_verified_at = now();
+        $user->save();
+
+        // Mirror snapshot to FanzHubVault
+        Http::withToken(env('FANZHUBVAULT_TOKEN'))
+          ->post(env('FANZHUBVAULT_URL').'/api/kyc/snapshots', [
+            'user_id' => $user->id,
+            'sso_user_id' => $ssoId,
+            'status' => $payload['status'],
+            'docs' => $payload['documents'] ?? [],
+            'hash' => hash('sha256', json_encode($payload))
+          ]);
+      }
+    }
+    return response()->json(['ok'=>true]);
+  }
+}
+
+
+⸻
+
+9) Seed data (JSON) — put in database/seeders/data/
+
+traffic_types.json
+
+[
+  "email","social","search","display","native","push","ugc","tube","cam","ppv","influencer","seo","direct"
+]
+
+verticals.json
+
+[
+  "Gay/Queer","Women","Trans/NB","Kink/Fetish","Pup","Daddy/Mature","Mainstream Adult","Dating","Cams","Toys/Physical","Courses/Varsity","Subscriptions"
+]
+
+geo_presets.json
+
+[
+  {"name":"T1","countries":["US","CA","UK","DE","FR","AU","NZ","NL","SE","NO"]},
+  {"name":"EU","countries":["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE"]},
+  {"name":"LATAM","countries":["MX","BR","AR","CL","CO","PE","EC","UY","PY","CR"]}
+]
+
+payout_methods.json
+
+[
+  {"code":"paxum","display":"Paxum","fee":"variable","min":"50"},
+  {"code":"cosmo","display":"CosmoPayment","fee":"variable","min":"50"},
+  {"code":"bitsafe","display":"Bitsafe","fee":"variable","min":"100"},
+  {"code":"usdt","display":"USDT (TRC20/ETH)","fee":"network","min":"50"}
+]
+
+
+⸻
+
+10) Laravel seeder — database/seeders/FanzSeeders.php
+
+<?php
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder; use Illuminate\Support\Facades\DB;
+
+class FanzSeeders extends Seeder {
+  public function run(): void {
+    $this->seedJson('traffic_types.json','traffic_types','name');
+    $this->seedJson('verticals.json','verticals','name');
+    $this->seedJson('geo_presets.json','geo_presets','name', true);
+    $this->seedJson('payout_methods.json','payout_methods','code');
+  }
+
+  private function seedJson($file,$table,$key,$json=false) {
+    $path = database_path('seeders/data/'.$file);
+    $arr = json_decode(file_get_contents($path), true);
+    foreach ($arr as $row) {
+      $val = $json ? json_encode($row) : ($row[$key] ?? $row);
+      DB::table($table)->updateOrInsert(
+        [$key => $json ? $row['name'] : $val],
+        $json ? ['payload'=>$val] : ['name'=>$val]
+      );
+    }
+  }
+}
+
+Add stub tables traffic_types, verticals, geo_presets(name,payload jsonb), payout_methods(code,display,fee,min).
+
+⸻
+
+11) PostHog events — resources/js/posthog.js
+
+import posthog from 'posthog-js';
+posthog.init(import.meta.env.VITE_POSTHOG_KEY, { api_host: import.meta.env.VITE_POSTHOG_HOST });
+export const track = (name, props={}) => posthog.capture(name, props);
+// Examples
+// track('click', { offer_id, pub_id });
+// track('conversion', { txid, status, amount });
+
+
+⸻
+
+12) Metabase dashboard (import JSON) — metabase_fanzfiliate_dashboard.json
+
+{
+  "name": "FanzFiliate — Performance",
+  "collection_id": null,
+  "parameters": [],
+  "dashcards": [
+    { "card": { "name": "EPC by Geo (7d)", "dataset_query": { "type": "native", "native": { "query": "SELECT c.currency, coalesce(sum(c.amount),0)/NULLIF(count(cl.id),0) AS epc, geo.name FROM conversions c LEFT JOIN clicks cl ON cl.id=c.click_id LEFT JOIN geo_map geo ON geo.ip=cl.ip WHERE c.created_at >= now() - interval '7 day' AND c.status='approved' GROUP BY c.currency, geo.name ORDER BY epc DESC LIMIT 20;" } }, "display": "table" } },
+    { "card": { "name": "Approval Rate by Advertiser (30d)", "dataset_query": { "type": "native", "native": { "query": "SELECT adv.name, 100.0*sum(CASE WHEN c.status='approved' THEN 1 ELSE 0 END)/NULLIF(count(*),0) AS approval_rate FROM conversions c JOIN offers o ON o.id=c.offer_id JOIN advertisers adv ON adv.id=o.advertiser_id WHERE c.created_at >= now() - interval '30 day' GROUP BY adv.name ORDER BY approval_rate DESC;" } }, "display": "bar" } },
+    { "card": { "name": "Publisher LTV (90d)", "dataset_query": { "type": "native", "native": { "query": "SELECT pub.id, pub.name, sum(c.amount) AS revenue FROM conversions c JOIN clicks cl ON cl.id=c.click_id JOIN publishers pub ON pub.id=cl.pub_id WHERE c.created_at >= now() - interval '90 day' AND c.status='approved' GROUP BY pub.id,pub.name ORDER BY revenue DESC LIMIT 25;" } }, "display": "bar" } }
+  ]
+}
+
+Adjust table names to your schema. geo_map can be a view that resolves IP→country.
+
+⸻
+
+13) Theming (SCSS) — resources/scss/fanz-theme.scss
+
+$primary: #FFE100; // banana neon
+$secondary: #111318;
+$success: #18F29C;
+$danger: #FF3B6A;
+$body-bg: #0b0d11;
+$body-color: #e6f0ff;
+
+.btn-primary{ text-shadow:0 0 6px rgba(255,225,0,.75); box-shadow:0 0 18px rgba(255,225,0,.45); }
+.card{ background: radial-gradient(120% 120% at 10% 0%, #121520 0%, #0b0d11 60%); border:1px solid rgba(255,255,255,.06); border-radius:1rem; }
+.navbar-brand::before{ content:""; background:url('/assets/neon-banana.svg') no-repeat center/contain; }
+
+
+⸻
+
+14) Minimal nginx (prod) — deploy/nginx.conf
+
+server { listen 80; server_name fanzfiliate.com; return 301 https://$host$request_uri; }
+server {
+  listen 443 ssl http2; server_name fanzfiliate.com;
+  root /var/www/app/public; index index.php index.html;
+  # ssl certs here
+  location / { try_files $uri $uri/ /index.php?$query_string; }
+  location ~ \.php$ { include fastcgi_params; fastcgi_pass unix:/run/php/php8.2-fpm.sock; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; }
+}
+
+
+⸻
+
+15) Offer lifecycle → FanzDash webhooks (examples)
+
+POST /api/hooks/fanzdash HTTP/1.1
+Authorization: Bearer YOUR_DASH_TOKEN
+Content-Type: application/json
+
+{ "event":"offer.approved", "offer_id":123, "by":"admin:js" }
+
+POST /api/hooks/fanzdash
+{ "event":"conversion.approved", "conversion_id":987, "pub_id":45, "amount":12.00, "currency":"USD" }
+
+
+⸻
+
+16) Quick QA checklist
+	•	SSO JWT verifies against JWKS; non‑SSO routes blocked.
+	•	VerifyMy webhook flips kyc_status and mirrors snapshot to Vault.
+	•	/click creates row; /postback upserts conversion with HMAC check.
+	•	Payout adapters visible + sandboxed test run (dry‑run mode).
+	•	Theme builds; varsity headers & neon banana present.
+	•	Metabase JSON imports; dashboards render with sample data.
+
+⸻
+
+17) Next up (optional add‑ons)
+	•	WAF rules on trk.* + IP allowlist for advertiser postbacks.
+	•	FingerprintJS Pro for device fingerprint; IPQS for risk scoring.
+	•	Publisher API keys + OAuth client creds for advertisers.
+	•	Auto‑create creator‑vanity links from BoyFanz/GirlFanz/PupFanz.
+	•	Cron jobs for payout eligibility & postback retry.
+
+⸻
+
+You’re set. Drop in the AffiLab code under /app, copy envs, run the Replit project — and FanzFiliate is live with FUN DNA baked in. 🔥🍌

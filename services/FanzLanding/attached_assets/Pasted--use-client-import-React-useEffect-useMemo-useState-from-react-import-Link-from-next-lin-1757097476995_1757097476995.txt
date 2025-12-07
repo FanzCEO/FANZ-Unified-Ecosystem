@@ -1,0 +1,517 @@
+'use client'
+
+import React, { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Input } from '@/components/ui/input'
+import { Progress } from '@/components/ui/progress'
+import { Separator } from '@/components/ui/separator'
+import {
+  Flame,
+  ShieldCheck,
+  Lock,
+  Radio,
+  Vault,
+  Film,
+  Layers,
+  Users,
+  Sparkles,
+  Globe,
+  Wallet,
+  Cpu,
+  Box,
+  Bell,
+  Search,
+  Clock3,
+  ChevronRight,
+  Activity,
+} from 'lucide-react'
+
+/**
+ * FANZ Portal Hub — all-in-one landing/portal that connects the entire FANZ ecosystem.
+ *
+ * Design system: Tailwind + shadcn/ui + lucide-react
+ * Brand vibe: neon banana glow, creator-first, bold, interactive.
+ *
+ * 🔌 Integration placeholders (replace URLs with real services):
+ * - SSO: /api/sso/login
+ * - Compliance (2257):
+ *   • GET  /api/hubvault/compliance/summary
+ *   • GET  /api/hubvault/compliance/my-2257
+ *   • POST /api/hubvault/compliance/forms/2257 (multipart)
+ *   • Webhook receiver: /api/hubvault/compliance/verifymy/webhook
+ * - Dashboard metrics (FanzDash): GET /api/dash/metrics
+ * - MediaHub (MediaCore): GET /api/mediahub/trending
+ * - Drops (Getstream or internal): GET /api/drops/live
+ * - Storage/Encoding (Bunny/Coconut): surface via /api/mediahub/status
+ * - Payout rails (NO Stripe/PayPal): Paxum/Segpay/CosmoPayment via /api/payouts/summary
+ *
+ * 🧱 Data models (TS interfaces) are below.
+ * 
+ * 🧪 DEMO_MODE: toggles mocked data to preview UI without backends.
+ */
+
+const DEMO_MODE = true
+
+// —— Types ——
+interface ComplianceSummary {
+  pending: number
+  expiring: number
+  missing: number
+  lastUpdated: string
+  my2257Status: 'approved' | 'pending' | 'missing'
+  links: {
+    form: string
+    dashboard: string
+  }
+}
+
+interface DashboardMetrics {
+  revenue24h: number
+  creators: number
+  activeFans: number
+  dropsLive: number
+  conversion: number // 0..1
+  storageUsedTB: number
+  streamBitrateAvg: number // Mbps
+}
+
+interface DropItem {
+  id: string
+  creator: string
+  title: string
+  expiresAt: string // ISO
+  cta: string
+  href: string
+}
+
+interface PortalLink {
+  name: string
+  href: string
+  desc: string
+  icon: React.ElementType
+  tag?: string
+}
+
+// —— Mock Fetchers (swap with real fetch calls) ——
+async function mockDelay<T>(data: T, ms = 420): Promise<T> {
+  return new Promise((resolve) => setTimeout(() => resolve(data), ms))
+}
+
+async function fetchComplianceSummary(): Promise<ComplianceSummary> {
+  if (!DEMO_MODE) {
+    const r = await fetch('/api/hubvault/compliance/summary', { cache: 'no-store' })
+    if (!r.ok) throw new Error('Compliance summary error')
+    return r.json()
+  }
+  return mockDelay({
+    pending: 7,
+    expiring: 3,
+    missing: 1,
+    lastUpdated: new Date().toISOString(),
+    my2257Status: 'approved',
+    links: { form: '/compliance/2257', dashboard: '/securitydash/compliance' },
+  })
+}
+
+async function fetchDashboardMetrics(): Promise<DashboardMetrics> {
+  if (!DEMO_MODE) {
+    const r = await fetch('/api/dash/metrics', { cache: 'no-store' })
+    if (!r.ok) throw new Error('Metrics error')
+    return r.json()
+  }
+  return mockDelay({
+    revenue24h: 42873.32,
+    creators: 4372,
+    activeFans: 81327,
+    dropsLive: 18,
+    conversion: 0.064,
+    storageUsedTB: 312.4,
+    streamBitrateAvg: 6.8,
+  })
+}
+
+async function fetchLiveDrops(): Promise<DropItem[]> {
+  if (!DEMO_MODE) {
+    const r = await fetch('/api/drops/live', { cache: 'no-store' })
+    if (!r.ok) throw new Error('Drops error')
+    return r.json()
+  }
+  const now = Date.now()
+  return mockDelay([
+    {
+      id: 'd1',
+      creator: 'Nova Blaze',
+      title: '24h BTS Clip',
+      expiresAt: new Date(now + 1000 * 60 * 60 * 4).toISOString(),
+      cta: 'Unlock for $1.99',
+      href: '/drops/d1',
+    },
+    {
+      id: 'd2',
+      creator: 'Kairo + Jett (Collab)',
+      title: 'Duo Drop — limited 100',
+      expiresAt: new Date(now + 1000 * 60 * 90).toISOString(),
+      cta: 'Grab yours',
+      href: '/drops/d2',
+    },
+    {
+      id: 'd3',
+      creator: 'Rae',
+      title: 'Fan Q&A + code',
+      expiresAt: new Date(now + 1000 * 60 * 30).toISOString(),
+      cta: 'Join now',
+      href: '/drops/d3',
+    },
+  ])
+}
+
+// —— Portal inventory ——
+const PORTAL_LINKS: PortalLink[] = [
+  { name: 'BoyFanz', href: '/boyfanz', desc: 'Creator-first, fast payouts, 0% fees.', icon: Users, tag: 'Platform' },
+  { name: 'GirlFanz', href: '/girlfanz', desc: 'Own it all. Keep it all.', icon: Users, tag: 'Platform' },
+  { name: 'PupFanz', href: '/pupfanz', desc: 'Community, collabs, and pack energy.', icon: Users, tag: 'Platform' },
+  { name: 'FanzRadioPod', href: '/fanzradiopod', desc: 'Live radio + podcasts for the network.', icon: Radio, tag: 'Media' },
+  { name: 'MediaHub (MediaCore)', href: '/mediahub', desc: 'Uploads, encoding, CDN, watermarking.', icon: Film, tag: 'Core' },
+  { name: 'FanzHubVault', href: '/hubvault', desc: 'People, profiles, KYC/2257, contracts.', icon: Vault, tag: 'Core' },
+  { name: 'FanzDash', href: '/dash', desc: 'Revenue, growth, conversion, ops.', icon: Activity, tag: 'Ops' },
+  { name: 'FanzSecurityDash', href: '/securitydash', desc: 'Moderation, approvals, audit logs.', icon: ShieldCheck, tag: 'Ops' },
+  { name: 'FanzVarsity', href: '/varsity', desc: 'Education, playbooks, certification.', icon: Layers, tag: 'Growth' },
+  { name: 'FanzWork', href: '/work', desc: 'Marketplace for collabs & services.', icon: Box, tag: 'Growth' },
+]
+
+// —— Utilities ——
+function cn(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(' ')
+}
+
+function timeLeftISO(iso: string) {
+  const end = new Date(iso).getTime()
+  const diff = Math.max(0, end - Date.now())
+  const m = Math.floor(diff / 60000)
+  const h = Math.floor(m / 60)
+  const mm = m % 60
+  return h > 0 ? `${h}h ${mm}m` : `${mm}m`
+}
+
+// —— Subcomponents ——
+function NeonHeader() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-yellow-300/20 bg-black/70 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 text-white">
+        <div className="flex items-center gap-2">
+          <div className="h-6 w-6 rounded-full bg-yellow-300 shadow-[0_0_20px_2px_rgba(255,211,0,0.8)]" />
+          <span className="font-black tracking-wide">FANZ</span>
+          <Badge variant="outline" className="border-yellow-300/50 text-yellow-300">Portal</Badge>
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          <Input placeholder="Search creators, drops, hubs…" className="w-64 bg-neutral-900 text-white placeholder:text-neutral-400 focus-visible:ring-yellow-300" />
+          <Button variant="outline" className="border-yellow-300/40 bg-neutral-900 text-yellow-300 hover:bg-neutral-800">
+            <Search className="mr-2 h-4 w-4" />Search
+          </Button>
+          <Button className="bg-yellow-300 text-black hover:bg-yellow-200">Enter the FUNverse</Button>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function LiveStatsTicker({ metrics }: { metrics?: DashboardMetrics }) {
+  if (!metrics) return null
+  return (
+    <div className="w-full border-b border-yellow-300/20 bg-neutral-950 text-neutral-200">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 px-4 py-2 text-sm md:grid-cols-6">
+        <div>24h Revenue: <span className="text-yellow-300">${'{'}metrics.revenue24h.toLocaleString(){'}'}</span></div>
+        <div>Creators: <span className="text-yellow-300">{metrics.creators.toLocaleString()}</span></div>
+        <div>Active Fans: <span className="text-yellow-300">{metrics.activeFans.toLocaleString()}</span></div>
+        <div>Drops Live: <span className="text-yellow-300">{metrics.dropsLive}</span></div>
+        <div>Conversion: <span className="text-yellow-300">{Math.round(metrics.conversion * 1000) / 10}%</span></div>
+        <div>CDN Storage: <span className="text-yellow-300">{metrics.storageUsedTB} TB</span></div>
+      </div>
+    </div>
+  )
+}
+
+function ComplianceCenter({ summary }: { summary?: ComplianceSummary }) {
+  return (
+    <Card className="border-yellow-300/20 bg-neutral-950 text-neutral-200">
+      <CardHeader>
+        <div className="flex items-center gap-2 text-white">
+          <ShieldCheck className="h-5 w-5 text-yellow-300" />
+          <h3 className="text-lg font-semibold">Compliance & 2257 Center</h3>
+          {summary && (
+            <Badge className={cn('ml-2', summary.my2257Status === 'approved' && 'bg-emerald-600', summary.my2257Status === 'pending' && 'bg-amber-600', summary.my2257Status === 'missing' && 'bg-rose-600')}>
+              My Status: {summary.my2257Status.toUpperCase()}
+            </Badge>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="grid gap-4 md:grid-cols-4">
+        <div className="rounded-xl border border-yellow-300/10 bg-neutral-900 p-4">
+          <div className="text-sm text-neutral-400">Pending Approvals</div>
+          <div className="mt-1 text-2xl font-bold text-yellow-300">{summary?.pending ?? '—'}</div>
+        </div>
+        <div className="rounded-xl border border-yellow-300/10 bg-neutral-900 p-4">
+          <div className="text-sm text-neutral-400">Expiring IDs (30d)</div>
+          <div className="mt-1 text-2xl font-bold text-yellow-300">{summary?.expiring ?? '—'}</div>
+        </div>
+        <div className="rounded-xl border border-yellow-300/10 bg-neutral-900 p-4">
+          <div className="text-sm text-neutral-400">Missing Co‑Star Docs</div>
+          <div className="mt-1 text-2xl font-bold text-yellow-300">{summary?.missing ?? '—'}</div>
+        </div>
+        <div className="rounded-xl border border-yellow-300/10 bg-neutral-900 p-4">
+          <div className="text-sm text-neutral-400">Last Sync</div>
+          <div className="mt-1 text-xl font-semibold">{summary ? new Date(summary.lastUpdated).toLocaleString() : '—'}</div>
+        </div>
+        <div className="md:col-span-4">
+          <div className="flex flex-wrap gap-2">
+            <Link href={summary?.links.form ?? '/compliance/2257'}>
+              <Button className="bg-yellow-300 text-black hover:bg-yellow-200">Complete/Update 2257</Button>
+            </Link>
+            <Link href={summary?.links.dashboard ?? '/securitydash/compliance'}>
+              <Button variant="outline" className="border-yellow-300/40 bg-neutral-900 text-yellow-300 hover:bg-neutral-800">Open Compliance Dashboard</Button>
+            </Link>
+            <Button variant="outline" className="border-yellow-300/40 bg-neutral-900 text-neutral-300 hover:bg-neutral-800">
+              VerifyMy Sync
+            </Button>
+          </div>
+          <p className="mt-2 text-sm text-neutral-400">
+            All 2257/KYC artifacts are stored in <span className="text-yellow-300">FanzHubVault</span> and surfaced into
+            <span className="text-yellow-300"> FanzSecurityDash</span> for review.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function DashboardTiles({ metrics }: { metrics?: DashboardMetrics }) {
+  return (
+    <div className="grid gap-4 md:grid-cols-3">
+      <Card className="border-yellow-300/20 bg-neutral-950 text-neutral-200">
+        <CardHeader>
+          <div className="flex items-center gap-2"><Activity className="h-5 w-5 text-yellow-300" /><h3 className="font-semibold">Growth & Revenue (24h)</h3></div>
+        </CardHeader>
+        <CardContent>
+          <div className="text-3xl font-bold text-yellow-300">${'{'}metrics?.revenue24h.toLocaleString() ?? '—'} </div>
+          <div className="mt-2 text-sm text-neutral-400">Conversion</div>
+          <Progress value={(metrics?.conversion ?? 0) * 100} className="bg-neutral-800" />
+        </CardContent>
+      </Card>
+      <Card className="border-yellow-300/20 bg-neutral-950 text-neutral-200">
+        <CardHeader>
+          <div className="flex items-center gap-2"><Film className="h-5 w-5 text-yellow-300" /><h3 className="font-semibold">Media Health</h3></div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-between text-sm text-neutral-400">
+            <span>CDN Storage</span>
+            <span className="text-yellow-300">{metrics?.storageUsedTB ?? '—'} TB</span>
+          </div>
+          <div className="mt-1 flex justify-between text-sm text-neutral-400">
+            <span>Avg Bitrate</span>
+            <span className="text-yellow-300">{metrics?.streamBitrateAvg ?? '—'} Mbps</span>
+          </div>
+          <p className="mt-2 text-xs text-neutral-500">BunnyCDN • Coconut.co • Forensic watermarking via MojoSign</p>
+        </CardContent>
+      </Card>
+      <Card className="border-yellow-300/20 bg-neutral-950 text-neutral-200">
+        <CardHeader>
+          <div className="flex items-center gap-2"><Wallet className="h-5 w-5 text-yellow-300" /><h3 className="font-semibold">Payouts</h3></div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center justify-between"><span>Paxum</span><Badge className="bg-emerald-600">Operational</Badge></div>
+            <div className="flex items-center justify-between"><span>Segpay</span><Badge className="bg-emerald-600">Operational</Badge></div>
+            <div className="flex items-center justify-between"><span>CosmoPayment</span><Badge className="bg-amber-600">Degraded</Badge></div>
+          </div>
+          <p className="mt-2 text-xs text-neutral-500">No Stripe or PayPal are used or shown.</p>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function CreatorDrops({ drops }: { drops?: DropItem[] }) {
+  if (!drops || drops.length === 0) return null
+  return (
+    <Card className="border-yellow-300/20 bg-neutral-950 text-neutral-200">
+      <CardHeader>
+        <div className="flex items-center gap-2 text-white"><Flame className="h-5 w-5 text-yellow-300" /><h3 className="text-lg font-semibold">Creator Drops (Live)</h3></div>
+      </CardHeader>
+      <CardContent className="grid gap-4 md:grid-cols-3">
+        {drops.map((d) => (
+          <div key={d.id} className="group rounded-xl border border-yellow-300/10 bg-neutral-900 p-4">
+            <div className="flex items-center justify-between">
+              <div className="font-semibold text-white">{d.creator}</div>
+              <Badge className="bg-rose-600">ends in {timeLeftISO(d.expiresAt)}</Badge>
+            </div>
+            <div className="mt-1 text-sm text-neutral-300">{d.title}</div>
+            <Button asChild className="mt-3 w-full bg-yellow-300 text-black hover:bg-yellow-200">
+              <Link href={d.href}>{d.cta}</Link>
+            </Button>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  )
+}
+
+function PortalGrid({ items, filter }: { items: PortalLink[]; filter: string }) {
+  const filtered = useMemo(() => {
+    const q = filter.toLowerCase()
+    return items.filter((it) =>
+      [it.name, it.desc, it.tag].filter(Boolean).some((s) => s!.toLowerCase().includes(q)),
+    )
+  }, [items, filter])
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {filtered.map((it) => (
+        <Card key={it.name} className="group border-yellow-300/20 bg-neutral-950 text-neutral-200 transition hover:border-yellow-300/60">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-white">
+                <it.icon className="h-5 w-5 text-yellow-300" />
+                <h3 className="text-lg font-semibold">{it.name}</h3>
+              </div>
+              {it.tag && <Badge variant="outline" className="border-yellow-300/40 text-yellow-300">{it.tag}</Badge>}
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-neutral-300">{it.desc}</p>
+          </CardContent>
+          <CardFooter>
+            <Button asChild variant="ghost" className="text-yellow-300 hover:bg-yellow-300/10">
+              <Link href={it.href}>Open <ChevronRight className="ml-1 h-4 w-4" /></Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  )
+}
+
+function AgeGate({ open, onConfirm }: { open: boolean; onConfirm: () => void }) {
+  if (!open) return null
+  return (
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-black/90 p-6">
+      <Card className="w-full max-w-md border-yellow-300/20 bg-neutral-950 text-neutral-100">
+        <CardHeader>
+          <div className="flex items-center gap-2 text-white">
+            <Lock className="h-5 w-5 text-yellow-300" />
+            <h3 className="text-xl font-bold">18+ Entry</h3>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-neutral-300">
+            By entering the FUNverse you confirm you are 18+ and agree to our Terms, Community Guidelines, and that
+            all 2257/KYC documentation is stored in FanzHubVault.
+          </p>
+          <div className="mt-4">
+            <Button onClick={onConfirm} className="w-full bg-yellow-300 text-black hover:bg-yellow-200">Enter the FUNverse</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+export default function FanzPortalHub() {
+  const [ageGateOpen, setAgeGateOpen] = useState(true)
+  const [query, setQuery] = useState('')
+  const [summary, setSummary] = useState<ComplianceSummary>()
+  const [metrics, setMetrics] = useState<DashboardMetrics>()
+  const [drops, setDrops] = useState<DropItem[]>()
+
+  useEffect(() => {
+    fetchComplianceSummary().then(setSummary).catch(() => setSummary(undefined))
+    fetchDashboardMetrics().then(setMetrics).catch(() => setMetrics(undefined))
+    fetchLiveDrops().then(setDrops).catch(() => setDrops(undefined))
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-black via-neutral-950 to-black text-white">
+      <AgeGate open={ageGateOpen} onConfirm={() => setAgeGateOpen(false)} />
+      <NeonHeader />
+
+      <LiveStatsTicker metrics={metrics} />
+
+      <main className="mx-auto max-w-7xl space-y-8 px-4 py-6">
+        {/* Hero */}
+        <section className="rounded-3xl border border-yellow-300/20 bg-[radial-gradient(60%_120%_at_50%_-20%,rgba(255,211,0,0.15),rgba(0,0,0,0))] p-6">
+          <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h1 className="text-3xl font-black tracking-tight md:text-4xl">
+                I burned the rulebook. <span className="text-yellow-300">Welcome to the FUNverse.</span>
+              </h1>
+              <p className="mt-2 max-w-2xl text-neutral-300">
+                One portal. Every platform. Creator-first everything. Your 2257 lives in HubVault, your media flies through MediaHub,
+                and your money shows up fast.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Button className="bg-yellow-300 text-black hover:bg-yellow-200">Join Now</Button>
+                <Button variant="outline" className="border-yellow-300/40 bg-neutral-900 text-yellow-300 hover:bg-neutral-800">
+                  Learn More
+                </Button>
+              </div>
+            </div>
+            <div className="w-full max-w-md rounded-2xl border border-yellow-300/20 bg-neutral-950 p-4">
+              <div className="text-sm text-neutral-400">Quick Search</div>
+              <div className="mt-2 flex items-center gap-2">
+                <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search portals & hubs…" className="bg-neutral-900 text-white placeholder:text-neutral-500 focus-visible:ring-yellow-300" />
+                <Button className="bg-yellow-300 text-black hover:bg-yellow-200"><Search className="h-4 w-4" /></Button>
+              </div>
+              <p className="mt-2 text-xs text-neutral-500">Tip: try “2257”, “MediaHub”, “Drops”, “BoyFanz”.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Portal grid */}
+        <section className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Globe className="h-5 w-5 text-yellow-300" />
+            <h2 className="text-xl font-bold">FANZ Network Portal</h2>
+          </div>
+          <PortalGrid items={PORTAL_LINKS} filter={query} />
+        </section>
+
+        {/* Compliance center */}
+        <ComplianceCenter summary={summary} />
+
+        {/* Dashboard tiles */}
+        <section className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Cpu className="h-5 w-5 text-yellow-300" />
+            <h2 className="text-xl font-bold">Operational Snapshot</h2>
+          </div>
+          <DashboardTiles metrics={metrics} />
+        </section>
+
+        {/* Creator drops */}
+        <CreatorDrops drops={drops} />
+
+        {/* Footer */}
+        <footer className="border-t border-yellow-300/20 py-6 text-sm text-neutral-400">
+          <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-2 px-4 md:flex-row md:items-center">
+            <div>
+              <span className="font-bold text-yellow-300">Creators &gt; Platforms.</span> You own it. You earn it. We serve it.
+            </div>
+            <div className="flex items-center gap-3">
+              <Link href="/terms" className="hover:text-yellow-300">Terms</Link>
+              <Link href="/privacy" className="hover:text-yellow-300">Privacy</Link>
+              <Link href="/compliance/2257" className="hover:text-yellow-300">2257</Link>
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+  )
+}

@@ -1,0 +1,667 @@
+{% extends "base.html" %}
+
+{% block title %}AI Content Moderation - FANZ{% endblock %}
+
+{% block content %}
+<div class="ai-moderation-dashboard">
+    <div class="container-fluid">
+        <!-- Moderation Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="moderation-header card gradient-card">
+                    <div class="card-body py-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 class="neon-text neon-purple mb-2">
+                                    <i class="fas fa-robot me-2"></i>AI Content Guardian
+                                </h2>
+                                <p class="lead text-secondary mb-0">
+                                    Advanced AI protecting your seductive content while maintaining platform safety
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="ai-status {{ 'active' if ai_moderation_active else 'inactive' }}">
+                                    <div class="status-indicator"></div>
+                                    <span>AI Moderation {{ 'Active' if ai_moderation_active else 'Inactive' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Moderation Stats -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stat-card card">
+                    <div class="card-body text-center">
+                        <div class="stat-icon neon-green mb-3">
+                            <i class="fas fa-shield-check fa-2x"></i>
+                        </div>
+                        <h3 class="stat-number neon-text neon-green">{{ approved_content }}</h3>
+                        <p class="stat-label">Content Approved</p>
+                        <small class="stat-subtitle">{{ approval_rate }}% auto-approval rate</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stat-card card">
+                    <div class="card-body text-center">
+                        <div class="stat-icon neon-yellow mb-3">
+                            <i class="fas fa-clock fa-2x"></i>
+                        </div>
+                        <h3 class="stat-number neon-text neon-yellow">{{ pending_review }}</h3>
+                        <p class="stat-label">Pending Review</p>
+                        <small class="stat-subtitle">Avg review time: {{ avg_review_time }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stat-card card">
+                    <div class="card-body text-center">
+                        <div class="stat-icon neon-red mb-3">
+                            <i class="fas fa-ban fa-2x"></i>
+                        </div>
+                        <h3 class="stat-number neon-text neon-red">{{ flagged_content }}</h3>
+                        <p class="stat-label">Content Flagged</p>
+                        <small class="stat-subtitle">{{ flag_accuracy }}% accuracy rate</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stat-card card">
+                    <div class="card-body text-center">
+                        <div class="stat-icon neon-cyan mb-3">
+                            <i class="fas fa-eye fa-2x"></i>
+                        </div>
+                        <h3 class="stat-number neon-text neon-cyan">{{ total_scanned }}</h3>
+                        <p class="stat-label">Total Scanned</p>
+                        <small class="stat-subtitle">Last 30 days</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Queue -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="content-queue card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Content Review Queue</h5>
+                        <div class="queue-filters">
+                            <select class="form-select form-select-sm" id="queueFilter">
+                                <option value="all">All Content</option>
+                                <option value="pending">Pending Review</option>
+                                <option value="flagged">Flagged</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="content-list">
+                            {% for item in review_queue %}
+                            <div class="content-item" data-status="{{ item.status }}">
+                                <div class="content-preview">
+                                    {% if item.type == 'image' %}
+                                        <img src="{{ item.thumbnail_url }}" alt="Content preview" class="preview-thumbnail">
+                                    {% elif item.type == 'video' %}
+                                        <div class="video-preview">
+                                            <i class="fas fa-play-circle fa-2x"></i>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-preview">
+                                            <i class="fas fa-file-text fa-2x"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="content-details">
+                                    <h6 class="content-title">{{ item.title }}</h6>
+                                    <p class="content-creator">by {{ item.creator.username }}</p>
+                                    <div class="content-meta">
+                                        <span class="badge bg-{{ 'success' if item.status == 'approved' else 'warning' if item.status == 'pending' else 'danger' }}">
+                                            {{ item.status.title() }}
+                                        </span>
+                                        <small class="text-muted">{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                    </div>
+                                </div>
+                                <div class="ai-analysis">
+                                    <div class="analysis-score">
+                                        <div class="score-circle {{ 'safe' if item.ai_score > 80 else 'moderate' if item.ai_score > 60 else 'risky' }}">
+                                            {{ item.ai_score }}%
+                                        </div>
+                                        <small>Safety Score</small>
+                                    </div>
+                                    <div class="analysis-details">
+                                        {% for flag in item.ai_flags %}
+                                        <span class="flag-badge">{{ flag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="content-actions">
+                                    <button class="btn btn-sm btn-success" onclick="approveContent('{{ item.id }}')">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning" onclick="reviewContent('{{ item.id }}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="rejectContent('{{ item.id }}')">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="moderation-settings card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Moderation Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="moderationSettingsForm">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            
+                            <div class="setting-group mb-4">
+                                <h6 class="setting-title">AI Sensitivity Level</h6>
+                                <div class="sensitivity-slider">
+                                    <input type="range" class="form-range" id="sensitivityLevel" 
+                                           min="1" max="10" value="{{ current_sensitivity }}" step="1">
+                                    <div class="sensitivity-labels">
+                                        <span>Permissive</span>
+                                        <span>Strict</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Current level: {{ current_sensitivity }}/10</small>
+                            </div>
+
+                            <div class="setting-group mb-4">
+                                <h6 class="setting-title">Auto-Approval Threshold</h6>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="autoApproval" 
+                                           {{ 'checked' if auto_approval_enabled else '' }}>
+                                    <label class="form-check-label" for="autoApproval">
+                                        Auto-approve content with {{ auto_approval_threshold }}%+ safety score
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group mb-4">
+                                <h6 class="setting-title">Content Categories</h6>
+                                {% for category in content_categories %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category_{{ category.id }}" 
+                                           value="{{ category.id }}" {{ 'checked' if category.enabled else '' }}>
+                                    <label class="form-check-label" for="category_{{ category.id }}">
+                                        {{ category.name }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-save me-2"></i>Save Settings
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Training Panel -->
+        <div class="row">
+            <div class="col-12">
+                <div class="ai-training card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-brain me-2"></i>AI Training & Improvement</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="training-stats">
+                                    <h6>Model Performance</h6>
+                                    <div class="performance-metrics">
+                                        <div class="metric">
+                                            <span class="metric-label">Accuracy:</span>
+                                            <span class="metric-value neon-green">{{ model_accuracy }}%</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">False Positives:</span>
+                                            <span class="metric-value neon-yellow">{{ false_positives }}%</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">False Negatives:</span>
+                                            <span class="metric-value neon-red">{{ false_negatives }}%</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Last Trained:</span>
+                                            <span class="metric-value">{{ last_training_date }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="training-actions">
+                                    <h6>Model Actions</h6>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-outline-primary mb-2" onclick="retrainModel()">
+                                            <i class="fas fa-sync me-2"></i>Retrain Model
+                                        </button>
+                                        <button class="btn btn-outline-secondary mb-2" onclick="exportFeedback()">
+                                            <i class="fas fa-download me-2"></i>Export Feedback
+                                        </button>
+                                        <button class="btn btn-outline-info mb-2" onclick="viewModelLogs()">
+                                            <i class="fas fa-list me-2"></i>View Training Logs
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.ai-moderation-dashboard {
+    padding: 20px 0;
+}
+
+.ai-status {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.ai-status.active {
+    color: var(--neon-green);
+}
+
+.ai-status.inactive {
+    color: var(--neon-red);
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 2s infinite;
+}
+
+.ai-status.active .status-indicator {
+    background: var(--neon-green);
+}
+
+.ai-status.inactive .status-indicator {
+    background: var(--neon-red);
+}
+
+.stat-card {
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.stat-icon {
+    display: inline-block;
+    padding: 15px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid currentColor;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 10px 0 5px;
+    text-shadow: 0 0 10px currentColor;
+}
+
+.stat-subtitle {
+    color: var(--text-muted);
+}
+
+.content-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.content-item:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.content-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 15px;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-preview, .text-preview {
+    color: var(--text-secondary);
+}
+
+.content-details {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.content-title {
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.content-creator {
+    margin-bottom: 5px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.ai-analysis {
+    margin-right: 15px;
+    text-align: center;
+}
+
+.score-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+    border: 2px solid;
+}
+
+.score-circle.safe {
+    background: rgba(0, 255, 0, 0.2);
+    border-color: var(--neon-green);
+    color: var(--neon-green);
+}
+
+.score-circle.moderate {
+    background: rgba(255, 255, 0, 0.2);
+    border-color: var(--neon-yellow);
+    color: var(--neon-yellow);
+}
+
+.score-circle.risky {
+    background: rgba(255, 0, 0, 0.2);
+    border-color: #ff4444;
+    color: #ff4444;
+}
+
+.flag-badge {
+    display: inline-block;
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff4444;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    margin: 2px;
+}
+
+.content-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.setting-group {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.setting-group:last-child {
+    border-bottom: none;
+}
+
+.setting-title {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.sensitivity-slider {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.sensitivity-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.performance-metrics .metric {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.metric-label {
+    color: var(--text-secondary);
+}
+
+.metric-value {
+    font-weight: 600;
+}
+
+.action-buttons .btn {
+    display: block;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .content-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .content-preview {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .content-details {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .ai-analysis {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .content-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block page_scripts %}
+// AI Moderation Dashboard JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    initializeModerationDashboard();
+});
+
+function initializeModerationDashboard() {
+    // Filter handler
+    document.getElementById('queueFilter').addEventListener('change', filterContentQueue);
+    
+    // Settings form
+    document.getElementById('moderationSettingsForm').addEventListener('submit', saveModerationSettings);
+    
+    // Sensitivity slider
+    document.getElementById('sensitivityLevel').addEventListener('input', updateSensitivityDisplay);
+    
+    // Auto-refresh queue every 30 seconds
+    setInterval(refreshContentQueue, 30000);
+}
+
+function filterContentQueue() {
+    const filterValue = document.getElementById('queueFilter').value;
+    const contentItems = document.querySelectorAll('.content-item');
+    
+    contentItems.forEach(item => {
+        const status = item.dataset.status;
+        if (filterValue === 'all' || status === filterValue) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function approveContent(contentId) {
+    performModerationAction(contentId, 'approve');
+}
+
+function rejectContent(contentId) {
+    performModerationAction(contentId, 'reject');
+}
+
+function reviewContent(contentId) {
+    // Open content review modal
+    window.open(`/admin/content-review/${contentId}`, '_blank', 'width=800,height=600');
+}
+
+function performModerationAction(contentId, action) {
+    fetch(`/api/moderation/${contentId}/${action}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove item from queue or update status
+            const contentItem = document.querySelector(`[data-content-id="${contentId}"]`);
+            if (contentItem) {
+                contentItem.remove();
+            }
+            showAlert(`Content ${action}d successfully`, 'success');
+        } else {
+            showAlert(data.error || `Failed to ${action} content`, 'error');
+        }
+    })
+    .catch(error => {
+        showAlert(`Error ${action}ing content`, 'error');
+    });
+}
+
+function saveModerationSettings(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const settings = {
+        sensitivity_level: document.getElementById('sensitivityLevel').value,
+        auto_approval: document.getElementById('autoApproval').checked,
+        enabled_categories: Array.from(document.querySelectorAll('input[id^="category_"]:checked')).map(cb => cb.value)
+    };
+    
+    fetch('/api/moderation/settings', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': formData.get('csrf_token')
+        },
+        body: JSON.stringify(settings)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('Moderation settings saved', 'success');
+        } else {
+            showAlert('Failed to save settings', 'error');
+        }
+    })
+    .catch(error => {
+        showAlert('Error saving settings', 'error');
+    });
+}
+
+function updateSensitivityDisplay() {
+    const level = document.getElementById('sensitivityLevel').value;
+    const display = document.querySelector('.sensitivity-slider + small');
+    display.textContent = `Current level: ${level}/10`;
+}
+
+function refreshContentQueue() {
+    fetch('/api/moderation/queue')
+        .then(response => response.json())
+        .then(data => {
+            // Update queue display
+            updateQueueDisplay(data.queue);
+        })
+        .catch(error => {
+            console.log('Queue refresh failed:', error);
+        });
+}
+
+function retrainModel() {
+    if (confirm('This will retrain the AI model with recent feedback. This may take several minutes. Continue?')) {
+        fetch('/api/moderation/retrain', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('Model retraining started', 'info');
+            } else {
+                showAlert('Failed to start retraining', 'error');
+            }
+        })
+        .catch(error => {
+            showAlert('Error starting retraining', 'error');
+        });
+    }
+}
+
+function exportFeedback() {
+    window.open('/api/moderation/export-feedback', '_blank');
+}
+
+function viewModelLogs() {
+    window.open('/admin/moderation-logs', '_blank');
+}
+
+function updateQueueDisplay(queueData) {
+    // Implementation to update the queue display with fresh data
+    console.log('Updating queue with:', queueData);
+}
+{% endblock %}

@@ -1,0 +1,1523 @@
+// TabooFanz Database Schema
+// The dark, alt, underground adult creator platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+enum UserRole {
+  FAN
+  CREATOR
+  MODERATOR
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  BANNED
+  DELETED
+}
+
+enum VerificationStatus {
+  NOT_STARTED
+  PENDING
+  VERIFIED
+  REJECTED
+  EXPIRED
+}
+
+enum ContentType {
+  IMAGE
+  VIDEO
+  AUDIO
+  TEXT
+  GALLERY
+}
+
+enum ContentVisibility {
+  PUBLIC
+  SUBSCRIBERS_ONLY
+  PPV
+  CUSTOM_LIST
+  PRIVATE
+}
+
+enum ContentStatus {
+  DRAFT
+  PROCESSING
+  PUBLISHED
+  ARCHIVED
+  REMOVED
+  FLAGGED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+  EXPIRED
+  PAST_DUE
+}
+
+enum TransactionType {
+  SUBSCRIPTION
+  TIP
+  PPV_UNLOCK
+  MESSAGE_UNLOCK
+  PAYOUT
+  REFUND
+  CHARGEBACK
+  ADJUSTMENT
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  DISPUTED
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  ON_HOLD
+}
+
+enum LiveSessionStatus {
+  SCHEDULED
+  LIVE
+  ENDED
+  CANCELLED
+}
+
+enum ReportType {
+  CONTENT
+  PROFILE
+  MESSAGE
+  COMMENT
+  LIVE_STREAM
+}
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  RESOLVED
+  DISMISSED
+  ESCALATED
+}
+
+enum ReportCategory {
+  SPAM
+  HARASSMENT
+  UNDERAGE
+  NON_CONSENSUAL
+  IMPERSONATION
+  COPYRIGHT
+  ILLEGAL
+  OTHER
+}
+
+enum DMCAStatus {
+  RECEIVED
+  UNDER_REVIEW
+  VALID_TAKEDOWN
+  INVALID
+  COUNTER_FILED
+  RESTORED
+}
+
+enum MessageType {
+  TEXT
+  MEDIA
+  PAID_UNLOCK
+  TIP
+  SYSTEM
+}
+
+enum NotificationType {
+  NEW_SUBSCRIBER
+  NEW_TIP
+  NEW_MESSAGE
+  NEW_COMMENT
+  CONTENT_LIKED
+  LIVE_STARTED
+  SUBSCRIPTION_EXPIRED
+  PAYOUT_COMPLETED
+  SECURITY_ALERT
+  SYSTEM
+}
+
+enum Archetype {
+  THE_SIREN
+  THE_PHANTOM
+  THE_REBEL
+  THE_DOLL
+  THE_BEAST
+  THE_ENIGMA
+  THE_ORACLE
+  THE_SWITCH
+  THE_SOVEREIGN
+  CUSTOM
+}
+
+enum PowerEnergy {
+  DOMINANT
+  SUBMISSIVE
+  SWITCH
+  BRAT
+  PRIMAL
+  CARETAKER
+}
+
+// =============================================================================
+// CORE USER MODELS
+// =============================================================================
+
+model User {
+  id                    String                @id @default(cuid())
+  email                 String                @unique
+  emailVerified         DateTime?
+  passwordHash          String?
+  role                  UserRole              @default(FAN)
+  status                UserStatus            @default(PENDING_VERIFICATION)
+
+  // Basic Profile
+  username              String                @unique
+  displayName           String?
+  avatarUrl             String?
+  bannerUrl             String?
+  bio                   String?               @db.Text
+
+  // Settings
+  locale                String                @default("en")
+  timezone              String                @default("UTC")
+  theme                 String                @default("dark")
+
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  lastLoginAt           DateTime?
+  deletedAt             DateTime?
+
+  // Relations
+  creatorProfile        CreatorProfile?
+  fanProfile            FanProfile?
+  sessions              Session[]
+  oauthAccounts         OAuthAccount[]
+  mfaSettings           MfaSettings?
+  notificationSettings  NotificationSettings?
+  privacySettings       PrivacySettings?
+  wallet                Wallet?
+
+  // Content & Interactions
+  contentItems          ContentItem[]
+  comments              Comment[]
+  likes                 Like[]
+
+  // Messaging
+  sentMessages          Message[]             @relation("SentMessages")
+  receivedMessages      Message[]             @relation("ReceivedMessages")
+  conversations         ConversationParticipant[]
+
+  // Subscriptions
+  subscribedTo          Subscription[]        @relation("FanSubscriptions")
+  subscribers           Subscription[]        @relation("CreatorSubscriptions")
+
+  // Moderation
+  reports               Report[]              @relation("ReportedBy")
+  reportsReceived       Report[]              @relation("ReportedUser")
+  blocks                Block[]               @relation("Blocker")
+  blockedBy             Block[]               @relation("Blocked")
+
+  // Notifications
+  notifications         Notification[]
+
+  // Compliance
+  complianceRecord      ComplianceRecord?
+  auditLogs             AuditLog[]
+
+  // Live
+  liveSessions          LiveSession[]
+  liveAttendance        LiveAttendee[]
+
+  @@index([email])
+  @@index([username])
+  @@index([status])
+  @@index([role])
+}
+
+model Session {
+  id            String   @id @default(cuid())
+  userId        String
+  token         String   @unique
+  refreshToken  String?  @unique
+  userAgent     String?
+  ipAddress     String?
+  deviceInfo    Json?
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+  revokedAt     DateTime?
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model OAuthAccount {
+  id                String   @id @default(cuid())
+  userId            String
+  provider          String   // google, discord, twitter, github
+  providerAccountId String
+  accessToken       String?  @db.Text
+  refreshToken      String?  @db.Text
+  expiresAt         DateTime?
+  tokenType         String?
+  scope             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model MfaSettings {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  enabled         Boolean  @default(false)
+  totpSecret      String?
+  backupCodes     String[] @default([])
+  lastVerifiedAt  DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// =============================================================================
+// PROFILE MODELS
+// =============================================================================
+
+model CreatorProfile {
+  id                    String              @id @default(cuid())
+  userId                String              @unique
+
+  // TabooFanz Archetype System
+  archetype             Archetype           @default(THE_ENIGMA)
+  customArchetypeName   String?
+  archetypeDescription  String?             @db.Text
+  powerEnergy           PowerEnergy?
+
+  // Identity & Branding
+  tagline               String?
+  extendedBio           String?             @db.Text
+  brandColors           Json?               // { primary, secondary, accent }
+
+  // Subscription Tiers
+  subscriptionPrice     Decimal             @default(0) @db.Decimal(10, 2)
+  currency              String              @default("USD")
+
+  // Stats (denormalized for performance)
+  subscriberCount       Int                 @default(0)
+  totalEarnings         Decimal             @default(0) @db.Decimal(12, 2)
+  contentCount          Int                 @default(0)
+
+  // Identity Protection (TabooFanz-specific)
+  identityProtection    IdentityProtection?
+
+  // Boundaries & Consent
+  boundaryProfile       BoundaryProfile?
+
+  // Settings
+  messagePrice          Decimal?            @db.Decimal(10, 2)
+  welcomeMessage        String?             @db.Text
+  autoReplyEnabled      Boolean             @default(false)
+  autoReplyMessage      String?             @db.Text
+
+  // Verification
+  isVerified            Boolean             @default(false)
+  verifiedAt            DateTime?
+  featuredUntil         DateTime?
+
+  // Timestamps
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  // Relations
+  user                  User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags                  CreatorTag[]
+  subscriptionTiers     SubscriptionTier[]
+  promotions            Promotion[]
+  collaborations        Collaboration[]
+  payoutMethods         PayoutMethod[]
+  analytics             CreatorAnalytics[]
+
+  @@index([archetype])
+  @@index([subscriberCount])
+}
+
+model FanProfile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+
+  // Preferences
+  preferredTags     String[] @default([])
+  preferredArchetypes Archetype[] @default([])
+  contentFilters    Json?    // Muted categories/tags
+
+  // Activity Stats
+  totalSpent        Decimal  @default(0) @db.Decimal(12, 2)
+  subscriptionCount Int      @default(0)
+
+  // Settings
+  safeMode          Boolean  @default(false) // Lighter content filter
+  showOnlineStatus  Boolean  @default(true)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// TabooFanz Identity Protection System
+model IdentityProtection {
+  id                    String   @id @default(cuid())
+  creatorProfileId      String   @unique
+
+  // Masked Creator Mode
+  maskedModeEnabled     Boolean  @default(false)
+  autoBlurBackground    Boolean  @default(false)
+  faceDetectionWarnings Boolean  @default(true)
+  locationWarnings      Boolean  @default(true)
+  tattooWarnings        Boolean  @default(false)
+
+  // Region/IP Blocking
+  blockedCountries      String[] @default([])
+  blockedRegions        String[] @default([])
+  vpnAccessAllowed      Boolean  @default(true)
+
+  // Alias Protection
+  realNameHidden        Boolean  @default(true)
+  metadataStripping     Boolean  @default(true)
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  creatorProfile        CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+}
+
+// TabooFanz Boundary & Consent System
+model BoundaryProfile {
+  id                    String   @id @default(cuid())
+  creatorProfileId      String   @unique
+
+  // Public Boundary Statement
+  publicStatement       String?  @db.Text
+
+  // Categories they're comfortable with (references tag slugs)
+  comfortableTags       String[] @default([])
+
+  // Categories they explicitly don't do
+  hardBoundaries        String[] @default([])
+
+  // Internal notes (for collaborators/admin)
+  internalNotes         String?  @db.Text
+
+  // Messaging boundaries
+  dmsOpenTo             String   @default("subscribers") // all, subscribers, none
+  customRequestsAllowed Boolean  @default(false)
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  creatorProfile        CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+}
+
+// =============================================================================
+// NOTIFICATION & PRIVACY SETTINGS
+// =============================================================================
+
+model NotificationSettings {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+
+  // Email notifications
+  emailNewSubscriber    Boolean  @default(true)
+  emailNewTip           Boolean  @default(true)
+  emailNewMessage       Boolean  @default(true)
+  emailPayouts          Boolean  @default(true)
+  emailMarketing        Boolean  @default(false)
+  emailSecurityAlerts   Boolean  @default(true)
+
+  // Push notifications
+  pushEnabled           Boolean  @default(true)
+  pushNewSubscriber     Boolean  @default(true)
+  pushNewTip            Boolean  @default(true)
+  pushNewMessage        Boolean  @default(true)
+  pushLiveAlerts        Boolean  @default(true)
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PrivacySettings {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+
+  showOnlineStatus      Boolean  @default(true)
+  showLastSeen          Boolean  @default(false)
+  showSubscriptionList  Boolean  @default(false)
+  showLikedContent      Boolean  @default(false)
+  allowSearchEngines    Boolean  @default(false)
+
+  // Two-factor for sensitive actions
+  requireMfaForPayouts  Boolean  @default(true)
+  requireMfaForLogin    Boolean  @default(false)
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// =============================================================================
+// TAG SYSTEM
+// =============================================================================
+
+model TagGroup {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tags        Tag[]
+
+  @@index([slug])
+}
+
+model Tag {
+  id          String   @id @default(cuid())
+  groupId     String
+  name        String
+  slug        String   @unique
+  description String?
+  icon        String?  // Emoji or icon identifier
+  color       String?  // Hex color for UI
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  usageCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  group       TagGroup       @relation(fields: [groupId], references: [id])
+  creators    CreatorTag[]
+  content     ContentTag[]
+
+  @@index([slug])
+  @@index([groupId])
+  @@index([usageCount])
+}
+
+model CreatorTag {
+  id              String         @id @default(cuid())
+  creatorProfileId String
+  tagId           String
+  isPrimary       Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+
+  creatorProfile  CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  tag             Tag            @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([creatorProfileId, tagId])
+  @@index([creatorProfileId])
+  @@index([tagId])
+}
+
+model ContentTag {
+  id          String      @id @default(cuid())
+  contentId   String
+  tagId       String
+  createdAt   DateTime    @default(now())
+
+  content     ContentItem @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  tag         Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([contentId, tagId])
+  @@index([contentId])
+  @@index([tagId])
+}
+
+// =============================================================================
+// CONTENT MODELS
+// =============================================================================
+
+model ContentItem {
+  id                String            @id @default(cuid())
+  creatorId         String
+  type              ContentType
+  visibility        ContentVisibility @default(SUBSCRIBERS_ONLY)
+  status            ContentStatus     @default(DRAFT)
+
+  // Content
+  caption           String?           @db.Text
+
+  // Pricing (for PPV)
+  price             Decimal?          @db.Decimal(10, 2)
+
+  // Scheduling
+  scheduledAt       DateTime?
+  publishedAt       DateTime?
+  expiresAt         DateTime?
+
+  // Stats (denormalized)
+  viewCount         Int               @default(0)
+  likeCount         Int               @default(0)
+  commentCount      Int               @default(0)
+  unlockCount       Int               @default(0)
+
+  // Moderation
+  isReported        Boolean           @default(false)
+  isPinned          Boolean           @default(false)
+
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  // Relations
+  creator           User              @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  mediaItems        MediaItem[]
+  tags              ContentTag[]
+  comments          Comment[]
+  likes             Like[]
+  unlocks           ContentUnlock[]
+  collaborators     ContentCollaborator[]
+
+  @@index([creatorId])
+  @@index([status, publishedAt])
+  @@index([visibility])
+  @@index([type])
+}
+
+model MediaItem {
+  id              String      @id @default(cuid())
+  contentId       String
+
+  // Storage
+  storageKey      String      // S3/R2 key
+  cdnUrl          String?
+  thumbnailUrl    String?
+
+  // Metadata
+  mimeType        String
+  fileSize        Int         // bytes
+  width           Int?
+  height          Int?
+  duration        Int?        // seconds for video/audio
+
+  // Processing
+  isProcessed     Boolean     @default(false)
+  processingError String?
+
+  // Watermarking
+  isWatermarked   Boolean     @default(false)
+  watermarkText   String?
+
+  // Ordering
+  sortOrder       Int         @default(0)
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  content         ContentItem @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@index([contentId])
+}
+
+model ContentUnlock {
+  id          String      @id @default(cuid())
+  contentId   String
+  userId      String
+  price       Decimal     @db.Decimal(10, 2)
+  createdAt   DateTime    @default(now())
+
+  content     ContentItem @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@unique([contentId, userId])
+  @@index([userId])
+}
+
+model ContentCollaborator {
+  id            String      @id @default(cuid())
+  contentId     String
+  creatorId     String      // User ID of collaborator
+  revenueSplit  Decimal     @db.Decimal(5, 2) // Percentage
+  hasApproved   Boolean     @default(false)
+  approvedAt    DateTime?
+
+  // Consent record reference
+  consentRecordId String?
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  content       ContentItem @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@unique([contentId, creatorId])
+  @@index([creatorId])
+}
+
+// =============================================================================
+// STORIES (EPHEMERAL CONTENT)
+// =============================================================================
+
+model Story {
+  id            String        @id @default(cuid())
+  creatorId     String
+
+  // Media
+  mediaUrl      String
+  thumbnailUrl  String?
+  mediaType     String        // image or video
+  duration      Int?          // seconds
+
+  // Metadata
+  caption       String?
+
+  // Highlight
+  isHighlight   Boolean       @default(false)
+  highlightName String?
+
+  // Expiry
+  expiresAt     DateTime
+
+  // Stats
+  viewCount     Int           @default(0)
+
+  createdAt     DateTime      @default(now())
+
+  views         StoryView[]
+
+  @@index([creatorId])
+  @@index([expiresAt])
+}
+
+model StoryView {
+  id        String   @id @default(cuid())
+  storyId   String
+  userId    String
+  viewedAt  DateTime @default(now())
+
+  story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@unique([storyId, userId])
+  @@index([storyId])
+}
+
+// =============================================================================
+// INTERACTIONS
+// =============================================================================
+
+model Comment {
+  id          String      @id @default(cuid())
+  contentId   String
+  userId      String
+  parentId    String?     // For nested comments
+
+  text        String      @db.Text
+
+  isHidden    Boolean     @default(false)
+  isPinned    Boolean     @default(false)
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  content     ContentItem @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent      Comment?    @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[]   @relation("CommentReplies")
+
+  @@index([contentId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model Like {
+  id          String      @id @default(cuid())
+  contentId   String
+  userId      String
+  createdAt   DateTime    @default(now())
+
+  content     ContentItem @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([contentId, userId])
+  @@index([contentId])
+  @@index([userId])
+}
+
+// =============================================================================
+// MESSAGING
+// =============================================================================
+
+model Conversation {
+  id            String                    @id @default(cuid())
+
+  // For DMs between fan and creator
+  isGroup       Boolean                   @default(false)
+
+  // Last activity for sorting
+  lastMessageAt DateTime?
+
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  participants  ConversationParticipant[]
+  messages      Message[]
+
+  @@index([lastMessageAt])
+}
+
+model ConversationParticipant {
+  id              String       @id @default(cuid())
+  conversationId  String
+  userId          String
+
+  // Read tracking
+  lastReadAt      DateTime?
+  unreadCount     Int          @default(0)
+
+  // Settings
+  isMuted         Boolean      @default(false)
+  isArchived      Boolean      @default(false)
+
+  createdAt       DateTime     @default(now())
+
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id              String       @id @default(cuid())
+  conversationId  String
+  senderId        String
+  recipientId     String?      // For direct reference
+
+  type            MessageType  @default(TEXT)
+
+  // Content
+  text            String?      @db.Text
+  mediaUrl        String?
+  mediaType       String?
+  thumbnailUrl    String?
+
+  // Paid content
+  isPaid          Boolean      @default(false)
+  price           Decimal?     @db.Decimal(10, 2)
+  isUnlocked      Boolean      @default(false)
+  unlockedAt      DateTime?
+
+  // Tip messages
+  tipAmount       Decimal?     @db.Decimal(10, 2)
+
+  // Status
+  isRead          Boolean      @default(false)
+  readAt          DateTime?
+  isDeleted       Boolean      @default(false)
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender          User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient       User?        @relation("ReceivedMessages", fields: [recipientId], references: [id])
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([recipientId])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// SUBSCRIPTIONS & PAYMENTS
+// =============================================================================
+
+model SubscriptionTier {
+  id                String         @id @default(cuid())
+  creatorProfileId  String
+
+  name              String
+  description       String?
+  price             Decimal        @db.Decimal(10, 2)
+  currency          String         @default("USD")
+
+  // Billing
+  intervalDays      Int            @default(30)
+  trialDays         Int            @default(0)
+
+  // Benefits
+  benefits          String[]       @default([])
+
+  // Limits
+  maxSubscribers    Int?
+  currentSubscribers Int           @default(0)
+
+  isActive          Boolean        @default(true)
+  sortOrder         Int            @default(0)
+
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  creatorProfile    CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  subscriptions     Subscription[]
+
+  @@index([creatorProfileId])
+}
+
+model Subscription {
+  id              String             @id @default(cuid())
+  fanId           String
+  creatorId       String
+  tierId          String?
+
+  status          SubscriptionStatus @default(ACTIVE)
+
+  // Pricing at time of subscription
+  price           Decimal            @db.Decimal(10, 2)
+  currency        String             @default("USD")
+
+  // Billing
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelledAt        DateTime?
+
+  // Payment provider reference
+  stripeSubscriptionId String?       @unique
+
+  // Promo
+  promotionId     String?
+  discountApplied Decimal?           @db.Decimal(10, 2)
+
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  fan             User               @relation("FanSubscriptions", fields: [fanId], references: [id], onDelete: Cascade)
+  creator         User               @relation("CreatorSubscriptions", fields: [creatorId], references: [id], onDelete: Cascade)
+  tier            SubscriptionTier?  @relation(fields: [tierId], references: [id])
+  promotion       Promotion?         @relation(fields: [promotionId], references: [id])
+  transactions    Transaction[]
+
+  @@unique([fanId, creatorId])
+  @@index([fanId])
+  @@index([creatorId])
+  @@index([status])
+}
+
+model Promotion {
+  id                String         @id @default(cuid())
+  creatorProfileId  String
+
+  code              String
+  description       String?
+
+  // Discount
+  discountType      String         @default("percentage") // percentage or fixed
+  discountValue     Decimal        @db.Decimal(10, 2)
+
+  // Limits
+  maxUses           Int?
+  usedCount         Int            @default(0)
+  maxUsesPerUser    Int            @default(1)
+
+  // Validity
+  startsAt          DateTime       @default(now())
+  expiresAt         DateTime?
+
+  isActive          Boolean        @default(true)
+
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  creatorProfile    CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  subscriptions     Subscription[]
+
+  @@unique([creatorProfileId, code])
+  @@index([code])
+}
+
+// =============================================================================
+// WALLET & TRANSACTIONS
+// =============================================================================
+
+model Wallet {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+
+  // Balances
+  availableBalance Decimal      @default(0) @db.Decimal(12, 2)
+  pendingBalance   Decimal      @default(0) @db.Decimal(12, 2)
+  currency         String       @default("USD")
+
+  // Lifetime stats
+  totalEarnings    Decimal      @default(0) @db.Decimal(12, 2)
+  totalPayouts     Decimal      @default(0) @db.Decimal(12, 2)
+  totalSpent       Decimal      @default(0) @db.Decimal(12, 2)
+
+  // Stripe Connect
+  stripeAccountId  String?      @unique
+  stripeOnboarded  Boolean      @default(false)
+
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions     Transaction[]
+  payouts          Payout[]
+}
+
+model Transaction {
+  id              String            @id @default(cuid())
+  walletId        String
+
+  type            TransactionType
+  status          TransactionStatus @default(PENDING)
+
+  amount          Decimal           @db.Decimal(12, 2)
+  currency        String            @default("USD")
+
+  // Fees
+  platformFee     Decimal           @default(0) @db.Decimal(12, 2)
+  processingFee   Decimal           @default(0) @db.Decimal(12, 2)
+  netAmount       Decimal           @db.Decimal(12, 2)
+
+  // References
+  subscriptionId  String?
+  contentId       String?
+  messageId       String?
+  payoutId        String?
+
+  // Payment provider
+  stripePaymentId String?
+
+  // Metadata
+  description     String?
+  metadata        Json?
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  completedAt     DateTime?
+
+  wallet          Wallet            @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  subscription    Subscription?     @relation(fields: [subscriptionId], references: [id])
+  payout          Payout?           @relation(fields: [payoutId], references: [id])
+
+  @@index([walletId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Payout {
+  id              String        @id @default(cuid())
+  walletId        String
+
+  amount          Decimal       @db.Decimal(12, 2)
+  currency        String        @default("USD")
+  status          PayoutStatus  @default(PENDING)
+
+  // Method
+  payoutMethodId  String?
+
+  // Provider reference
+  stripePayoutId  String?
+
+  // Timing
+  requestedAt     DateTime      @default(now())
+  processedAt     DateTime?
+  completedAt     DateTime?
+
+  // Failure handling
+  failureReason   String?
+  retryCount      Int           @default(0)
+
+  wallet          Wallet        @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  payoutMethod    PayoutMethod? @relation(fields: [payoutMethodId], references: [id])
+  transactions    Transaction[]
+
+  @@index([walletId])
+  @@index([status])
+}
+
+model PayoutMethod {
+  id                String         @id @default(cuid())
+  creatorProfileId  String
+
+  type              String         // bank_account, paypal, etc.
+
+  // Masked details for display
+  displayName       String         // "Bank ****1234"
+
+  // Provider reference
+  stripeMethodId    String?
+
+  isDefault         Boolean        @default(false)
+  isVerified        Boolean        @default(false)
+
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  creatorProfile    CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  payouts           Payout[]
+
+  @@index([creatorProfileId])
+}
+
+// =============================================================================
+// LIVE STREAMING
+// =============================================================================
+
+model LiveSession {
+  id              String            @id @default(cuid())
+  creatorId       String
+
+  title           String
+  description     String?           @db.Text
+  thumbnailUrl    String?
+
+  status          LiveSessionStatus @default(SCHEDULED)
+
+  // Scheduling
+  scheduledAt     DateTime?
+  startedAt       DateTime?
+  endedAt         DateTime?
+
+  // Streaming
+  streamKey       String?           @unique
+  playbackUrl     String?
+
+  // Provider reference (Mux/Cloudflare)
+  providerStreamId String?
+  providerAssetId  String?          // For VOD after stream ends
+
+  // Monetization
+  isSubscribersOnly Boolean         @default(true)
+  tipGoal          Decimal?         @db.Decimal(10, 2)
+  tipTotal         Decimal          @default(0) @db.Decimal(10, 2)
+
+  // Stats
+  peakViewerCount  Int              @default(0)
+  totalViewCount   Int              @default(0)
+
+  // VOD
+  saveAsVod        Boolean          @default(true)
+  vodContentId     String?          // Reference to ContentItem if saved
+
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  creator          User             @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  attendees        LiveAttendee[]
+  chatMessages     LiveChatMessage[]
+  tips             LiveTip[]
+
+  @@index([creatorId])
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+model LiveAttendee {
+  id            String      @id @default(cuid())
+  sessionId     String
+  userId        String
+
+  joinedAt      DateTime    @default(now())
+  leftAt        DateTime?
+  watchDuration Int         @default(0) // seconds
+
+  session       LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, userId])
+  @@index([sessionId])
+}
+
+model LiveChatMessage {
+  id          String      @id @default(cuid())
+  sessionId   String
+  userId      String
+
+  text        String
+
+  // Special message types
+  isTip       Boolean     @default(false)
+  tipAmount   Decimal?    @db.Decimal(10, 2)
+
+  isDeleted   Boolean     @default(false)
+  isPinned    Boolean     @default(false)
+
+  createdAt   DateTime    @default(now())
+
+  session     LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
+model LiveTip {
+  id          String      @id @default(cuid())
+  sessionId   String
+  userId      String
+
+  amount      Decimal     @db.Decimal(10, 2)
+  currency    String      @default("USD")
+  message     String?
+
+  createdAt   DateTime    @default(now())
+
+  session     LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+// =============================================================================
+// COLLABORATION & CONSENT RECORDS
+// =============================================================================
+
+model Collaboration {
+  id                String         @id @default(cuid())
+  initiatorId       String
+
+  title             String
+  description       String?        @db.Text
+
+  // Status
+  status            String         @default("draft") // draft, pending, approved, completed, cancelled
+
+  // Revenue split configuration
+  revenueSplits     Json           // { creatorId: percentage }
+
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  initiator         CreatorProfile @relation(fields: [initiatorId], references: [id], onDelete: Cascade)
+  consentRecords    ConsentRecord[]
+
+  @@index([initiatorId])
+  @@index([status])
+}
+
+model ConsentRecord {
+  id              String        @id @default(cuid())
+  collaborationId String
+  creatorId       String        // User ID
+
+  // Consent status
+  hasConsented    Boolean       @default(false)
+  consentedAt     DateTime?
+
+  // What they consented to
+  consentedTerms  String?       @db.Text
+
+  // Digital signature (could be hash of terms + timestamp)
+  signatureHash   String?
+
+  // IP and device at time of consent
+  consentIp       String?
+  consentDevice   String?
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  collaboration   Collaboration @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+
+  @@unique([collaborationId, creatorId])
+  @@index([creatorId])
+}
+
+// =============================================================================
+// COMPLIANCE & VERIFICATION
+// =============================================================================
+
+model ComplianceRecord {
+  id                String             @id @default(cuid())
+  userId            String             @unique
+
+  // Age verification
+  ageVerificationStatus VerificationStatus @default(NOT_STARTED)
+  ageVerifiedAt     DateTime?
+  dateOfBirth       DateTime?
+
+  // ID verification (for creators)
+  idVerificationStatus VerificationStatus @default(NOT_STARTED)
+  idVerifiedAt      DateTime?
+
+  // Provider references
+  verificationProviderId String?       // Jumio/Veriff reference
+
+  // Legal identity (encrypted, separated from public profile)
+  legalFirstName    String?
+  legalLastName     String?
+  legalCountry      String?
+
+  // Document references (encrypted storage keys)
+  idDocumentRef     String?
+
+  // Flags
+  isPoliticallyExposed Boolean        @default(false)
+  requiresEnhancedDD    Boolean        @default(false)
+
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// =============================================================================
+// MODERATION & REPORTING
+// =============================================================================
+
+model Report {
+  id              String         @id @default(cuid())
+  reporterId      String
+  reportedUserId  String?
+
+  type            ReportType
+  category        ReportCategory
+  status          ReportStatus   @default(PENDING)
+
+  // What's being reported
+  contentId       String?
+  messageId       String?
+  commentId       String?
+  liveSessionId   String?
+
+  // Details
+  description     String         @db.Text
+  evidence        String[]       @default([]) // URLs to screenshots etc
+
+  // Resolution
+  resolvedBy      String?
+  resolvedAt      DateTime?
+  resolution      String?        @db.Text
+  actionTaken     String?        // warning, suspension, ban, none
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  reporter        User           @relation("ReportedBy", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedUser    User?          @relation("ReportedUser", fields: [reportedUserId], references: [id])
+
+  @@index([status])
+  @@index([type])
+  @@index([reportedUserId])
+  @@index([createdAt])
+}
+
+model DMCARequest {
+  id                String     @id @default(cuid())
+
+  // Claimant
+  claimantName      String
+  claimantEmail     String
+  claimantCompany   String?
+
+  // Content being claimed
+  contentUrls       String[]
+
+  // Original work
+  originalWorkDesc  String     @db.Text
+  originalWorkUrls  String[]
+
+  // Legal attestations
+  hasGoodFaith      Boolean    @default(false)
+  hasAuthority      Boolean    @default(false)
+  isPerjuryAware    Boolean    @default(false)
+
+  // Signature
+  signature         String
+  signedAt          DateTime
+
+  // Status
+  status            DMCAStatus @default(RECEIVED)
+
+  // Processing
+  reviewedBy        String?
+  reviewedAt        DateTime?
+  reviewNotes       String?    @db.Text
+
+  // Counter-notice
+  counterFiledAt    DateTime?
+  counterFilerInfo  Json?
+
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([status])
+  @@index([claimantEmail])
+  @@index([createdAt])
+}
+
+model Block {
+  id          String   @id @default(cuid())
+  blockerId   String
+  blockedId   String
+  reason      String?
+  createdAt   DateTime @default(now())
+
+  blocker     User     @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked     User     @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
+}
+
+// =============================================================================
+// NOTIFICATIONS
+// =============================================================================
+
+model Notification {
+  id          String           @id @default(cuid())
+  userId      String
+
+  type        NotificationType
+  title       String
+  body        String
+
+  // Action
+  actionUrl   String?
+
+  // References
+  fromUserId  String?
+  contentId   String?
+
+  // Status
+  isRead      Boolean          @default(false)
+  readAt      DateTime?
+
+  createdAt   DateTime         @default(now())
+
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// ANALYTICS
+// =============================================================================
+
+model CreatorAnalytics {
+  id                String         @id @default(cuid())
+  creatorProfileId  String
+  date              DateTime       @db.Date
+
+  // Engagement
+  profileViews      Int            @default(0)
+  contentViews      Int            @default(0)
+  likes             Int            @default(0)
+  comments          Int            @default(0)
+
+  // Growth
+  newSubscribers    Int            @default(0)
+  churnedSubscribers Int           @default(0)
+
+  // Revenue
+  subscriptionRevenue Decimal      @default(0) @db.Decimal(12, 2)
+  tipRevenue         Decimal       @default(0) @db.Decimal(12, 2)
+  ppvRevenue         Decimal       @default(0) @db.Decimal(12, 2)
+  messageRevenue     Decimal       @default(0) @db.Decimal(12, 2)
+
+  // Messages
+  messagesReceived   Int           @default(0)
+  messagesSent       Int           @default(0)
+
+  createdAt          DateTime      @default(now())
+
+  creatorProfile     CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([creatorProfileId, date])
+  @@index([date])
+}
+
+// =============================================================================
+// AUDIT & LOGGING
+// =============================================================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+
+  action      String   // e.g., "user.suspended", "payout.completed"
+  entityType  String   // e.g., "User", "Payout"
+  entityId    String?
+
+  // Changes
+  oldValues   Json?
+  newValues   Json?
+
+  // Context
+  ipAddress   String?
+  userAgent   String?
+
+  // Admin action
+  performedBy String?
+  reason      String?
+
+  createdAt   DateTime @default(now())
+
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// FEATURE FLAGS & EXPERIMENTS
+// =============================================================================
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  description String?
+
+  // Targeting
+  isEnabled   Boolean  @default(false)
+  percentage  Int      @default(100) // Rollout percentage
+
+  // User targeting
+  allowedUserIds String[] @default([])
+  allowedRoles   UserRole[] @default([])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+}

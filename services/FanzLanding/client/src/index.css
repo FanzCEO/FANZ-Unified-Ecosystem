@@ -1,0 +1,143 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(240, 5%, 96%);
+  --card: hsl(240, 4%, 8%);
+  --card-foreground: hsl(240, 5%, 90%);
+  --popover: hsl(240, 4%, 8%);
+  --popover-foreground: hsl(240, 5%, 90%);
+  --primary: hsl(280, 100%, 70%);
+  --primary-foreground: hsl(240, 5%, 96%);
+  --secondary: hsl(240, 4%, 16%);
+  --secondary-foreground: hsl(240, 5%, 84%);
+  --muted: hsl(240, 4%, 16%);
+  --muted-foreground: hsl(240, 5%, 64%);
+  --accent: hsl(180, 100%, 50%);
+  --accent-foreground: hsl(240, 10%, 4%);
+  --destructive: hsl(356, 90%, 54%);
+  --destructive-foreground: hsl(240, 5%, 96%);
+  --border: hsl(240, 6%, 20%);
+  --input: hsl(240, 4%, 16%);
+  --ring: hsl(280, 100%, 70%);
+  --chart-1: hsl(280, 100%, 70%);
+  --chart-2: hsl(320, 100%, 75%);
+  --chart-3: hsl(180, 100%, 50%);
+  --chart-4: hsl(42, 93%, 56%);
+  --chart-5: hsl(341, 75%, 51%);
+  --sidebar: hsl(240, 4%, 8%);
+  --sidebar-foreground: hsl(240, 5%, 90%);
+  --sidebar-primary: hsl(280, 100%, 70%);
+  --sidebar-primary-foreground: hsl(240, 5%, 96%);
+  --sidebar-accent: hsl(240, 4%, 16%);
+  --sidebar-accent-foreground: hsl(240, 5%, 84%);
+  --sidebar-border: hsl(240, 6%, 20%);
+  --sidebar-ring: hsl(280, 100%, 70%);
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: "Fira Code", monospace;
+  --radius: 8px;
+  --fun-yellow: hsl(48, 100%, 50%);
+  --fun-orange: hsl(24, 100%, 50%);
+  --fun-pink: hsl(320, 100%, 75%);
+  --fun-purple: hsl(280, 100%, 70%);
+  --fun-cyan: hsl(180, 100%, 50%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(240, 5%, 96%);
+  --card: hsl(240, 4%, 8%);
+  --card-foreground: hsl(240, 5%, 90%);
+  --popover: hsl(240, 4%, 8%);
+  --popover-foreground: hsl(240, 5%, 90%);
+  --primary: hsl(280, 100%, 70%);
+  --primary-foreground: hsl(240, 5%, 96%);
+  --secondary: hsl(240, 4%, 16%);
+  --secondary-foreground: hsl(240, 5%, 84%);
+  --muted: hsl(240, 4%, 16%);
+  --muted-foreground: hsl(240, 5%, 64%);
+  --accent: hsl(180, 100%, 50%);
+  --accent-foreground: hsl(240, 10%, 4%);
+  --destructive: hsl(356, 90%, 54%);
+  --destructive-foreground: hsl(240, 5%, 96%);
+  --border: hsl(240, 6%, 20%);
+  --input: hsl(240, 4%, 16%);
+  --ring: hsl(280, 100%, 70%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    background: linear-gradient(135deg, var(--fun-purple), var(--fun-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .video-thumbnail {
+    @apply transition-all duration-300 relative overflow-hidden;
+  }
+
+  .video-thumbnail:hover {
+    @apply scale-105;
+    box-shadow: 0 20px 40px rgba(168, 85, 247, 0.4);
+  }
+
+  .video-thumbnail::after {
+    content: "";
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(
+      45deg,
+      rgba(168, 85, 247, 0.2),
+      rgba(236, 72, 153, 0.2)
+    );
+  }
+
+  .video-thumbnail:hover::after {
+    @apply opacity-100;
+  }
+
+  .floating-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .glow-effect {
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+  }
+
+  .tab-active {
+    background: linear-gradient(135deg, var(--fun-purple), var(--fun-pink));
+    @apply text-white;
+  }
+
+  .network-tab {
+    @apply px-4 py-2 rounded-md text-sm font-medium transition-all;
+  }
+
+  .network-tab:not(.tab-active) {
+    @apply text-muted-foreground hover:text-foreground;
+  }
+}

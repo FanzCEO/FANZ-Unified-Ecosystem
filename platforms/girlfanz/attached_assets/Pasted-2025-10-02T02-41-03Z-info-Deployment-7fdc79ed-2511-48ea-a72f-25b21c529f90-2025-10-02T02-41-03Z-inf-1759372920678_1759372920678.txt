@@ -1,0 +1,94 @@
+2025-10-02T02:41:03Z info: Deployment: 7fdc79ed-2511-48ea-a72f-25b21c529f90
+2025-10-02T02:41:03Z info: Build: 6ff18449-6a03-4b64-876a-3b83db06fda4
+2025-10-02T02:41:03Z info: Connecting to builder
+2025-10-02T02:41:05Z info: Builder connected
+2025-10-02T02:41:06Z info: Installing packages
+--> npm install
+
+
+added 7 packages, and audited 1153 packages in 6s
+
+  run `npm fund` for details
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
+npm notice To update run: npm install -g npm@11.6.1
+npm notice
+
+2025-10-02T02:41:13Z info: Starting Build
+🔨 Building Vite application...
+
+vite v6.3.6 building for production...
+
+transforming...
+
+✓ 3506 modules transformed.
+
+rendering chunks...
+
+computing gzip size...
+
+../dist/public/index.html                                              1.95 kB │ gzip:   0.74 kB
+
+✅ Vite build completed successfully!
+
+🔧 Compiling server TypeScript files...
+
+server/replitAuth.ts(2,47): error TS2307: Cannot find module 'openid-client/passport' or its corresponding type declarations.
+server/replitAuth.ts(4,22): error TS2307: Cannot find module 'passport' or its corresponding type declarations.
+
+server/replitAuth.ts(5,21): error TS7016: Could not find a declaration file for module 'express-session'. '/home/runner/workspace/node_modules/express-session/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/express-session` if it exists or add a new declaration (.d.ts) file containing `declare module 'express-session';`
+server/replitAuth.ts(7,21): error TS7016: Could not find a declaration file for module 'memoizee'. '/home/runner/workspace/node_modules/memoizee/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/memoizee` if it exists or add a new declaration (.d.ts) file containing `declare module 'memoizee';`
+server/replitAuth.ts(8,23): error TS7016: Could not find a declaration file for module 'connect-pg-simple'. '/home/runner/workspace/node_modules/connect-pg-simple/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/connect-pg-simple` if it exists or add a new declaration (.d.ts) file containing `declare module 'connect-pg-simple';`
+server/replitAuth.ts(17,25): error TS2339: Property 'discovery' does not exist on type 'typeof import("/home/runner/workspace/node_modules/openid-client/types/index")'.
+server/replitAuth.ts(50,18): error TS2694: Namespace '"/home/runner/workspace/node_modules/openid-client/types/index"' has no exported member 'TokenEndpointResponse'.
+server/replitAuth.ts(50,49): error TS2694: Namespace '"/home/runner/workspace/node_modules/openid-client/types/index"' has no exported member 'TokenEndpointResponseHelpers'.
+server/replitAuth.ts(61,28): error TS2345: Argument of type '{ id: any; email: any; firstName: any; lastName: any; profileImageUrl: any; }' is not assignable to parameter of type '{ email: string; password: string; id?: string | undefined; firstName?: string | null | undefined; lastName?: string | null | undefined; profileImageUrl?: string | null | undefined; username?: string | ... 1 more ... | undefined; ... 9 more ...; updatedAt?: Date | ... 1 more ... | undefined; }'.
+  Property 'password' is missing in type '{ id: any; email: any; firstName: any; lastName: any; profileImageUrl: any; }' but required in type '{ email: string; password: string; id?: string | undefined; firstName?: string | null | undefined; lastName?: string | null | undefined; profileImageUrl?: string | null | undefined; username?: string | ... 1 more ... | undefined; ... 9 more ...; updatedAt?: Date | ... 1 more ... | undefined; }'.
+server/replitAuth.ts(79,20): error TS2694: Namespace '"/home/runner/workspace/node_modules/openid-client/types/index"' has no exported member 'TokenEndpointResponse'.
+server/replitAuth.ts(79,51): error TS2694: Namespace '"/home/runner/workspace/node_modules/openid-client/types/index"' has no exported member 'TokenEndpointResponseHelpers'.
+server/replitAuth.ts(102,41): error TS2694: Namespace 'global.Express' has no exported member 'User'.
+server/replitAuth.ts(102,47): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+server/replitAuth.ts(103,43): error TS2694: Namespace 'global.Express' has no exported member 'User'.
+server/replitAuth.ts(103,49): error TS7006: Parameter 'cb' implicitly has an 'any' type.
+server/replitAuth.ts(120,9): error TS2339: Property 'logout' does not exist on type 'Request<{}, any, any, ParsedQs, Record<string, any>>'.
+server/replitAuth.ts(122,16): error TS2339: Property 'buildEndSessionUrl' does not exist on type 'typeof import("/home/runner/workspace/node_modules/openid-client/types/index")'.
+server/replitAuth.ts(132,20): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+server/replitAuth.ts(134,12): error TS2339: Property 'isAuthenticated' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+server/replitAuth.ts(151,40): error TS2339: Property 'refreshTokenGrant' does not exist on type 'typeof import("/home/runner/workspace/node_modules/openid-client/types/index")'.
+server/routes.ts(35,10): error TS2724: '"./services/ai-processor"' has no exported member named 'aiProcessorService'.
+shared/schema.ts(1880,39): error TS2344: Type 'ZodObject<{ duration: ZodOptional<ZodNullable<ZodInt>>; mimeType: ZodOptional<ZodNullable<ZodString>>; mediaUrl: ZodString; ... 5 more ...; sortOrder: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ duration: ZodOptional<ZodNullable<ZodInt>>; mimeType: ZodOptional<ZodNullable<ZodString>>; mediaUrl: ZodString; ... 5 more ...; sortOrder: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+
+shared/schema.ts(1996,44): error TS2344: Type 'ZodObject<{ duration: ZodOptional<ZodNullable<ZodInt>>; fileSize: ZodOptional<ZodNullable<ZodInt>>; metadata: ZodOptional<...>; ... 8 more ...; isProcessed: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ duration: ZodOptional<ZodNullable<ZodInt>>; fileSize: ZodOptional<ZodNullable<ZodInt>>; metadata: ZodOptional<...>; ... 8 more ...; isProcessed: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+
+shared/schema.ts(2006,46): error TS2344: Type 'ZodObject<{ creatorId: ZodString; totalViews: ZodOptional<ZodNullable<ZodInt>>; demographicsData: ZodOptional<ZodNullable<ZodType<Json, unknown, $ZodTypeInternals<Json, unknown>>>>; ... 8 more ...; platformBreakdown: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ creatorId: ZodString; totalViews: ZodOptional<ZodNullable<ZodInt>>; demographicsData: ZodOptional<ZodNullable<ZodType<Json, unknown, $ZodTypeInternals<Json, unknown>>>>; ... 8 more ...; platformBreakdown: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+shared/schema.ts(2071,46): error TS2344: Type 'ZodObject<{ blockchain: ZodOptional<ZodNullable<ZodEnum<{ ethereum: "ethereum"; polygon: "polygon"; solana: "solana"; binance: "binance"; }>>>; userId: ZodString; isDefault: ZodOptional<...>; address: ZodString; nonce: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ blockchain: ZodOptional<ZodNullable<ZodEnum<{ ethereum: "ethereum"; polygon: "polygon"; solana: "solana"; binance: "binance"; }>>>; userId: ZodString; isDefault: ZodOptional<...>; address: ZodString; nonce: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+shared/schema.ts(2073,43): error TS2344: Type 'ZodObject<{ symbol: ZodOptional<ZodNullable<ZodString>>; name: ZodString; blockchain: ZodOptional<ZodNullable<ZodEnum<{ ethereum: "ethereum"; polygon: "polygon"; solana: "solana"; binance: "binance"; }>>>; ... 10 more ...; isDeployed: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ symbol: ZodOptional<ZodNullable<ZodString>>; name: ZodString; blockchain: ZodOptional<ZodNullable<ZodEnum<{ ethereum: "ethereum"; polygon: "polygon"; solana: "solana"; binance: "binance"; }>>>; ... 10 more ...; isDeployed: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+shared/schema.ts(2075,38): error TS2344: Type 'ZodObject<{ name: ZodString; status: ZodOptional<ZodNullable<ZodEnum<{ draft: "draft"; minting: "minting"; minted: "minted"; listed: "listed"; sold: "sold"; transferred: "transferred"; burned: "burned"; }>>>; ... 14 more ...; txHash: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ name: ZodString; status: ZodOptional<ZodNullable<ZodEnum<{ draft: "draft"; minting: "minting"; minted: "minted"; listed: "listed"; sold: "sold"; transferred: "transferred"; burned: "burned"; }>>>; ... 14 more ...; txHash: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+shared/schema.ts(2077,44): error TS2344: Type 'ZodObject<{ blockchain: ZodOptional<ZodNullable<ZodEnum<{ ethereum: "ethereum"; polygon: "polygon"; solana: "solana"; binance: "binance"; }>>>; marketplace: ZodOptional<...>; ... 13 more ...; blockNumber: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ blockchain: ZodOptional<ZodNullable<ZodEnum<{ ethereum: "ethereum"; polygon: "polygon"; solana: "solana"; binance: "binance"; }>>>; marketplace: ZodOptional<...>; ... 13 more ...; blockNumber: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+
+shared/schema.ts(2079,49): error TS2344: Type 'ZodObject<{ status: ZodOptional<ZodNullable<ZodString>>; transactionId: ZodString; recipientId: ZodString; tokenId: ZodString; ... 6 more ...; royaltyType: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ status: ZodOptional<ZodNullable<ZodString>>; transactionId: ZodString; recipientId: ZodString; tokenId: ZodString; ... 6 more ...; royaltyType: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+shared/schema.ts(2081,44): error TS2344: Type 'ZodObject<{ isActive: ZodOptional<ZodNullable<ZodBoolean>>; recipientId: ZodString; collectionId: ZodOptional<ZodNullable<ZodString>>; ... 8 more ...; tierThreshold: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ isActive: ZodOptional<ZodNullable<ZodBoolean>>; recipientId: ZodString; collectionId: ZodOptional<ZodNullable<ZodString>>; ... 8 more ...; tierThreshold: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+shared/schema.ts(2083,40): error TS2344: Type 'ZodObject<{ userId: ZodString; fileSize: ZodOptional<ZodNullable<ZodInt>>; isPinned: ZodOptional<ZodNullable<ZodBoolean>>; ... 6 more ...; isEncrypted: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ userId: ZodString; fileSize: ZodOptional<ZodNullable<ZodInt>>; isPinned: ZodOptional<ZodNullable<ZodBoolean>>; ... 6 more ...; isEncrypted: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+shared/schema.ts(2085,52): error TS2344: Type 'ZodObject<{ marketplace: ZodEnum<{ internal: "internal"; opensea: "opensea"; rarible: "rarible"; looksrare: "looksrare"; x2y2: "x2y2"; }>; userId: ZodString; metadata: ZodOptional<ZodNullable<ZodType<Json, unknown, $ZodTypeInternals<...>>>>; ... 5 more ...; defaultRoyaltyPercentage: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ marketplace: ZodEnum<{ internal: "internal"; opensea: "opensea"; rarible: "rarible"; looksrare: "looksrare"; x2y2: "x2y2"; }>; userId: ZodString; metadata: ZodOptional<ZodNullable<ZodType<Json, unknown, $ZodTypeInternals<...>>>>; ... 5 more ...; defaultRoyaltyPercentage: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+shared/schema.ts(2087,45): error TS2344: Type 'ZodObject<{ blockchain: ZodOptional<ZodNullable<ZodEnum<{ ethereum: "ethereum"; polygon: "polygon"; solana: "solana"; binance: "binance"; }>>>; contractAddress: ZodString; ... 7 more ...; processed: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ blockchain: ZodOptional<ZodNullable<ZodEnum<{ ethereum: "ethereum"; polygon: "polygon"; solana: "solana"; binance: "binance"; }>>>; contractAddress: ZodString; ... 7 more ...; processed: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+shared/schema.ts(2140,42): error TS2344: Type 'ZodObject<{ name: ZodString; status: ZodOptional<ZodNullable<ZodEnum<{ pending: "pending"; failed: "failed"; ready: "ready"; training: "training"; disabled: "disabled"; }>>>; ... 11 more ...; consentDocumentUrl: ZodOptional<...>; }, { ...; }>' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ name: ZodString; status: ZodOptional<ZodNullable<ZodEnum<{ pending: "pending"; failed: "failed"; ready: "ready"; training: "training"; disabled: "disabled"; }>>>; ... 11 more ...; consentDocumentUrl: ZodOptional<...>; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, a
+❌ Server build failed with exit code: 2
+

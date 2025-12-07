@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Broadcast - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-4">
+                <a href="{{ url_for('broadcasts') }}" class="btn btn-outline-secondary me-3">
+                    <i data-feather="arrow-left" class="me-1"></i>
+                    Back
+                </a>
+                <h2 class="text-primary mb-0">
+                    <i data-feather="edit" class="me-2"></i>
+                    Edit Broadcast: {{ broadcast.title }}
+                </h2>
+                <div class="ms-auto">
+                    <span class="badge {% if broadcast.status.value == 'draft' %}bg-secondary{% elif broadcast.status.value == 'sent' %}bg-success{% else %}bg-warning{% endif %} me-3">
+                        {{ broadcast.status.value.title() }}
+                    </span>
+                    {% if broadcast.status.value == 'draft' and recipients|length > 0 %}
+                    <form method="POST" action="{{ url_for('send_broadcast', broadcast_id=broadcast.id) }}" 
+                          style="display: inline;" onsubmit="return confirm('Send this broadcast now?')">
+                        <button type="submit" class="btn btn-success">
+                            <i data-feather="send" class="me-2"></i>
+                            Send Broadcast
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Broadcast Settings -->
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i data-feather="settings" class="me-2"></i>
+                                Broadcast Settings
+                            </h5>
+                            
+                            <form method="POST">
+                                <input type="hidden" name="action" value="update_broadcast">
+                                
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Broadcast Title</label>
+                                    <input type="text" class="form-control" id="title" name="title" 
+                                           value="{{ broadcast.title }}" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="message_content" class="form-label">Message Content</label>
+                                    <textarea class="form-control" id="message_content" name="message_content" 
+                                              rows="6" required>{{ broadcast.message_content }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Messaging Type</label>
+                                    <div class="d-flex gap-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="broadcast_type" 
+                                                   id="individual" value="individual" 
+                                                   {% if broadcast.broadcast_type.value == 'individual' %}checked{% endif %}>
+                                            <label class="form-check-label" for="individual">
+                                                <i data-feather="user" class="me-1"></i>
+                                                Individual Messages
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="broadcast_type" 
+                                                   id="group" value="group"
+                                                   {% if broadcast.broadcast_type.value == 'group' %}checked{% endif %}>
+                                            <label class="form-check-label" for="group">
+                                                <i data-feather="users" class="me-1"></i>
+                                                Group Message
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Delivery Channels</label>
+                                    <div class="d-flex gap-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="send_via_sms" 
+                                                   id="send_via_sms" {% if broadcast.send_via_sms %}checked{% endif %}>
+                                            <label class="form-check-label" for="send_via_sms">
+                                                <i data-feather="smartphone" class="me-1"></i>
+                                                SMS
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="send_via_email" 
+                                                   id="send_via_email" {% if broadcast.send_via_email %}checked{% endif %}>
+                                            <label class="form-check-label" for="send_via_email">
+                                                <i data-feather="mail" class="me-1"></i>
+                                                Email
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i data-feather="save" class="me-2"></i>
+                                    Update Broadcast
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Recipients Management -->
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">
+                                    <i data-feather="users" class="me-2"></i>
+                                    Recipients ({{ recipients|length }})
+                                </h5>
+                                {% if broadcast.status.value == 'draft' %}
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addRecipientsModal">
+                                    <i data-feather="plus" class="me-1"></i>
+                                    Add Recipients
+                                </button>
+                                {% endif %}
+                            </div>
+
+                            {% if recipients %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Phone</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Sent</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for recipient in recipients %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-2">
+                                                        {% if recipient.client_id %}
+                                                        <i data-feather="user" class="text-primary"></i>
+                                                        {% else %}
+                                                        <i data-feather="user-plus" class="text-success"></i>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold">{{ recipient.name or 'Unknown' }}</div>
+                                                        {% if recipient.client_id %}
+                                                        <small class="text-muted">Existing Client</small>
+                                                        {% else %}
+                                                        <small class="text-muted">Custom Contact</small>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {% if recipient.phone_number %}
+                                                <a href="tel:{{ recipient.phone_number }}" class="text-decoration-none">
+                                                    {{ recipient.phone_number }}
+                                                </a>
+                                                {% else %}
+                                                <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if recipient.email %}
+                                                <a href="mailto:{{ recipient.email }}" class="text-decoration-none">
+                                                    {{ recipient.email }}
+                                                </a>
+                                                {% else %}
+                                                <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="badge {% if recipient.delivery_status.value == 'sent' %}bg-success{% elif recipient.delivery_status.value == 'failed' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                                    {{ recipient.delivery_status.value.title() }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if recipient.sent_time %}
+                                                <small class="text-muted">{{ recipient.sent_time.strftime('%m/%d/%y %I:%M %p') }}</small>
+                                                {% else %}
+                                                <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4">
+                                <i data-feather="users" class="text-muted mb-3" style="width: 48px; height: 48px;"></i>
+                                <p class="text-muted">No recipients added yet. Add recipients to send your broadcast.</p>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecipientsModal">
+                                    <i data-feather="plus" class="me-2"></i>
+                                    Add Recipients
+                                </button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Broadcast Stats -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i data-feather="bar-chart-2" class="me-2"></i>
+                                Quick Stats
+                            </h5>
+                            
+                            <div class="row text-center mb-4">
+                                <div class="col-6">
+                                    <div class="text-primary fw-bold fs-2">{{ recipients|length }}</div>
+                                    <div class="small text-muted">Recipients</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-success fw-bold fs-2">{{ broadcast.sent_count }}</div>
+                                    <div class="small text-muted">Sent</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Type:</span>
+                                <span class="badge bg-info">{{ broadcast.broadcast_type.value.title() }}</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Status:</span>
+                                <span class="badge {% if broadcast.status.value == 'draft' %}bg-secondary{% elif broadcast.status.value == 'sent' %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ broadcast.status.value.title() }}
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Created:</span>
+                                <span class="text-muted">{{ broadcast.created_at.strftime('%m/%d/%y') }}</span>
+                            </div>
+
+                            {% if broadcast.sent_time %}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Sent:</span>
+                                <span class="text-muted">{{ broadcast.sent_time.strftime('%m/%d/%y %I:%M %p') }}</span>
+                            </div>
+                            {% endif %}
+
+                            <hr>
+
+                            <h6 class="text-muted">Delivery Channels</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if broadcast.send_via_sms %}
+                                <span class="badge bg-primary">SMS</span>
+                                {% endif %}
+                                {% if broadcast.send_via_email %}
+                                <span class="badge bg-info">Email</span>
+                                {% endif %}
+                                {% if not broadcast.send_via_sms and not broadcast.send_via_email %}
+                                <span class="text-muted">None selected</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Recipients Modal -->
+<div class="modal fade" id="addRecipientsModal" tabindex="-1" aria-labelledby="addRecipientsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRecipientsModalLabel">Add Recipients</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Tabs for different ways to add recipients -->
+                <ul class="nav nav-tabs" id="addRecipientsTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="clients-tab" data-bs-toggle="tab" 
+                                data-bs-target="#clients" type="button" role="tab" aria-controls="clients" aria-selected="true">
+                            From Clients
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="custom-tab" data-bs-toggle="tab" 
+                                data-bs-target="#custom" type="button" role="tab" aria-controls="custom" aria-selected="false">
+                            Custom Contact
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="addRecipientsTabContent">
+                    <!-- Add from Clients -->
+                    <div class="tab-pane fade show active" id="clients" role="tabpanel" aria-labelledby="clients-tab">
+                        <form method="POST">
+                            <input type="hidden" name="action" value="add_recipients">
+                            <div class="mt-3">
+                                {% if clients %}
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" id="clientSearch" placeholder="Search clients...">
+                                </div>
+                                <div class="max-height-300 overflow-auto">
+                                    {% for client in clients %}
+                                    <div class="form-check mb-2 client-item">
+                                        <input class="form-check-input" type="checkbox" name="selected_clients" 
+                                               value="{{ client.id }}" id="client_{{ client.id }}">
+                                        <label class="form-check-label d-flex align-items-center" for="client_{{ client.id }}">
+                                            <div class="me-3">
+                                                <div class="fw-bold">{{ client.name }}</div>
+                                                <div class="small text-muted">
+                                                    {% if client.phone_number %}{{ client.phone_number }}{% endif %}
+                                                    {% if client.phone_number and client.email %} • {% endif %}
+                                                    {% if client.email %}{{ client.email }}{% endif %}
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <p class="text-muted">No clients found. <a href="{{ url_for('add_client') }}">Add clients</a> first.</p>
+                                {% endif %}
+                            </div>
+                            {% if clients %}
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Add Selected</button>
+                            </div>
+                            {% endif %}
+                        </form>
+                    </div>
+
+                    <!-- Add Custom Contact -->
+                    <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
+                        <form method="POST">
+                            <input type="hidden" name="action" value="add_custom_recipient">
+                            <div class="mt-3">
+                                <div class="mb-3">
+                                    <label for="recipient_name" class="form-label">Name *</label>
+                                    <input type="text" class="form-control" id="recipient_name" name="recipient_name" 
+                                           placeholder="Enter recipient name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="recipient_phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="recipient_phone" name="recipient_phone" 
+                                           placeholder="+1234567890">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="recipient_email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="recipient_email" name="recipient_email" 
+                                           placeholder="email@example.com">
+                                </div>
+                                <div class="form-text">At least one contact method (phone or email) is required.</div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Add Recipient</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Client search functionality
+document.getElementById('clientSearch').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const clientItems = document.querySelectorAll('.client-item');
+    
+    clientItems.forEach(function(item) {
+        const label = item.querySelector('label').textContent.toLowerCase();
+        if (label.includes(searchTerm)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

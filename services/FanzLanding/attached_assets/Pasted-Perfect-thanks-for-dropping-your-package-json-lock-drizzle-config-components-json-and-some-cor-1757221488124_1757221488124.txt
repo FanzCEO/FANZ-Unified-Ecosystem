@@ -1,0 +1,98 @@
+Perfect — thanks for dropping your package.json, lock, drizzle config, components.json, and some core TS files. I’ve looked through them:
+	•	You’re using React 18 + Vite + Tailwind + shadcn/ui with wouter for routing, @tanstack/react-query for state, and Radix primitives ￼.
+	•	Backend: Express + Drizzle ORM with Neon Postgres and Zod validators ￼.
+	•	Theme: components.json confirms style: "new-york" with shadcn tokens; baseColor is neutral ￼. That’s your current theme baseline.
+	•	Build scripts: you already have dev, build, start, db:push ￼.
+
+👉 You told me “don’t change the current theme at all”. Good news: everything needed to lock the design system is already centralized (tailwind config + shadcn). I’ll only extend scripts and add verification layers — no edits to your CSS, tokens, or shadcn aliases.
+
+⸻
+
+✅ Next Steps to Get Enterprise Hub & Landing Production-Ready
+
+1. Strengthen root scripts (without touching theme)
+
+Update your package.json scripts to include verification + prep commands:
+
+"scripts": {
+  "dev": "NODE_ENV=development tsx server/index.ts",
+  "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+  "start": "NODE_ENV=production node dist/index.js",
+  "check": "tsc",
+  "db:push": "drizzle-kit push",
+
+  "migrate": "drizzle-kit migrate",
+  "seed": "tsx server/seed.ts",
+  "openapi": "tsx server/scripts/generate-openapi.ts > public/docs/openapi.json",
+  "verify:contracts": "tsx server/scripts/verify-contracts.ts",
+  "verify:drift": "tsx server/scripts/verify-drift.ts",
+  "verify:webhooks": "tsx server/scripts/verify-webhooks.ts",
+  "verify:health": "tsx server/scripts/verify-health.ts",
+  "verify:a11y": "node client/scripts/a11y-check.cjs || echo '(a11y optional)'",
+  "crawl": "node client/scripts/crawlLinks.cjs",
+  "verify:all": "npm run build && npm run migrate && npm run seed && npm run openapi && npm run verify:contracts && npm run verify:drift && npm run verify:webhooks && npm run verify:health && npm run crawl && npm run verify:a11y",
+
+  "prep:prod:fanzlanding": "node scripts/env-gate.cjs && npm run verify:all && node scripts/print-ready.cjs"
+}
+
+2. Add scripts/env-gate.cjs
+
+Guards against missing secrets:
+
+const required = [
+  'DATABASE_URL','PUBLIC_DOMAIN','WEB_APP_URL','API_URL','NODE_ENV',
+  'JWT_ISS','JWT_AUD','JWT_SECRET','JWT_ACCESS_TTL','JWT_REFRESH_TTL'
+];
+const missing = required.filter(k => !process.env[k]);
+if (missing.length) {
+  console.error('❌ Missing env vars:\n' + missing.join('\n'));
+  process.exit(1);
+}
+console.log('✅ ENV check passed');
+
+3. Add scripts/print-ready.cjs
+
+Prints your “READY FOR PROD” banner:
+
+console.log(`
+███████╗ █████╗ ███╗   ██╗███████╗██╗      █████╗ ███╗   ██╗██████╗ ██╗███╗   ██╗ ██████╗
+██╔════╝██╔══██╗████╗  ██║██╔════╝██║     ██╔══██╗████╗  ██║██╔══██╗██║████╗  ██║██╔════╝
+█████╗  ███████║██╔██╗ ██║█████╗  ██║     ███████║██╔██╗ ██║██║  ██║██║██╔██╗ ██║██║  ███╗
+██╔══╝  ██╔══██║██║╚██╗██║██╔══╝  ██║     ██╔══██║██║╚██╗██║██║  ██║██║██║╚██╗██║██║   ██║
+███████╗██║  ██║██║ ╚████║███████╗███████╗██║  ██║██║ ╚████║██████╔╝██║██║ ╚████║╚██████╔╝
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝
+FanzLanding: ALL CHECKS PASSED — READY FOR PROD ✨
+`);
+
+4. Add route + crawler checks
+	•	client/scripts/routes-manifest.cjs → exports route list, verifies imports.
+	•	client/scripts/crawlLinks.cjs → headless Playwright crawl, fails on 404s/console errors.
+
+5. Add DB + API verification scripts
+	•	server/scripts/verify-contracts.ts → check OpenAPI vs handlers.
+	•	server/scripts/verify-drift.ts → drizzle introspection.
+	•	server/scripts/verify-webhooks.ts → simulate newsletter/status/VerifyMy webhooks.
+	•	server/scripts/verify-health.ts → DB ping, JWT roundtrip, sitemap/robots.
+
+6. Run once
+
+After adding the scripts:
+
+npm run prep:prod:fanzlanding
+
+It will:
+	1.	Check env secrets.
+	2.	Build backend + frontend.
+	3.	Run migrations + seeds.
+	4.	Generate OpenAPI docs.
+	5.	Verify contracts/drift/webhooks/health.
+	6.	Crawl links + a11y.
+	7.	Print neon READY FOR PROD banner.
+
+⸻
+
+⚠️ Theme Guarantee: None of the above touches your tailwind.config.ts, client/src/index.css, or shadcn tokens ￼. The look & feel stays locked. These additions only enforce completeness, compliance, and stability.
+
+⸻
+
+Do you want me to generate the exact crawler + manifest script files next so you can drop them into /client/scripts without writing any Playwright logic yourself?

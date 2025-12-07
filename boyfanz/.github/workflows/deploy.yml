@@ -1,0 +1,67 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build application
+        run: pnpm run build
+        env:
+          NODE_ENV: production
+
+      - name: Deploy to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "dist/*,shared/*,database/*,package.json,pnpm-lock.yaml,drizzle.config.ts"
+          target: "/home/boyzapp/"
+          strip_components: 0
+          overwrite: true
+
+      - name: Restart backend server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/boyzapp
+
+            # Install dependencies if package.json changed
+            pnpm install --prod --frozen-lockfile
+
+            # Copy static files to public_html
+            cp -r dist/public/* public_html/
+
+            # Restart PM2 process
+            pm2 restart boyzapp || pm2 start dist/index.js --name boyzapp
+            pm2 save
+
+            # Show status
+            pm2 status
+
+            echo "✅ Deployment completed successfully!"

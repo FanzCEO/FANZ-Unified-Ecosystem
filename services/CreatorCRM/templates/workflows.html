@@ -1,0 +1,535 @@
+{% extends "base.html" %}
+
+{% block title %}Workflows - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h2 mb-0">Workflow Automation</h1>
+        <p class="text-muted">Create automated rules and tasks for your CRM</p>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWorkflowModal">
+            <i data-feather="plus" class="me-1"></i>Create Workflow
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if workflows %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Trigger</th>
+                            <th>Rules</th>
+                            <th>Executions</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for workflow in workflows %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">{{ workflow.name }}</div>
+                                    {% if workflow.description %}
+                                        <small class="text-muted">{{ workflow.description[:60] }}{% if workflow.description|length > 60 %}...{% endif %}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ workflow.trigger_type.replace('_', ' ').title() }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ workflow.rules|length }} rules</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ workflow.executions|length }} runs</span>
+                                </td>
+                                <td>
+                                    {% if workflow.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ workflow.created_at.strftime('%b %d, %Y') }}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="editWorkflow({{ workflow.id }})">
+                                            <i data-feather="edit" class="me-1"></i>Edit
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-success" onclick="executeWorkflow({{ workflow.id }})">
+                                            <i data-feather="play" class="me-1"></i>Run
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-{{ 'danger' if workflow.is_active else 'success' }}" onclick="toggleWorkflow({{ workflow.id }}, {{ 'false' if workflow.is_active else 'true' }})">
+                                            {% if workflow.is_active %}
+                                                <i data-feather="pause" class="me-1"></i>Disable
+                                            {% else %}
+                                                <i data-feather="play" class="me-1"></i>Enable
+                                            {% endif %}
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center text-muted py-5">
+                <i data-feather="zap" class="mb-3" style="width: 48px; height: 48px;"></i>
+                <h5>No workflows yet</h5>
+                <p>Create your first workflow to automate CRM tasks like messaging, tagging, and scheduling.</p>
+                <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#createWorkflowModal">
+                    <i data-feather="plus" class="me-1"></i>Create Your First Workflow
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Create Workflow Modal -->
+<div class="modal fade" id="createWorkflowModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Workflow</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="createWorkflowForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="workflowName" class="form-label">Workflow Name *</label>
+                        <input type="text" class="form-control" id="workflowName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="workflowDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="workflowDescription" name="description" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="triggerType" class="form-label">Trigger *</label>
+                        <select class="form-select" id="triggerType" name="trigger_type" required>
+                            <option value="">Select a trigger</option>
+                            <option value="message_received">When message is received</option>
+                            <option value="client_created">When client is created</option>
+                            <option value="appointment_created">When appointment is created</option>
+                            <option value="appointment_confirmed">When appointment is confirmed</option>
+                            <option value="scheduled">On schedule (time-based)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Workflow</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Workflow Builder Modal -->
+<div class="modal fade" id="workflowBuilderModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Workflow Builder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="workflowBuilder">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Rules</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="rulesList">
+                                        <div class="text-center text-muted py-4">
+                                            <p>No rules yet. Add rules to define when and what actions to take.</p>
+                                            <button type="button" class="btn btn-primary" onclick="addRule()">
+                                                <i data-feather="plus" class="me-1"></i>Add First Rule
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Add Rule</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form id="addRuleForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">Rule Name</label>
+                                            <input type="text" class="form-control" name="name" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">When (Condition)</label>
+                                            <select class="form-select" name="condition_type" required>
+                                                <option value="">Select condition...</option>
+                                                <option value="message_contains">Message contains text</option>
+                                                <option value="client_has_tag">Client has tag</option>
+                                                <option value="client_is_new">Client is new</option>
+                                                <option value="time_based">Time condition</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3" id="conditionConfig">
+                                            <!-- Dynamic condition configuration -->
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Then (Action)</label>
+                                            <select class="form-select" name="action_type" required>
+                                                <option value="">Select action...</option>
+                                                <option value="send_message">Send message</option>
+                                                <option value="add_tag">Add tag</option>
+                                                <option value="remove_tag">Remove tag</option>
+                                                <option value="update_notes">Update notes</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3" id="actionConfig">
+                                            <!-- Dynamic action configuration -->
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Add Rule</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i data-feather="info" class="me-2"></i>Workflow Examples
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6>Auto-Tag VIP Clients</h6>
+                    <p class="text-muted small">When message contains "premium" → Add "VIP" tag</p>
+                </div>
+                <div class="mb-3">
+                    <h6>New Client Welcome</h6>
+                    <p class="text-muted small">When client is created → Send welcome message</p>
+                </div>
+                <div class="mb-3">
+                    <h6>Screening Reminder</h6>
+                    <p class="text-muted small">When new client → Add "Needs Screening" tag</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i data-feather="activity" class="me-2"></i>Recent Executions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center text-muted py-4">
+                    <p>Workflow execution history will appear here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentWorkflowId = null;
+
+// Create workflow form submission
+document.getElementById('createWorkflowForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const data = {
+        name: formData.get('name'),
+        description: formData.get('description'),
+        trigger_type: formData.get('trigger_type'),
+        user_id: 1
+    };
+    
+    try {
+        const response = await fetch('/workflows/api', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            CRM.showNotification('Workflow created successfully!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            CRM.showNotification('Error: ' + result.error, 'danger');
+        }
+    } catch (error) {
+        CRM.showNotification('Error creating workflow', 'danger');
+    }
+});
+
+// Edit workflow
+async function editWorkflow(workflowId) {
+    currentWorkflowId = workflowId;
+    // Load workflow rules and show builder modal
+    try {
+        const response = await fetch(`/workflows/api/${workflowId}/rules`);
+        const result = await response.json();
+        
+        if (result.success) {
+            loadRules(result.rules);
+            const modal = new bootstrap.Modal(document.getElementById('workflowBuilderModal'));
+            modal.show();
+        }
+    } catch (error) {
+        CRM.showNotification('Error loading workflow', 'danger');
+    }
+}
+
+// Execute workflow manually
+async function executeWorkflow(workflowId) {
+    if (!confirm('Execute this workflow now?')) return;
+    
+    try {
+        const response = await fetch(`/workflows/api/${workflowId}/execute`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({context: {}})
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            CRM.showNotification(`Workflow executed! ${result.rules_successful}/${result.rules_executed} rules succeeded`, 'success');
+        } else {
+            CRM.showNotification('Error: ' + result.error, 'danger');
+        }
+    } catch (error) {
+        CRM.showNotification('Error executing workflow', 'danger');
+    }
+}
+
+// Toggle workflow active status
+async function toggleWorkflow(workflowId, isActive) {
+    try {
+        const response = await fetch(`/workflows/api/${workflowId}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({is_active: isActive})
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            CRM.showNotification(`Workflow ${isActive ? 'enabled' : 'disabled'}`, 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            CRM.showNotification('Error updating workflow', 'danger');
+        }
+    } catch (error) {
+        CRM.showNotification('Error updating workflow', 'danger');
+    }
+}
+
+// Load rules into the builder
+function loadRules(rules) {
+    const rulesList = document.getElementById('rulesList');
+    
+    if (rules.length === 0) {
+        rulesList.innerHTML = `
+            <div class="text-center text-muted py-4">
+                <p>No rules yet. Add rules to define when and what actions to take.</p>
+                <button type="button" class="btn btn-primary" onclick="addRule()">
+                    <i data-feather="plus" class="me-1"></i>Add First Rule
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    rulesList.innerHTML = rules.map((rule, index) => `
+        <div class="card mb-2">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1">${rule.name}</h6>
+                        <small class="text-muted">
+                            When ${rule.condition_type.replace('_', ' ')} → ${rule.action_type.replace('_', ' ')}
+                        </small>
+                    </div>
+                    <span class="badge bg-${rule.is_active ? 'success' : 'secondary'}">${rule.is_active ? 'Active' : 'Inactive'}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    feather.replace();
+}
+
+// Dynamic condition configuration
+document.querySelector('select[name="condition_type"]').addEventListener('change', function() {
+    const conditionConfig = document.getElementById('conditionConfig');
+    const conditionType = this.value;
+    
+    let configHTML = '';
+    
+    switch (conditionType) {
+        case 'message_contains':
+            configHTML = '<input type="text" class="form-control" name="condition_text" placeholder="Text to find in message" required>';
+            break;
+        case 'client_has_tag':
+            configHTML = '<input type="text" class="form-control" name="condition_tag" placeholder="Tag name" required>';
+            break;
+        case 'client_is_new':
+            configHTML = '<input type="number" class="form-control" name="condition_hours" placeholder="Hours since created" value="24" required>';
+            break;
+        case 'time_based':
+            configHTML = `
+                <select class="form-select mb-2" name="time_type" required>
+                    <option value="time_of_day">Time of day</option>
+                    <option value="day_of_week">Day of week</option>
+                </select>
+                <input type="time" class="form-control mb-2" name="start_time" placeholder="Start time">
+                <input type="time" class="form-control" name="end_time" placeholder="End time">
+            `;
+            break;
+    }
+    
+    conditionConfig.innerHTML = configHTML;
+});
+
+// Dynamic action configuration
+document.querySelector('select[name="action_type"]').addEventListener('change', function() {
+    const actionConfig = document.getElementById('actionConfig');
+    const actionType = this.value;
+    
+    let configHTML = '';
+    
+    switch (actionType) {
+        case 'send_message':
+            configHTML = '<textarea class="form-control" name="action_message" placeholder="Message to send (use {client_name} for client name)" rows="3" required></textarea>';
+            break;
+        case 'add_tag':
+        case 'remove_tag':
+            configHTML = '<input type="text" class="form-control" name="action_tag" placeholder="Tag name" required>';
+            break;
+        case 'update_notes':
+            configHTML = `
+                <textarea class="form-control mb-2" name="action_notes" placeholder="Notes to add (use {client_name} for client name)" rows="2" required></textarea>
+                <select class="form-select" name="notes_action">
+                    <option value="append">Append to existing notes</option>
+                    <option value="replace">Replace all notes</option>
+                </select>
+            `;
+            break;
+    }
+    
+    actionConfig.innerHTML = configHTML;
+});
+
+// Add rule form submission
+document.getElementById('addRuleForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (!currentWorkflowId) {
+        CRM.showNotification('No workflow selected', 'danger');
+        return;
+    }
+    
+    const formData = new FormData(e.target);
+    
+    // Build condition config
+    const conditionType = formData.get('condition_type');
+    let conditionConfig = {};
+    
+    switch (conditionType) {
+        case 'message_contains':
+            conditionConfig = {text: formData.get('condition_text')};
+            break;
+        case 'client_has_tag':
+            conditionConfig = {tag_name: formData.get('condition_tag')};
+            break;
+        case 'client_is_new':
+            conditionConfig = {hours: parseInt(formData.get('condition_hours'))};
+            break;
+        case 'time_based':
+            conditionConfig = {
+                type: formData.get('time_type'),
+                start_time: formData.get('start_time'),
+                end_time: formData.get('end_time')
+            };
+            break;
+    }
+    
+    // Build action config
+    const actionType = formData.get('action_type');
+    let actionConfig = {};
+    
+    switch (actionType) {
+        case 'send_message':
+            actionConfig = {message: formData.get('action_message')};
+            break;
+        case 'add_tag':
+        case 'remove_tag':
+            actionConfig = {tag_name: formData.get('action_tag')};
+            break;
+        case 'update_notes':
+            actionConfig = {
+                notes: formData.get('action_notes'),
+                action: formData.get('notes_action')
+            };
+            break;
+    }
+    
+    const data = {
+        name: formData.get('name'),
+        condition_type: conditionType,
+        condition_config: conditionConfig,
+        action_type: actionType,
+        action_config: actionConfig
+    };
+    
+    try {
+        const response = await fetch(`/workflows/api/${currentWorkflowId}/rules`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            CRM.showNotification('Rule added successfully!', 'success');
+            e.target.reset();
+            document.getElementById('conditionConfig').innerHTML = '';
+            document.getElementById('actionConfig').innerHTML = '';
+            // Refresh rules list
+            editWorkflow(currentWorkflowId);
+        } else {
+            CRM.showNotification('Error: ' + result.error, 'danger');
+        }
+    } catch (error) {
+        CRM.showNotification('Error adding rule', 'danger');
+    }
+});
+</script>
+{% endblock %}

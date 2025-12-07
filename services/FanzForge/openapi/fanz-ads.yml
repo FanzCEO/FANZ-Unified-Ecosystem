@@ -1,0 +1,487 @@
+openapi: 3.1.0
+info:
+  title: FANZ Cross-Platform Ad Engine API
+  version: 1.0.0
+  description: |
+    Adult-friendly advertising platform for the FANZ ecosystem.
+    Supports all FANZ platforms with compliant payment processors.
+    
+    **IMPORTANT**: This system explicitly blocks Stripe and PayPal per FANZ policy.
+    Only adult-content-friendly processors are supported.
+  contact:
+    name: FANZ Development Team
+    url: https://fanz.foundation
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.fanz.network
+    description: Production API
+  - url: https://staging-api.fanz.network
+    description: Staging API
+  - url: http://localhost:4000
+    description: Development API
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+tags:
+  - name: ads
+    description: Ad serving and placement
+  - name: campaigns
+    description: Campaign management
+  - name: billing
+    description: Payment processing (adult-friendly only)
+  - name: policy
+    description: Content policy and validation
+  - name: analytics
+    description: Performance metrics and reporting
+  - name: webhooks
+    description: Event notifications
+
+paths:
+  /api/ads:
+    get:
+      tags: [ads]
+      summary: Get ad for placement
+      description: Retrieve an ad for a specific placement and platform with targeting
+      parameters:
+        - name: placement
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [HEADER, FOOTER, SIDEPANEL, HOMEPAGE_HERO, HOMEPAGE_NATIVE, DASHBOARD_WIDGET]
+          description: Ad placement type
+        - name: platform
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [boyfanz, girlfanz, pupfanz, taboofanz, daddiesfanz, cougarfanz]
+          description: FANZ platform
+        - name: device
+          in: query
+          schema:
+            type: string
+            enum: [mobile, tablet, desktop]
+            default: desktop
+          description: Device type for responsive ads
+        - name: geo
+          in: query
+          schema:
+            type: string
+            pattern: '^[A-Z]{2}$'
+            example: US
+          description: ISO country code
+        - name: X-FANZ-User
+          in: header
+          schema:
+            type: string
+          description: Hashed user ID for frequency capping
+      responses:
+        '200':
+          description: Ad content returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdResponse'
+        '204':
+          description: No ad available
+        '400':
+          description: Invalid parameters
+        '429':
+          description: Frequency cap exceeded
+
+  /api/campaigns/init:
+    post:
+      tags: [campaigns, billing]
+      summary: Initialize advertising campaign
+      description: |
+        Create a new campaign and generate payment checkout URL.
+        ONLY adult-friendly payment processors are supported.
+        Stripe and PayPal are explicitly blocked.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignInitRequest'
+      responses:
+        '201':
+          description: Campaign created with payment checkout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignInitResponse'
+        '400':
+          description: Invalid campaign data or prohibited payment processor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                prohibited_processor:
+                  value:
+                    error: PROHIBITED_PROCESSOR
+                    message: "Payment processor 'stripe' is prohibited. FANZ only supports adult-content-friendly processors."
+                    allowedProcessors: [ccbill, segpay, epoch, vendo, bitpay, coinbase_commerce]
+
+  /api/campaigns/{id}/creatives:
+    post:
+      tags: [campaigns]
+      summary: Upload campaign creatives
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreativeRequest'
+      responses:
+        '200':
+          description: Creatives uploaded successfully
+        '400':
+          description: Invalid creative data or policy violation
+
+  /api/campaigns/{id}/activate:
+    post:
+      tags: [campaigns]
+      summary: Activate campaign
+      description: Activate campaign after payment confirmation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Campaign activated
+        '402':
+          description: Payment required
+
+  /api/policy/validate:
+    post:
+      tags: [policy]
+      summary: Validate creative content
+      description: Check if creative meets FANZ policy requirements
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreativeRequest'
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResponse'
+
+  /api/ads/{id}/why:
+    get:
+      tags: [analytics]
+      summary: Explain ad targeting
+      description: Provide transparency about why this ad was shown
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: X-FANZ-User
+          in: header
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ad explanation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdExplanation'
+
+  /api/webhooks/billing:
+    post:
+      tags: [webhooks, billing]
+      summary: Billing webhook endpoint
+      description: Receive payment confirmations from adult-friendly processors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_type:
+                  type: string
+                campaign_id:
+                  type: string
+                amount:
+                  type: number
+                processor:
+                  type: string
+                  enum: [ccbill, segpay, epoch, vendo, bitpay, coinbase_commerce, nowpayments]
+      responses:
+        '200':
+          description: Webhook processed
+
+  /health:
+    get:
+      tags: [system]
+      summary: Health check
+      responses:
+        '200':
+          description: Service healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  service:
+                    type: string
+                    example: fanz-ad-service
+                  version:
+                    type: string
+                    example: "1.0.0"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    AdResponse:
+      type: object
+      required: [creativeUrl, clickUrl, disclosure]
+      properties:
+        creativeUrl:
+          type: string
+          format: uri
+          description: URL to the creative asset
+        clickUrl:
+          type: string
+          format: uri
+          description: Click destination URL
+        alt:
+          type: string
+          description: Alt text for accessibility
+        width:
+          type: integer
+          minimum: 1
+          description: Creative width in pixels
+        height:
+          type: integer
+          minimum: 1
+          description: Creative height in pixels
+        html:
+          type: string
+          description: HTML creative content (alternative to creativeUrl)
+        tracking:
+          type: object
+          properties:
+            impressionUrl:
+              type: string
+              format: uri
+            viewableUrl:
+              type: string
+              format: uri
+            clickUrl:
+              type: string
+              format: uri
+        disclosure:
+          type: string
+          default: Sponsored
+          description: Ad disclosure text
+        cacheTtl:
+          type: integer
+          minimum: 0
+          description: Cache time-to-live in seconds
+        campaignId:
+          type: string
+        creativeId:
+          type: string
+
+    CampaignInitRequest:
+      type: object
+      required: [buyerId, budget, bidType, placements]
+      properties:
+        buyerId:
+          type: string
+          description: Creator or advertiser ID
+        budget:
+          type: number
+          minimum: 5
+          maximum: 100000
+          description: Campaign budget in USD
+        currency:
+          type: string
+          default: USD
+          enum: [USD, EUR, GBP, CAD]
+        bidType:
+          type: string
+          enum: [CPM, CPC, CPA]
+          description: Bidding strategy
+        placements:
+          type: array
+          items:
+            type: string
+            enum: [HEADER, FOOTER, SIDEPANEL, HOMEPAGE_HERO, HOMEPAGE_NATIVE, DASHBOARD_WIDGET]
+          minItems: 1
+        targeting:
+          type: object
+          properties:
+            platform:
+              type: array
+              items:
+                type: string
+                enum: [boyfanz, girlfanz, pupfanz, taboofanz, daddiesfanz, cougarfanz]
+            geo:
+              type: array
+              items:
+                type: string
+                pattern: '^[A-Z]{2}$'
+            device:
+              type: array
+              items:
+                type: string
+                enum: [mobile, tablet, desktop]
+            categories:
+              type: array
+              items:
+                type: string
+        schedule:
+          type: object
+          properties:
+            startAt:
+              type: string
+              format: date-time
+            endAt:
+              type: string
+              format: date-time
+        paymentProcessor:
+          type: string
+          description: |
+            OPTIONAL: Preferred payment processor. 
+            If not specified, system will select automatically.
+            NOTE: Stripe and PayPal are prohibited and will be rejected.
+          enum: [ccbill, segpay, epoch, vendo, verotel, netbilling, bitpay, coinbase_commerce, nowpayments]
+
+    CampaignInitResponse:
+      type: object
+      required: [campaignId, checkoutMethod, checkoutUrl]
+      properties:
+        campaignId:
+          type: string
+        checkoutMethod:
+          type: string
+          enum: [ccbill, segpay, epoch, vendo, bitpay, coinbase_commerce, nowpayments]
+          description: Selected adult-friendly payment processor
+        checkoutUrl:
+          type: string
+          format: uri
+          description: Payment checkout URL
+        paymentAmount:
+          type: number
+        paymentCurrency:
+          type: string
+          default: USD
+        cryptoAddress:
+          type: string
+          description: Present for crypto processors
+
+    CreativeRequest:
+      type: object
+      required: [type, url, landingUrl]
+      properties:
+        type:
+          type: string
+          enum: [image, video, html]
+        url:
+          type: string
+          format: uri
+          description: Creative asset URL
+        landingUrl:
+          type: string
+          format: uri
+          description: Click destination
+        alt:
+          type: string
+        width:
+          type: integer
+          minimum: 1
+        height:
+          type: integer
+          minimum: 1
+        sizeBytes:
+          type: integer
+          minimum: 1
+          description: File size in bytes
+        category:
+          type: string
+          description: Content category
+
+    ValidationResponse:
+      type: object
+      required: [isValid]
+      properties:
+        isValid:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+        warnings:
+          type: array
+          items:
+            type: string
+
+    AdExplanation:
+      type: object
+      properties:
+        factors:
+          type: array
+          items:
+            type: object
+            properties:
+              reason:
+                type: string
+              weight:
+                type: number
+              category:
+                type: string
+                enum: [targeting, behavior, context, creative]
+
+    Error:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object

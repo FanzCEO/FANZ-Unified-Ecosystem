@@ -1,0 +1,39 @@
+packages:
+  # Shared packages
+  - "packages/*"
+
+  # Creator platforms
+  - "platforms/*"
+
+  # Core apps
+  - "apps/*"
+
+  # Services (new)
+  - "services/*"
+
+  # Microservices (fanz*)
+  - "fanz*"
+  - "!fanz2257"
+
+  # Niche platforms at root (legacy)
+  - "bearfanz"
+  - "boyfanz"
+  - "cougarfanz"
+  - "dilffanz"
+  - "dlbroz"
+  - "eboyfanz"
+  - "egirlfanz"
+  - "femdomfanz"
+  - "femmefanz"
+  - "gayfanz"
+  - "girlfanz"
+  - "gothfanz"
+  - "guyz"
+  - "jockfanz"
+  - "milffanz"
+  - "nerdfanz"
+  - "pupfanz"
+  - "southernfanz"
+  - "taboofanz"
+  - "transfanz"
+  - "twinkfanz"

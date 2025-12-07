@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Domain Management - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">
+            <i data-feather="globe" class="me-2"></i>
+            Domain Management
+        </h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ url_for('add_domain') }}" class="btn btn-primary">
+                <i data-feather="plus" class="me-1"></i>
+                Add Domain
+            </a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if domains %}
+        <div class="row">
+            {% for domain in domains %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">{{ domain.domain_name }}</h5>
+                                {% if domain.status.value == 'verified' %}
+                                    <span class="badge bg-success">
+                                        <i data-feather="check-circle" class="me-1" style="width: 12px; height: 12px;"></i>
+                                        Verified
+                                    </span>
+                                {% elif domain.status.value == 'pending' %}
+                                    <span class="badge bg-warning">
+                                        <i data-feather="clock" class="me-1" style="width: 12px; height: 12px;"></i>
+                                        Pending
+                                    </span>
+                                {% elif domain.status.value == 'failed' %}
+                                    <span class="badge bg-danger">
+                                        <i data-feather="x-circle" class="me-1" style="width: 12px; height: 12px;"></i>
+                                        Failed
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="row text-muted small mb-3">
+                                <div class="col-6">
+                                    <strong>Email:</strong><br>
+                                    {% if domain.is_email_enabled %}
+                                        <i data-feather="check" class="text-success me-1" style="width: 12px; height: 12px;"></i>
+                                        Enabled
+                                    {% else %}
+                                        <i data-feather="x" class="text-muted me-1" style="width: 12px; height: 12px;"></i>
+                                        Disabled
+                                    {% endif %}
+                                </div>
+                                <div class="col-6">
+                                    <strong>SSL:</strong><br>
+                                    {% if domain.ssl_enabled %}
+                                        <i data-feather="lock" class="text-success me-1" style="width: 12px; height: 12px;"></i>
+                                        Enabled
+                                    {% else %}
+                                        <i data-feather="unlock" class="text-muted me-1" style="width: 12px; height: 12px;"></i>
+                                        Disabled
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row text-muted small mb-3">
+                                <div class="col-12">
+                                    <strong>Authentication:</strong><br>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% if domain.spf_enabled %}
+                                            <span class="badge bg-success-subtle text-success">SPF</span>
+                                        {% endif %}
+                                        {% if domain.dkim_enabled %}
+                                            <span class="badge bg-success-subtle text-success">DKIM</span>
+                                        {% endif %}
+                                        {% if domain.dmarc_enabled %}
+                                            <span class="badge bg-success-subtle text-success">DMARC</span>
+                                        {% endif %}
+                                        {% if not (domain.spf_enabled or domain.dkim_enabled or domain.dmarc_enabled) %}
+                                            <span class="text-muted">None configured</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="card-text text-muted small">
+                                Added {{ domain.created_at.strftime('%B %d, %Y') }}
+                                {% if domain.verified_at %}
+                                    <br>Verified {{ domain.verified_at.strftime('%B %d, %Y') }}
+                                {% endif %}
+                            </p>
+
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('domain_setup', domain_id=domain.id) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i data-feather="settings" class="me-1" style="width: 12px; height: 12px;"></i>
+                                    Setup
+                                </a>
+                                {% if domain.status.value == 'verified' and domain.is_email_enabled %}
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="manageEmails({{ domain.id }})">
+                                        <i data-feather="mail" class="me-1" style="width: 12px; height: 12px;"></i>
+                                        Emails
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i data-feather="globe" style="width: 48px; height: 48px;" class="text-muted"></i>
+            </div>
+            <h3 class="text-muted">No Domains Added</h3>
+            <p class="text-muted mb-4">
+                Add your custom domain to enable professional email communication<br>
+                and build trust with your clients.
+            </p>
+            <a href="{{ url_for('add_domain') }}" class="btn btn-primary">
+                <i data-feather="plus" class="me-2"></i>
+                Add Your First Domain
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function manageEmails(domainId) {
+        // Placeholder for email management functionality
+        alert('Email management feature coming soon!');
+    }
+</script>
+{% endblock %}

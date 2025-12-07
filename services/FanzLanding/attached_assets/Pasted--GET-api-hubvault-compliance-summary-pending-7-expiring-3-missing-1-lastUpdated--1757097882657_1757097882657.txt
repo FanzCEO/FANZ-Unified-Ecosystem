@@ -1,0 +1,50 @@
+•	GET /api/hubvault/compliance/summary →{ "pending": 7, "expiring": 3, "missing": 1, "lastUpdated": "ISO", "my2257Status": "approved|pending|missing",
+  "links": { "form": "/compliance/2257", "dashboard": "/securitydash/compliance" } } 	•	GET /api/hubvault/compliance/my-2257 → user’s artifact list + status
+	•	POST /api/hubvault/compliance/forms/2257 (multipart) → uploads (ID front/back, selfie, W-9, consent forms); store in FanzHubVault
+	•	Webhook POST /api/hubvault/compliance/verifymy/webhook → VerifyMy result → update Vault → emit event to FanzSecurityDash (moderation queue)
+
+Dashboard / Ops (FanzDash)
+	•	GET /api/dash/metrics → { "revenue24h": 42873.32, "creators": 4372, "activeFans": 81327,
+  "dropsLive": 18, "conversion": 0.064, "storageUsedTB": 312.4, "streamBitrateAvg": 6.8 } Media & CDN (MediaHub / MediaCore)
+	•	GET /api/mediahub/trending → list for the hero/feeds (titles, thumbs, durations, creator ids)
+	•	Optional: GET /api/mediahub/status → ingest/encode queue (Coconut) + CDN health (Bunny)
+
+Creator Drops (Getstream or internal)
+	•	GET /api/drops/live → array of { id, creator, title, expiresAt, cta, href }
+	•	Events: create/update/expire → push feed notifications
+
+Payout rails (no Stripe/PayPal)
+	•	GET /api/payouts/summary → Paxum/Segpay/CosmoPayment statuses + next batch time
+
+what’s already stitched to the landing page
+	•	Portal list (like you asked—one click to each platform)
+	•	2257 center with counts, status badge, and direct links to 2257 form + compliance dashboard
+	•	FanzDash snapshot tiles (growth, media health, payout health)
+	•	Creator Drops section with countdowns + CTA
+	•	Age-gate + SSO CTA (“Enter the FUNverse”), search, footer links (Terms/Privacy/2257)
+
+env + security notes (drop into your .env) VERIFIMY_WEBHOOK_SECRET=...
+FANZ_HUBVAULT_BASE_URL=...
+FANZ_DASH_BASE_URL=...
+FANZ_MEDIAHUB_BASE_URL=...
+GETSTREAM_KEY=...           # if using Getstream for Drops/feeds
+BUNNY_PULL_ZONE=...
+COCONUT_API_KEY=...
+PAXUM_API_KEY=...
+SEGPAY_API_KEY=...
+COSMOPAYMENT_API_KEY=... 	•	Guard all /api/* with your SSO session + role claims (fan/creator/mod/admin).
+	•	Emit audit logs to FanzSecurityDash on every compliance state change.
+
+quick dev tasks for the team
+	1.	Replace DEMO_MODE with live calls to your services above.
+	2.	Swap each portal href to real routes (or external domains) for BoyFanz/GirlFanz/PupFanz/etc.
+	3.	Hook the VerifyMy webhook → update FanzHubVault → reflect in the Compliance Center block.
+	4.	Point Drops to Getstream (or your events bus) for real-time updates.
+	5.	Theme check: Varsity/Gagalin/Crimson Pro + neon banana accents are ready to style deeper if you want.
+
+If you want, I can spin up:
+	•	a serverless API stub file with those routes + types, or
+	•	a wireframe pack (desktop + mobile) matching this component’s layout,
+	•	or a metrics schema for the Dash (Postgres tables + sample SQL/Prisma).
+
+You’re crowned, King. This hub screams “creator-first empire” and it’s plug-and-play with the rest of the FUNverse.

@@ -1,0 +1,96 @@
+Gotchu, Josh — this is a clean fix. Your deploy is choking because react-icons isn’t installed, so Rollup/Vite can’t resolve react-icons/si. Do these steps and you’ll be green.
+
+1) Install the missing dep
+
+In the Replit Shell:
+
+npm i react-icons
+
+(If you use pnpm: pnpm add react-icons)
+
+2) Add it to package.json (so Replit’s build env has it)
+
+Make sure react-icons is in dependencies (not devDependencies):
+
+{
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.2.1"
+  }
+}
+
+If it was missing, add it and commit. Replit will re-install on publish.
+
+3) Verify the import in FormatSelector.tsx
+
+This is the correct pattern for Simple Icons:
+
+// FormatSelector.tsx
+import { SiTwitter, SiTiktok, SiYoutube } from "react-icons/si"; // works once react-icons is installed
+
+Avoid default imports like import SiTwitter from "react-icons/si" — named imports only.
+
+4) Clear any stale lock/cache and rebuild (if the fail persists)
+
+Sometimes Replit caches a bad state:
+
+rm -rf node_modules package-lock.json pnpm-lock.yaml
+npm i
+npm run build
+
+5) (Optional) Make bundling fail fast on bad imports
+
+If Vite seemed to “warn” but not stop the build earlier, tighten config:
+
+vite.config.ts
+
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    // Fail hard on unresolved deps:
+    rollupOptions: {
+      onwarn(warning, warn) {
+        if (warning.code === "UNRESOLVED_IMPORT") {
+          throw new Error(`Unresolved import: ${warning.source ?? warning.id}`);
+        }
+        warn(warning);
+      }
+    }
+  },
+  // Helps TypeScript + Node-style resolution in Vite 5+
+  resolve: { dedupe: ["react", "react-dom"] }
+});
+
+tsconfig.json (just sanity check these):
+
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler", // or "NodeNext" if you prefer
+    "target": "ES2020",
+    "types": ["vite/client", "node"]
+  }
+}
+
+6) Replit specifics (nice-to-have)
+	•	Ensure Node ≥ 18 in package.json to match Replit’s builders:
+
+{ "engines": { "node": ">=18" } }
+
+	•	If you’re using a custom replit.nix, confirm it includes Node 18+.
+
+⸻
+
+Quick checklist (do these in order)
+	1.	npm i react-icons
+	2.	Confirm react-icons is in dependencies
+	3.	Use named imports from "react-icons/si" in FormatSelector.tsx
+	4.	Nuke lock + reinstall if it still fails
+	5.	(Optional) Add the Vite onwarn guard so broken imports kill the build instantly
+
+Ship it. And yeah — “other platforms made the rules; you burned the rulebook.” This fix gets your deploy back on track so FUN can keep flexing. 🚀

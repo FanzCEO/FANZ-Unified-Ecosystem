@@ -1,0 +1,77 @@
+modules = ["nodejs-20", "web", "postgresql-16"]
+run = "npm run dev"
+hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+deploymentTarget = "autoscale"
+build = ["sh", "-c", "node build-vite.js"]
+run = ["sh", "-c", "tsx server/index.ts"]
+
+[env]
+PORT = "5000"
+
+[agent]
+integrations = ["javascript_log_in_with_replit:1.0.0", "javascript_object_storage:1.0.0", "javascript_database:1.0.0", "javascript_websocket:1.0.0"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "tsx server/index.ts"
+
+[[ports]]
+localPort = 3002
+externalPort = 5173
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 24678
+externalPort = 6800
+
+[[ports]]
+localPort = 32785
+externalPort = 3001
+
+[[ports]]
+localPort = 33849
+externalPort = 3000
+
+[[ports]]
+localPort = 34309
+externalPort = 6000
+
+[[ports]]
+localPort = 41325
+externalPort = 4200
+
+[[ports]]
+localPort = 42495
+externalPort = 3003
+
+[[ports]]
+localPort = 45567
+externalPort = 5000
+
+[[ports]]
+localPort = 46257
+externalPort = 3002

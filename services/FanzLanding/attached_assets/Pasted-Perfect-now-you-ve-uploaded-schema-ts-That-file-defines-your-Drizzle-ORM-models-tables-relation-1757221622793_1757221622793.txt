@@ -1,0 +1,123 @@
+Perfect — now you’ve uploaded schema.ts. That file defines your Drizzle ORM models (tables, relations) which power the database side of FanzLanding.
+
+Here’s how it ties into your enterprise hub + landing page setup:
+
+⸻
+
+🟡 What schema.ts Adds
+	•	It’s the source of truth for your DB (users, referrals, newsletter subs, blog posts, compliance docs, etc.).
+	•	With it, we can now add:
+	•	Migrations check → verify:drift.ts will compare schema.ts with the actual DB.
+	•	Seeding script → seed.ts can insert baseline data (platforms, legal pages, one admin).
+	•	Contracts/OpenAPI → we can generate Zod schemas → OpenAPI JSON → typed client for frontend.
+
+⸻
+
+🔧 Enterprise Hub DB Guardrails
+
+1. Add server/scripts/verify-drift.ts
+
+Fails if migrations are out of sync with schema.ts:
+
+import { drizzle } from "drizzle-orm/neon-http";
+import { migrate } from "drizzle-orm/neon-http/migrator";
+import * as schema from "../schema";
+import "dotenv/config";
+
+async function main() {
+  if (!process.env.DATABASE_URL) {
+    console.error("❌ Missing DATABASE_URL");
+    process.exit(1);
+  }
+  const db = drizzle(process.env.DATABASE_URL, { schema });
+  try {
+    await migrate(db, { migrationsFolder: "./drizzle" });
+    console.log("✅ Schema and migrations in sync");
+  } catch (e) {
+    console.error("❌ Drift detected or migration failed:", e);
+    process.exit(1);
+  }
+}
+main();
+
+
+⸻
+
+2. Add server/seed.ts
+
+Seeds core records for landing:
+
+import { drizzle } from "drizzle-orm/neon-http";
+import * as schema from "./schema";
+import "dotenv/config";
+
+const db = drizzle(process.env.DATABASE_URL, { schema });
+
+async function main() {
+  // Example: seed platforms table
+  await db.insert(schema.platforms).values([
+    { slug: "boyfanz", name: "BoyFanz", tagline: "Main gay/queer men hub" },
+    { slug: "girlfanz", name: "GirlFanz", tagline: "Main women hub" },
+    { slug: "pupfanz", name: "PupFanz", tagline: "Pup + fetish hub" }
+  ]).onConflictDoNothing();
+
+  // Example: legal docs
+  await db.insert(schema.cms_sections).values([
+    { key: "tos", content_json: { title: "Terms of Service", body: "..." } },
+    { key: "privacy", content_json: { title: "Privacy Policy", body: "..." } },
+  ]).onConflictDoNothing();
+
+  console.log("✅ Seed complete");
+}
+main();
+
+
+⸻
+
+3. Add server/scripts/generate-openapi.ts
+
+Turns Zod validators → OpenAPI JSON (so frontend can auto-generate clients):
+
+import { OpenAPIGenerator } from "zod-openapi";
+import { z } from "zod";
+
+// Example schemas
+const leadSchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  type: z.enum(["creator","partner","press"]),
+  message: z.string(),
+});
+
+const gen = new OpenAPIGenerator({ Lead: leadSchema }, "3.0.0");
+const doc = gen.generateDocument({
+  openapi: "3.0.0",
+  info: { title: "FanzLanding API", version: "1.0.0" }
+});
+
+console.log(JSON.stringify(doc, null, 2));
+
+
+⸻
+
+🚀 Updated Script Flow
+
+Add to root package.json:
+
+"scripts": {
+  "migrate": "drizzle-kit migrate",
+  "seed": "tsx server/seed.ts",
+  "openapi": "tsx server/scripts/generate-openapi.ts > public/docs/openapi.json",
+  "verify:drift": "tsx server/scripts/verify-drift.ts",
+  "verify:all": "npm run build && npm run migrate && npm run seed && npm run openapi && npm run verify:drift && npm run crawl",
+  "prep:prod:fanzlanding": "node scripts/env-gate.cjs && npm run verify:all && node scripts/print-ready.cjs"
+}
+
+
+⸻
+
+✨ Theme untouched: These are backend scripts — they only ensure DB + API parity. Your index.css neon FUN branding stays locked.
+
+⸻
+
+Do you want me to now draft the seed content list (platforms, services, legal sections, sample blog, status incident, referral codes) that should populate your DB on first run so the landing hub feels live immediately?

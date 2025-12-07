@@ -1,0 +1,401 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* GirlFanz Color Palette */
+  --gf-pink: hsl(337, 100%, 59%);
+  --gf-violet: hsl(258, 77%, 51%);
+  --gf-cyan: hsl(191, 100%, 50%);
+  --gf-ink: hsl(240, 8%, 4%);
+  --gf-graphite: hsl(240, 7%, 7%);
+  --gf-snow: hsl(220, 14%, 96%);
+  --gf-smoke: hsl(266, 22%, 77%);
+  
+  /* Status Colors */
+  --success: hsl(158, 64%, 52%);
+  --warning: hsl(43, 96%, 56%);
+  --error: hsl(0, 84%, 60%);
+  
+  /* Semantic Colors */
+  --background: var(--gf-ink);
+  --foreground: var(--gf-snow);
+  --card: var(--gf-graphite);
+  --card-foreground: var(--gf-snow);
+  --popover: var(--gf-graphite);
+  --popover-foreground: var(--gf-snow);
+  --primary: var(--gf-pink);
+  --primary-foreground: var(--gf-snow);
+  --secondary: var(--gf-violet);
+  --secondary-foreground: var(--gf-snow);
+  --muted: var(--gf-graphite);
+  --muted-foreground: var(--gf-smoke);
+  --accent: var(--gf-cyan);
+  --accent-foreground: var(--gf-ink);
+  --destructive: var(--error);
+  --destructive-foreground: var(--gf-snow);
+  --border: hsl(240, 7%, 15%);
+  --input: var(--gf-graphite);
+  --ring: var(--gf-pink);
+  --chart-1: var(--gf-pink);
+  --chart-2: var(--gf-violet);
+  --chart-3: var(--gf-cyan);
+  --chart-4: var(--success);
+  --chart-5: var(--warning);
+  
+  /* Sidebar Colors */
+  --sidebar: var(--gf-graphite);
+  --sidebar-foreground: var(--gf-snow);
+  --sidebar-primary: var(--gf-pink);
+  --sidebar-primary-foreground: var(--gf-snow);
+  --sidebar-accent: var(--gf-violet);
+  --sidebar-accent-foreground: var(--gf-snow);
+  --sidebar-border: hsl(240, 7%, 15%);
+  --sidebar-ring: var(--gf-pink);
+  
+  /* Typography */
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+  
+  /* Layout */
+  --radius: 12px;
+  
+  /* Shadows and Effects */
+  --shadow-glow-pink: 0 0 24px hsla(337, 100%, 59%, 0.4);
+  --shadow-glow-violet: 0 0 24px hsla(258, 77%, 51%, 0.4);
+  --shadow-glow-cyan: 0 0 24px hsla(191, 100%, 50%, 0.4);
+  
+  /* Neon Text Shadows - Reduced intensity */
+  --neon-pink: 0 0 3px var(--gf-pink), 0 0 6px var(--gf-pink);
+  --neon-violet: 0 0 3px var(--gf-violet), 0 0 6px var(--gf-violet);
+  --neon-cyan: 0 0 3px var(--gf-cyan), 0 0 6px var(--gf-cyan);
+  --neon-snow: 0 0 2px var(--gf-snow), 0 0 4px var(--gf-snow);
+  
+  /* Neon Flicker Animation */
+  --flicker-timing: 1.5s infinite linear alternate;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+}
+
+@layer components {
+  /* Ghostly background effect */
+  .ghost-background {
+    position: relative;
+    min-height: 100vh;
+  }
+  
+  .ghost-background::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('@assets/girlfanz4_1759137536573.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.15;
+    filter: saturate(70%) contrast(85%) blur(0.5px);
+    z-index: -2;
+    pointer-events: none;
+  }
+  
+  .ghost-background::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Glass morphism effect */
+  .glass-overlay {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Neon Typography Effects */
+  .neon-text {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    animation: neon-flicker var(--flicker-timing);
+  }
+  
+  .neon-pink {
+    color: var(--gf-pink);
+    text-shadow: var(--neon-pink);
+  }
+  
+  .neon-violet {
+    color: var(--gf-violet);
+    text-shadow: var(--neon-violet);
+  }
+  
+  .neon-cyan {
+    color: var(--gf-cyan);
+    text-shadow: var(--neon-cyan);
+  }
+  
+  .neon-snow {
+    color: var(--gf-snow);
+    text-shadow: var(--neon-snow);
+  }
+  
+  /* Neon Button Styles */
+  .neon-button {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 2px solid currentColor;
+    background: transparent;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .neon-button:hover {
+    background: currentColor;
+    box-shadow: 0 0 5px currentColor, 0 0 25px currentColor, 0 0 50px currentColor;
+    animation: neon-buzz 0.02s infinite linear alternate;
+  }
+  
+  .neon-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .neon-button:hover::before {
+    left: 100%;
+  }
+  
+  /* Legacy glow text for backwards compatibility */
+  .glow-text {
+    text-shadow: var(--neon-pink);
+    color: var(--gf-pink);
+  }
+  
+  /* Transition effects */
+  .transition-glow {
+    transition: all 0.15s ease-out;
+  }
+  
+  .transition-glow:hover {
+    transform: translateY(-1px);
+  }
+  
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: var(--gf-graphite);
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--gf-smoke);
+    border-radius: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--gf-pink);
+  }
+}
+
+@layer utilities {
+  /* Background utilities */
+  .bg-gf-pink { background-color: var(--gf-pink); }
+  .bg-gf-violet { background-color: var(--gf-violet); }
+  .bg-gf-cyan { background-color: var(--gf-cyan); }
+  .bg-gf-ink { background-color: var(--gf-ink); }
+  .bg-gf-graphite { background-color: var(--gf-graphite); }
+  .bg-gf-snow { background-color: var(--gf-snow); }
+  .bg-gf-smoke { background-color: var(--gf-smoke); }
+  .bg-success { background-color: var(--success); }
+  .bg-warning { background-color: var(--warning); }
+  .bg-error { background-color: var(--error); }
+  
+  /* Text color utilities */
+  .text-gf-pink { color: var(--gf-pink); }
+  .text-gf-violet { color: var(--gf-violet); }
+  .text-gf-cyan { color: var(--gf-cyan); }
+  .text-gf-ink { color: var(--gf-ink); }
+  .text-gf-graphite { color: var(--gf-graphite); }
+  .text-gf-snow { color: var(--gf-snow); }
+  .text-gf-smoke { color: var(--gf-smoke); }
+  .text-success { color: var(--success); }
+  .text-warning { color: var(--warning); }
+  .text-error { color: var(--error); }
+  
+  /* Border color utilities */
+  .border-gf-pink { border-color: var(--gf-pink); }
+  .border-gf-violet { border-color: var(--gf-violet); }
+  .border-gf-cyan { border-color: var(--gf-cyan); }
+  .border-gf-smoke { border-color: var(--gf-smoke); }
+  .border-success { border-color: var(--success); }
+  .border-warning { border-color: var(--warning); }
+  .border-error { border-color: var(--error); }
+  
+  /* Gradient backgrounds */
+  .bg-gf-gradient {
+    background: linear-gradient(90deg, var(--gf-pink), var(--gf-violet));
+  }
+  
+  .bg-gf-hero {
+    background: radial-gradient(1200px 600px at 70% -10%, hsla(258, 77%, 51%, 0.13) 0%, var(--gf-ink) 60%);
+  }
+  
+  .bg-heatwave {
+    background: linear-gradient(135deg, var(--gf-pink) 0%, var(--gf-violet) 50%, var(--gf-cyan) 100%);
+  }
+  
+  /* Shadow utilities */
+  .shadow-glow-pink {
+    box-shadow: var(--shadow-glow-pink);
+  }
+  
+  .shadow-glow-violet {
+    box-shadow: var(--shadow-glow-violet);
+  }
+  
+  .shadow-glow-cyan {
+    box-shadow: var(--shadow-glow-cyan);
+  }
+  
+  /* Focus styles */
+  .focus-gf-pink:focus {
+    outline: 2px solid var(--gf-pink);
+    outline-offset: 2px;
+  }
+  
+  /* Typography utilities */
+  .font-display {
+    font-family: var(--font-display);
+  }
+  
+  .font-body {
+    font-family: var(--font-body);
+  }
+  
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Uppy Dashboard Customization */
+.uppy-Dashboard {
+  --uppy-color-primary: var(--gf-pink) !important;
+  --uppy-color-secondary: var(--gf-violet) !important;
+  --uppy-color-background: var(--gf-graphite) !important;
+  --uppy-color-foreground: var(--gf-snow) !important;
+}
+
+.uppy-Dashboard-inner {
+  background-color: var(--gf-graphite) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: var(--radius) !important;
+}
+
+.uppy-Dashboard-AddFiles-title {
+  color: var(--gf-snow) !important;
+}
+
+.uppy-Dashboard-note {
+  color: var(--gf-smoke) !important;
+}
+
+/* Animation keyframes */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--gf-pink);
+  }
+  50% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow: 
+      0 0 3px currentColor,
+      0 0 6px currentColor;
+    filter: brightness(1);
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+    filter: brightness(0.8);
+  }
+}
+
+@keyframes neon-buzz {
+  0% { transform: translate(0); }
+  20% { transform: translate(-0.5px, 0.5px); }
+  40% { transform: translate(-0.5px, -0.5px); }
+  60% { transform: translate(0.5px, 0.5px); }
+  80% { transform: translate(0.5px, -0.5px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    text-shadow: 
+      0 0 3px currentColor,
+      0 0 6px currentColor;
+  }
+  50% {
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 4px currentColor,
+      0 0 8px currentColor;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.animate-neon-flicker {
+  animation: neon-flicker 3s infinite;
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 2s ease-in-out infinite;
+}

@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    // Language and Environment
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force",
+    
+    // Bundler mode
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    
+    // Type Checking
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    
+    // Interop Constraints  
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "checkJs": false,
+    
+    // Output Formatting
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.cache/typescript/tsbuildinfo",
+    "pretty": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    
+    // Advanced
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    
+    // Path mapping for monorepo
+    "baseUrl": ".",
+    "paths": {
+      "@fanz/ads-client": ["./packages/fanz-ads-client/src"],
+      "@fanz/ads-client/*": ["./packages/fanz-ads-client/src/*"],
+      "@fanz/shared/*": ["./packages/shared/src/*"],
+      "@fanz/types/*": ["./packages/types/src/*"],
+      "@/*": ["./client/src/*"],
+      "@shared/*": ["./shared/*"]
+    },
+    
+    // JSX (for React components)
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    
+    // Types
+    "types": ["node", "vite/client"],
+    
+    // Experimental
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  
+  // Global includes and excludes
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.json",
+    "client/src/**/*",
+    "shared/**/*",
+    "server/**/*",
+    "packages/**/*",
+    "services/**/*",
+    "apps/**/*"
+  ],
+  
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    ".next",
+    ".vercel",
+    "*.min.js",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ],
+  
+  // TypeScript project references for monorepo
+  "references": [
+    {
+      "path": "./packages/fanz-ads-client"
+    },
+    {
+      "path": "./services/ad-service"
+    },
+    {
+      "path": "./apps/fanz-ads-demo"
+    }
+  ]
+}

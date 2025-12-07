@@ -1,0 +1,685 @@
+{% extends "base.html" %} {% block title %}Identity Verification - FANZ{%
+endblock %} {% block content %}
+<div class="kyc-container">
+  <div class="container">
+    <div class="row justify-content-center py-5">
+      <div class="col-lg-8">
+        <!-- Progress Header -->
+        <div class="verification-progress-header mb-5">
+          <div class="card">
+            <div class="card-body text-center py-4">
+              <h2 class="neon-text neon-cyan mb-3">
+                <i class="fas fa-id-card me-2"></i>Identity Verification
+              </h2>
+              <p class="lead text-secondary mb-4">
+                Complete your KYC (Know Your Customer) verification to ensure
+                platform compliance
+              </p>
+
+              <!-- Progress Steps -->
+              <div class="verification-steps">
+                <div class="step active">
+                  <div class="step-icon">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <span>Personal Info</span>
+                </div>
+                <div class="step">
+                  <div class="step-icon">
+                    <i class="fas fa-upload"></i>
+                  </div>
+                  <span>Documents</span>
+                </div>
+                <div class="step">
+                  <div class="step-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>Review</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KYC Form -->
+        <div class="kyc-form-card card">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-user-edit me-2"></i>Personal Information
+            </h4>
+            <small class="text-muted"
+              >All information is encrypted and securely stored</small
+            >
+          </div>
+
+          <div class="card-body p-4">
+            <form method="POST" class="kyc-form" novalidate>
+              {{ form.hidden_tag() }}
+
+              <!-- Personal Details -->
+              <div class="form-section mb-5">
+                <h5 class="section-title neon-text neon-pink mb-3">
+                  <i class="fas fa-user me-2"></i>Personal Details
+                </h5>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group mb-4">
+                      {{ form.first_name.label(class="form-label") }} {{
+                      form.first_name(class="form-control" + (" is-invalid" if
+                      form.first_name.errors else "")) }} {% if
+                      form.first_name.errors %}
+                      <div class="invalid-feedback">
+                        {% for error in form.first_name.errors %}{{ error }}{%
+                        endfor %}
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group mb-4">
+                      {{ form.last_name.label(class="form-label") }} {{
+                      form.last_name(class="form-control" + (" is-invalid" if
+                      form.last_name.errors else "")) }} {% if
+                      form.last_name.errors %}
+                      <div class="invalid-feedback">
+                        {% for error in form.last_name.errors %}{{ error }}{%
+                        endfor %}
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group mb-4">
+                  {{ form.date_of_birth.label(class="form-label") }} {{
+                  form.date_of_birth(class="form-control" + (" is-invalid" if
+                  form.date_of_birth.errors else "")) }} {% if
+                  form.date_of_birth.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.date_of_birth.errors %}{{ error }}{%
+                    endfor %}
+                  </div>
+                  {% endif %}
+                  <small class="form-text text-muted">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    You must be 18 or older to use this platform
+                  </small>
+                </div>
+              </div>
+
+              <!-- Address Information -->
+              <div class="form-section mb-5">
+                <h5 class="section-title neon-text neon-green mb-3">
+                  <i class="fas fa-map-marker-alt me-2"></i>Address Information
+                </h5>
+
+                <div class="form-group mb-4">
+                  {{ form.street_address.label(class="form-label") }} {{
+                  form.street_address(class="form-control" + (" is-invalid" if
+                  form.street_address.errors else "")) }} {% if
+                  form.street_address.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.street_address.errors %}{{ error }}{%
+                    endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group mb-4">
+                      {{ form.city.label(class="form-label") }} {{
+                      form.city(class="form-control" + (" is-invalid" if
+                      form.city.errors else "")) }} {% if form.city.errors %}
+                      <div class="invalid-feedback">
+                        {% for error in form.city.errors %}{{ error }}{% endfor
+                        %}
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group mb-4">
+                      {{ form.state.label(class="form-label") }} {{
+                      form.state(class="form-control" + (" is-invalid" if
+                      form.state.errors else "")) }} {% if form.state.errors %}
+                      <div class="invalid-feedback">
+                        {% for error in form.state.errors %}{{ error }}{% endfor
+                        %}
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group mb-4">
+                      {{ form.postal_code.label(class="form-label") }} {{
+                      form.postal_code(class="form-control" + (" is-invalid" if
+                      form.postal_code.errors else "")) }} {% if
+                      form.postal_code.errors %}
+                      <div class="invalid-feedback">
+                        {% for error in form.postal_code.errors %}{{ error }}{%
+                        endfor %}
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group mb-4">
+                  {{ form.country.label(class="form-label") }} {{
+                  form.country(class="form-control" + (" is-invalid" if
+                  form.country.errors else "")) }} {% if form.country.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.country.errors %}{{ error }}{% endfor
+                    %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Tax Information (STARS only) -->
+              {% if current_user.role.value == 'star' %}
+              <div class="form-section mb-5">
+                <h5 class="section-title neon-text neon-yellow mb-3">
+                  <i class="fas fa-file-invoice-dollar me-2"></i>Tax Information
+                </h5>
+
+                <div class="form-group mb-4">
+                  {{ form.ssn_tin.label(class="form-label") }} {{
+                  form.ssn_tin(class="form-control" + (" is-invalid" if
+                  form.ssn_tin.errors else ""), placeholder="XXX-XX-XXXX or
+                  EIN") }} {% if form.ssn_tin.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.ssn_tin.errors %}{{ error }}{% endfor
+                    %}
+                  </div>
+                  {% endif %}
+                  <small class="form-text text-muted">
+                    <i class="fas fa-shield-alt me-1"></i>
+                    Required for tax reporting. Information is encrypted and
+                    secure.
+                  </small>
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- Consent Section -->
+              <div class="form-section mb-5">
+                <h5 class="section-title neon-text neon-orange mb-3">
+                  <i class="fas fa-clipboard-check me-2"></i>Required Agreements
+                </h5>
+
+                <div class="consent-checkboxes">
+                  <div class="form-check mb-3">
+                    {{ form.age_consent(class="form-check-input
+                    required-consent") }} {{
+                    form.age_consent.label(class="form-check-label") }}
+                  </div>
+
+                  <div class="form-check mb-3">
+                    {{ form.compliance_2257(class="form-check-input
+                    required-consent") }} {{
+                    form.compliance_2257.label(class="form-check-label") }}
+                  </div>
+
+                  <div class="form-check mb-3">
+                    {{ form.platform_policies(class="form-check-input
+                    required-consent") }}
+                    <label
+                      class="form-check-label"
+                      for="{{ form.platform_policies.id }}"
+                    >
+                      I agree to the
+                      <a href="#" class="neon-link neon-cyan"
+                        >platform policies</a
+                      >
+                      and
+                      <a href="#" class="neon-link neon-cyan"
+                        >terms of service</a
+                      >
+                    </label>
+                  </div>
+
+                  <div class="form-check mb-3">
+                    {{ form.nda_agreement(class="form-check-input
+                    required-consent") }} {{
+                    form.nda_agreement.label(class="form-check-label") }}
+                  </div>
+
+                  <div class="form-check mb-3">
+                    {{ form.ip_assignment(class="form-check-input
+                    required-consent") }} {{
+                    form.ip_assignment.label(class="form-check-label") }}
+                  </div>
+
+                  {% if current_user.role.value == 'star' %}
+                  <div class="form-check mb-3">
+                    {{ form.star_contract(class="form-check-input
+                    required-consent") }}
+                    <label
+                      class="form-check-label"
+                      for="{{ form.star_contract.id }}"
+                    >
+                      I agree to the
+                      <a href="#" class="neon-link neon-pink"
+                        >STAR/STARZ contract terms</a
+                      >
+                    </label>
+                  </div>
+
+                  <div class="form-check mb-3">
+                    {{ form.non_disparagement(class="form-check-input
+                    required-consent") }} {{
+                    form.non_disparagement.label(class="form-check-label") }}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Forensic Data (Hidden) -->
+              {{ form.ip_address(type="hidden",
+              value=request.environ.get('HTTP_X_FORWARDED_FOR',
+              request.remote_addr)) }} {{ form.user_agent(type="hidden",
+              value=request.headers.get('User-Agent', '')) }} {{
+              form.device_fingerprint(type="hidden") }} {{
+              form.geolocation(type="hidden") }}
+
+              <!-- Submit Button -->
+              <div class="form-actions text-center">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg px-5 glow-pulse"
+                  id="submit-btn"
+                  disabled
+                >
+                  <i class="fas fa-check me-2"></i>Complete KYC Verification
+                </button>
+                <p class="text-muted mt-3">
+                  <i class="fas fa-shield-alt me-2"></i>
+                  All information is encrypted with AES-256 and stored securely
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Security Notice -->
+        <div class="security-info-card card mt-4">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-2 text-center">
+                <i class="fas fa-lock fa-3x neon-green"></i>
+              </div>
+              <div class="col-md-10">
+                <h6 class="neon-text neon-green mb-2">
+                  Your Data is Protected
+                </h6>
+                <p class="text-secondary mb-2">
+                  We use enterprise-grade encryption and security measures to
+                  protect your personal information. Your data is never shared
+                  with third parties without your explicit consent.
+                </p>
+                <ul class="security-features">
+                  <li>
+                    <i class="fas fa-check neon-green me-2"></i>AES-256
+                    encryption at rest
+                  </li>
+                  <li>
+                    <i class="fas fa-check neon-green me-2"></i>TLS 1.2+ in
+                    transit
+                  </li>
+                  <li>
+                    <i class="fas fa-check neon-green me-2"></i>Immutable audit
+                    trails
+                  </li>
+                  <li>
+                    <i class="fas fa-check neon-green me-2"></i>2257 compliant
+                    storage
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .kyc-container {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 255, 255, 0.05),
+      rgba(255, 0, 255, 0.05)
+    );
+    min-height: 100vh;
+  }
+
+  .verification-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 30px 0;
+    position: relative;
+  }
+
+  .verification-steps::before {
+    content: "";
+    position: absolute;
+    top: 25px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--border-color);
+    z-index: 1;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .step-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 3px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .step.active .step-icon {
+    border-color: var(--neon-cyan);
+    background: var(--neon-cyan);
+    color: var(--dark-bg);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  }
+
+  .step span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .step.active span {
+    color: var(--neon-cyan);
+  }
+
+  .kyc-form-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .form-section {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+  }
+
+  .section-title {
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .consent-checkboxes {
+    background: rgba(255, 136, 0, 0.05);
+    border: 1px solid rgba(255, 136, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .form-check {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+  }
+
+  .form-check:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+  }
+
+  .form-check-input:checked {
+    background-color: var(--neon-green);
+    border-color: var(--neon-green);
+  }
+
+  .neon-link {
+    color: currentColor;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+  }
+
+  .neon-link:hover {
+    text-shadow: 0 0 10px currentColor;
+    color: currentColor;
+    border-bottom-color: currentColor;
+  }
+
+  .security-info-card {
+    background: rgba(0, 255, 0, 0.05);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+  }
+
+  .security-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+  }
+
+  .security-features li {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  #submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .verification-steps {
+      gap: 20px;
+    }
+
+    .verification-steps::before {
+      display: none;
+    }
+
+    .step {
+      flex-direction: row;
+      gap: 15px;
+    }
+
+    .step-icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    .security-features {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".kyc-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const requiredConsents = document.querySelectorAll(".required-consent");
+    const dobInput = form.querySelector('input[name="date_of_birth"]');
+
+    // Check if all required consents are checked
+    function checkConsents() {
+      const allChecked = Array.from(requiredConsents).every(
+        (checkbox) => checkbox.checked,
+      );
+      const ageValid = validateAge();
+
+      submitBtn.disabled = !(allChecked && ageValid);
+
+      if (allChecked && ageValid) {
+        submitBtn.classList.add("glow-pulse");
+      } else {
+        submitBtn.classList.remove("glow-pulse");
+      }
+    }
+
+    // Validate age (must be 18+)
+    function validateAge() {
+      if (!dobInput.value) return false;
+
+      const dob = new Date(dobInput.value);
+      const today = new Date();
+      const age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < dob.getDate())
+      ) {
+        age--;
+      }
+
+      return age >= 18;
+    }
+
+    // Add event listeners
+    requiredConsents.forEach((checkbox) => {
+      checkbox.addEventListener("change", checkConsents);
+    });
+
+    dobInput.addEventListener("change", function () {
+      if (!validateAge()) {
+        this.classList.add("is-invalid");
+        const feedback =
+          this.parentElement.querySelector(".invalid-feedback") ||
+          document.createElement("div");
+        feedback.className = "invalid-feedback";
+        feedback.textContent =
+          "You must be at least 18 years old to use this platform";
+        this.parentElement.appendChild(feedback);
+      } else {
+        this.classList.remove("is-invalid");
+        const feedback = this.parentElement.querySelector(".invalid-feedback");
+        if (feedback) feedback.remove();
+      }
+      checkConsents();
+    });
+
+    // Collect device fingerprint
+    function generateDeviceFingerprint() {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.textBaseline = "top";
+      ctx.font = "14px Arial";
+      ctx.fillText("Device fingerprint", 2, 2);
+
+      const fingerprint = {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        platform: navigator.platform,
+        screenResolution: `${screen.width}x${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        canvas: canvas.toDataURL(),
+      };
+
+      return btoa(JSON.stringify(fingerprint)).substring(0, 32);
+    }
+
+    // Set forensic data
+    const deviceFingerprintField = form.querySelector(
+      'input[name="device_fingerprint"]',
+    );
+    if (deviceFingerprintField) {
+      deviceFingerprintField.value = generateDeviceFingerprint();
+    }
+
+    // Get geolocation if available
+    const geolocationField = form.querySelector('input[name="geolocation"]');
+    if (geolocationField && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          geolocationField.value = `${position.coords.latitude},${position.coords.longitude}`;
+        },
+        function () {
+          geolocationField.value = "unavailable";
+        },
+      );
+    }
+
+    // Form submission
+    form.addEventListener("submit", function (e) {
+      if (!validateAge()) {
+        e.preventDefault();
+        window.NeonUtils.showNeonAlert(
+          "Age verification failed. You must be 18 or older.",
+          "error",
+        );
+        return;
+      }
+
+      const allConsentsChecked = Array.from(requiredConsents).every(
+        (checkbox) => checkbox.checked,
+      );
+      if (!allConsentsChecked) {
+        e.preventDefault();
+        window.NeonUtils.showNeonAlert(
+          "Please accept all required agreements to continue.",
+          "warning",
+        );
+        return;
+      }
+
+      // Disable button and show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+
+      // Show success message
+      window.NeonUtils.showNeonAlert(
+        "KYC information submitted successfully! Proceeding to document upload.",
+        "success",
+      );
+    });
+
+    // Enhanced form validation
+    const inputs = form.querySelectorAll(".form-control");
+    inputs.forEach((input) => {
+      input.addEventListener("blur", function () {
+        if (this.required && !this.value.trim()) {
+          this.classList.add("is-invalid");
+        } else {
+          this.classList.remove("is-invalid");
+        }
+      });
+    });
+
+    // Initial check
+    checkConsents();
+  });
+</script>
+{% endblock %}

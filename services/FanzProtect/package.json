@@ -1,0 +1,20 @@
+{
+  "name": "fanzprotect",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "echo 'Development server not configured'",
+    "build": "echo 'Build process not configured'",
+    "start": "echo 'Production server not configured'"
+  },
+  "keywords": [
+    "fanz",
+    "platform"
+  ],
+  "author": "FANZ Team",
+  "license": "UNLICENSED"
+}

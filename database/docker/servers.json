@@ -1,0 +1,15 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "FANZ Ecosystem (Local)",
+      "Group": "Development",
+      "Host": "db",
+      "Port": 5432,
+      "MaintenanceDB": "fanz_ecosystem",
+      "Username": "postgres",
+      "SSLMode": "prefer",
+      "PassFile": "/tmp/pgpassfile",
+      "Comment": "FANZ Unified Ecosystem Database - Local Development"
+    }
+  }
+}

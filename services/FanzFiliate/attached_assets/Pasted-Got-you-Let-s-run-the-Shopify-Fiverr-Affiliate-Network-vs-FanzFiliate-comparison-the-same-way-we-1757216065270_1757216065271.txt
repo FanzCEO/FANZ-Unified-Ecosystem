@@ -1,0 +1,47 @@
+Got you 🔥 Let’s run the Shopify/Fiverr/Affiliate Network vs. FanzFiliate comparison the same way we did with FanzCommerce. FanzFiliate = your own CPA + affiliate marketing engine, wired directly into FUN.
+
+⸻
+
+🔗 Traditional Affiliate Networks vs. FanzFiliate
+
+Feature	Traditional Affiliate Networks (Impact, CJ, Rakuten, Awin, etc.)	FanzFiliate (FUN)
+Core Model	General affiliate/CPA platforms for retail, SaaS, and brands	Creator-first affiliate + CPA platform purpose-built for adult & content economy
+Adult-Friendly	❌ Many ban adult/sex content	✅ Explicitly supports adult creators, LGBTQIA+, and sex-positive niches
+Integration	Requires APIs, custom tracking pixels, or manual setup	Natively integrated with BoyFanz, GirlFanz, PupFanz, FanzCommerce, FanzTube, etc.
+Tracking	Cookies, UTM tags; limited device fingerprinting	Multi-layer tracking: cookies + server-to-server + referral IDs + bio link deep-links
+Payouts	Controlled by network (often net 30-60)	Creators control payouts; integrated with FUN payout system (ACH, wires, crypto)
+Fees	Networks take 20–40% cut from advertisers/affiliates	0% rake by default → creators + affiliates keep 100%
+Affiliate Access	Invite-only or require approval	Open + tiered access → affiliates sign up directly inside FUN
+Ad Units	Banners, text links	Adult-optimized ad suite: banners, tube ads, FanzRoulette ads, in-platform widgets
+Compliance	Manual review; not built for adult	FUN-compliant: age verification, 2257 records, moderation workflow
+Transparency	Black-box reporting	Real-time dashboards: clicks, conversions, EPC, payout balance
+Attribution	Cookie-only → fraud risk	Server-to-server + hashed fingerprinting + geo-validation
+Deep Linking	Requires manual setup	Native “link generator” for any page on BoyFanz, GirlFanz, PupFanz, FanzCommerce
+Cross-Promo	Rarely supports creators promoting creators	Affiliates can be creators themselves, promoting collabs & cross-sells
+Community	Isolated affiliates + advertisers	Creator-to-creator affiliate ecosystem → starz promote starz
+Onboarding	Complex, non-inclusive	1-click onboarding inside FUN + VerifyMy for compliance
+Vision	Retail-first	⚡ Creator-first → Affiliate + CPA backbone of the next adult creator economy
+
+
+⸻
+
+🔥 Pitch Deck Tagline
+
+FanzFiliate is the world’s first adult-compliant affiliate & CPA engine where creators keep 100%.
+Built-in. Transparent. Community-powered.
+
+⸻
+
+🚀 What This Means
+	•	Shopify gives sellers “discount codes,” but no built-in affiliate economy.
+	•	Affiliate networks like Rakuten/Impact block adult.
+	•	FanzFiliate = FUN’s own Impact/Rakuten/ShareASale, but neon-lit for creators.
+
+It ties directly into:
+	•	FanzCommerce (creators can offer affiliate % on products).
+	•	BoyFanz/GirlFanz/PupFanz (creators can pay affiliates to drive subs).
+	•	FanzRoulette / FanzTube ads (affiliate-powered campaigns).
+
+⸻
+
+Josh, do you want me to also map out a flow diagram for FanzFiliate? (something like: Affiliate signs up → Generates link → Promotes FUN platform/product → Click → Conversion → Commission credited → Payout). That could become the core graphic for the launch page / deck.

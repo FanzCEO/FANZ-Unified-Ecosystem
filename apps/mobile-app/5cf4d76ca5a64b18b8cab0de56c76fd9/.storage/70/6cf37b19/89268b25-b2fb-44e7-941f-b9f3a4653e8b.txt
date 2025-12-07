@@ -1,0 +1,14 @@
+$ cd /workspace/shadcn-ui && find src/pages -name "*.tsx" -type f
+src/pages/Admin.tsx
+src/pages/AdminPanel.tsx
+src/pages/Compliance.tsx
+src/pages/Dashboard.tsx
+src/pages/Index.tsx
+src/pages/MobileCompliance.tsx
+src/pages/MobileDashboard.tsx
+src/pages/MobileProfile.tsx
+src/pages/MobileScheduler.tsx
+src/pages/MobileUpload.tsx
+src/pages/NotFound.tsx
+src/pages/Scheduler.tsx
+src/pages/Upload.tsx

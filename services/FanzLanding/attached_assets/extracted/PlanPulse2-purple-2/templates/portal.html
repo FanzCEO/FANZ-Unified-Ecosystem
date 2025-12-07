@@ -1,0 +1,517 @@
+{% extends "base.html" %} {% block title %}FANZ Network Portal{% endblock %} {%
+block extra_head %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/onboarding-interactive.css') }}"
+/>
+<style>
+  .portal-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+    padding: 2rem 0;
+  }
+
+  .portal-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .portal-title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #bb86fc, #4a56e2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  .portal-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 2rem;
+  }
+
+  .platform-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .platform-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .platform-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--platform-color, linear-gradient(90deg, #bb86fc, #4a56e2));
+    border-radius: 20px 20px 0 0;
+  }
+
+  .platform-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(187, 134, 252, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .platform-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    background: linear-gradient(
+      135deg,
+      var(--platform-color, #bb86fc),
+      rgba(255, 255, 255, 0.1)
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: white;
+  }
+
+  .platform-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+
+  .platform-description {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .platform-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+  }
+
+  .platform-features li {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .platform-features li:before {
+    content: "✓";
+    color: var(--platform-color, #4ade80);
+    font-weight: bold;
+    margin-right: 0.5rem;
+  }
+
+  .platform-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-platform {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .btn-enter {
+    background: linear-gradient(
+      135deg,
+      var(--platform-color, #bb86fc),
+      rgba(255, 255, 255, 0.1)
+    );
+    color: white;
+  }
+
+  .btn-enter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    color: white;
+  }
+
+  .btn-request {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-request:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+
+  .access-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .status-granted {
+    background: rgba(74, 222, 128, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+  }
+
+  .status-pending {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  .status-denied {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .user-info {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .verification-banner {
+    background: linear-gradient(
+      135deg,
+      rgba(251, 191, 36, 0.2),
+      rgba(245, 158, 11, 0.1)
+    );
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+  }
+
+  .loading-content {
+    text-align: center;
+    color: white;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #bb86fc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="portal-container">
+  <div class="container">
+    <!-- Portal Header -->
+    <div class="portal-header">
+      <h1 class="portal-title">FANZ Unlimited Network</h1>
+      <p class="portal-subtitle">
+        Your gateway to exclusive creator communities
+      </p>
+    </div>
+
+    <!-- User Info -->
+    <div class="user-info">
+      <h5 class="text-white mb-2">Welcome, {{ current_user.username }}!</h5>
+      <p class="text-white-50 mb-0">
+        Role:
+        <span class="badge badge-primary"
+          >{{ current_user.role.value.title() }}</span
+        >
+        {% if current_user.kyc_verified %}
+        <span class="badge badge-success ms-2">✓ Verified</span>
+        {% else %}
+        <span class="badge badge-warning ms-2">⚠ Verification Pending</span>
+        {% endif %}
+      </p>
+    </div>
+
+    <!-- Verification Banner -->
+    {% if not current_user.kyc_verified %}
+    <div class="verification-banner">
+      <div class="d-flex align-items-center justify-content-center">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span>Complete your verification to access all platforms</span>
+        <a href="{{ url_for('kyc_form') }}" class="btn btn-warning btn-sm ms-3"
+          >Start Verification</a
+        >
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Platform Grid -->
+    <div class="platform-grid" id="platformGrid">
+      <!-- Platforms will be loaded dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <h5>Connecting to platform...</h5>
+    <p>Please wait while we set up your access</p>
+  </div>
+</div>
+
+<script>
+  class PlatformPortal {
+    constructor() {
+      this.platforms = [];
+      this.init();
+    }
+
+    async init() {
+      await this.loadPlatforms();
+      this.renderPlatforms();
+      this.setupEventListeners();
+    }
+
+    async loadPlatforms() {
+      try {
+        const response = await fetch("/api/platforms");
+        const data = await response.json();
+
+        if (data.success) {
+          this.platforms = data.platforms;
+        } else {
+          console.error("Failed to load platforms:", data.error);
+        }
+      } catch (error) {
+        console.error("Error loading platforms:", error);
+      }
+    }
+
+    renderPlatforms() {
+      const grid = document.getElementById("platformGrid");
+      grid.innerHTML = "";
+
+      this.platforms.forEach((platform) => {
+        const platformCard = this.createPlatformCard(platform);
+        grid.appendChild(platformCard);
+      });
+    }
+
+    createPlatformCard(platform) {
+      const card = document.createElement("div");
+      card.className = "platform-card";
+      card.style.setProperty("--platform-color", platform.color);
+
+      const statusBadge = this.getStatusBadge(platform);
+      const actionButtons = this.getActionButtons(platform);
+
+      card.innerHTML = `
+            ${statusBadge}
+            <div class="platform-icon">
+                <i class="${platform.icon}"></i>
+            </div>
+            <h3 class="platform-name">${platform.name}</h3>
+            <p class="platform-description">${platform.description}</p>
+            <ul class="platform-features">
+                ${platform.features.map((feature) => `<li>${feature}</li>`).join("")}
+            </ul>
+            <div class="platform-actions">
+                ${actionButtons}
+            </div>
+        `;
+
+      return card;
+    }
+
+    getStatusBadge(platform) {
+      if (platform.has_access) {
+        return '<div class="access-status status-granted">✓ Access Granted</div>';
+      } else if (platform.verification_required) {
+        return '<div class="access-status status-pending">⏳ Verification Required</div>';
+      } else {
+        return '<div class="access-status status-denied">⚠ Access Pending</div>';
+      }
+    }
+
+    getActionButtons(platform) {
+      if (platform.has_access) {
+        return `
+                <button class="btn-platform btn-enter" onclick="portal.enterPlatform('${platform.cluster_type}')">
+                    <i class="fas fa-rocket me-2"></i>Enter Platform
+                </button>
+            `;
+      } else {
+        return `
+                <button class="btn-platform btn-request" onclick="portal.requestAccess('${platform.cluster_type}')">
+                    <i class="fas fa-key me-2"></i>Request Access
+                </button>
+            `;
+      }
+    }
+
+    async requestAccess(clusterType) {
+      try {
+        const response = await fetch(`/api/platforms/${clusterType}/access`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Show success message
+          this.showNotification(data.message, "success");
+
+          // Reload platforms to show updated status
+          await this.loadPlatforms();
+          this.renderPlatforms();
+        } else {
+          this.showNotification(data.error, "error");
+        }
+      } catch (error) {
+        console.error("Error requesting access:", error);
+        this.showNotification(
+          "Failed to request access. Please try again.",
+          "error",
+        );
+      }
+    }
+
+    async enterPlatform(clusterType) {
+      try {
+        // Show loading overlay
+        document.getElementById("loadingOverlay").style.display = "flex";
+
+        const response = await fetch(`/api/platforms/${clusterType}/enter`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Redirect to platform
+          window.open(data.platform_url, "_blank");
+          this.showNotification(data.message, "success");
+        } else {
+          this.showNotification(data.error, "error");
+        }
+      } catch (error) {
+        console.error("Error entering platform:", error);
+        this.showNotification(
+          "Failed to enter platform. Please try again.",
+          "error",
+        );
+      } finally {
+        // Hide loading overlay
+        document.getElementById("loadingOverlay").style.display = "none";
+      }
+    }
+
+    showNotification(message, type = "info") {
+      // Create notification element
+      const notification = document.createElement("div");
+      notification.className = `alert alert-${type === "error" ? "danger" : type} position-fixed`;
+      notification.style.cssText = `
+            top: 20px;
+            right: 20px;
+            z-index: 10001;
+            max-width: 400px;
+            animation: slideInRight 0.3s ease;
+        `;
+      notification.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-${type === "success" ? "check-circle" : type === "error" ? "exclamation-circle" : "info-circle"} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+
+      document.body.appendChild(notification);
+
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, 5000);
+    }
+
+    setupEventListeners() {
+      // Handle keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          document.getElementById("loadingOverlay").style.display = "none";
+        }
+      });
+    }
+  }
+
+  // Initialize portal when page loads
+  let portal;
+  document.addEventListener("DOMContentLoaded", () => {
+    portal = new PlatformPortal();
+  });
+
+  // Add slide-in animation
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+`;
+  document.head.appendChild(style);
+</script>
+{% endblock %}

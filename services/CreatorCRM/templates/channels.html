@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}Communication Channels - Creator CRM{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h2 mb-0">Communication Channels</h1>
+        <p class="text-muted">Manage your omnichannel messaging integrations</p>
+    </div>
+    <div class="col-auto">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i data-feather="plus" class="me-1"></i>Add Channel
+            </button>
+            <ul class="dropdown-menu">
+                {% for key, channel_info in available_channels.items() %}
+                    <li><h6 class="dropdown-header text-capitalize">{{ channel_info.category }} Platforms</h6></li>
+                {% endfor %}
+                
+                <!-- Messaging Platforms -->
+                <li><h6 class="dropdown-header">📱 Messaging</h6></li>
+                {% for key, channel_info in available_channels.items() %}
+                    {% if channel_info.category == 'messaging' %}
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('add_channel', type=key) }}">
+                                <i data-feather="{{ channel_info.icon }}" class="me-2"></i>{{ channel_info.name }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                <!-- Social Media -->
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">🌐 Social Media</h6></li>
+                {% for key, channel_info in available_channels.items() %}
+                    {% if channel_info.category == 'social' %}
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('add_channel', type=key) }}">
+                                <i data-feather="{{ channel_info.icon }}" class="me-2"></i>{{ channel_info.name }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                <!-- Professional -->
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">💼 Professional</h6></li>
+                {% for key, channel_info in available_channels.items() %}
+                    {% if channel_info.category == 'professional' %}
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('add_channel', type=key) }}">
+                                <i data-feather="{{ channel_info.icon }}" class="me-2"></i>{{ channel_info.name }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                <!-- Video Calling -->
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">📹 Video Calling</h6></li>
+                {% for key, channel_info in available_channels.items() %}
+                    {% if channel_info.category == 'video' %}
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('add_channel', type=key) }}">
+                                <i data-feather="{{ channel_info.icon }}" class="me-2"></i>{{ channel_info.name }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                <!-- Specialized -->
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">🔐 Specialized</h6></li>
+                {% for key, channel_info in available_channels.items() %}
+                    {% if channel_info.category == 'specialized' %}
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('add_channel', type=key) }}">
+                                <i data-feather="{{ channel_info.icon }}" class="me-2"></i>{{ channel_info.name }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Active Channels -->
+{% if channels %}
+    <div class="row">
+        {% for channel in channels %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                {% set channel_info = available_channels.get(channel.channel_type, {'icon': 'message-square', 'name': channel.channel_type}) %}
+                                <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                    <i data-feather="{{ channel_info.icon }}" class="text-primary"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="card-title mb-1">{{ channel.channel_name }}</h5>
+                                <p class="text-muted small mb-0">{{ channel_info.name }}</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                {% if channel.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row text-center mb-3">
+                            <div class="col">
+                                <div class="fw-bold">{{ channel.provider }}</div>
+                                <div class="text-muted small">Provider</div>
+                            </div>
+                            <div class="col">
+                                <div class="fw-bold">{{ channel.created_at.strftime('%b %d') }}</div>
+                                <div class="text-muted small">Added</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Channel Actions -->
+                        <div class="d-flex gap-2">
+                            <form method="POST" action="{{ url_for('toggle_channel', channel_id=channel.id) }}" class="flex-fill">
+                                {% if channel.is_active %}
+                                    <button type="submit" class="btn btn-outline-warning btn-sm w-100">
+                                        <i data-feather="pause" class="me-1"></i>Deactivate
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-outline-success btn-sm w-100">
+                                        <i data-feather="play" class="me-1"></i>Activate
+                                    </button>
+                                {% endif %}
+                            </form>
+                            <form method="POST" action="{{ url_for('delete_channel', channel_id=channel.id) }}" class="flex-fill" 
+                                  onsubmit="return confirm('Are you sure you want to delete this channel?')">
+                                <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                    <i data-feather="trash-2" class="me-1"></i>Delete
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Video Call Option for Video Channels -->
+                        {% if channel_info.category == 'video' %}
+                            <div class="mt-2">
+                                <button class="btn btn-primary btn-sm w-100" onclick="initiateVideoCall('{{ channel.channel_type }}', '{{ channel.id }}')">
+                                    <i data-feather="video" class="me-1"></i>Start Video Call
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i data-feather="layers" style="width: 64px; height: 64px;" class="text-muted"></i>
+        </div>
+        <h3 class="text-muted">No Communication Channels</h3>
+        <p class="text-muted mb-4">Get started by adding your first communication channel</p>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i data-feather="plus" class="me-1"></i>Add Your First Channel
+            </button>
+            <ul class="dropdown-menu">
+                <!-- Most Popular Options -->
+                <li><h6 class="dropdown-header">🔥 Most Popular</h6></li>
+                <li><a class="dropdown-item" href="{{ url_for('add_channel', type='sms') }}">
+                    <i data-feather="message-square" class="me-2"></i>SMS (Twilio)
+                </a></li>
+                <li><a class="dropdown-item" href="{{ url_for('add_channel', type='whatsapp') }}">
+                    <i data-feather="message-circle" class="me-2"></i>WhatsApp
+                </a></li>
+                <li><a class="dropdown-item" href="{{ url_for('add_channel', type='telegram') }}">
+                    <i data-feather="send" class="me-2"></i>Telegram
+                </a></li>
+                <li><a class="dropdown-item" href="{{ url_for('add_channel', type='getstream') }}">
+                    <i data-feather="video" class="me-2"></i>GetStream Chat & Video
+                </a></li>
+                
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-center" href="#" onclick="document.querySelector('.dropdown-toggle').click()">
+                    View All 27+ Options Above
+                </a></li>
+            </ul>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Channel Statistics -->
+<div class="row mt-5">
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i data-feather="layers" class="text-primary mb-2"></i>
+                <div class="fw-bold fs-4">{{ channels|length }}</div>
+                <div class="text-muted small">Total Channels</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i data-feather="check-circle" class="text-success mb-2"></i>
+                <div class="fw-bold fs-4">{{ channels|selectattr('is_active')|list|length }}</div>
+                <div class="text-muted small">Active Channels</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i data-feather="video" class="text-info mb-2"></i>
+                <div class="fw-bold fs-4">{{ channels|selectattr('channel_type', 'in', ['getstream', 'agora_video', 'daily_video', 'twilio_video'])|list|length }}</div>
+                <div class="text-muted small">Video Channels</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i data-feather="globe" class="text-warning mb-2"></i>
+                <div class="fw-bold fs-4">27+</div>
+                <div class="text-muted small">Available Platforms</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function initiateVideoCall(channelType, channelId) {
+    // Show modal or redirect to video call interface
+    alert(`Initiating ${channelType} video call... (Feature available in full implementation)`);
+    
+    // In production, this would:
+    // 1. Generate a video room/channel
+    // 2. Send invitation to client
+    // 3. Open video interface
+}
+
+// Auto-refresh feather icons
+document.addEventListener('DOMContentLoaded', function() {
+    feather.replace();
+});
+</script>
+{% endblock %}

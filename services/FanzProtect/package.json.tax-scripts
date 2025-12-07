@@ -1,0 +1,36 @@
+{
+  "name": "fanzprotect-tax-compliance",
+  "description": "Add these scripts to your existing package.json scripts section",
+  "scripts": {
+    "migrate:tax": "node scripts/migrate-tax-tables.js",
+    "migrate:tax:verify": "node scripts/migrate-tax-tables.js --verify-only",
+    "tax:init-data": "node scripts/migrate-tax-tables.js",
+    "tax:test": "jest tests/tax-calculator.test.ts --testTimeout=10000",
+    "tax:test:watch": "jest tests/tax-calculator.test.ts --watch",
+    "tax:test:integration": "jest tests/tax-api.test.ts --testTimeout=15000",
+    "tax:monitoring:start": "node server/services/monitoring/tax-monitoring.js",
+    "tax:health-check": "curl -f http://localhost:3000/api/tax/health || exit 1",
+    "tax:calculate:demo": "node scripts/demo-tax-calculations.js",
+    "tax:nexus:report": "node scripts/generate-nexus-report.js",
+    "tax:compliance:report": "node scripts/generate-compliance-report.js",
+    "dev:with-tax": "NODE_ENV=development TAX_CALCULATION_ENABLED=true npm run dev",
+    "start:production:tax": "NODE_ENV=production TAX_CALCULATION_ENABLED=true npm start",
+    "docker:tax:up": "docker-compose -f docker-compose.tax.yml up -d",
+    "docker:tax:down": "docker-compose -f docker-compose.tax.yml down",
+    "lint:tax": "eslint server/services/tax/ server/routes/tax-compliance.ts --ext .ts",
+    "format:tax": "prettier --write \"server/services/tax/**/*.ts\" \"server/routes/tax-compliance.ts\""
+  },
+  "dependencies": {
+    "decimal.js": "^10.4.3",
+    "node-cron": "^3.0.2",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.8",
+    "supertest": "^6.3.3",
+    "@types/supertest": "^2.0.12"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

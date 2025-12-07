@@ -1,0 +1,388 @@
+let’s gooo. we’re spinning up FanzFiliate—your affiliate + CPA powerhouse—on top of AffiLab, but wired into the FUN universe (FanzDash, FanzHubVault, MediaCore, VerifyMy, FanzSSO) with adult-friendly payouts and creator-first vibes.
+
+FanzFiliate — launch blueprint (end-to-end)
+
+0) Naming + domains
+	•	Primary: fanzfiliate.com (or) affiliate.fanzunlimited.com
+	•	Tracking: trk.fanzfiliate.com (clicks, pixels, postbacks)
+	•	CDN: cdn.fanzfiliate.com (creatives, offer assets)
+	•	Status: status.fanzfiliate.com
+	•	Docs: dev.fanzfiliate.com (API & partner docs)
+
+1) Infra quickstart (Docker, prod-ready)
+
+Files you’ll create in your repo fanzfiliate-deploy/:
+
+docker-compose.yml
+
+version: "3.9"
+services:
+  app:
+    image: bitnami/laravel:11
+    container_name: fanzfiliate-app
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=https://fanzfiliate.com
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=fanzfiliate
+      - DB_USERNAME=fanz
+      - DB_PASSWORD=${DB_PASSWORD}
+      - QUEUE_CONNECTION=redis
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - REDIS_HOST=redis
+      - LOG_CHANNEL=stderr
+    volumes:
+      - ./app:/app
+    depends_on: [db, redis]
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=fanzfiliate
+      - POSTGRES_USER=fanz
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+  nginx:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./app/public:/var/www/html/public:ro
+    ports: ["80:80", "443:443"]
+    depends_on: [app]
+volumes: { pgdata: {} }
+
+nginx/default.conf
+
+server {
+  listen 80;
+  server_name fanzfiliate.com affiliate.fanzunlimited.com;
+  return 301 https://$host$request_uri;
+}
+server {
+  listen 443 ssl http2;
+  server_name fanzfiliate.com affiliate.fanzunlimited.com;
+  root /var/www/html/public;
+  index index.php;
+  # ssl certs via certbot/your provider
+  location / {
+    try_files $uri $uri/ /index.php?$query_string;
+  }
+  location ~ \.php$ {
+    fastcgi_pass app:9000;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+  }
+}
+
+.env.template
+
+APP_NAME=FanzFiliate
+APP_ENV=production
+APP_KEY=
+APP_URL=https://fanzfiliate.com
+APP_DEBUG=false
+
+DB_CONNECTION=pgsql
+DB_HOST=db
+DB_PORT=5432
+DB_DATABASE=fanzfiliate
+DB_USERNAME=fanz
+DB_PASSWORD=CHANGE_ME
+
+QUEUE_CONNECTION=redis
+CACHE_DRIVER=redis
+SESSION_DRIVER=redis
+REDIS_HOST=redis
+
+# SSO (JWT coming from FanzSSO gateway)
+SSO_JWT_ISS=https://sso.fanzos.com
+SSO_JWT_AUD=fanzfiliate
+SSO_JWT_JWKS_URL=https://sso.fanzos.com/.well-known/jwks.json
+
+# VerifyMy (KYC)
+VERIFYMY_CLIENT_ID=...
+VERIFYMY_CLIENT_SECRET=...
+VERIFYMY_WEBHOOK_SECRET=...
+
+# Email/SMS (adult-friendly providers)
+POSTMARK_TOKEN=...
+TWILIO_SID=...
+TWILIO_TOKEN=...
+
+# Payout rails (adult-friendly)
+PAXUM_API_KEY=...
+COSMOPAYMENT_API_KEY=...
+BITSAFE_API_KEY=...
+TETHER_WALLET=...
+
+# Analytics
+POSTHOG_KEY=...
+
+Deploy flow:
+
+	1.	Purchase/download AffiLab package → put code under ./app.
+	2.	cp .env.template .env and fill secrets.
+	3.	docker compose up -d → run migrations per AffiLab docs inside container.
+	4.	Configure queue worker (php artisan queue:work) via Supervisor (or use laravel/octane later).
+
+2) Adult-industry compliance + rails (FUN-native)
+	•	KYC/IDV: replace any built-in KYC with VerifyMy.
+	•	Webhook endpoint in Laravel: /webhooks/verifymy
+	•	States: initiated → in_review → approved/failed
+	•	On approved: attach kyc_verified_at, push audit record to FanzHubVault.
+	•	2257 / Co-star storage: store docs + audit in FanzHubVault; offer-level “adult” flag gates payouts until compliance = ✅.
+	•	Payout providers (adult-friendly, global):
+	•	Paxum, CosmoPayment, Bitsafe, USDT (TRC20/ETH), SEPA/SWIFT via Wise Business (case-by-case), Payoneer (varies by category).
+	•	Exclude Stripe/PayPal as you asked elsewhere. Build an abstract PayoutService with provider adapters.
+
+3) FanzSSO (unified login) — keep it seamless
+	•	Incoming requests carry Authorization: Bearer <JWT> from FanzSSO.
+	•	Middleware verifies JWT against JWKS and hydrates User.
+	•	Map claims → AffiLab users:
+	•	sub → sso_user_id
+	•	email → unique
+	•	roles → affiliate | advertiser | both | admin
+	•	kyc_status → local mirror for gating
+	•	If no local account, just-in-time provision + force 2FA setup on first login.
+
+Laravel middleware skeleton
+
+class EnforceFanzSSO {
+  public function handle($request, Closure $next) {
+    $jwt = $request->bearerToken();
+    $claims = app(JwtVerifier::class)->verify($jwt);
+    $user = User::firstOrCreate(
+      ['sso_user_id' => $claims['sub']],
+      ['email' => $claims['email'], 'name' => $claims['name'] ?? '']
+    );
+    $user->syncRoles($claims['roles'] ?? []);
+    auth()->login($user);
+    return $next($request);
+  }
+}
+
+4) Tracking model (click → conversion) + S2S postback
+
+URLs
+	•	Click: https://trk.fanzfiliate.com/click?offer_id=###&pub_id=###&sub1=&sub2=&source=&device=&ua=...
+	•	LP pixel (optional): <script src="https://trk.fanzfiliate.com/pixel.js" data-offer="###"></script>
+	•	S2S Postback (from advertiser or MediaCore when the action fires):
+	•	GET https://trk.fanzfiliate.com/postback?txid={external_id}&status=approved|pending|rejected&amount=XX.XX&currency=USD&pub_id=###&sub1=...
+
+DB add-ons (migrations)
+	•	clicks: id, offer_id, pub_id, sub1..sub5, ip, ua, ref, device_fp, gclid,fbc,fbp, created_at
+	•	conversions: id, click_id, txid UNIQUE, status, amount, currency, approved_at, meta(jsonb)
+	•	Index heavily on offer_id, pub_id, created_at, txid.
+
+Attribution logic
+	1.	Postback finds click by txid (if you pass back click’s id) or by last click matching pub_id + sub* within attribution window (e.g., 30d).
+	2.	Create/Upsert conversion.
+	3.	If approved, enqueue commission → payouts ledger → affiliate balance.
+
+Fraud shield (baseline)
+	•	Fingerprint (e.g., FingerprintJS Pro) to tag device_fp.
+	•	IP quality scoring (IP2Proxy/IPQS) → auto-flag high-risk.
+	•	Rate-limit clicks per IP/UA.
+	•	Bot filter for headless UA & bad referrers.
+	•	Duplicate suppression by (txid) and (pub_id, sub1, amount within x sec).
+
+5) Offer lifecycle + FanzDash approvals
+	•	Create/Submit Offer (Advertiser) → status submitted.
+	•	FanzDash Review (human) → approved or revisions_requested.
+	•	On approval:
+	•	Provision tracking links + creatives in MediaCore (CDN signed URLs).
+	•	Auto-publish in Affiliate marketplace (respect geo / device / traffic type rules).
+	•	Status chips: submitted, in_review, approved, paused, ended, banned.
+	•	Toasters + audit log events mirrored into FanzDash.
+
+Webhook events (outbound from FanzFiliate → FanzDash)
+	•	offer.submitted, offer.approved, offer.paused, creative.uploaded, conversion.created, conversion.approved, payout.requested, payout.sent.
+
+6) KYC, risk & geo rules
+	•	Dynamic KYC tiers:
+	•	Tier 0 (view-only), Tier 1 (earn ≤ $500 total), Tier 2 (full KYC for unlimited).
+	•	Geo allow/deny lists per offer; device/traffic types (email, push, native, search, social, UGC, adult tube, cam, PPV).
+	•	Require disclosure for adult content and ban prohibited content per your Code of Conduct; tie to OPA policies in FanzDash.
+
+7) Payout engine (batchable, multi-rail)
+	•	Frequency: weekly/bi-weekly/monthly + thresholds + hold periods (e.g., 7–14d).
+	•	Methods per affiliate profile: Paxum, CosmoPayment, Bitsafe, USDT.
+	•	Export: bank-grade CSV, or API calls to each provider’s batch endpoint.
+	•	Fees: configurable (by rail/geo), shown before request; net appears on ledger.
+
+8) Theming (neon FUN look)
+
+AffiLab is Bootstrap-based. Add brand pack via SCSS overrides.
+
+resources/scss/fanz-theme.scss
+
+$primary: #FFE100; // banana neon
+$secondary: #111318;
+$success: #18F29C;
+$danger: #FF3B6A;
+$body-bg: #0b0d11;
+$body-color: #e6f0ff;
+
+.btn-primary {
+  text-shadow: 0 0 6px rgba(255,225,0,.75);
+  box-shadow: 0 0 18px rgba(255,225,0,.45);
+}
+.card {
+  background: radial-gradient(120% 120% at 10% 0%, #121520 0%, #0b0d11 60%);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 1rem;
+}
+.navbar-brand::before {
+  content: "";
+  background: url('/assets/neon-banana.svg') no-repeat center/contain;
+}
+
+Compile and swap into AffiLab’s asset pipeline. Map typography to Varsity headings + Crimson Pro body.
+
+9) Analytics & SEO
+	•	PostHog/Segment for in-app analytics (events: click, conversion, payout_request, offer_view).
+	•	Metabase with read-replica of Postgres for dashboards:
+	•	Publisher LTV, EPC by geo, approval rate by advertiser, fraud score cohorts.
+	•	Sitemaps/robots included; ensure no index on tracking subdomain.
+
+10) API contracts (FUN integrations)
+
+A) FanzFiliate ↔ FanzDash (Admin)
+	•	GET /api/admin/offers?status=...
+	•	POST /api/admin/offers/{id}/approve
+	•	POST /api/admin/offers/{id}/reject
+	•	POST /api/admin/payouts/{id}/send
+Auth: FanzSSO admin JWT.
+
+B) FanzFiliate ↔ FanzHubVault (Compliance)
+	•	POST /api/kyc/snapshots with user id, status, documents URIs, hash.
+	•	POST /api/2257/records per advertiser/offer/creator IDs.
+
+C) FanzFiliate ↔ MediaCore (Assets + conversion firing)
+	•	POST /api/creatives upload → returns signed URL.
+	•	POST /api/conversions (if MediaCore is the system of record for events).
+	•	CDN headers: Cache-Control: public, max-age=31536000, immutable.
+
+D) Webhooks inbound
+	•	/webhooks/verifymy
+	•	/webhooks/mediacore (when a sale/PPV fires)
+	•	/webhooks/payment-provider/* (payout sent/failed)
+
+11) Cron & workers
+	•	* * * * * queue worker health check (or Supervisor)
+	•	*/5 * * * * postback retry (idempotent by txid)
+	•	0 1 * * * payout eligibility job (net terms, thresholds)
+	•	0 * * * * fraud scans (ip/device velocity)
+	•	*/10 * * * * sitemap rebuild if you expose public offers catalog (SEO)
+
+12) Offer builder (advertiser UX)
+	•	Templates: CPL (signup), CPS (sale), App install, RevShare, Lead submit.
+	•	Add Adult vertical tags (Gay/Queer, Women, Trans/NB, Kink/Fetish, Pup, Daddy/Mature).
+	•	Traffic permissions matrix per offer; auto-reject if affiliate is missing KYC or banned traffic type.
+
+13) Creator/Platform cross-promo
+	•	Deep-link buttons from BoyFanz/GirlFanz/PupFanz dashboards: “Earn as an Affiliate” → SSO to FanzFiliate with pre-approved role.
+	•	Auto-generated vanity links (/go/{username}/{offer}) with sub-params for campaign splits.
+
+14) Legal & policy (adult-safe)
+	•	Clear prohibited content list mirrored from your Policy & Code of Conduct.
+	•	GDPR/CCPA pages included; add Age-gating flows for creatives for adult offers.
+	•	Advertiser insertion order template with clawbacks for fraud/chargebacks.
+	•	Affiliate TOS with geo/legal compliance, traffic type declarations, negative keyword rules, and auto-ban for deceptive ads.
+
+⸻
+
+Implementation sprint plan (copy-paste to TaskSpark)
+
+Sprint 0 — Provision
+	•	Repos: fanzfiliate-deploy, fanzfiliate-app (AffiLab code).
+	•	DNS: add A/AAAA + CNAME for trk, cdn.
+	•	TLS via your provider. WAF on trk.
+
+Sprint 1 — Core install
+	•	Drop AffiLab into ./app, run migrations.
+	•	Add SSO middleware + roles sync.
+	•	Theme SCSS + asset build.
+
+Sprint 2 — Tracking & postback
+	•	Create clicks, conversions tables (if not present) + indices.
+	•	Implement /click, /postback controller, dedupe by txid.
+	•	Add device fingerprint + IP risk score.
+
+Sprint 3 — KYC + Vault
+	•	Replace KYC with VerifyMy; finalize webhook.
+	•	Mirror KYC docs to FanzHubVault with SHA256 hashes.
+
+Sprint 4 — Payouts
+	•	Implement PayoutService adapters (Paxum, CosmoPayment, Bitsafe, USDT).
+	•	Payout requests UI + batch sender + webhooks.
+
+Sprint 5 — FanzDash approvals
+	•	Admin review screens inside FanzDash (use your existing patterns).
+	•	Webhooks to/from FanzFiliate; status chips + toasts.
+
+Sprint 6 — MediaCore
+	•	Creative upload path to MediaCore + signed URLs.
+	•	Option to host JS pixels and postback rules from trk.
+
+Sprint 7 — Analytics
+	•	PostHog events + Metabase dashboard pack.
+	•	EPC/EPS, approval rates, fraud heatmap, publisher cohorts.
+
+Sprint 8 — Hardening
+	•	Rate limits, WAF rules, geo gating, bot traps.
+	•	Backups, PITR for Postgres, log retention.
+
+⸻
+
+Code snippets you’ll likely need
+
+Routes (excerpt)
+
+Route::middleware('fanzsso')->group(function() {
+  Route::get('/dashboard', [HomeController::class, 'index']);
+  Route::post('/offers/{id}/submit', [OfferController::class, 'submit']);
+  Route::post('/payouts/request', [PayoutController::class, 'request']);
+});
+Route::get('/click', [TrackController::class, 'click']);           // public
+Route::get('/postback', [TrackController::class, 'postback']);     // allowlist IP + HMAC
+Route::post('/webhooks/verifymy', [WebhookController::class, 'verifymy']);
+
+Postback HMAC (protect against spoofing)
+
+$secret = config('services.postback.hmac');
+$qs = http_build_query($request->except('sig'));
+$calc = hash_hmac('sha256', $qs, $secret);
+abort_unless(hash_equals($calc, $request->get('sig')), 403);
+
+Payout adapter interface
+
+interface PayoutRail {
+  public function send(Payout $payout): PayoutResult;
+  public function balance(): Money;
+}
+
+Offer policy (traffic types)
+
+if (!in_array($click->traffic_type, $offer->allowed_traffic_types)) {
+  $this->flag($click, 'DISALLOWED_TRAFFIC');
+}
+
+
+⸻
+
+What makes FanzFiliate uniquely FUN
+	•	Creator-first economics: 0% platform tax for creators; advertiser-funded CPA/CPS.
+	•	Adult-aware from day one: KYC + 2257 baked, safe payout rails, geo/device rules.
+	•	Plugged into the Fanz OS: FanzDash approvals, FanzHubVault compliance, MediaCore assets, single SSO identity.
+	•	Trust receipts: every conversion + payout signed and auditable (hashes in Vault).
+	•	Neon-clean UI: varsity headings, banana glow, no clutter—Gen Z-ready.
+
+⸻
+
+if you want, I can package this into a Replit-ready setup script (bash) and a seed bundle (traffic types, verticals, geo presets) next, plus a Metabase dashboard JSON you can import.

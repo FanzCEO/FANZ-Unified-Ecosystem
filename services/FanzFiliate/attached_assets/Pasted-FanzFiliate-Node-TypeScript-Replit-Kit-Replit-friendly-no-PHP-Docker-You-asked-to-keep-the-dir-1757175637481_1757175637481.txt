@@ -1,0 +1,353 @@
+FanzFiliate — Node/TypeScript Replit Kit (Replit‑friendly, no PHP/Docker)
+
+You asked to keep the direction intact but switch to the best supported stack. This kit delivers the same architecture using TypeScript, Express, Next.js 14, Prisma, PostgreSQL, Redis, BullMQ—all Replit‑friendly.
+	•	App surfaces: Next.js (App Router) for dashboards (Affiliates, Advertisers, Admin)
+	•	Tracking service: Express microservice for /click, /postback, webhooks
+	•	DB: PostgreSQL (Prisma)
+	•	Queue: Redis + BullMQ for payouts, fraud scans, webhooks
+	•	Auth: FanzSSO JWT middleware (JWKS verify)
+	•	KYC: VerifyMy webhook
+	•	Payout rails: adapters for Paxum, CosmoPayment, Bitsafe, USDT (dry‑run ready)
+	•	Analytics: PostHog
+	•	Theming: Tailwind + shadcn/ui + FUN neon palette
+
+Placeholders use YOUR_.... Replace them before running.
+
+⸻
+
+0) Monorepo structure (Replit project root)
+
+/ (repo root)
+  .replit
+  replit.nix
+  .env
+  package.json
+  turbo.json (optional, if you want Turborepo)
+  /apps
+    /dashboard     (Next.js 14 App Router, TS)
+    /tracker       (Express REST service, TS)
+    /worker        (BullMQ worker, TS)
+  /packages
+    /config        (shared config)
+    /db            (Prisma schema + client)
+    /ui            (shared UI components/theme)
+    /utils         (JWT verify, HMAC, logger)
+
+
+⸻
+
+1) replit.nix (system deps)
+
+{ pkgs }: {
+  deps = [
+    pkgs.nodejs_20
+    pkgs.yarn
+    pkgs.postgresql
+    pkgs.redis
+    pkgs.openssl
+  ];
+}
+
+2) .replit (run both services + Next.js)
+
+run = "bash -lc 'redis-server --daemonize yes || true; pg_ctl -D $HOME/.postgres -l $HOME/logfile start || initdb $HOME/.postgres && pg_ctl -D $HOME/.postgres -l $HOME/logfile start; yarn setup && yarn dev'"
+
+3) Root package.json (workspaces)
+
+{
+  "name": "fanzfiliate",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "setup": "yarn --silent && cp -n packages/db/.env.example packages/db/.env || true && yarn prisma:migrate && yarn build:packages",
+    "dev": "concurrently -k \"yarn --cwd apps/dashboard dev\" \"yarn --cwd apps/tracker dev\" \"yarn --cwd apps/worker dev\"",
+    "build:packages": "yarn --cwd packages/db build || true",
+    "prisma:migrate": "yarn --cwd packages/db prisma migrate dev --name init",
+    "db:studio": "yarn --cwd packages/db prisma studio"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
+
+
+⸻
+
+4) ENV (.env) — unified
+
+# Postgres
+DATABASE_URL=postgresql://postgres:@localhost:5432/fanzfiliate?schema=public
+
+# Redis
+REDIS_URL=redis://127.0.0.1:6379
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+TRACKER_URL=http://localhost:4000
+
+# SSO
+SSO_JWT_ISS=https://sso.fanzos.com
+SSO_JWT_AUD=fanzfiliate
+SSO_JWT_JWKS_URL=https://sso.fanzos.com/.well-known/jwks.json
+
+# VerifyMy
+VERIFYMY_WEBHOOK_SECRET=YOUR_VERIFYMY_WEBHOOK_SECRET
+
+# Postback HMAC
+POSTBACK_HMAC_SECRET=YOUR_POSTBACK_HMAC
+
+# Payout providers (use sandbox creds if available)
+PAXUM_API_KEY=YOUR_PAXUM
+COSMOPAYMENT_API_KEY=YOUR_COSMO
+BITSAFE_API_KEY=YOUR_BITSAFE
+USDT_WALLET=YOUR_USDT
+
+# PostHog
+NEXT_PUBLIC_POSTHOG_KEY=YOUR_POSTHOG
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+
+
+⸻
+
+5) Prisma schema (packages/db/prisma/schema.prisma)
+
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  ssoUserId     String   @unique
+  role          Role     @default(AFFILIATE)
+  kycStatus     String?  // initiated,in_review,approved,failed
+  kycVerifiedAt DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum Role { AFFILIATE ADVERTISER ADMIN }
+
+model Offer {
+  id          String   @id @default(cuid())
+  name        String
+  advertiserId String
+  status      OfferStatus @default(SUBMITTED)
+  payoutType  String   // CPS, CPL, RevShare
+  amount      Decimal  @db.Decimal(10,2)
+  currency    String   @default("USD")
+  allowedTrafficTypes String[]
+  geoAllow    String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum OfferStatus { SUBMITTED IN_REVIEW APPROVED PAUSED ENDED BANNED }
+
+model Click {
+  id        String   @id @default(cuid())
+  offerId   String
+  pubId     String
+  sub1      String?
+  sub2      String?
+  sub3      String?
+  trafficType String?
+  ip        String?
+  ua        String?
+  ref       String?
+  deviceFp  String?
+  gclid     String?
+  fbc       String?
+  fbp       String?
+  createdAt DateTime @default(now())
+  @@index([offerId, pubId, createdAt])
+}
+
+model Conversion {
+  id         String   @id @default(cuid())
+  clickId    String?
+  txid       String   @unique
+  status     ConvStatus @default(PENDING)
+  amount     Decimal  @db.Decimal(10,2) @default(0)
+  currency   String   @default("USD")
+  approvedAt DateTime?
+  meta       Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  @@index([status, approvedAt])
+}
+
+enum ConvStatus { PENDING APPROVED REJECTED }
+
+model PayoutMethod {
+  code    String @id
+  display String
+  fee     String
+  min     Decimal @db.Decimal(10,2)
+}
+
+model Payout {
+  id         String @id @default(cuid())
+  userId     String
+  methodCode String
+  amount     Decimal @db.Decimal(10,2)
+  currency   String  @default("USD")
+  status     String  @default("REQUESTED") // REQUESTED,SENT,FAILED
+  meta       Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+packages/db/package.json
+
+{ "name": "@fanz/db", "private": true, "type": "module", "scripts": { "build": "prisma generate" }, "dependencies": { "@prisma/client": "^5.18.0", "prisma": "^5.18.0" } }
+
+
+⸻
+
+6) Tracker service (apps/tracker)
+
+package.json
+
+{
+  "name": "tracker",
+  "type": "module",
+  "scripts": { "dev": "tsx watch src/index.ts" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ioredis": "^5.4.1",
+    "bullmq": "^5.8.0",
+    "@fanz/db": "*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": { "tsx": "^4.19.0", "typescript": "^5.5.4" }
+}
+
+src/index.ts
+
+import express from 'express';
+import { PrismaClient } from '@fanz/db/node_modules/@prisma/client';
+import crypto from 'node:crypto';
+
+const prisma = new PrismaClient();
+const app = express();
+app.use(express.json());
+
+// /click
+app.get('/click', async (req, res) => {
+  const { offer_id, pub_id, sub1, sub2, sub3, tt, fp, gclid, fbc, fbp } = req.query as any;
+  const click = await prisma.click.create({ data: {
+    offerId: String(offer_id), pubId: String(pub_id), sub1: sub1?.toString(), sub2: sub2?.toString(), sub3: sub3?.toString(),
+    trafficType: tt?.toString(), deviceFp: fp?.toString(), gclid: gclid?.toString(), fbc: fbc?.toString(), fbp: fbp?.toString(),
+    ip: req.ip, ua: req.headers['user-agent']?.toString(), ref: req.headers.referer?.toString()
+  }});
+  res.json({ click_id: click.id });
+});
+
+// /postback (HMAC)
+app.get('/postback', async (req, res) => {
+  const params = new URLSearchParams(req.url.split('?')[1] || '');
+  const sig = params.get('sig') || '';
+  params.delete('sig');
+  const calc = crypto.createHmac('sha256', process.env.POSTBACK_HMAC_SECRET || '').update(params.toString()).digest('hex');
+  if (!crypto.timingSafeEqual(Buffer.from(calc), Buffer.from(sig))) return res.sendStatus(403);
+
+  const txid = params.get('txid')!;
+  const status = (params.get('status') || 'approved').toUpperCase();
+  const amount = Number(params.get('amount') || '0');
+  const currency = params.get('currency') || 'USD';
+  const click_id = params.get('click_id');
+
+  let clickId: string | null = click_id || null;
+  if (!clickId && params.get('pub_id')) {
+    const last = await prisma.click.findFirst({ where: { pubId: String(params.get('pub_id')) }, orderBy: { createdAt: 'desc' } });
+    clickId = last?.id || null;
+  }
+
+  await prisma.conversion.upsert({
+    where: { txid },
+    update: { status: status as any, amount, currency, approvedAt: status === 'APPROVED' ? new Date() : null },
+    create: { txid, status: status as any, amount, currency, clickId: clickId || undefined }
+  });
+
+  res.json({ ok: true });
+});
+
+// VerifyMy webhook
+app.post('/webhooks/verifymy', (req, res) => {
+  const sig = req.header('X-VerifyMy-Signature') || '';
+  const calc = crypto.createHmac('sha256', process.env.VERIFYMY_WEBHOOK_SECRET || '').update(JSON.stringify(req.body)).digest('hex');
+  if (!crypto.timingSafeEqual(Buffer.from(calc), Buffer.from(sig))) return res.sendStatus(403);
+  // TODO: map payload.user_id -> User.ssoUserId and set kyc fields
+  res.json({ ok: true });
+});
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`tracker on :${PORT}`));
+
+
+⸻
+
+7) Worker (apps/worker) — BullMQ for payouts + fraud
+
+package.json
+
+{ "name":"worker","type":"module","scripts":{"dev":"tsx watch src/index.ts"},"dependencies":{"bullmq":"^5.8.0","ioredis":"^5.4.1","@fanz/db":"*"},"devDependencies":{"tsx":"^4.19.0","typescript":"^5.5.4"}}
+
+src/index.ts
+
+import { Worker, Queue } from 'bullmq';
+import IORedis from 'ioredis';
+import { PrismaClient } from '@fanz/db/node_modules/@prisma/client';
+
+const connection = new IORedis(process.env.REDIS_URL!);
+const prisma = new PrismaClient();
+
+export const payoutQueue = new Queue('payouts', { connection });
+
+new Worker('payouts', async job => {
+  const { payoutId } = job.data as { payoutId: string };
+  const payout = await prisma.payout.findUnique({ where: { id: payoutId } });
+  if (!payout) return;
+  // TODO: route to adapter by methodCode (paxum/cosmo/bitsafe/usdt)
+  // Dry-run example:
+  await prisma.payout.update({ where: { id: payoutId }, data: { status: 'SENT', meta: { dryRun: true } } });
+}, { connection });
+
+console.log('worker online');
+
+
+⸻
+
+8) Dashboard (apps/dashboard) — Next.js 14 + Tailwind + shadcn/ui
+
+package.json
+
+{
+  "name": "dashboard",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tailwindcss": "^3.4.7",
+    "posthog-js": "^1.127.0",
+    "@fanz/db": "*"
+  },
+  "devDependencies": { "typescript": "^5.5.4" }
+}
+
+app/layout.tsx (theme)
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en"><body className="bg-[#0b0d11] text-[#e6f0ff]">
+      <div className="max-w-7xl mx-auto p-6">
+        <header className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-[url('/neon-banana.svg')] bg-contain" />
+          <h1 className="text-2xl font-extrabold" style={{textShadow:'0 0 6px rgba(255,225,0,.75)'}}>FanzFiliate</h1>
+        </header>
+        <main className="mt-6

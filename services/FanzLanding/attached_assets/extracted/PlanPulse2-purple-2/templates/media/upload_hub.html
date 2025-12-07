@@ -1,0 +1,1001 @@
+{% extends "base.html" %} {% block title %}Upload Hub - FANZ{% endblock %} {%
+block content %}
+<div class="upload-hub-container">
+  <div class="container">
+    <div class="row justify-content-center py-5">
+      <div class="col-lg-10">
+        <!-- Upload Header -->
+        <div class="upload-header mb-5">
+          <div class="card">
+            <div class="card-body text-center py-4">
+              <h2 class="neon-text neon-pink mb-3">
+                <i class="fas fa-cloud-upload-alt me-2"></i>Media Upload Hub
+              </h2>
+              <p class="lead text-secondary mb-4">
+                Create and upload your content with AI-enhanced editing tools
+              </p>
+
+              <!-- Upload Progress -->
+              <div class="upload-progress d-none">
+                <div class="progress mb-3">
+                  <div
+                    class="progress-bar progress-bar-striped progress-bar-animated"
+                    role="progressbar"
+                    style="width: 0%"
+                  ></div>
+                </div>
+                <p class="progress-text">Preparing upload...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scene Creation Form -->
+        <div class="scene-creation-card card mb-4">
+          <div class="card-header">
+            <h4 class="mb-0">
+              <i class="fas fa-video me-2"></i>Create New Scene
+            </h4>
+          </div>
+          <div class="card-body">
+            <form
+              method="POST"
+              enctype="multipart/form-data"
+              class="scene-form"
+              id="sceneForm"
+            >
+              {{ form.hidden_tag() }}
+
+              <!-- Basic Scene Info -->
+              <div class="row mb-4">
+                <div class="col-md-8">
+                  <div class="form-group mb-3">
+                    {{ form.title.label(class="form-label") }} {{
+                    form.title(class="form-control", placeholder="Enter a
+                    compelling title for your scene") }} {% if form.title.errors
+                    %}
+                    <div class="invalid-feedback d-block">
+                      {% for error in form.title.errors %}{{ error }}{% endfor
+                      %}
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group mb-3">
+                    {{ form.content_type.label(class="form-label") }} {{
+                    form.content_type(class="form-select") }} {% if
+                    form.content_type.errors %}
+                    <div class="invalid-feedback d-block">
+                      {% for error in form.content_type.errors %}{{ error }}{%
+                      endfor %}
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-4">
+                {{ form.description.label(class="form-label") }} {{
+                form.description(class="form-control", rows="3",
+                placeholder="Describe your content to help fans discover it") }}
+                {% if form.description.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.description.errors %}{{ error }}{% endfor
+                  %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- File Upload Area -->
+              <div class="media-upload-section mb-4">
+                <h5 class="neon-text neon-cyan mb-3">
+                  <i class="fas fa-file-upload me-2"></i>Upload Media
+                </h5>
+
+                <div class="upload-area" id="uploadArea">
+                  <div class="upload-content">
+                    <div class="upload-icon">
+                      <i class="fas fa-cloud-upload-alt fa-4x neon-cyan"></i>
+                    </div>
+                    <h5 class="upload-title">
+                      Drop your files here or click to browse
+                    </h5>
+                    <p class="upload-subtitle">
+                      Supported: JPG, PNG, GIF, MP4, MOV, AVI (Max 500MB per
+                      file)
+                    </p>
+                    <input
+                      type="file"
+                      id="mediaFiles"
+                      class="file-input"
+                      multiple
+                      accept="image/*,video/*"
+                      style="display: none"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-outline-light mt-3"
+                      onclick="document.getElementById('mediaFiles').click()"
+                    >
+                      <i class="fas fa-folder-open me-2"></i>Choose Files
+                    </button>
+                  </div>
+                </div>
+
+                <!-- File Preview Area -->
+                <div class="file-preview-area d-none mt-4" id="filePreviewArea">
+                  <h6 class="neon-text neon-green mb-3">
+                    <i class="fas fa-images me-2"></i>Uploaded Files
+                  </h6>
+                  <div class="file-preview-grid" id="filePreviewGrid">
+                    <!-- File previews will be inserted here -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- AI Enhancement Tools -->
+              <div class="ai-tools-section mb-4">
+                <h5 class="neon-text neon-yellow mb-3">
+                  <i class="fas fa-robot me-2"></i>AI Enhancement Tools
+                </h5>
+
+                <div class="row g-3">
+                  <div class="col-md-3">
+                    <div class="ai-tool-card">
+                      <div class="tool-icon neon-pink">
+                        <i class="fas fa-magic"></i>
+                      </div>
+                      <div class="tool-content">
+                        <h6>Auto Enhance</h6>
+                        <p>Improve lighting and colors</p>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-light ai-tool-btn"
+                          data-tool="enhance"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="ai-tool-card">
+                      <div class="tool-icon neon-cyan">
+                        <i class="fas fa-eye-slash"></i>
+                      </div>
+                      <div class="tool-content">
+                        <h6>Auto Blur</h6>
+                        <p>Smart background blur</p>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-light ai-tool-btn"
+                          data-tool="blur"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="ai-tool-card">
+                      <div class="tool-icon neon-green">
+                        <i class="fas fa-crop-alt"></i>
+                      </div>
+                      <div class="tool-content">
+                        <h6>Smart Crop</h6>
+                        <p>Optimal framing</p>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-light ai-tool-btn"
+                          data-tool="crop"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="ai-tool-card">
+                      <div class="tool-icon neon-orange">
+                        <i class="fas fa-palette"></i>
+                      </div>
+                      <div class="tool-content">
+                        <h6>Filters</h6>
+                        <p>Artistic effects</p>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-light ai-tool-btn"
+                          data-tool="filter"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Manual Editor Tools -->
+              <div class="manual-editor-section mb-4">
+                <h5 class="neon-text neon-purple mb-3">
+                  <i class="fas fa-edit me-2"></i>Manual Editor
+                </h5>
+
+                <div class="editor-toolbar">
+                  <div class="toolbar-group">
+                    <label>Brightness</label>
+                    <input
+                      type="range"
+                      class="form-range editor-slider"
+                      id="brightnessSlider"
+                      min="-50"
+                      max="50"
+                      value="0"
+                    />
+                  </div>
+                  <div class="toolbar-group">
+                    <label>Contrast</label>
+                    <input
+                      type="range"
+                      class="form-range editor-slider"
+                      id="contrastSlider"
+                      min="-50"
+                      max="50"
+                      value="0"
+                    />
+                  </div>
+                  <div class="toolbar-group">
+                    <label>Saturation</label>
+                    <input
+                      type="range"
+                      class="form-range editor-slider"
+                      id="saturationSlider"
+                      min="-50"
+                      max="50"
+                      value="0"
+                    />
+                  </div>
+                  <div class="toolbar-group">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-light"
+                      id="resetEditorBtn"
+                    >
+                      <i class="fas fa-undo me-1"></i>Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Watermark & Branding -->
+              <div class="watermark-section mb-4">
+                <h5 class="neon-text neon-cyan mb-3">
+                  <i class="fas fa-signature me-2"></i>Watermark & Branding
+                </h5>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-check mb-3">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="addWatermark"
+                        checked
+                      />
+                      <label class="form-check-label" for="addWatermark">
+                        Add FanzLab watermark
+                      </label>
+                    </div>
+                    <div class="form-check mb-3">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="addUsername"
+                        checked
+                      />
+                      <label class="form-check-label" for="addUsername">
+                        Add username overlay
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="form-label">Watermark Position</label>
+                      <select class="form-select" id="watermarkPosition">
+                        <option value="bottom-right">Bottom Right</option>
+                        <option value="bottom-left">Bottom Left</option>
+                        <option value="top-right">Top Right</option>
+                        <option value="top-left">Top Left</option>
+                        <option value="center">Center</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Metadata & Tags -->
+              <div class="metadata-section mb-4">
+                <h5 class="neon-text neon-green mb-3">
+                  <i class="fas fa-tags me-2"></i>Metadata & SEO
+                </h5>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label class="form-label">Tags</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="tagsInput"
+                        placeholder="Enter tags separated by commas"
+                      />
+                      <small class="form-text text-muted">
+                        Tags help fans discover your content
+                      </small>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label class="form-label">Category</label>
+                      <select class="form-select" id="categorySelect">
+                        <option value="">Select category</option>
+                        <option value="artistic">Artistic</option>
+                        <option value="lifestyle">Lifestyle</option>
+                        <option value="fitness">Fitness</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="comedy">Comedy</option>
+                        <option value="educational">Educational</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Co-star Management -->
+              <div class="costar-section mb-4">
+                <h5 class="neon-text neon-orange mb-3">
+                  <i class="fas fa-users me-2"></i>Co-star Management
+                </h5>
+
+                <div class="form-group mb-3">
+                  {{ form.participants.label(class="form-label") }} {{
+                  form.participants(class="form-control", placeholder="Enter
+                  usernames separated by commas (e.g., @user1, @user2)") }} {%
+                  if form.participants.errors %}
+                  <div class="invalid-feedback d-block">
+                    {% for error in form.participants.errors %}{{ error }}{%
+                    endfor %}
+                  </div>
+                  {% endif %}
+                  <small class="form-text text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    All co-stars must be verified and provide consent before
+                    publishing
+                  </small>
+                </div>
+
+                <div class="costar-list d-none" id="costarList">
+                  <!-- Co-star verification status will be shown here -->
+                </div>
+              </div>
+
+              <!-- Cross-posting Options -->
+              <div class="crosspost-section mb-4">
+                <h5 class="neon-text neon-pink mb-3">
+                  <i class="fas fa-share-alt me-2"></i>Cross-posting
+                </h5>
+
+                <div class="cluster-selection">
+                  <p class="text-secondary mb-3">
+                    Select which clusters to publish this content to:
+                  </p>
+                  <div class="cluster-checkboxes">
+                    {% for membership in current_user.cluster_memberships if
+                    membership.is_active %}
+                    <div class="form-check cluster-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="cluster_{{ membership.cluster_type.value }}"
+                        name="target_clusters"
+                        value="{{ membership.cluster_type.value }}"
+                        checked
+                      />
+                      <label
+                        class="form-check-label"
+                        for="cluster_{{ membership.cluster_type.value }}"
+                      >
+                        <i class="fas fa-network-wired me-2"></i>
+                        {{ membership.cluster_type.value.title() }}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Actions -->
+              <div class="submit-actions text-center">
+                <button
+                  type="button"
+                  class="btn btn-outline-light btn-lg me-3"
+                  id="saveDraftBtn"
+                >
+                  <i class="fas fa-save me-2"></i>Save as Draft
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-success btn-lg glow-pulse"
+                  id="publishBtn"
+                  disabled
+                >
+                  <i class="fas fa-upload me-2"></i>Upload & Publish
+                </button>
+                <p class="text-muted mt-3">
+                  <i class="fas fa-shield-alt me-2"></i>
+                  Content will be reviewed for compliance before publishing
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .upload-hub-container {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 0, 255, 0.05),
+      rgba(255, 192, 203, 0.05)
+    );
+    min-height: 100vh;
+  }
+
+  .upload-area {
+    border: 3px dashed var(--border-color);
+    border-radius: 20px;
+    padding: 50px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .upload-area:hover,
+  .upload-area.dragover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+  }
+
+  .upload-area.has-files {
+    border-color: var(--neon-green);
+    background: rgba(0, 255, 0, 0.05);
+  }
+
+  .upload-icon {
+    margin-bottom: 20px;
+  }
+
+  .upload-title {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .upload-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .file-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .file-preview-item {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .file-preview-item:hover {
+    border-color: var(--neon-cyan);
+    transform: translateY(-3px);
+  }
+
+  .preview-image,
+  .preview-video {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .file-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .file-actions {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .ai-tool-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+
+  .ai-tool-card:hover {
+    border-color: var(--neon-cyan);
+    transform: translateY(-3px);
+  }
+
+  .tool-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 1.2rem;
+  }
+
+  .tool-content h6 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .tool-content p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+
+  .editor-toolbar {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+  }
+
+  .toolbar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .toolbar-group label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .editor-slider {
+    width: 100px;
+  }
+
+  .cluster-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+  }
+
+  .cluster-check {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.3s ease;
+  }
+
+  .cluster-check:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+  }
+
+  .form-check-input:checked + .form-check-label {
+    color: var(--neon-green);
+  }
+
+  .progress {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+  }
+
+  .progress-bar {
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+  }
+
+  #publishBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .upload-area {
+      padding: 30px 20px;
+    }
+
+    .editor-toolbar {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .cluster-checkboxes {
+      grid-template-columns: 1fr;
+    }
+
+    .file-preview-grid {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const uploadArea = document.getElementById("uploadArea");
+    const fileInput = document.getElementById("mediaFiles");
+    const filePreviewArea = document.getElementById("filePreviewArea");
+    const filePreviewGrid = document.getElementById("filePreviewGrid");
+    const publishBtn = document.getElementById("publishBtn");
+    const progressContainer = document.querySelector(".upload-progress");
+
+    let uploadedFiles = [];
+
+    // File upload handling
+    function handleFiles(files) {
+      Array.from(files).forEach((file) => {
+        if (validateFile(file)) {
+          uploadedFiles.push(file);
+          createFilePreview(file);
+        }
+      });
+
+      updateUploadArea();
+      updatePublishButton();
+    }
+
+    function validateFile(file) {
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "video/mp4",
+        "video/mov",
+        "video/avi",
+      ];
+      const maxSize = 500 * 1024 * 1024; // 500MB
+
+      if (!allowedTypes.includes(file.type)) {
+        window.NeonUtils.showNeonAlert(
+          "Invalid file type. Please use JPG, PNG, GIF, MP4, MOV, or AVI files.",
+          "error",
+        );
+        return false;
+      }
+
+      if (file.size > maxSize) {
+        window.NeonUtils.showNeonAlert(
+          "File too large. Maximum size is 500MB.",
+          "error",
+        );
+        return false;
+      }
+
+      return true;
+    }
+
+    function createFilePreview(file) {
+      const previewItem = document.createElement("div");
+      previewItem.className = "file-preview-item";
+      previewItem.dataset.filename = file.name;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        if (file.type.startsWith("image/")) {
+          previewItem.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview" class="preview-image">
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn btn-sm btn-info edit-file-btn">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger remove-file-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+        } else if (file.type.startsWith("video/")) {
+          previewItem.innerHTML = `
+                    <video class="preview-video" controls>
+                        <source src="${e.target.result}" type="${file.type}">
+                    </video>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn btn-sm btn-info edit-file-btn">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger remove-file-btn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+        }
+      };
+      reader.readAsDataURL(file);
+
+      filePreviewGrid.appendChild(previewItem);
+      filePreviewArea.classList.remove("d-none");
+
+      // Add event listeners
+      previewItem
+        .querySelector(".remove-file-btn")
+        .addEventListener("click", function () {
+          removeFile(file.name);
+        });
+
+      previewItem
+        .querySelector(".edit-file-btn")
+        .addEventListener("click", function () {
+          openFileEditor(file);
+        });
+    }
+
+    function removeFile(filename) {
+      uploadedFiles = uploadedFiles.filter((file) => file.name !== filename);
+      document.querySelector(`[data-filename="${filename}"]`).remove();
+
+      if (uploadedFiles.length === 0) {
+        filePreviewArea.classList.add("d-none");
+        updateUploadArea();
+      }
+
+      updatePublishButton();
+    }
+
+    function updateUploadArea() {
+      if (uploadedFiles.length > 0) {
+        uploadArea.classList.add("has-files");
+        uploadArea.querySelector(".upload-title").textContent =
+          `${uploadedFiles.length} file(s) uploaded`;
+        uploadArea.querySelector(".upload-subtitle").textContent =
+          "Drop more files or click to add additional content";
+      } else {
+        uploadArea.classList.remove("has-files");
+        uploadArea.querySelector(".upload-title").textContent =
+          "Drop your files here or click to browse";
+        uploadArea.querySelector(".upload-subtitle").textContent =
+          "Supported: JPG, PNG, GIF, MP4, MOV, AVI (Max 500MB per file)";
+      }
+    }
+
+    function updatePublishButton() {
+      const hasFiles = uploadedFiles.length > 0;
+      const hasTitle =
+        document.querySelector('input[name="title"]').value.trim().length > 0;
+
+      publishBtn.disabled = !(hasFiles && hasTitle);
+
+      if (hasFiles && hasTitle) {
+        publishBtn.classList.add("glow-pulse");
+      } else {
+        publishBtn.classList.remove("glow-pulse");
+      }
+    }
+
+    // Drag and drop
+    uploadArea.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      this.classList.add("dragover");
+    });
+
+    uploadArea.addEventListener("dragleave", function () {
+      this.classList.remove("dragover");
+    });
+
+    uploadArea.addEventListener("drop", function (e) {
+      e.preventDefault();
+      this.classList.remove("dragover");
+      handleFiles(e.dataTransfer.files);
+    });
+
+    uploadArea.addEventListener("click", function () {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", function () {
+      handleFiles(this.files);
+    });
+
+    // Form validation
+    document
+      .querySelector('input[name="title"]')
+      .addEventListener("input", updatePublishButton);
+
+    // AI Tools
+    document.querySelectorAll(".ai-tool-btn").forEach((button) => {
+      button.addEventListener("click", function () {
+        const tool = this.dataset.tool;
+        applyAITool(tool);
+      });
+    });
+
+    function applyAITool(tool) {
+      if (uploadedFiles.length === 0) {
+        window.NeonUtils.showNeonAlert(
+          "Please upload files first before applying AI tools.",
+          "warning",
+        );
+        return;
+      }
+
+      const toolNames = {
+        enhance: "Auto Enhancement",
+        blur: "Background Blur",
+        crop: "Smart Crop",
+        filter: "Artistic Filter",
+      };
+
+      window.NeonUtils.showNeonAlert(
+        `Applying ${toolNames[tool]}... This may take a moment.`,
+        "info",
+      );
+
+      // Simulate AI processing
+      setTimeout(() => {
+        window.NeonUtils.showNeonAlert(
+          `${toolNames[tool]} applied successfully!`,
+          "success",
+        );
+      }, 2000);
+    }
+
+    // Manual editor
+    const editorSliders = document.querySelectorAll(".editor-slider");
+    editorSliders.forEach((slider) => {
+      slider.addEventListener("input", function () {
+        applyManualEdit();
+      });
+    });
+
+    document
+      .getElementById("resetEditorBtn")
+      .addEventListener("click", function () {
+        editorSliders.forEach((slider) => {
+          slider.value = 0;
+        });
+        applyManualEdit();
+      });
+
+    function applyManualEdit() {
+      // In production, this would apply real-time image editing
+      console.log("Applying manual edits...");
+    }
+
+    function openFileEditor(file) {
+      window.NeonUtils.showNeonAlert(
+        `Opening editor for ${file.name}...`,
+        "info",
+      );
+    }
+
+    // Co-star validation
+    document
+      .querySelector('input[name="participants"]')
+      .addEventListener("input", function () {
+        validateCoStars(this.value);
+      });
+
+    function validateCoStars(participantsText) {
+      if (!participantsText.trim()) return;
+
+      const usernames = participantsText
+        .split(",")
+        .map((u) => u.trim())
+        .filter((u) => u);
+      // In production, this would make API calls to validate users
+      console.log("Validating co-stars:", usernames);
+    }
+
+    // Form submission
+    document
+      .getElementById("sceneForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        if (uploadedFiles.length === 0) {
+          window.NeonUtils.showNeonAlert(
+            "Please upload at least one file.",
+            "warning",
+          );
+          return;
+        }
+
+        // Show upload progress
+        progressContainer.classList.remove("d-none");
+        publishBtn.disabled = true;
+        publishBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+
+        // Simulate upload progress
+        let progress = 0;
+        const progressBar = document.querySelector(".progress-bar");
+        const progressText = document.querySelector(".progress-text");
+
+        const updateProgress = () => {
+          progress += Math.random() * 15;
+          if (progress > 100) progress = 100;
+
+          progressBar.style.width = progress + "%";
+
+          if (progress < 30) {
+            progressText.textContent = "Uploading files...";
+          } else if (progress < 60) {
+            progressText.textContent = "Processing media...";
+          } else if (progress < 90) {
+            progressText.textContent = "Applying enhancements...";
+          } else {
+            progressText.textContent = "Finalizing upload...";
+          }
+
+          if (progress < 100) {
+            setTimeout(updateProgress, 500);
+          } else {
+            setTimeout(() => {
+              window.NeonUtils.showNeonAlert(
+                "Scene uploaded successfully! Proceeding to verification.",
+                "success",
+              );
+              window.location.href = "/star-dashboard";
+            }, 1000);
+          }
+        };
+
+        updateProgress();
+      });
+
+    // Save draft
+    document
+      .getElementById("saveDraftBtn")
+      .addEventListener("click", function () {
+        window.NeonUtils.showNeonAlert("Scene saved as draft.", "info");
+      });
+  });
+</script>
+{% endblock %}
